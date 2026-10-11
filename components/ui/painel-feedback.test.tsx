@@ -56,4 +56,26 @@ describe("PainelFeedback", () => {
     );
     expect(screen.getByRole("status")).toHaveTextContent("Exatamente isso");
   });
+
+  it("item Certo/Errado: no erro, só Continuar (não há o que tentar de novo)", async () => {
+    const aoContinuar = vi.fn();
+    render(
+      <PainelFeedback resultado="errado" acoes={["continuar"]} onContinuar={aoContinuar}>
+        O gabarito é Errado.
+      </PainelFeedback>,
+    );
+
+    expect(screen.queryByRole("button", { name: "Tentar de novo" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Continuar" }));
+    expect(aoContinuar).toHaveBeenCalledOnce();
+  });
+
+  it("leva o foco para a primeira ação quando pedido", () => {
+    render(
+      <PainelFeedback resultado="certo" focarAcao>
+        Ok.
+      </PainelFeedback>,
+    );
+    expect(screen.getByRole("button", { name: "Continuar" })).toHaveFocus();
+  });
 });

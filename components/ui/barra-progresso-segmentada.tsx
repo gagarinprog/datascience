@@ -39,11 +39,16 @@ export function BarraProgressoSegmentada({
         <span
           key={indice}
           data-cheio={indice < cheios}
-          className={cn(
-            "h-2.5 flex-1 rounded-full",
-            indice < cheios ? "bg-(--sinal)" : "bg-trilha-apagada",
-          )}
-        />
+          className="h-2.5 flex-1 overflow-hidden rounded-full bg-trilha-apagada"
+        >
+          {/* Quando o segmento acende, a corrente o percorre da esquerda para a direita. */}
+          <span
+            className={cn(
+              "block h-full origin-left rounded-full bg-(--sinal) transition-[scale] duration-300 ease-out",
+              indice < cheios ? "scale-x-100" : "scale-x-0",
+            )}
+          />
+        </span>
       ))}
     </div>
   );

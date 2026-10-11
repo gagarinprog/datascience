@@ -120,6 +120,12 @@
   pre {
     font-size: var(--text-codigo);
     line-height: var(--text-codigo--line-height);
+    /*
+     * Sem ligaduras: a JetBrains Mono desenharia ">=" como "≥" e "!=" como "≠",
+     * que não são SQL nem Python válidos. Quem aprende precisa ver os caracteres
+     * que vai digitar (doc 04: iniciantes trazem "≠" da matemática).
+     */
+    font-variant-ligatures: none;
   }
 
   /* 8. Foco visível: anel --corrente de 2 px. */
@@ -134,6 +140,90 @@
   }
 }
 
+/*
+ * 5.1 Transições entre telas (View Transitions do navegador, via <ViewTransition>
+ * do React). Curtas, só opacidade e deslocamento pequeno.
+ *   aba      troca de aba: mesmo nível, conteúdo diferente (esmaece)
+ *   ir-fundo entrar na lição: o conteúdo anda para a esquerda
+ *   voltar   sair da lição: o conteúdo anda para a direita
+ *   revelar  conteúdo que acabou de carregar sobe 8 px
+ */
+::view-transition {
+  /* Cliques durante a transição chegam à página. */
+  pointer-events: none;
+}
+
+/* A navegação fica parada: é a âncora de quem está mudando de tela. */
+::view-transition-group(navegacao) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(navegacao) {
+  display: none;
+}
+::view-transition-new(navegacao) {
+  animation: none;
+}
+
+::view-transition-old(.aba) {
+  animation: 120ms ease-in both esmaecer;
+}
+::view-transition-new(.aba) {
+  animation: 180ms ease-out 60ms both aparecer;
+}
+
+::view-transition-old(.ir-fundo) {
+  --deslocamento: -48px;
+  animation:
+    150ms ease-in both esmaecer,
+    300ms ease-in-out both deslizar reverse;
+}
+::view-transition-new(.ir-fundo) {
+  --deslocamento: 48px;
+  animation:
+    200ms ease-out 100ms both aparecer,
+    300ms ease-in-out both deslizar;
+}
+::view-transition-old(.voltar) {
+  --deslocamento: 48px;
+  animation:
+    150ms ease-in both esmaecer,
+    300ms ease-in-out both deslizar reverse;
+}
+::view-transition-new(.voltar) {
+  --deslocamento: -48px;
+  animation:
+    200ms ease-out 100ms both aparecer,
+    300ms ease-in-out both deslizar;
+}
+
+::view-transition-new(.revelar) {
+  animation:
+    210ms ease-out both aparecer,
+    300ms ease-out both subir;
+}
+
+@keyframes esmaecer {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes deslizar {
+  from {
+    translate: var(--deslocamento) 0;
+  }
+}
+@keyframes subir {
+  from {
+    translate: 0 8px;
+  }
+}
+
 /* 5. Com prefers-reduced-motion, todo movimento vira mudança instantânea. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -143,6 +233,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }
 
