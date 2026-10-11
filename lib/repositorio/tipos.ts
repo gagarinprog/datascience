@@ -3,12 +3,17 @@
  * é o navegador (local.ts); depois vem o Supabase com a mesma interface.
  * Os tipos seguem o schema do blueprint, seção 8.
  */
+import type { DiaDaSemana } from "@/lib/datas";
 import type { Disciplina } from "@/lib/disciplinas";
 import type { EstadoConceito } from "@/lib/dominio";
 
 /** Tudo o que a tela Hoje mostra (DESIGN 6.1). */
 export type SessaoDeHoje = {
   sequenciaDias: number;
+  /** Hoje já teve estudo? A sequência acende quando sim. */
+  estudouHoje: boolean;
+  /** Segunda a domingo da semana atual. */
+  semana: DiaDaSemana[];
   metaSemana: { cumpridos: number; total: number };
   missao: {
     disciplina: Disciplina;

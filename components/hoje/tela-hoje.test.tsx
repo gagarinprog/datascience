@@ -1,14 +1,27 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { semanaDeEstudo } from "@/lib/datas";
 import type { Repositorio, SessaoDeHoje } from "@/lib/repositorio";
 
 import { TelaHoje } from "./tela-hoje";
 
 const AGORA = new Date(2026, 9, 11, 10, 0);
 
+// Segunda (5/10) a sábado (10/10) estudados; domingo, hoje, ainda aberto.
+const ESTUDADOS = [
+  "2026-10-05",
+  "2026-10-06",
+  "2026-10-07",
+  "2026-10-08",
+  "2026-10-09",
+  "2026-10-10",
+];
+
 const SESSAO: SessaoDeHoje = {
   sequenciaDias: 12,
+  estudouHoje: false,
+  semana: semanaDeEstudo(ESTUDADOS, AGORA),
   metaSemana: { cumpridos: 6, total: 7 },
   missao: {
     disciplina: "bd",
@@ -37,8 +50,8 @@ function renderizar(sessao: SessaoDeHoje = SESSAO) {
 }
 
 describe("TelaHoje", () => {
-  it("mostra o dia, a sequência e a meta da semana", async () => {
-    renderizar();
+  it("mostra o dia, a sequência e a semana de segunda a domingo", async () => {
+    const { container } = renderizar();
 
     expect(
       await screen.findByRole("heading", { level: 1, name: "Domingo, 11 out" }),
@@ -46,8 +59,30 @@ describe("TelaHoje", () => {
     expect(screen.getByText("12 dias")).toHaveClass("text-destaque");
     expect(screen.getByRole("progressbar", { name: "Meta da semana" })).toHaveAttribute(
       "aria-valuetext",
-      "6 de 7",
+      "6 de 7 dias",
     );
+    const dias = container.querySelectorAll("[data-cumprido]");
+    expect(Array.from(dias, (dia) => dia.getAttribute("data-cumprido"))).toEqual([
+      "true",
+      "true",
+      "true",
+      "true",
+      "true",
+      "true",
+      "false",
+    ]);
+    expect(dias[6]).toHaveAttribute("data-hoje", "true");
+  });
+
+  it("a corrente da sequência só acende quando hoje já teve estudo", async () => {
+    const { container, unmount } = renderizar();
+    await screen.findByRole("heading", { level: 1 });
+    expect(container.querySelector("[data-aceso]")).toHaveAttribute("data-aceso", "false");
+    unmount();
+
+    const { container: depois } = renderizar({ ...SESSAO, estudouHoje: true, sequenciaDias: 13 });
+    await screen.findByText("13 dias");
+    expect(depois.querySelector("[data-aceso]")).toHaveAttribute("data-aceso", "true");
   });
 
   it("mostra a missão com o chip da disciplina e a frase de mapa", async () => {

@@ -32,8 +32,19 @@ describe("criarRepositorioLocal", () => {
 
     const sessao = await repositorio.sessaoDeHoje();
 
+    // Os 12 dias antes de hoje foram estudados; hoje (domingo) ainda está aberto.
     expect(sessao.sequenciaDias).toBe(12);
+    expect(sessao.estudouHoje).toBe(false);
     expect(sessao.metaSemana).toEqual({ cumpridos: 6, total: 7 });
+    expect(sessao.semana.map((dia) => dia.cumprido)).toEqual([
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+    ]);
     expect(sessao.missao).toMatchObject({
       disciplina: "bd",
       rotulo: "SQL",
@@ -76,6 +87,29 @@ describe("criarRepositorioLocal", () => {
       },
     ]);
     expect(guardado.sessoes).toEqual([{ id: "sessao-1", ...SESSAO }]);
+  });
+
+  it("sessão concluída conta o dia: a sequência cresce e a semana fecha", async () => {
+    const armazenamento = criarArmazenamento();
+    const repositorio = criarRepositorioLocal({ armazenamento, relogio: () => AGORA });
+
+    await repositorio.registrarSessao({ ...SESSAO, fim: AGORA.toISOString() });
+    const sessao = await repositorio.sessaoDeHoje();
+
+    expect(sessao.estudouHoje).toBe(true);
+    expect(sessao.sequenciaDias).toBe(13);
+    expect(sessao.metaSemana).toEqual({ cumpridos: 7, total: 7 });
+  });
+
+  it("sessão sem fim não conta o dia", async () => {
+    const repositorio = criarRepositorioLocal({
+      armazenamento: criarArmazenamento(),
+      relogio: () => AGORA,
+    });
+
+    await repositorio.registrarSessao(SESSAO);
+
+    expect((await repositorio.sessaoDeHoje()).estudouHoje).toBe(false);
   });
 
   it("devolve só cartas vencidas, das mais atrasadas para as mais recentes", async () => {
@@ -142,7 +176,7 @@ describe("criarRepositorioLocal", () => {
     const repositorio = criarRepositorioLocal({ armazenamento, relogio: () => AGORA });
 
     await expect(repositorio.sessaoDeHoje()).resolves.toMatchObject({ sequenciaDias: 12 });
-    expect(lerGuardado(armazenamento).versao).toBe(1);
+    expect(lerGuardado(armazenamento).versao).toBe(2);
   });
 
   it("continua funcionando na memória se o navegador bloquear o armazenamento", async () => {

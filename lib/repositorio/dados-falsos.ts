@@ -1,12 +1,13 @@
+import { dataLocalIso } from "@/lib/datas";
 import type { Disciplina } from "@/lib/disciplinas";
 
 import type { Carta, DominioDoConceito, SessaoDeHoje, Sessao, Tentativa } from "./tipos";
 
 /** O que o repositório local guarda no navegador. */
 export type DadosLocais = {
-  versao: 1;
-  sequenciaDias: number;
-  metaSemana: SessaoDeHoje["metaSemana"];
+  versao: 2;
+  /** Dias com sessão concluída, no formato AAAA-MM-DD. A sequência sai daqui. */
+  diasEstudados: string[];
   missao: Omit<SessaoDeHoje["missao"], "revisoes">;
   /** Avaliações Presenciais, com data no formato AAAA-MM-DD. */
   avaliacoes: { disciplina: Disciplina; data: string }[];
@@ -19,19 +20,21 @@ export type DadosLocais = {
 const UMA_HORA_EM_MS = 60 * 60 * 1000;
 
 /**
- * Dados falsos da Fase 1, tirados do exemplo do DESIGN 6.1: 12 dias de
- * sequência, 12 cartas vencidas e a AP de Banco de Dados em 26/10.
- * Saem de cena quando o progresso passar a ser real.
+ * Dados falsos, tirados do exemplo do DESIGN 6.1: os 12 dias antes de hoje
+ * estudados (sequência de 12), 12 cartas vencidas e a AP de Banco de Dados
+ * em 26/10. Saem de cena quando o progresso passar a ser real.
  */
 export function criarDadosFalsos(agora: Date): DadosLocais {
   const vencida = new Date(agora.getTime() - UMA_HORA_EM_MS).toISOString();
   const deAmanha = new Date(agora.getTime() + 24 * UMA_HORA_EM_MS).toISOString();
   const atualizadoEm = agora.toISOString();
+  const diasEstudados = Array.from({ length: 12 }, (_, indice) =>
+    dataLocalIso(new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() - 12 + indice)),
+  );
 
   return {
-    versao: 1,
-    sequenciaDias: 12,
-    metaSemana: { cumpridos: 6, total: 7 },
+    versao: 2,
+    diasEstudados,
     missao: {
       disciplina: "bd",
       rotulo: "SQL",

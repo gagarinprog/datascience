@@ -1,9 +1,9 @@
-import { dataLocalIso } from "@/lib/datas";
+import { contarSequencia, dataLocalIso, semanaDeEstudo } from "@/lib/datas";
 
 import { criarDadosFalsos, type DadosLocais } from "./dados-falsos";
 import type { Carta, Repositorio } from "./tipos";
 
-export const CHAVE_LOCAL = "dominio:dados:v1";
+export const CHAVE_LOCAL = "dominio:dados:v2";
 
 /** Blueprint 3.1: o aquecimento usa de 8 a 12 cartas. */
 const LIMITE_DO_AQUECIMENTO = 12;
@@ -21,7 +21,8 @@ function pareceDadosLocais(valor: unknown): valor is DadosLocais {
   if (typeof valor !== "object" || valor === null) return false;
   const dados = valor as Partial<DadosLocais>;
   return (
-    dados.versao === 1 &&
+    dados.versao === 2 &&
+    Array.isArray(dados.diasEstudados) &&
     Array.isArray(dados.cartas) &&
     Array.isArray(dados.dominio) &&
     Array.isArray(dados.tentativas) &&
@@ -82,15 +83,22 @@ export function criarRepositorioLocal({
   return {
     async sessaoDeHoje() {
       const dados = ler();
-      const hoje = dataLocalIso(relogio());
+      const agora = relogio();
+      const hoje = dataLocalIso(agora);
+      const semana = semanaDeEstudo(dados.diasEstudados, agora);
       const proximaAvaliacao =
         dados.avaliacoes
           .filter((avaliacao) => avaliacao.data >= hoje)
           .sort((a, b) => a.data.localeCompare(b.data))[0] ?? null;
 
       return {
-        sequenciaDias: dados.sequenciaDias,
-        metaSemana: dados.metaSemana,
+        sequenciaDias: contarSequencia(dados.diasEstudados, agora),
+        estudouHoje: dados.diasEstudados.includes(hoje),
+        semana,
+        metaSemana: {
+          cumpridos: semana.filter((dia) => dia.cumprido).length,
+          total: semana.length,
+        },
         missao: {
           ...dados.missao,
           revisoes: cartasVencidas(dados, LIMITE_DO_AQUECIMENTO).length,
@@ -116,6 +124,11 @@ export function criarRepositorioLocal({
     async registrarSessao(sessao) {
       const dados = ler();
       dados.sessoes.push({ ...sessao, id: gerarId() });
+      // Sessão concluída conta o dia na sequência e na meta da semana.
+      if (sessao.fim) {
+        const dia = dataLocalIso(new Date(sessao.inicio));
+        if (!dados.diasEstudados.includes(dia)) dados.diasEstudados.push(dia);
+      }
       gravar(dados);
     },
   };

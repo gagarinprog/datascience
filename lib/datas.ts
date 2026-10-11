@@ -32,3 +32,49 @@ export function textoDiasAte(dias: number): string {
   if (dias === 1) return "amanhã";
   return `em ${dias} dias`;
 }
+
+function inicioDoDia(data: Date): Date {
+  return new Date(data.getFullYear(), data.getMonth(), data.getDate());
+}
+
+/**
+ * Dias seguidos de estudo até hoje. Se hoje ainda não teve estudo, a contagem
+ * vale até ontem: a sequência só quebra quando um dia inteiro passa em branco.
+ */
+export function contarSequencia(diasEstudados: Iterable<string>, hoje: Date): number {
+  const estudados = new Set(diasEstudados);
+  const cursor = inicioDoDia(hoje);
+  if (!estudados.has(dataLocalIso(cursor))) cursor.setDate(cursor.getDate() - 1);
+
+  let dias = 0;
+  while (estudados.has(dataLocalIso(cursor))) {
+    dias += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return dias;
+}
+
+export type DiaDaSemana = {
+  /** AAAA-MM-DD */
+  data: string;
+  /** "S", "T", "Q", "Q", "S", "S", "D" */
+  inicial: string;
+  cumprido: boolean;
+  hoje: boolean;
+};
+
+const INICIAIS_SEGUNDA_A_DOMINGO = ["S", "T", "Q", "Q", "S", "S", "D"];
+
+/** A semana de segunda a domingo que contém hoje, com os dias de estudo marcados. */
+export function semanaDeEstudo(diasEstudados: Iterable<string>, hoje: Date): DiaDaSemana[] {
+  const estudados = new Set(diasEstudados);
+  const segunda = inicioDoDia(hoje);
+  segunda.setDate(segunda.getDate() - ((segunda.getDay() + 6) % 7));
+  const dataDeHoje = dataLocalIso(hoje);
+
+  return INICIAIS_SEGUNDA_A_DOMINGO.map((inicial, indice) => {
+    const dia = new Date(segunda.getFullYear(), segunda.getMonth(), segunda.getDate() + indice);
+    const data = dataLocalIso(dia);
+    return { data, inicial, cumprido: estudados.has(data), hoje: data === dataDeHoje };
+  });
+}
