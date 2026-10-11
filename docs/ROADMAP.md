@@ -61,6 +61,13 @@ Entregas:
 - Componentes: `ItemFlashcard`, `ItemCertoErrado`, `ItemCompletar` (chips), `ItemParsons`, `ItemPrevejaSaida`, `ItemAcheOErro`
 - **Uma lição de referência completa:** `content/bd/group-by-having.json`, escrita a partir de `docs/01_MAPA` seção 5
 
+Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seções 1 a 4):
+- `desafio` como pré-pergunta de um item sobre o conceito-alvo; não pesa no domínio
+- `exemplo` com `subobjetivos` rotulados e uma `autoexplicacao` de múltipla escolha
+- Prática em degraus (completar → Parsons → prever → escrever), pulando o degrau seguinte quando acerta de primeira, e um item de discriminação com o conceito vizinho
+- Feedback em três partes (o que está certo, o erro exato, o próximo passo), escada de pistas e registro de "usou dica"
+- Catálogo de erros (`lib/conteudo/erros.ts`, com os códigos da seção 4) usado no feedback, nos distratores do Parsons e no `erro_tipo` das tentativas
+
 Aceite: testes unitários dos corretores de cada tipo; Playwright completa a lição de referência acertando e errando.
 
 ---
@@ -75,6 +82,12 @@ Entregas:
 - Detector do erro das aspas: se a consulta tiver nome de coluna entre aspas simples, o feedback diz isso pelo nome
 - Rota `/laboratorio` com editor livre e painel de schema clicável
 
+Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seção 5):
+- Antes de começar, decidir entre manter o `sql.js` com verificações próprias ou trocar pelo PGlite (PostgreSQL no navegador, recomendado), porque o SQLite aceita coisas que o PostgreSQL do curso rejeita
+- Se ficar o `sql.js`: tabelas `STRICT`, aspas duplas como texto desligadas ou detectadas, e avisos para coluna solta no GROUP BY, `==`, `IS NOT valor` e apelido no HAVING
+- "Ver passo a passo": a tabela intermediária de cada cláusula, na ordem lógica (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY)
+- Mensagens de erro do banco reescritas para iniciante, com o código do catálogo de erros
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---
@@ -86,6 +99,8 @@ Entregas:
 - Ao terminar uma lição, os itens dela viram cartas
 - Tela **Revisar** (DESIGN.md 6.6): fila do dia intercalada por disciplina, botões Errei/Difícil/Bom/Fácil, resumo final
 - O passo "Aquecimento" da sessão de Hoje usa essa fila (máx. 12 cartas)
+
+Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seção 6): retenção desejada de 0,90; pista usada vale Difícil e solução mostrada vale Errei; intercalação dirigida dos pares que se confundem (WHERE × HAVING, COUNT(*) × COUNT(coluna), INNER × LEFT JOIN).
 
 Aceite: testes que simulam 30 dias de revisão e checam que os intervalos crescem com acertos e encolhem com erros.
 
@@ -113,6 +128,8 @@ Entregas:
 - Resposta do tutor validada por Zod (o JSON de saída do prompt); falha de validação mostra mensagem clara, nunca quebra a tela
 - Limite de uso local (ex.: 40 chamadas/dia) configurável, para controlar custo
 
+Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seção 7): o tutor recebe a solução e o critério do item, segue a escada de pistas um degrau por vez e devolve no JSON o degrau usado.
+
 Aceite: chave nunca aparece no bundle do cliente (checar com busca no build); teste com tutor simulado (mock).
 
 ---
@@ -124,6 +141,8 @@ Entregas:
 - Os 6 estados de domínio (bloqueado, disponível, apresentado, praticado, dominado, retido) calculados pelas regras do blueprint seção 4.2
 - Animação da corrente quando um conceito passa a "praticado" (respeitando reduced motion)
 - Painel do chip: lógica em uma frase, estado, último acerto, "Estudar agora"
+
+Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, decisão 16): avaliar estimar o domínio pelo histórico de tentativas (knowledge tracing) no lugar da regra fixa "3 acertos em 2 dias".
 
 Aceite: com 40 conceitos de BD a trilha continua fluida no celular; acessível por teclado (cada chip é focável e anunciado).
 
@@ -147,6 +166,8 @@ Entregas:
 - Modo prova: contador de dias até cada AP, sessão focada nas disciplinas com AP próxima
 - Modo Certo/Errado cronometrado (20 itens) com estatística por assunto
 - Passada completa de acessibilidade e desempenho (Lighthouse)
+
+Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seções 8 e 9): no modo C/E, a confiança antes da resposta e a nota no estilo Cebraspe (+1, −1, 0, conforme o edital); na tela Hoje, uma intenção de implementação opcional ("quando e onde vou estudar").
 
 ---
 

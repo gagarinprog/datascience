@@ -10,6 +10,7 @@ Documentos de referência (leia antes de mexer na área correspondente):
 - `docs/01_MAPA_DAS_DISCIPLINAS.md` — conteúdo do curso, conceitos atômicos, pegadinhas, missões
 - `docs/02_BLUEPRINT_PLATAFORMA.md` — pedagogia, ciclo diário, modelo de domínio, schema SQL, prompt do tutor
 - `docs/03_REFERENCIAS_GITHUB_E_APPS.md` — referências
+- `docs/04_FUNDAMENTOS_DIDATICOS.md` — base científica das decisões de ensino, catálogo de erros de SQL, diferenças SQLite × PostgreSQL
 - `docs/DESIGN.md` — identidade visual, tokens, componentes, telas
 - `docs/ROADMAP.md` — fases, critérios de aceite e o status de cada uma
 
@@ -51,7 +52,7 @@ docs/                   documentos de referência
 
 ## Regras de conteúdo (pedagogia)
 
-1. Toda lição segue: **desafio → conceito → exemplo resolvido → prática → explicar em 3 linhas**.
+1. Toda lição segue: **desafio → conceito → exemplo resolvido → prática → explicar em 3 linhas**. O desafio é uma pré-pergunta de um item sobre o conceito-alvo (doc 04, seção 2).
 2. Um conceito por lição; 3 a 7 minutos.
 3. Exemplos de SQL, pandas e estatística usam **sempre** o schema da Apostila Viva:
    `usuarios(id, nome, email, criado_em)`, `disciplinas(id, nome, banca)`,
@@ -61,6 +62,9 @@ docs/                   documentos de referência
 5. **Lei seca nunca é inventada nem resumida.** Se um item precisar de texto legal, deixe `TODO: colar texto oficial` e avise.
 6. Itens Certo/Errado sempre com justificativa.
 7. Exercício de código corrige por **resultado** (conjunto de linhas no SQL, testes no Python), nunca por comparação de texto.
+8. Exemplo resolvido com **subobjetivos rotulados** e uma autoexplicação de múltipla escolha (doc 04, seção 2).
+9. Feedback de erro em três partes: o que está certo, o erro exato e o próximo passo. Pistas em degraus; a solução só depois de duas tentativas (doc 04, seção 3).
+10. Erros comuns vêm do catálogo do doc 04 (seção 4) e viram itens "ache o erro", distratores e `erro_tipo`.
 
 ## Regras do tutor (Claude dentro do app)
 
