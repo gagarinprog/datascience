@@ -1,0 +1,11 @@
+pnpm-lock.yaml
+.next
+.claude
+playwright-report
+test-results
+blob-report
+
+# Documentos aprovados: o Prettier não reformata.
+docs
+CLAUDE.md
+AGENTS.md

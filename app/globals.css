@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+/*
+ * Tokens do docs/DESIGN.md.
+ *
+ * O Tailwind só gera utilitários para variáveis com o prefixo do namespace,
+ * então o token --fundo do DESIGN vira --color-fundo (bg-fundo, text-fundo...).
+ * "static" emite todas as variáveis, mesmo as que nenhuma classe usa ainda.
+ *
+ * Regra: este é o único arquivo com valores de cor. Cor nova só se for
+ * derivada dos tokens (color-mix), nunca um hex novo. Os testes conferem.
+ */
+@theme static {
+  /* Sem a paleta padrão do Tailwind: só existem as cores do DESIGN. */
+  --color-*: initial;
+
+  /* 2. Base */
+  --color-fundo: #0d1430;
+  --color-placa: #151e42;
+  --color-placa-alta: #1d2a5a;
+  --color-trilha-apagada: #2a3870;
+  --color-texto: #e9edff;
+  --color-texto-2: #8d97c4;
+  --color-corrente: #38e1ff;
+  --color-sobre-corrente: #04121a;
+  --color-acerto: #3de0a0;
+  --color-erro: #ff6b81;
+  --color-aviso: #ffd166;
+
+  /* 2. Sinal por disciplina: a cor carrega informação, não é decoração. */
+  --color-sinal-alg2: #38e1ff;
+  --color-sinal-bd: #ffb547;
+  --color-sinal-ed: #ff6fb5;
+  --color-sinal-gaal: #9d8cff;
+  --color-sinal-poo: #c9f27a;
+  --color-sinal-icc: #7aa8ff;
+  --color-sinal-est: #ff9e7a;
+
+  /* Derivadas: a base escura do botão tátil (DESIGN 4). */
+  --color-corrente-base: color-mix(in oklab, var(--color-corrente) 52%, var(--color-fundo));
+  --color-erro-base: color-mix(in oklab, var(--color-erro) 52%, var(--color-fundo));
+
+  /* 4. Raio por hierarquia */
+  --radius-*: initial;
+  --radius-painel: 24px;
+  --radius-cartao: 16px;
+  --radius-botao: 14px;
+  --radius-chip: 10px;
+
+  /* 4. Sem sombras cinzas genéricas: profundidade vem das superfícies. */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+
+  /* 3. Tipografia: Sora 400, 600 e 700. */
+  --font-*: initial;
+  --font-weight-*: initial;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* 3. Escala (mobile; o desktop ajusta logo abaixo). */
+  --text-*: initial;
+  --text-destaque: 2.5rem; /* 40 px: sequência, XP */
+  --text-destaque--line-height: 1;
+  --text-destaque--font-weight: 700;
+  --text-titulo: 1.625rem; /* 26 px: título de tela */
+  --text-titulo--line-height: 1.15;
+  --text-titulo--font-weight: 700;
+  --text-titulo-cartao: 1.25rem; /* 20 px */
+  --text-titulo-cartao--line-height: 1.25;
+  --text-titulo-cartao--font-weight: 600;
+  --text-corpo: 1.0625rem; /* 17 px: corpo da lição */
+  --text-corpo--line-height: 1.55;
+  --text-secundario: 0.875rem; /* 14 px: legendas */
+  --text-secundario--line-height: 1.45;
+  --text-codigo: 0.9375rem; /* 15 px: só código */
+  --text-codigo--line-height: 1.6;
+}
+
+/* Fontes do next/font (variáveis definidas no <html> pelo layout). */
+@theme inline {
+  --font-sans: var(--font-sora);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* 3. Escala no desktop. */
+@media (width >= 64rem) {
+  :root {
+    --text-destaque: 3rem; /* 48 px */
+    --text-titulo: 2rem; /* 32 px */
+    --text-titulo-cartao: 1.375rem; /* 22 px */
+    --text-corpo: 1.125rem; /* 18 px */
+    --text-secundario: 0.9375rem; /* 15 px */
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body {
+    background-color: var(--color-fundo);
+  }
+
+  body {
+    color: var(--color-texto);
+    font-size: var(--text-corpo);
+    line-height: var(--text-corpo--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-size: var(--text-codigo);
+    line-height: var(--text-codigo--line-height);
+  }
+
+  /* 8. Foco visível: anel --corrente de 2 px. */
+  :focus-visible {
+    outline: 2px solid var(--color-corrente);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-corrente) 35%, transparent);
+    color: var(--color-texto);
+  }
+}
+
+/* 5. Com prefers-reduced-motion, todo movimento vira mudança instantânea. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Sinal: define a cor de disciplina (--sinal) para o elemento e seus filhos.
+ * Os componentes usam border-(--sinal), bg-(--sinal), text-(--sinal).
+ */
+@utility sinal-corrente {
+  --sinal: var(--color-corrente);
+}
+@utility sinal-alg2 {
+  --sinal: var(--color-sinal-alg2);
+}
+@utility sinal-bd {
+  --sinal: var(--color-sinal-bd);
+}
+@utility sinal-ed {
+  --sinal: var(--color-sinal-ed);
+}
+@utility sinal-gaal {
+  --sinal: var(--color-sinal-gaal);
+}
+@utility sinal-poo {
+  --sinal: var(--color-sinal-poo);
+}
+@utility sinal-icc {
+  --sinal: var(--color-sinal-icc);
+}
+@utility sinal-est {
+  --sinal: var(--color-sinal-est);
+}
+
+/* 2. Brilho de elemento aceso: contorno de 1 px + halo de opacidade baixa. */
+@utility brilho {
+  box-shadow:
+    0 0 0 1px var(--sinal),
+    0 0 18px -4px color-mix(in oklab, var(--sinal) 60%, transparent);
+}
+
+/* Retido: brilho com anel duplo (o vão tem a cor do fundo da trilha). */
+@utility brilho-retido {
+  box-shadow:
+    0 0 0 1px var(--sinal),
+    0 0 0 4px var(--color-fundo),
+    0 0 0 5px var(--sinal),
+    0 0 22px -2px color-mix(in oklab, var(--sinal) 60%, transparent);
+}
