@@ -12,7 +12,10 @@ test.describe("tela Hoje", () => {
 
     await expect(page.getByRole("heading", { level: 1, name: "Domingo, 11 out" })).toBeVisible();
     await expect(page.getByText("12 dias")).toBeVisible();
-    await expect(page.getByRole("progressbar", { name: "Meta da semana" })).toBeVisible();
+    await expect(page.getByRole("progressbar", { name: "Meta da semana" })).toHaveAttribute(
+      "aria-valuetext",
+      "6 de 7 dias",
+    );
     await expect(page.getByRole("heading", { level: 2, name: "Missão de hoje" })).toBeVisible();
     await expect(page.getByText("SQL · GROUP BY e HAVING")).toBeVisible();
     await expect(page.getByText("No fim, você vai saber filtrar grupos com HAVING.")).toBeVisible();
@@ -20,13 +23,13 @@ test.describe("tela Hoje", () => {
     await expect(page.getByText("AP de Banco de Dados em 15 dias")).toBeVisible();
   });
 
-  test("Começar sessão abre a lição", async ({ page }) => {
+  test("Começar sessão abre o desafio da lição", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("link", { name: "Começar sessão" }).click();
 
     await expect(page).toHaveURL(/\/licao\/bd-group-by-having$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "A lição ainda está sendo montada",
+      "A consulta abaixo lista as disciplinas com mais de 5 questões difíceis.",
     );
   });
 
