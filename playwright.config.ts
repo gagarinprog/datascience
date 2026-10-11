@@ -11,6 +11,7 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORTA}`,
     locale: "pt-BR",
+    timezoneId: "America/Sao_Paulo",
     trace: "on-first-retry",
   },
   // Mobile primeiro (390 px), depois desktop (1280 px): todo teste roda nos dois.

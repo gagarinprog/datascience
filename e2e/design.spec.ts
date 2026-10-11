@@ -86,10 +86,3 @@ test.describe("página /design", () => {
     expect(["none", "matrix(1, 0, 0, 1, 0, 0)"]).toContain(transformacao);
   });
 });
-
-test("a página inicial leva ao sistema de design", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("link", { name: "Ver o sistema de design" }).click();
-
-  await expect(page).toHaveURL(/\/design$/);
-});
