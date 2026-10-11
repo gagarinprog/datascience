@@ -1,0 +1,52 @@
+# Roda as mesmas verificações do fim de cada fase a cada envio para a main
+# e a cada pull request (inclusive os abertos por sessões do Claude na nuvem).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Lint, tipos e testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # Mesma versão do campo packageManager do package.json.
+      - name: Instalar o pnpm
+        run: npm install -g pnpm@12.11.2
+
+      - name: Instalar as dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Tipos
+        run: pnpm typecheck
+
+      - name: Formatação
+        run: pnpm format:check
+
+      - name: Testes de unidade
+        run: pnpm test
+
+      - name: Instalar o Chromium do Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Testes de fluxo (390 e 1280 px)
+        run: pnpm test:e2e

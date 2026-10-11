@@ -1,5 +1,7 @@
 # Domínio
 
+[![CI](https://github.com/gagarinprog/datascience/actions/workflows/ci.yml/badge.svg)](https://github.com/gagarinprog/datascience/actions/workflows/ci.yml)
+
 Plataforma pessoal de estudo de Ciência de Dados: lições curtas, revisão espaçada (FSRS), laboratórios de SQL e Python que corrigem pelo resultado e o Claude como tutor socrático.
 
 ## Rodar
