@@ -5,7 +5,7 @@
 
 ---
 
-## Fase 0 — Fundação e sistema de design `[ ]`
+## Fase 0 — Fundação e sistema de design `[x]`
 
 **Objetivo:** projeto criado, tokens no lugar e uma página `/design` que mostra todos os componentes base.
 
@@ -22,6 +22,13 @@ Aceite:
 - `pnpm lint`, `pnpm typecheck`, `pnpm test` passam
 - Screenshot de `/design` em 390 px e 1280 px conferido contra o DESIGN.md
 - Nenhum emoji, nenhuma cor fora dos tokens
+
+Registro (11/10/2026):
+- Feito com Next.js 16.4 (Turbopack, Cache Components), React 19.3, Tailwind 4.3, pnpm 12, Vitest 5 e Playwright 1.64.
+- `pnpm test`: 41 testes, incluindo os de proteção (tokens iguais ao DESIGN.md, nenhum hex fora do `globals.css`, nenhum emoji, nenhuma caixa alta).
+- `pnpm test:e2e`: 14 testes em 390 e 1280 px (sem rolagem horizontal, axe WCAG AA com contraste, alvos de 44 px, foco de 2 px, reduzir movimento).
+- Capturas em `docs/capturas/` (`pnpm capturas` regera). Decisões de design na seção 9 do `docs/DESIGN.md`.
+- Para a Fase 2: o exemplo do DESIGN 6.3 usa `respostas.disciplina_id`, coluna que não existe no schema da Apostila Viva (`disciplina_id` está em `questoes`). A lição de GROUP BY precisa agrupar `questoes` por `disciplina_id` ou esperar o JOIN, que vem depois na trilha.
 
 ---
 

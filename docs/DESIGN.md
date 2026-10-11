@@ -194,3 +194,16 @@ Fila FSRS do dia, intercalada entre disciplinas; contador "faltam 7"; ao fim, re
 - [ ] `prefers-reduced-motion` respeitado
 - [ ] Nenhum emoji, nenhum rótulo em caixa alta
 - [ ] Cor de disciplina só onde carrega informação
+
+## 9. Decisões registradas
+
+Tomadas na Fase 0 para completar o que este documento não definia. Valem até serem mudadas aqui.
+
+- **Nomes no código.** O token `--fundo` vira `--color-fundo` no `app/globals.css` (o Tailwind exige o prefixo para gerar `bg-fundo`, `text-fundo` etc.). A página `/design` mostra os valores lidos do próprio CSS.
+- **Cor nova só derivada, nunca hex novo.** A base escura do botão tátil mistura o token com o fundo: `--corrente-base` e `--erro-base` (`color-mix`, 52% do token). Os testes barram qualquer hex fora da tabela da seção 2.
+- **Botões.** Secundário: superfície `--placa-alta`, borda e base `--trilha-apagada`, texto `--texto`. Perigo: `--erro` com texto `--sobre-corrente`. Desabilitado: `--placa-alta` com texto `--texto-2`, sem base.
+- **"Cinza" do bloqueado** = borda `--trilha-apagada` e texto `--texto-2` (não existe token cinza).
+- **Estados do conceito.** Os 6 do blueprint (seção 4.2), sempre na cor da disciplina, não em azul e verde. O marcador muda de forma a cada estado: □ bloqueado, ▣ disponível, ◪ apresentado, ■ praticado, ◉ dominado (com brilho) e **retido = dominado com anel duplo**.
+- **Chip de disciplina.** Borda, texto e pad na cor da disciplina, com fundo transparente: com fundo tingido, o texto de GAAL cairia abaixo de AA sobre `--placa-alta`. No seletor, o escolhido acende e o pad fica cheio.
+- **Escala de texto do desktop** a partir de 1024 px de largura.
+- **ALG II usa o mesmo ciano de `--corrente`** (`#38E1FF`). Mantido por enquanto; para separar, basta trocar `--sinal-alg2`.
