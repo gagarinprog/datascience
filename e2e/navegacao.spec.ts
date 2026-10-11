@@ -14,6 +14,12 @@ function linkDaNavegacao(page: Page, nome: string) {
   return page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: nome });
 }
 
+/** Título visível e dados do navegador carregados: só então o teclado entra em cena. */
+async function telaPronta(page: Page) {
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+}
+
 /** Aperta Tab até o link da navegação ficar com o foco. */
 async function focarComTab(page: Page, nome: string) {
   const alvo = linkDaNavegacao(page, nome);
@@ -32,7 +38,7 @@ test.describe("navegação", () => {
   test("dá para ir a cada tela só com o teclado", async ({ page }) => {
     for (const destino of DESTINOS) {
       await page.goto(destino.caminho === "/" ? "/perfil" : "/");
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await telaPronta(page);
 
       await focarComTab(page, destino.nome);
       await page.keyboard.press("Enter");
@@ -45,6 +51,7 @@ test.describe("navegação", () => {
 
   test("o primeiro Tab mostra o atalho que pula a navegação", async ({ page }) => {
     await page.goto("/trilha");
+    await telaPronta(page);
     await page.keyboard.press("Tab");
 
     const atalho = page.getByRole("link", { name: "Pular para o conteúdo" });

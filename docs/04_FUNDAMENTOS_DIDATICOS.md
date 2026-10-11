@@ -212,6 +212,19 @@ Para escrever lições, nesta ordem:
 
 ---
 
+## 11. Movimento e sensação de jogo (revisão de experiência, 11/10/2026)
+
+O que a pesquisa diz sobre deixar o app "vivo" sem atrapalhar o estudo:
+
+- **"Suco" na medida.** "Suco" (juiciness) é a reação visual a mais para cada ação do jogador. Em estudos controlados, deixou todos os jogos testados mais atraentes, mas só mudou a sensação de competência em situações específicas [Hicks et al., 2019]. Num experimento com quatro níveis de reação (nenhum, médio, alto e extremo), os níveis médio e alto superaram tanto o nenhum quanto o extremo em experiência, motivação e tempo de jogo [Kao, 2020].
+- **Reação ligada ao acerto, não enfeite.** Num estudo posterior, a reação que dependia do sucesso do jogador aumentou a motivação; a que só amplificava tudo reduziu [Kao et al., 2024, versão aberta]. No DOMÍNIO, o movimento acompanha a resposta: o painel sobe, o ícone acende e o progresso enche.
+- **Nada decorativo dentro do conteúdo.** Detalhes interessantes mas desnecessários atrapalham a aprendizagem [Rey, 2012]. Por isso, nenhuma animação de enfeite dentro da lição.
+- **Progresso visível perto da meta motiva.** Quanto mais perto da meta, maior o esforço para chegar (efeito do gradiente da meta) [Kivetz et al., 2006]. É o motivo da meta da semana com os dias e do "6 de 7" bem à vista.
+- **Vibração, para depois.** Vibrações curtas como reação melhoraram a experiência em jogos [Singhal & Schneider, 2021]. Fica como opção futura, desligável, só no Android (o navegador do iPhone não vibra).
+- **Durações.** Seguem o guia de transições do Next.js: saída rápida (150 ms), entrada mais suave (210 ms) e deslocamento curto (até 400 ms). O detalhe está no DESIGN, seção 5.1.
+
+---
+
 ## Referências
 
 Adesope, O. O., Trevisan, D. A., & Sundararajan, N. (2017). Rethinking the use of tests: A meta-analysis of practice testing. *Review of Educational Research, 87*(3), 659–701. https://doi.org/10.3102/0034654316689306
@@ -250,13 +263,21 @@ Gollwitzer, P. M., & Sheeran, P. (2006). Implementation intentions and goal achi
 
 Hattie, J., & Timperley, H. (2007). The power of feedback. *Review of Educational Research, 77*(1), 81–112. https://doi.org/10.3102/003465430298487
 
+Hicks, K., Gerling, K., Dickinson, P., & Vanden Abeele, V. (2019). Juicy game design: Understanding the impact of visual embellishments on player experience. In *Proceedings of the Annual Symposium on Computer-Human Interaction in Play (CHI PLAY '19)* (pp. 185–197). ACM. https://doi.org/10.1145/3311350.3347171
+
 Kalyuga, S., Ayres, P., Chandler, P., & Sweller, J. (2003). The expertise reversal effect. *Educational Psychologist, 38*(1), 23–31. https://doi.org/10.1207/S15326985EP3801_4
+
+Kao, D. (2020). The effects of juiciness in an action RPG. *Entertainment Computing, 34*, 100359. https://doi.org/10.1016/j.entcom.2020.100359
+
+Kao, D., Ballou, N., Breitsohl, J., Gerling, K., & Deterding, S. (2024). *How does juicy game feedback motivate? Testing curiosity, competence, and effectance* [versão aberta]. PsyArXiv. https://doi.org/10.31234/osf.io/f83dp
 
 Kestin, G., Miller, K., Klales, A., Milbourne, T., & Ponti, G. (2025). AI tutoring outperforms in-class active learning: An RCT introducing a novel research-based design in an authentic educational setting. *Scientific Reports, 15*, 17458. https://doi.org/10.1038/s41598-025-97652-6
 
 Knouse, L. E., Rawson, K. A., Vaughn, K. E., & Dunlosky, J. (2016). Does testing improve learning for college students with attention-deficit/hyperactivity disorder? *Clinical Psychological Science, 4*(1), 136–143. https://doi.org/10.1177/2167702614565175
 
 Knouse, L. E., Rawson, K. A., & Dunlosky, J. (2020). How much do college students with ADHD benefit from retrieval practice when learning key-term definitions? *Learning and Instruction, 68*, 101330. https://doi.org/10.1016/j.learninstruc.2020.101330
+
+Kivetz, R., Urminsky, O., & Zheng, Y. (2006). The goal-gradient hypothesis resurrected: Purchase acceleration, illusionary goal progress, and customer retention. *Journal of Marketing Research, 43*(1), 39–58. https://doi.org/10.1509/jmkr.43.1.39
 
 Kulik, C.-L. C., Kulik, J. A., & Bangert-Drowns, R. L. (1990). Effectiveness of mastery learning programs: A meta-analysis. *Review of Educational Research, 60*(2), 265–299. https://doi.org/10.3102/00346543060002265
 
@@ -272,6 +293,8 @@ Minear, M., Coane, J. H., Cooney, S., Boland, S., & Serrano, A. (2023). Is pract
 
 Qian, Y., & Lehman, J. (2017). Students' misconceptions and other difficulties in introductory programming: A literature review. *ACM Transactions on Computing Education, 18*(1), 1–24. https://doi.org/10.1145/3077618
 
+Rey, G. D. (2012). A review of research and a meta-analysis of the seductive detail effect. *Educational Research Review, 7*(3), 216–237. https://doi.org/10.1016/j.edurev.2012.05.003
+
 Roediger, H. L., & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. *Psychological Science, 17*(3), 249–255. https://doi.org/10.1111/j.1467-9280.2006.01693.x
 
 Sailer, M., & Homner, L. (2020). The gamification of learning: A meta-analysis. *Educational Psychology Review, 32*(1), 77–112. https://doi.org/10.1007/s10648-019-09498-w
@@ -279,6 +302,8 @@ Sailer, M., & Homner, L. (2020). The gamification of learning: A meta-analysis. 
 Sentance, S., Waite, J., & Kallia, M. (2019). Teaching computer programming with PRIMM: A sociocultural perspective. *Computer Science Education, 29*(2–3), 136–176. https://doi.org/10.1080/08993408.2019.1608781
 
 Shute, V. J. (2008). Focus on formative feedback. *Review of Educational Research, 78*(1), 153–189. https://doi.org/10.3102/0034654307313795
+
+Singhal, T., & Schneider, O. (2021). Juicy haptic design: Vibrotactile embellishments can improve player experience in games. In *Proceedings of the 2021 CHI Conference on Human Factors in Computing Systems* (pp. 1–11). ACM. https://doi.org/10.1145/3411764.3445463
 
 Sinha, T., & Kapur, M. (2021). When problem solving followed by instruction works: Evidence for productive failure. *Review of Educational Research, 91*(5), 761–798. https://doi.org/10.3102/00346543211019105
 
@@ -292,4 +317,4 @@ Wisniewski, B., Zierer, K., & Hattie, J. (2020). The power of feedback revisited
 
 Ye, J., Su, J., & Cao, Y. (2022). A stochastic shortest path algorithm for optimizing spaced repetition scheduling. In *Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining* (pp. 4381–4390). ACM. https://doi.org/10.1145/3534678.3539081
 
-Documentação técnica consultada: [SQLite: Quirks](https://www.sqlite.org/quirks.html) · [SQLite: expressões](https://www.sqlite.org/lang_expr.html) · [SQLite: tabelas STRICT](https://www.sqlite.org/stricttables.html) · [PGlite](https://pglite.dev/) · [FSRS: o algoritmo](https://github.com/open-spaced-repetition/awesome-fsrs/wiki/The-Algorithm).
+Documentação técnica consultada: guia "View transitions" do Next.js 16.4 (`node_modules/next/dist/docs/01-app/02-guides/view-transitions.md`) · [SQLite: Quirks](https://www.sqlite.org/quirks.html) · [SQLite: expressões](https://www.sqlite.org/lang_expr.html) · [SQLite: tabelas STRICT](https://www.sqlite.org/stricttables.html) · [PGlite](https://pglite.dev/) · [FSRS: o algoritmo](https://github.com/open-spaced-repetition/awesome-fsrs/wiki/The-Algorithm).

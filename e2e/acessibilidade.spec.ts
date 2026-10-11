@@ -12,6 +12,8 @@ for (const rota of ROTAS) {
       await fixarRelogio(page);
       await page.goto(rota);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      // Espera os dados do navegador carregarem: a checagem vale para a tela pronta.
+      await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
     });
 
     test("passa no axe: WCAG A e AA, inclusive contraste", async ({ page }) => {

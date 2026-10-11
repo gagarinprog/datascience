@@ -77,6 +77,22 @@ Só três momentos de movimento, todos respondendo a ação do usuário:
 
 Com `prefers-reduced-motion`: troca tudo por mudança instantânea de estado.
 
+### 5.1 Transições de suporte (revisão de experiência, 11/10/2026)
+
+Além dos três momentos acima, pequenas transições ligam uma tela à outra e respondem ao toque. Regras: só opacidade ou deslocamento pequeno, nada de quique ou elástico, nada que se mexa sozinho. O "suco" vem só do acerto e do progresso, nunca de enfeite no meio do conteúdo (doc 04, seção 11).
+
+| Momento | O que acontece | Duração |
+|---|---|---|
+| Toque em botão, chip ou aba | O elemento afunda (botão tátil desce 4 px; chips e abas encolhem para 95 a 97%) | 75 a 100 ms |
+| Troca de aba | O conteúdo esmaece e o novo aparece; a navegação fica parada | 120 ms sai, 180 ms entra |
+| Entrar na lição / sair dela | O conteúdo anda 48 px para a esquerda (entrar) ou para a direita (sair) | 150 ms sai, 300 ms anda |
+| Conteúdo que acabou de carregar | Sobe 8 px e aparece no lugar do esqueleto | 210 a 300 ms |
+| Indicador da aba | O trecho aceso desliza até a aba tocada | 250 ms |
+| Segmento de progresso | A corrente enche o segmento da esquerda para a direita | 300 ms |
+| Ícone do feedback | Acende (cresce de 60% para 100%) logo depois do painel subir | 200 ms |
+
+Implementação: transições entre telas pela View Transitions API (`<ViewTransition>` do React e `transitionTypes` nos links), CSS em `app/globals.css` (seção 5.1); o resto com Motion e transições de CSS. Tudo desliga com `prefers-reduced-motion`.
+
 ## 6. Telas
 
 ### 6.1 Hoje (tela inicial)
@@ -209,3 +225,6 @@ Tomadas na Fase 0 para completar o que este documento não definia. Valem até s
 - **ALG II usa o mesmo ciano de `--corrente`** (`#38E1FF`). Mantido por enquanto; para separar, basta trocar `--sinal-alg2`.
 - **Navegação (Fase 1).** No celular, barra inferior com "Lab" no lugar de "Laboratório" (o nome inteiro fica para leitores de tela). A partir de 1024 px, trilho lateral de 112 px. O item atual acende em `--corrente`, com um trecho de trilha aceso, texto em 600 e `aria-current`.
 - **Esqueleto de carregamento parado**, sem pulsar: o movimento só responde a ação (seção 5).
+- **Meta da semana com os dias (revisão de experiência).** Segunda a domingo, com a inicial embaixo: dia estudado cheio em `--corrente`, hoje com contorno enquanto está aberto. O ícone da sequência (raio do Lucide) acende só quando hoje já teve estudo.
+- **Código sem ligaduras.** A JetBrains Mono mostraria `>=` como `≥` e `!=` como `≠`; no DOMÍNIO, código aparece com os caracteres que se digitam (`font-variant-ligatures: none`).
+- **Item Certo/Errado.** Dois botões grandes (64 px de altura) lado a lado; depois de verificar, o gabarito ganha borda e ícone de acerto, e a escolha errada, de erro. No erro de um item C/E não existe "Tentar de novo" (só há duas opções): o painel mostra o gabarito, a justificativa e Continuar.

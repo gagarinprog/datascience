@@ -171,6 +171,18 @@ Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seções 8 e 9): no modo C/E, a c
 
 ---
 
+## Revisão de experiência (11/10/2026, entre as fases 1 e 2)
+
+Revisão feita do ponto de vista de quem usa, com as capturas antes e depois. O que mudou:
+- **"Começar sessão" deixou de cair em "em construção":** abre o desafio da lição, jogável (escolher, Verificar, feedback, concluir), e a tentativa fica guardada com o `erro_tipo`. Isso adiantou duas peças da Fase 2: `ItemCertoErrado` e o formato do player; o player completo continua na Fase 2.
+- **Movimento:** transições entre telas pela View Transitions API (aba esmaece; lição entra pela direita e sai pela esquerda), indicador da aba que desliza, toque que afunda, segmento de progresso que enche, ícone do feedback que acende. Tudo desliga com reduzir movimento (DESIGN 5.1).
+- **Hoje:** meta da semana com os dias de segunda a domingo e o de hoje marcado; a sequência e a semana saem dos dias estudados, e o ícone da sequência acende quando hoje já teve estudo.
+- **Abas com conteúdo:** Trilha mostra uma prévia linear de Banco de Dados (a Trilha de Circuito completa continua na Fase 7); Laboratório mostra as tabelas da Apostila Viva; Revisar conta as cartas; Eu resume sequência, semana e domínio.
+- **Código sem ligaduras** (`>=` não vira `≥`) e bloco de código focável quando rola.
+- Testes: 91 de unidade e 76 de fluxo em 390 e 1280 px (inclui o desafio jogado nos dois caminhos, o axe com o painel aberto e as transições disparando), mais 16 capturas.
+
+---
+
 ## Regra de conteúdo para todas as fases
 
 Cada nova lição entra em `content/<disciplina>/` e precisa: passar no schema, seguir a ordem desafio → conceito → exemplo → prática → explique, usar o schema da Apostila Viva nos exemplos, e ter pelo menos um item C/E com justificativa.
