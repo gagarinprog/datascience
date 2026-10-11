@@ -75,6 +75,7 @@ docs/                   documentos de referência
 - Antes de cada fase: modo de planejamento, plano curto, espera aprovação.
 - Ao terminar uma fase: rodar `pnpm lint`, `pnpm typecheck`, `pnpm test`; abrir o app; tirar screenshot das telas tocadas e comparar com `docs/DESIGN.md`; atualizar `docs/ROADMAP.md`.
 - Commits pequenos, em português, no imperativo ("Adiciona player de lição").
+- O código vive também no GitHub (`gagarinprog/datascience`, branch `main`). Antes de começar, `git pull` (pode ter mudança feita na nuvem); depois dos commits, `git push`. O CI (`.github/workflows/ci.yml`) roda lint, tipos, formatação e todos os testes a cada envio e pull request.
 - Acessibilidade obrigatória: foco visível, contraste AA, `prefers-reduced-motion` respeitado, alvos de toque de 44 px.
 - Mobile primeiro (390 px), depois desktop.
 - Nada de dependência nova sem dizer por quê.
@@ -88,4 +89,5 @@ pnpm lint
 pnpm typecheck
 pnpm test         # vitest
 pnpm test:e2e     # playwright
+pnpm capturas     # capturas das telas em docs/capturas
 ```
