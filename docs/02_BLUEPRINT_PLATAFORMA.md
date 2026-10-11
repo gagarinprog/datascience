@@ -54,6 +54,8 @@ Em três movimentos, nesta ordem:
 | 11 | **Explicar em 3 linhas** | Fechamento com explicação própria, que o Claude avalia | Técnica de Feynman |
 | 12 | **Hábito sem punição** | Sequência diária com "congelamento", meta mínima de 10 minutos que conta como dia cumprido | Duolingo, Mimo |
 
+> Fontes científicas, ajustes e catálogo de erros: `docs/04_FUNDAMENTOS_DIDATICOS.md`.
+
 ---
 
 ## 3. O ciclo diário
