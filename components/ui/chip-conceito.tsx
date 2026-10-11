@@ -1,26 +1,6 @@
 import { CLASSE_SINAL, type Disciplina } from "@/lib/disciplinas";
+import { NOME_ESTADO, type EstadoConceito } from "@/lib/dominio";
 import { cn } from "@/lib/utils";
-
-/** Estados de domínio de um conceito (blueprint 4.2), do mais apagado ao mais aceso. */
-export const ESTADOS_CONCEITO = [
-  "bloqueado",
-  "disponivel",
-  "apresentado",
-  "praticado",
-  "dominado",
-  "retido",
-] as const;
-
-export type EstadoConceito = (typeof ESTADOS_CONCEITO)[number];
-
-export const NOME_ESTADO: Record<EstadoConceito, string> = {
-  bloqueado: "Bloqueado",
-  disponivel: "Disponível",
-  apresentado: "Apresentado",
-  praticado: "Praticado",
-  dominado: "Dominado",
-  retido: "Retido",
-};
 
 const ESTILO_ESTADO: Record<EstadoConceito, string> = {
   bloqueado: "border-trilha-apagada bg-fundo text-texto-2",

@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { ChipConceito, ESTADOS_CONCEITO, NOME_ESTADO } from "./chip-conceito";
+import { ESTADOS_CONCEITO, NOME_ESTADO } from "@/lib/dominio";
+
+import { ChipConceito } from "./chip-conceito";
 
 describe("ChipConceito", () => {
   it.each(ESTADOS_CONCEITO)("anuncia o estado %s junto com o nome", (estado) => {

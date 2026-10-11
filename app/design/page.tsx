@@ -4,16 +4,12 @@ import type { ReactNode } from "react";
 import { BarraProgressoSegmentada } from "@/components/ui/barra-progresso-segmentada";
 import { BotaoTatil } from "@/components/ui/botao-tatil";
 import { Chip } from "@/components/ui/chip";
-import {
-  ChipConceito,
-  ESTADOS_CONCEITO,
-  NOME_ESTADO,
-  type EstadoConceito,
-} from "@/components/ui/chip-conceito";
+import { ChipConceito } from "@/components/ui/chip-conceito";
 import { Painel } from "@/components/ui/painel";
 import { PainelFeedback } from "@/components/ui/painel-feedback";
 import { lerTokensDeCor, type TokenDeCor } from "@/lib/design/tokens";
 import { DISCIPLINAS, NOME_DISCIPLINA, type Disciplina } from "@/lib/disciplinas";
+import { ESTADOS_CONCEITO, NOME_ESTADO, type EstadoConceito } from "@/lib/dominio";
 import { cn } from "@/lib/utils";
 
 import { DemoFeedback, DemoSeletorDisciplina } from "./demos";
