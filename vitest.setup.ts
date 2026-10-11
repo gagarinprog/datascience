@@ -7,7 +7,8 @@ afterEach(() => {
 });
 
 // O jsdom não implementa matchMedia; o Motion consulta prefers-reduced-motion por ele.
-if (!window.matchMedia) {
+// Arquivos marcados com "@vitest-environment node" rodam sem window.
+if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = (query: string): MediaQueryList => ({
     matches: false,
     media: query,

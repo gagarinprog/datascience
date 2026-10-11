@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Guardas do DESIGN.md (checklist da seção 8) que dá para checar no código:
  * nenhuma cor fora dos tokens, nenhum emoji, nenhum rótulo em caixa alta.
