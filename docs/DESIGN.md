@@ -207,3 +207,5 @@ Tomadas na Fase 0 para completar o que este documento não definia. Valem até s
 - **Chip de disciplina.** Borda, texto e pad na cor da disciplina, com fundo transparente: com fundo tingido, o texto de GAAL cairia abaixo de AA sobre `--placa-alta`. No seletor, o escolhido acende e o pad fica cheio.
 - **Escala de texto do desktop** a partir de 1024 px de largura.
 - **ALG II usa o mesmo ciano de `--corrente`** (`#38E1FF`). Mantido por enquanto; para separar, basta trocar `--sinal-alg2`.
+- **Navegação (Fase 1).** No celular, barra inferior com "Lab" no lugar de "Laboratório" (o nome inteiro fica para leitores de tela). A partir de 1024 px, trilho lateral de 112 px. O item atual acende em `--corrente`, com um trecho de trilha aceso, texto em 600 e `aria-current`.
+- **Esqueleto de carregamento parado**, sem pulsar: o movimento só responde a ação (seção 5).

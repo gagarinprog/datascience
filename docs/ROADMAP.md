@@ -32,7 +32,7 @@ Registro (11/10/2026):
 
 ---
 
-## Fase 1 — Casca do app e tela Hoje `[ ]`
+## Fase 1 — Casca do app e tela Hoje `[x]`
 
 Entregas:
 - Navegação: barra inferior no mobile (Hoje, Trilha, Revisar, Laboratório, Eu); trilho lateral no desktop
@@ -41,6 +41,14 @@ Entregas:
 - Rotas vazias, com estado vazio bem escrito, para Trilha, Revisar, Laboratório, Eu
 
 Aceite: navegação funciona por teclado; Playwright abre Hoje e clica em "Começar sessão".
+
+Registro (11/10/2026):
+- Hoje fica em `/`. A navegação vive no grupo `app/(app)`; o `/design` e a lição ficam fora, em tela cheia.
+- `obterRepositorio()` em `lib/repositorio/` entrega a versão local (localStorage, com os dados falsos do DESIGN 6.1). A Fase 5 troca pelo Supabase nesse mesmo ponto.
+- "Começar sessão" leva a `/licao/bd-group-by-having`, página provisória que a Fase 2 substitui. "Só 10 minutos hoje" leva a `/revisar`.
+- A frase de mapa do blueprint (7.1) entrou no cartão da missão.
+- `pnpm test`: 70 testes. `pnpm test:e2e`: 64 testes em 390 e 1280 px (Hoje com relógio fixo, navegação só por teclado, axe, rolagem e alvos de 44 px em todas as telas). O CI no GitHub Actions roda tudo a cada envio para a `main` e a cada pull request.
+- Para depois: decidir quem escolhe a missão do dia (o app, pela semana do blueprint 3.2, ou o chat do projeto). Os dados falsos, inclusive a AP em 26/10, saem quando o progresso for real.
 
 ---
 
