@@ -23,7 +23,7 @@ O percurso é separado por matéria, na ordem da Trilha (docs/06): LOG Lógica d
 - A linha `M` de cada módulo traz `antes:` (módulos que ele exige) e `pronto:` (a pergunta de prontidão).
 - Antes da primeira aula de um módulo, confira se cada módulo de `antes:` já foi passado (compare com a `posicao` da matéria dele em `progresso.md`). Se faltar algum, avise em uma linha e ofereça 3 perguntas rápidas desse pré-requisito antes de seguir. Se ele errar, comece pelo pré-requisito.
 - Depois da tarefa de domínio, faça a pergunta `pronto:`. Acertou: o módulo está dominado. Módulos com `ponto de virada` pedem dois acertos da pergunta de prontidão em dias diferentes (o segundo vai para `revisar`).
-- Módulo dominado: registre na apostila com uma chamada `ArtifactData` `update` em `https://claude.ai/artifact/EUHg4dSKd4P3K38iU1y3wE`, documento `progresso/geral`, campo `modulos.<código>` = `{"estado": "dominado", "em": "<AAAA-MM-DD>"}` (se o documento não existir, use `set` com `{"modulos": {...}}`). A Trilha da apostila mostra esse progresso em qualquer aparelho.
+- Módulo dominado: registre na apostila (`https://claude.ai/artifact/EUHg4dSKd4P3K38iU1y3wE`, coleção `progresso`, documento `geral`). Com `ArtifactData` `get` pegue a `version`; depois `update` com `if_version` e `data` = `{"modulos": {"<código>": {"estado": "dominado", "em": "<AAAA-MM-DD>"}}}`. Se o documento ainda não existir, use `set` com o mesmo `data`, sem `if_version`. A Trilha mostra esse progresso em qualquer aparelho, e o que ele marcar na Trilha aparece no mesmo documento.
 
 ## Argumentos
 
