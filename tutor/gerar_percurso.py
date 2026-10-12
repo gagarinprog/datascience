@@ -87,7 +87,7 @@ def main():
         passo += 1
         linhas.append(f"{passo:04d} {etapa.split()[0]}.PJ {projeto}")
 
-    SAIDA.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+    SAIDA.write_text("\n".join(linhas) + "\n", encoding="utf-8", newline="\n")
     print(f"{passo} passos, {len(ordem)} módulos")
 
 

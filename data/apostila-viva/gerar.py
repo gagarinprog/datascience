@@ -116,7 +116,7 @@ def gerar():
         for linha in dados:
             linhas.append(f"INSERT INTO {tabela} ({colunas}) VALUES ({', '.join(sql(v) for v in linha)});")
     linhas.append("COMMIT;")
-    (PASTA / "seed.sql").write_text("\n".join(linhas) + "\n", encoding="utf-8")
+    (PASTA / "seed.sql").write_text("\n".join(linhas) + "\n", encoding="utf-8", newline="\n")
 
     banco = PASTA / "apostila.db"
     banco.unlink(missing_ok=True)
