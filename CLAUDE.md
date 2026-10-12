@@ -96,3 +96,9 @@ pnpm test         # vitest
 pnpm test:e2e     # playwright
 pnpm capturas     # capturas das telas em docs/capturas
 ```
+
+## Tutor no Claude Code (`/aula`)
+
+- A skill `.claude/skills/aula` dá as aulas do percurso do zero (`tutor/percurso.txt`, 926 passos gerados do doc 05 por `tutor/gerar_percurso.py`) e guarda o estado em `tutor/progresso.md`.
+- SQL de estudo roda no banco da Apostila Viva: `python -I tutor/sql.py "<consulta>"`. O banco (`data/apostila-viva/apostila.db`) é gerado por `data/apostila-viva/gerar.py` e não vai para o git.
+- Mudou a ordem ou o currículo: rode `python -I tutor/gerar_percurso.py` de novo.

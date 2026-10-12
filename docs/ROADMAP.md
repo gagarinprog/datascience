@@ -88,6 +88,8 @@ Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seção 5):
 - "Ver passo a passo": a tabela intermediária de cada cláusula, na ordem lógica (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY)
 - Mensagens de erro do banco reescritas para iniciante, com o código do catálogo de erros
 
+Adiantado (11/10/2026), para o tutor `/aula`: `data/apostila-viva/schema.sql`, `seed.sql` e o gerador `gerar.py` (30 usuários, 6 disciplinas, 120 questões, 1.500 respostas, semente fixa, com NULL e apóstrofo de propósito). O corretor por resultado em linha de comando está em `tutor/sql.py`, com aspas duplas como texto desligadas, como no PostgreSQL.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

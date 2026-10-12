@@ -47,3 +47,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Estudo com o tutor: banco gerado e arquivos de exercício
+/data/apostila-viva/apostila.db
+/estudo/
+__pycache__/
