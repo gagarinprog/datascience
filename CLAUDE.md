@@ -11,6 +11,7 @@ Documentos de referência (leia antes de mexer na área correspondente):
 - `docs/02_BLUEPRINT_PLATAFORMA.md` — pedagogia, ciclo diário, modelo de domínio, schema SQL, prompt do tutor
 - `docs/03_REFERENCIAS_GITHUB_E_APPS.md` — referências
 - `docs/04_FUNDAMENTOS_DIDATICOS.md` — base científica das decisões de ensino, catálogo de erros de SQL, diferenças SQLite × PostgreSQL
+- `docs/05_CURRICULO_CIENCIA_DE_DADOS.md` — currículo completo (16 trilhas, módulos, conceitos, exercícios, critérios de domínio, projetos); o curso da UFMS guia a ordem, o currículo vai além dele
 - `docs/DESIGN.md` — identidade visual, tokens, componentes, telas
 - `docs/ROADMAP.md` — fases, critérios de aceite e o status de cada uma
 
