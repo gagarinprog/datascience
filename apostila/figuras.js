@@ -60,47 +60,41 @@
   const FIG = {};
 
   FIG.LOG = () =>
-    svg(760, 345,
-      oval(70, 150, 100, 36, "início") +
-      seta(120, 150, 150, 150) +
-      para(150, 122, 140, 56, "ler preço\ne pago") +
-      seta(290, 150, 318, 150) +
-      losango(400, 150, 164, 96, "pago ≥ preço?") +
-      linha([[482, 150], [520, 150]]) + texto(500, 138, "sim", "fx-tc") +
-      caixa(520, 125, 210, 50, "troco ← pago − preço", "fx-destaque") +
-      seta(625, 175, 625, 213) +
-      para(550, 213, 150, 46, "mostrar troco") +
-      seta(625, 259, 625, 296) +
-      oval(625, 314, 100, 34, "fim") +
-      seta(400, 198, 400, 213) + texto(416, 205, "não", "fx-te", "start") +
-      para(325, 213, 150, 46, "mostrar\n“falta dinheiro”") +
-      linha([[400, 259], [400, 314], [573, 314]]) +
-      texto(20, 222, "as formas", "fx-tb", "start") +
-      oval(52, 250, 64, 22, "") + texto(96, 250, "início e fim", "fx-t2", "start") +
-      para(20, 270, 64, 22, "") + texto(96, 281, "entrada e saída", "fx-t2", "start") +
-      caixa(20, 300, 64, 22, "") + texto(96, 311, "processamento", "fx-t2", "start") +
-      losango(52, 333, 40, 20, "") + texto(96, 333, "decisão", "fx-t2", "start"),
-      "Fluxograma do troco: ler preço e pago; se pago for maior ou igual ao preço, calcular e mostrar o troco; senão, mostrar falta dinheiro.");
+    svg(760, 430,
+      `<g class="ramo-comum">` + oval(380, 26, 110, 32, "início") + seta(380, 42, 380, 60) +
+      para(300, 62, 160, 44, "ler o valor\ndo carrinho") + seta(380, 106, 380, 116) + `</g>` +
+      losango(380, 160, 190, 84, "carrinho ≥ 100?") +
+      `<g class="ramo-sim">` + linha([[285, 160], [200, 160], [200, 210]]) + texto(242, 148, "sim", "fx-tc") +
+      caixa(130, 212, 140, 42, "frete ← 0", "fx-destaque", "fx-tm") + linha([[200, 254], [200, 290], [268, 290]]) + `</g>` +
+      `<g class="ramo-nao">` + linha([[475, 160], [560, 160], [560, 210]]) + texto(518, 148, "não", "fx-te") +
+      caixa(490, 212, 140, 42, "frete ← 15", "fx-destaque", "fx-tm") + linha([[560, 254], [560, 290], [492, 290]]) + `</g>` +
+      `<g class="ramo-comum">` + caixa(270, 270, 220, 40, "total ← carrinho + frete", "fx-caixa", "fx-tm") +
+      seta(380, 310, 380, 326) + para(305, 328, 150, 38, "mostrar o total") +
+      seta(380, 366, 380, 382) + oval(380, 400, 100, 30, "fim") + `</g>` +
+      texto(20, 318, "as formas", "fx-tb", "start") +
+      oval(52, 344, 64, 22, "") + texto(96, 344, "início e fim", "fx-t2", "start") +
+      para(20, 362, 64, 22, "") + texto(96, 373, "entrada e saída", "fx-t2", "start") +
+      caixa(20, 392, 64, 22, "") + texto(96, 403, "processamento", "fx-t2", "start") +
+      losango(642, 344, 40, 20, "") + texto(668, 344, "decisão", "fx-t2", "start"),
+      "Fluxograma do frete: ler o valor do carrinho; se for maior ou igual a 100, o frete é 0; senão, é 15; somar e mostrar o total.");
 
   FIG.PY = () =>
-    svg(760, 250,
-      caixa(20, 30, 300, 200, "", "fx-suave") +
+    svg(760, 220,
+      caixa(20, 30, 300, 170, "", "fx-suave") +
       texto(170, 16, "o código, lido de cima para baixo", "fx-t2") +
-      ["1  preco = 18", "2  pago = 50", "3  troco = pago - preco", "4  preco = 20"].map((l, i) => texto(40, 65 + i * 42, l, "fx-tm", "start")).join("") +
+      ["1  saldo = 500", "2  pix = 120", "3  saldo = saldo - pix"].map((l, i) => texto(40, 72 + i * 50, l, "fx-tm", "start")).join("") +
       texto(390, 16, "nomes (etiquetas)", "fx-t2") +
       texto(545, 16, "valores na memória", "fx-t2") +
-      caixa(345, 45, 90, 30, "preco", "fx-destaque", "fx-tt") +
-      caixa(345, 115, 90, 30, "pago", "fx-destaque", "fx-tt") +
-      caixa(345, 175, 90, 30, "troco", "fx-destaque", "fx-tt") +
-      caixa(515, 30, 60, 32, "20") + caixa(515, 74, 60, 32, "18", "fx-suave", "fx-t2") +
-      caixa(515, 114, 60, 32, "50") + caixa(515, 174, 60, 32, "32") +
+      caixa(345, 45, 90, 30, "saldo", "fx-destaque", "fx-tt") +
+      caixa(345, 135, 90, 30, "pix", "fx-destaque", "fx-tt") +
+      caixa(515, 30, 60, 32, "380") + caixa(515, 78, 60, 32, "500", "fx-suave", "fx-t2") + caixa(515, 134, 60, 32, "120") +
       seta(435, 58, 513, 47, "fx-traco-tinta") +
-      linha([[435, 62], [513, 90]], "fx-pontilhado") + texto(590, 90, "da linha 1; sem etiqueta,\no Python descarta", "fx-t2", "start") +
-      seta(435, 130, 513, 130, "fx-traco-tinta") +
-      seta(435, 190, 513, 190, "fx-traco-tinta") +
-      texto(590, 46, "a linha 4 passou\na etiqueta para o 20", "fx-t2", "start") +
-      texto(590, 190, "50 − 18,\ncalculado na linha 3", "fx-t2", "start"),
-      "Variáveis como etiquetas: preco aponta para 20 depois de ter apontado para 18; pago aponta para 50; troco para 32.");
+      linha([[435, 62], [513, 94]], "fx-pontilhado") +
+      seta(435, 150, 513, 150, "fx-traco-tinta") +
+      texto(590, 46, "linha 3: 500 − 120;\na etiqueta saldo passou\npara o 380", "fx-t2", "start") +
+      texto(590, 100, "da linha 1: ficou\nsem etiqueta", "fx-t2", "start") +
+      texto(590, 150, "da linha 2", "fx-t2", "start"),
+      "Variáveis como etiquetas: saldo aponta para 500 e depois para 380; pix aponta para 120.");
 
   FIG.CMP = () =>
     svg(760, 300,
@@ -110,7 +104,7 @@
       seta(330, 65, 378, 65) + seta(380, 87, 332, 87) +
       caixa(380, 40, 160, 70, "memória (RAM)\nrápida, se apaga") +
       seta(540, 65, 588, 65) + seta(590, 87, 542, 87) +
-      caixa(590, 40, 150, 70, "disco\nlento, permanente") +
+      caixa(590, 40, 150, 70, "armazenamento\n(SSD), permanente") +
       texto(460, 128, "acesso em cerca de 100 ns", "fx-t2") +
       texto(665, 128, "acesso de 0,1 a 10 ms", "fx-t2") +
       seta(260, 110, 260, 160) +
@@ -120,7 +114,7 @@
       ["1", "1", "0", "1"].map((b, i) => caixa(402 + i * 50, 235, 44, 40, b, b === "1" ? "fx-destaque" : "fx-caixa", "fx-tm")).join("") +
       texto(140, 255, "cada casa vale o dobro da seguinte", "fx-t2", "start") +
       texto(610, 255, "8 + 4 + 0 + 1 = 13", "fx-tm", "start"),
-      "O caminho dos dados: entrada, processador, memória e disco, saída. Abaixo, 13 escrito em binário como 1101.");
+      "O caminho dos dados: entrada, processador, memória e armazenamento, saída. Abaixo, 13 escrito em binário como 1101.");
 
   FIG.BD = () => {
     const disc = texto(84, 58, "disciplinas", "fx-tb", "start") + tabela(20, 70, "", [{ nome: "id", w: 44, destaque: true }, { nome: "nome", w: 190 }],
@@ -144,6 +138,22 @@
   };
 
   FIG.MAT = () => {
+    let s = texto(20, 18, "conjuntos", "fx-tb", "start");
+    s += `<circle cx="120" cy="125" r="78" class="fx-venn-a"/><circle cx="210" cy="125" r="78" class="fx-venn-b"/>`;
+    s += texto(80, 38, "usam Pix (A)", "fx-tt") + texto(250, 38, "usam cartão (B)", "fx-tc");
+    s += texto(85, 125, "só Pix", "fx-t2") + texto(165, 125, "os dois\nA ∩ B", "fx-tb") + texto(248, 125, "só cartão", "fx-t2");
+    s += texto(165, 222, "A ∪ B: usam pelo menos um", "fx-t2");
+    s += texto(330, 18, "lógica", "fx-tb", "start");
+    s += tabela(330, 36, "", [{ nome: "p", w: 36 }, { nome: "q", w: 36 }, { nome: "p e q", w: 62 }, { nome: "p ou q", w: 62 }],
+      [["V", "V", "V", "V"], ["V", "F", "F", "V"], ["F", "V", "F", "V"], ["F", "F", "F", "F"]]);
+    s += texto(330, 186, "“e” só é verdadeiro com os dois;\n“ou”, com pelo menos um", "fx-t2", "start");
+    s += texto(560, 18, "contagem", "fx-tb", "start");
+    [0, 1, 2, 3].forEach((i) => { s += caixa(560 + i * 46, 44, 36, 40, "10", "fx-destaque", "fx-tm") + (i < 3 ? texto(560 + i * 46 + 41, 64, "×", "fx-t2") : ""); });
+    s += texto(560, 102, "senha de 4 dígitos", "fx-t2", "start") + texto(560, 128, "= 10.000 senhas", "fx-tb", "start");
+    s += texto(560, 172, "8 posições com letras\ne números (62 símbolos):\nmais de 218 trilhões", "fx-t2", "start");
+    return svg(760, 235, s, "Conjuntos de quem usa Pix e cartão, tabela-verdade de e e ou, e a contagem de senhas.");
+  };
+  FIG.ALC = () => {
     const o = [60, 250], e = 40;
     const p = (x, y) => [o[0] + x * e, o[1] - y * e];
     let grade = "";
@@ -392,15 +402,15 @@
       "Duas receitas de café: a da esquerda usa expressões vagas como um pouco e a gosto; a da direita tem quantidades e ordem definidas.");
 
   FIG.EPS = () =>
-    svg(760, 170,
+    svg(760, 190,
       texto(105, 22, "entrada", "fx-tb") + texto(380, 22, "processamento", "fx-tb") + texto(655, 22, "saída", "fx-tb") +
-      para(20, 50, 170, 70, "preço = 18\npago = 50", "fx-caixa", "fx-tm") +
-      seta(190, 85, 268, 85) +
-      caixa(270, 50, 220, 70, "troco ← pago − preço", "fx-destaque", "fx-tm") +
-      seta(490, 85, 568, 85) +
-      para(570, 50, 170, 70, "troco = 32", "fx-caixa", "fx-tm") +
-      texto(105, 145, "os dados que chegam", "fx-t2") + texto(380, 145, "o que se faz com eles", "fx-t2") + texto(655, 145, "o resultado", "fx-t2"),
-      "Entrada, processamento e saída do troco: entram preço 18 e pago 50, calcula-se pago menos preço, sai troco 32.");
+      para(20, 60, 170, 64, "carrinho = 80", "fx-caixa", "fx-tm") +
+      seta(190, 92, 258, 92) +
+      caixa(260, 46, 240, 92, "80 ≥ 100? não\nfrete ← 15\ntotal ← 80 + 15", "fx-destaque", "fx-tm") +
+      seta(500, 92, 568, 92) +
+      para(570, 60, 170, 64, "total = 95", "fx-caixa", "fx-tm") +
+      texto(105, 164, "o dado que chega", "fx-t2") + texto(380, 164, "o que se faz com ele", "fx-t2") + texto(655, 164, "o resultado", "fx-t2"),
+      "Entrada, processamento e saída do frete: entra o carrinho de 80, decide-se o frete de 15, sai o total de 95.");
 
   window.FIG = FIG;
   window.FIG_DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="ponta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fx-ponta"/></marker></defs></svg>`;

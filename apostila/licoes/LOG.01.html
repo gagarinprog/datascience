@@ -13,7 +13,7 @@
 <div class="casca">
   <nav class="lateral" aria-label="Conceitos da lição">
     <div class="marca"><b>Lógica de programação</b><span>Módulo 1 · Algoritmo</span></div>
-    <a href="../index.html#LOG"><span class="n">&lt;</span>Voltar ao guia</a>
+    <a href="../index.html#trilha-LOG"><span class="n">&lt;</span>Voltar ao guia</a>
     <div class="grupo">Conceitos</div>
     <a href="#c1" data-conceito="c1"><span class="n">01</span>O que é algoritmo</a>
     <a href="#c2" data-conceito="c2"><span class="n">02</span>Entrada, processamento e saída</a>
@@ -46,7 +46,7 @@
 
         <h3>A ideia</h3>
         <div class="prosa">
-          <p>Um <strong>algoritmo</strong> é uma sequência de passos para resolver uma tarefa. A palavra assusta, mas você usa algoritmos todo dia: uma receita, o caminho para o trabalho, o passo a passo para pagar um boleto.</p>
+          <p>Um <strong>algoritmo</strong> é uma sequência de passos para resolver uma tarefa. A palavra assusta, mas você usa algoritmos todo dia: a receita do vídeo de culinária, a rota que o GPS fala, o passo a passo para fazer um Pix.</p>
           <p>Para um algoritmo servir a uma máquina, ele precisa de três coisas:</p>
           <p><strong>1. Passos em ordem.</strong> Cada passo vem depois do anterior, e a ordem importa: não dá para despejar a água antes de fervê-la.<br>
           <strong>2. Nenhuma ambiguidade.</strong> Cada passo tem um único jeito de ser feito. “Um pouco”, “a gosto” e “quando estiver bom” não servem, porque a máquina não tem bom senso para decidir.<br>
@@ -78,11 +78,11 @@
         <div class="exercicio" data-escolha>
           <p class="pergunta">Qual destas instruções serve para um algoritmo?</p>
           <div class="opcoes coluna-opcoes">
-            <button class="botao" type="button">Ande um pouco e vire</button>
-            <button class="botao" type="button" data-ok>Ande 10 passos e vire à direita</button>
+            <button class="botao" type="button">Siga mais um pouco e vire</button>
+            <button class="botao" type="button" data-ok>Em 200 metros, vire à direita na Rua 14 de Julho</button>
             <button class="botao" type="button">Vire quando achar melhor</button>
           </div>
-          <div class="retorno" hidden data-ok-texto="Certo: quantidade exata e direção definida. Qualquer pessoa, ou máquina, faria exatamente a mesma coisa." data-nao-texto="Essa deixa a decisão para quem executa (“um pouco”, “quando achar melhor”). A instrução que serve é a que tem quantidade e direção exatas: 10 passos, à direita."></div>
+          <div class="retorno" hidden data-ok-texto="Certo: distância exata, direção e rua definidas. É assim que o GPS fala, porque qualquer pessoa, ou máquina, faria exatamente a mesma coisa." data-nao-texto="Essa deixa a decisão para quem executa (“um pouco”, “quando achar melhor”). A instrução que serve é a do GPS: distância, direção e rua exatas."></div>
         </div>
         <div class="exercicio" data-escolha>
           <p class="pergunta">Um algoritmo pode ter infinitos passos, desde que cada passo seja claro.</p>
@@ -101,9 +101,9 @@
 
         <div class="exercicio desafio" data-escolha>
           <p class="rotulo">Desafio</p>
-          <p class="pergunta">No cálculo do troco, o valor que o cliente pagou é:</p>
+          <p class="pergunta">No cálculo do frete de uma loja online, o valor do carrinho é:</p>
           <div class="opcoes"><button class="botao" type="button" data-ok>Entrada</button><button class="botao" type="button">Processamento</button><button class="botao" type="button">Saída</button></div>
-          <div class="retorno" hidden data-ok-texto="Isso: é um dado que chega de fora, e o algoritmo trabalha com ele." data-nao-texto="É entrada: um dado que chega de fora (o cliente entrega), e o algoritmo trabalha com ele. Processamento é a conta; saída é o troco."></div>
+          <div class="retorno" hidden data-ok-texto="Isso: é um dado que chega de fora, e o algoritmo trabalha com ele." data-nao-texto="É entrada: um dado que chega de fora (o cliente montou o carrinho), e o algoritmo trabalha com ele. Processamento é decidir o frete e somar; saída é o total."></div>
         </div>
 
         <h3>A ideia</h3>
@@ -113,12 +113,12 @@
         </div>
         <figure>
           <div class="rolagem" data-figura="EPS"></div>
-          <figcaption>O troco em três partes. A seta ← quer dizer “recebe”: a variável troco recebe o resultado da conta.</figcaption>
+          <figcaption>O frete em três partes. A seta ← quer dizer “recebe”: a variável frete recebe 15, e o total recebe o resultado da soma.</figcaption>
         </figure>
         <table class="tabela">
           <thead><tr><th>Tarefa</th><th>Entrada</th><th>Processamento</th><th>Saída</th></tr></thead>
           <tbody>
-            <tr><td>Saque no caixa eletrônico</td><td>senha, valor</td><td>conferir a senha e o saldo, descontar</td><td>notas, comprovante</td></tr>
+            <tr><td>Fazer um Pix</td><td>chave, valor, senha</td><td>conferir a senha e o saldo, transferir</td><td>comprovante</td></tr>
             <tr><td>Média do semestre</td><td>as notas</td><td>somar e dividir pela quantidade</td><td>a média</td></tr>
             <tr><td>Converter reais em dólares</td><td>valor em reais, cotação</td><td>dividir o valor pela cotação</td><td>valor em dólares</td></tr>
           </tbody>
@@ -175,23 +175,23 @@
         <div class="prosa">
           <p><strong>Pseudocódigo</strong> é o algoritmo escrito em português, mas com o formato de um programa: um passo por linha e algumas palavras combinadas. Ele fica no meio do caminho entre a receita e o código de verdade, e permite pensar a lógica sem se preocupar com a linguagem.</p>
           <p>As palavras combinadas são poucas: <code>leia</code> (receber uma entrada), <code>escreva</code> (mostrar uma saída), <code>←</code> (guardar um valor), <code>se ... então ... senão ... fimse</code> (decidir).</p>
-          <p>A seta <code>←</code> se lê “recebe”. Usamos seta, e não <code>=</code>, porque é uma ação: <code>troco ← pago − preco</code> quer dizer “calcule pago menos preço e guarde em troco”.</p>
+          <p>A seta <code>←</code> se lê “recebe”. Usamos seta, e não <code>=</code>, porque é uma ação: <code>total ← carrinho + frete</code> quer dizer “calcule carrinho mais frete e guarde em total”.</p>
         </div>
         <figure>
           <table class="tabela">
-            <thead><tr><th>Pseudocódigo do troco</th><th>Papel</th></tr></thead>
+            <thead><tr><th>Pseudocódigo do frete</th><th>Papel</th></tr></thead>
             <tbody>
-              <tr><td class="m">leia preco</td><td>entrada</td></tr>
-              <tr><td class="m">leia pago</td><td>entrada</td></tr>
-              <tr><td class="m">se pago &gt;= preco então</td><td>processamento: decisão</td></tr>
-              <tr><td class="m">&nbsp;&nbsp;troco ← pago - preco</td><td>processamento: conta</td></tr>
-              <tr><td class="m">&nbsp;&nbsp;escreva troco</td><td>saída</td></tr>
+              <tr><td class="m">leia carrinho</td><td>entrada</td></tr>
+              <tr><td class="m">se carrinho &gt;= 100 então</td><td>processamento: decisão</td></tr>
+              <tr><td class="m">&nbsp;&nbsp;frete ← 0</td><td>processamento: um caminho</td></tr>
               <tr><td class="m">senão</td><td>o outro caminho da decisão</td></tr>
-              <tr><td class="m">&nbsp;&nbsp;escreva "falta dinheiro"</td><td>saída</td></tr>
+              <tr><td class="m">&nbsp;&nbsp;frete ← 15</td><td>processamento: o outro caminho</td></tr>
               <tr><td class="m">fimse</td><td>fim da decisão</td></tr>
+              <tr><td class="m">total ← carrinho + frete</td><td>processamento: conta, nos dois casos</td></tr>
+              <tr><td class="m">escreva total</td><td>saída</td></tr>
             </tbody>
           </table>
-          <figcaption>Cada linha faz uma coisa só. O recuo mostra o que pertence a cada caminho da decisão.</figcaption>
+          <figcaption>Cada linha faz uma coisa só. O recuo mostra o que pertence a cada caminho da decisão; a conta do total fica fora, porque vale para os dois.</figcaption>
         </figure>
 
         <h3>Exemplo resolvido: média de duas notas, com aprovação a partir de 7</h3>
@@ -253,24 +253,24 @@ fimse</pre></div></li>
         </div>
         <figure>
           <div class="rolagem" data-figura="LOG"></div>
-          <figcaption>O troco em fluxograma. Siga as setas com o dedo: há dois caminhos possíveis, e os dois chegam ao fim.</figcaption>
+          <figcaption>O frete grátis em fluxograma. Siga as setas com o dedo: há dois caminhos possíveis, e os dois se juntam de novo na conta do total.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: percorrer o fluxograma com preço 30 e pago 20</h3>
+        <h3>Exemplo resolvido: percorrer o fluxograma com um carrinho de R$ 120</h3>
         <ol class="subobjetivos">
-          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Começar no oval “início” e ler as entradas: preço 30, pago 20.</p></div></li>
-          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>No losango, responder a pergunta com os valores: 20 ≥ 30? Não. Seguir a seta do “não”.</p></div></li>
-          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Mostrar “falta dinheiro” e seguir até o “fim”. A conta do troco nem chegou a ser feita.</p></div></li>
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Começar no oval “início” e ler a entrada: carrinho = 120.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>No losango, responder a pergunta com o valor: 120 ≥ 100? Sim. Seguir a seta do “sim”: frete ← 0.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Os caminhos se juntam: total ← 120 + 0 = 120. Mostrar o total e seguir até o “fim”.</p></div></li>
         </ol>
         <div class="exercicio" data-escolha>
           <p class="rotulo">Por que o exemplo funciona?</p>
-          <p class="pergunta">Por que o retângulo “troco ← pago − preço” não foi executado nesse caso?</p>
+          <p class="pergunta">Por que o retângulo “frete ← 15” não foi executado nesse caso?</p>
           <div class="opcoes coluna-opcoes">
-            <button class="botao" type="button" data-ok>Porque ele fica só no caminho do “sim”, e a resposta foi “não”</button>
-            <button class="botao" type="button">Porque o troco daria negativo e o computador não aceita</button>
+            <button class="botao" type="button" data-ok>Porque ele fica só no caminho do “não”, e a resposta foi “sim”</button>
+            <button class="botao" type="button">Porque o frete grátis é sempre zero</button>
             <button class="botao" type="button">Porque retângulos só rodam no fim</button>
           </div>
-          <div class="retorno" hidden data-ok-texto="Isso. Depois de uma decisão, só um dos caminhos é percorrido. O que está no outro caminho é pulado." data-nao-texto="Depois do losango, só um caminho é percorrido. A conta está no caminho do “sim”; como a resposta foi “não”, ela foi pulada."></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Depois de uma decisão, só um dos caminhos é percorrido. O que está no outro caminho é pulado." data-nao-texto="Depois do losango, só um caminho é percorrido. O frete de 15 está no caminho do “não”; como a resposta foi “sim”, ele foi pulado."></div>
         </div>
 
         <h3>Pratique: qual forma usar?</h3>

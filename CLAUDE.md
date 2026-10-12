@@ -12,6 +12,7 @@ Documentos de referência (leia antes de mexer na área correspondente):
 - `docs/03_REFERENCIAS_GITHUB_E_APPS.md` — referências
 - `docs/04_FUNDAMENTOS_DIDATICOS.md` — base científica das decisões de ensino, catálogo de erros de SQL, diferenças SQLite × PostgreSQL
 - `docs/05_CURRICULO_CIENCIA_DE_DADOS.md` — currículo completo (16 trilhas, módulos, conceitos, exercícios, critérios de domínio, projetos); o curso da UFMS guia a ordem, o currículo vai além dele
+- `docs/06_SEQUENCIA_E_PRE_REQUISITOS.md` — ordem das 16 matérias e dos módulos, o que cada módulo exige antes, pontos de virada e a pesquisa que justifica a ordem; dados em `tutor/sequencia_dados.py`
 - `docs/DESIGN.md` — identidade visual, tokens, componentes, telas
 - `docs/ROADMAP.md` — fases, critérios de aceite e o status de cada uma
 
@@ -66,6 +67,8 @@ docs/                   documentos de referência
 8. Exemplo resolvido com **subobjetivos rotulados** e uma autoexplicação de múltipla escolha (doc 04, seção 2).
 9. Feedback de erro em três partes: o que está certo, o erro exato e o próximo passo. Pistas em degraus; a solução só depois de duas tentativas (doc 04, seção 3).
 10. Erros comuns vêm do catálogo do doc 04 (seção 4) e viram itens "ache o erro", distratores e `erro_tipo`.
+11. Nível amador e linguagem atual: exemplos do dia a dia e da tecnologia que o Kaio já usa (Pix, app do banco, delivery, streaming, redes sociais, GPS, planilha, celular) e da economia quando couber. Nada de exemplo datado quando existe um atual.
+12. A ordem de estudo e os pré-requisitos seguem o doc 06. Mudou a ordem: edite `tutor/sequencia_dados.py` e rode `python -I tutor/gerar_percurso.py`, que recusa qualquer módulo antes de um pré-requisito dele.
 
 ## Regras do tutor (Claude dentro do app)
 
@@ -100,6 +103,6 @@ pnpm capturas     # capturas das telas em docs/capturas
 ## Tutor no Claude Code (`/aula`)
 
 - A skill `.claude/skills/aula` dá as aulas uma matéria por vez (`tutor/percurso.txt`, gerado do doc 05 por `tutor/gerar_percurso.py`) e guarda o estado em `tutor/progresso.md`.
-- Material visual em `apostila/`: o Guia das matérias (`index.html`, com uma ilustração por matéria em `figuras.js`) e as lições ilustradas em `apostila/licoes/<SIGLA>.<NN>.html`. Nova lição segue o modelo de `LOG.01.html`.
+- Material visual em `apostila/`, publicado como artefato (https://claude.ai/artifact/EUHg4dSKd4P3K38iU1y3wE): `index.html` tem a aba Trilha (progresso, pré-requisitos, pergunta de prontidão) e a aba Guia (como cada matéria funciona, com logos de `logos.js`, ilustrações de `figuras.js` e caixas interativas de `experimente.js`). Links internos usam `#trilha-<SIGLA>` e `#guia-<SIGLA>`, sem barra, porque o link do artefato só repassa âncoras simples. O progresso fica na base do artefato (documento `progresso/geral`). Lições ilustradas em `apostila/licoes/<SIGLA>.<NN>.html`, no modelo de `LOG.01.html`. `materias.js` é gerado; não edite à mão.
 - SQL de estudo roda no banco da Apostila Viva: `python -I tutor/sql.py "<consulta>"`. O banco (`data/apostila-viva/apostila.db`) é gerado por `data/apostila-viva/gerar.py` e não vai para o git.
 - Mudou a ordem ou o currículo: rode `python -I tutor/gerar_percurso.py` de novo.

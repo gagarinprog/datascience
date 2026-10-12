@@ -1,244 +1,196 @@
 # Percurso por matéria. Gerado por tutor/gerar_percurso.py; não edite à mão.
-# M = módulo (exercícios | tarefa de domínio). Passo: código, conceito.
-# TD = tarefa de domínio do módulo.
+# M = módulo | exercícios | tarefa de domínio | antes: pré-requisitos | pronto: pergunta de prontidão.
+# Passo: código do passo, código do conceito, conceito. TD = tarefa de domínio do módulo.
 
 ## LOG Lógica de programação (1 de 16)
-M LOG.01 Algoritmo | RT, PA, EX | Escrever o algoritmo de um problema do dia a dia e testá-lo à mão
+M LOG.01 Algoritmo | RT, PA, EX | Escrever o algoritmo de um problema do dia a dia e testá-lo à mão | antes: nada | pronto: Escreva os passos para pedir comida num app de delivery de um jeito que um robô conseguisse seguir. Sobrou alguma palavra vaga?
 LOG-001 LOG.01.01 o que é algoritmo
 LOG-002 LOG.01.02 entrada, processamento e saída
 LOG-003 LOG.01.03 pseudocódigo
 LOG-004 LOG.01.04 fluxograma
 LOG-005 LOG.01.05 teste de mesa
 LOG-006 LOG.01.TD tarefa de domínio
-M LOG.02 Variáveis e tipos | PS, RT, AE | Prever o valor de cada variável após uma sequência de atribuições
-LOG-007 LOG.02.01 variável como nome para um valor
-LOG-008 LOG.02.02 atribuição
-LOG-009 LOG.02.03 tipos primitivos
-LOG-010 LOG.02.04 conversão de tipo
-LOG-011 LOG.02.05 constantes
-LOG-012 LOG.02.TD tarefa de domínio
-M LOG.03 Operadores e expressões | PS, NU, CE | Avaliar à mão expressões mistas sem errar a precedência
-LOG-013 LOG.03.01 aritméticos
-LOG-014 LOG.03.02 divisão inteira e resto
-LOG-015 LOG.03.03 relacionais
-LOG-016 LOG.03.04 lógicos (e, ou, não)
-LOG-017 LOG.03.05 precedência
-LOG-018 LOG.03.06 curto-circuito
-LOG-019 LOG.03.TD tarefa de domínio
-M LOG.04 Lógica booleana | RT, CE, CP | Reescrever uma condição negada usando De Morgan
-LOG-020 LOG.04.01 tabela-verdade
-LOG-021 LOG.04.02 leis de De Morgan
-LOG-022 LOG.04.03 simplificar condições
-LOG-023 LOG.04.04 condição composta
-LOG-024 LOG.04.TD tarefa de domínio
-M LOG.05 Decisão | PA, AE, CD | Classificar entradas em faixas sem lacunas nem sobreposições
-LOG-025 LOG.05.01 se e senão
-LOG-026 LOG.05.02 decisões encadeadas
-LOG-027 LOG.05.03 escolha múltipla
-LOG-028 LOG.05.04 casos de borda
-LOG-029 LOG.05.TD tarefa de domínio
-M LOG.06 Repetição | RT, PS, CD | Resolver problemas de soma, contagem, máximo e busca com laços
-LOG-030 LOG.06.01 laço com contador
-LOG-031 LOG.06.02 laço com condição
-LOG-032 LOG.06.03 acumulador
-LOG-033 LOG.06.04 contador
-LOG-034 LOG.06.05 sentinela
-LOG-035 LOG.06.06 laços aninhados
-LOG-036 LOG.06.07 parada e laço infinito
-LOG-037 LOG.06.TD tarefa de domínio
-M LOG.07 Funções | PS, AE, CD | Quebrar um programa em funções que se testam separadas
-LOG-038 LOG.07.01 definir e chamar
-LOG-039 LOG.07.02 parâmetros e retorno
-LOG-040 LOG.07.03 escopo
-LOG-041 LOG.07.04 efeito colateral
-LOG-042 LOG.07.05 função pura
-LOG-043 LOG.07.TD tarefa de domínio
-M LOG.08 Decomposição | PA, EX, CD | Partir um enunciado médio em subproblemas e implementar
-LOG-044 LOG.08.01 dividir o problema
-LOG-045 LOG.08.02 resolver o caso pequeno primeiro
-LOG-046 LOG.08.03 refinamento sucessivo
-LOG-047 LOG.08.TD tarefa de domínio
-M LOG.09 Depuração | AE, EX | Achar e corrigir três erros diferentes num programa curto
-LOG-048 LOG.09.01 ler mensagem de erro
-LOG-049 LOG.09.02 erro de sintaxe, de execução e de lógica
-LOG-050 LOG.09.03 imprimir para investigar
-LOG-051 LOG.09.04 isolar o erro
-LOG-052 LOG.09.TD tarefa de domínio
+M PY.01 Primeiros passos | PS, AE | Escrever e rodar um script que lê dados e responde | antes: LOG.01 Algoritmo | pronto: O que aparece na tela com print("Oi", 2 + 3)?
+LOG-007 PY.01.01 interpretador e REPL
+LOG-008 PY.01.02 script
+LOG-009 PY.01.03 `print` e `input`
+LOG-010 PY.01.04 comentários
+LOG-011 PY.01.05 indentação como bloco
+LOG-012 PY.01.06 PEP 8
+LOG-013 PY.01.TD tarefa de domínio
+M LOG.02 Variáveis e tipos | PS, RT, AE | Prever o valor de cada variável após uma sequência de atribuições | antes: PY.01 Primeiros passos | pronto: Depois de x = 5 e x = x + 2, quanto vale x? O 5 continua guardado em x? | ponto de virada
+LOG-014 LOG.02.01 variável como nome para um valor
+LOG-015 LOG.02.02 atribuição
+LOG-016 LOG.02.03 tipos primitivos
+LOG-017 LOG.02.04 conversão de tipo
+LOG-018 LOG.02.05 constantes
+LOG-019 LOG.02.TD tarefa de domínio
+M LOG.03 Operadores e expressões | PS, NU, CE | Avaliar à mão expressões mistas sem errar a precedência | antes: LOG.02 Variáveis e tipos | pronto: Quanto dá 7 // 2 e 7 % 2? Para que serve o %?
+LOG-020 LOG.03.01 aritméticos
+LOG-021 LOG.03.02 divisão inteira e resto
+LOG-022 LOG.03.03 relacionais
+LOG-023 LOG.03.04 lógicos (e, ou, não)
+LOG-024 LOG.03.05 precedência
+LOG-025 LOG.03.06 curto-circuito
+LOG-026 LOG.03.TD tarefa de domínio
+M LOG.04 Lógica booleana | RT, CE, CP | Reescrever uma condição negada usando De Morgan | antes: LOG.03 Operadores e expressões | pronto: Frete grátis se o carrinho passar de R$ 100 OU se a pessoa for assinante. Quem não é assinante e tem R$ 80 no carrinho ganha?
+LOG-027 LOG.04.01 tabela-verdade
+LOG-028 LOG.04.02 leis de De Morgan
+LOG-029 LOG.04.03 simplificar condições
+LOG-030 LOG.04.04 condição composta
+LOG-031 LOG.04.TD tarefa de domínio
+M LOG.05 Decisão | PA, AE, CD | Classificar entradas em faixas sem lacunas nem sobreposições | antes: LOG.04 Lógica booleana | pronto: Cashback: até R$ 50, 0%; acima de 50 até 200, 2%; acima de 200, 5%. Quanto ganha quem gasta 50? E 200? E 201?
+LOG-032 LOG.05.01 se e senão
+LOG-033 LOG.05.02 decisões encadeadas
+LOG-034 LOG.05.03 escolha múltipla
+LOG-035 LOG.05.04 casos de borda
+LOG-036 LOG.05.TD tarefa de domínio
+M LOG.06 Repetição | RT, PS, CD | Resolver problemas de soma, contagem, máximo e busca com laços | antes: LOG.05 Decisão | pronto: Quanto vale total depois de: total = 0; para cada x em [10, 20, 30]: total = total + x?
+LOG-037 LOG.06.01 laço com contador
+LOG-038 LOG.06.02 laço com condição
+LOG-039 LOG.06.03 acumulador
+LOG-040 LOG.06.04 contador
+LOG-041 LOG.06.05 sentinela
+LOG-042 LOG.06.06 laços aninhados
+LOG-043 LOG.06.07 parada e laço infinito
+LOG-044 LOG.06.TD tarefa de domínio
+M LOG.09 Depuração | AE, EX | Achar e corrigir três erros diferentes num programa curto | antes: LOG.06 Repetição | pronto: O que quer dizer NameError: name 'totl' is not defined?
+LOG-045 LOG.09.01 ler mensagem de erro
+LOG-046 LOG.09.02 erro de sintaxe, de execução e de lógica
+LOG-047 LOG.09.03 imprimir para investigar
+LOG-048 LOG.09.04 isolar o erro
+LOG-049 LOG.09.TD tarefa de domínio
+M LOG.07 Funções | PS, AE, CD | Quebrar um programa em funções que se testam separadas | antes: LOG.06 Repetição | pronto: Qual a diferença entre uma função que faz print do resultado e uma que faz return?
+LOG-050 LOG.07.01 definir e chamar
+LOG-051 LOG.07.02 parâmetros e retorno
+LOG-052 LOG.07.03 escopo
+LOG-053 LOG.07.04 efeito colateral
+LOG-054 LOG.07.05 função pura
+LOG-055 LOG.07.TD tarefa de domínio
+M LOG.08 Decomposição | PA, EX, CD | Partir um enunciado médio em subproblemas e implementar | antes: LOG.07 Funções | pronto: Como você quebraria “montar o relatório mensal de gastos do cartão” em partes?
+LOG-056 LOG.08.01 dividir o problema
+LOG-057 LOG.08.02 resolver o caso pequeno primeiro
+LOG-058 LOG.08.03 refinamento sucessivo
+LOG-059 LOG.08.TD tarefa de domínio
 
 ## PY Python (2 de 16)
-M PY.01 Primeiros passos | PS, AE | Escrever e rodar um script que lê dados e responde
-PY-001 PY.01.01 interpretador e REPL
-PY-002 PY.01.02 script
-PY-003 PY.01.03 `print` e `input`
-PY-004 PY.01.04 comentários
-PY-005 PY.01.05 indentação como bloco
-PY-006 PY.01.06 PEP 8
-PY-007 PY.01.TD tarefa de domínio
-M PY.02 Números e textos | PS, CP, CD | Limpar e formatar uma lista de nomes e valores
-PY-008 PY.02.01 `int`, `float`, `bool`
-PY-009 PY.02.02 `str` como sequência
-PY-010 PY.02.03 fatiamento
-PY-011 PY.02.04 métodos de string
-PY-012 PY.02.05 f-strings
-PY-013 PY.02.06 imutabilidade
-PY-014 PY.02.TD tarefa de domínio
-M PY.03 Listas e tuplas | PS, RT, CD | Manipular listas sem confundir cópia e referência
-PY-015 PY.03.01 lista
-PY-016 PY.03.02 índice negativo
-PY-017 PY.03.03 fatias
-PY-018 PY.03.04 métodos
-PY-019 PY.03.05 mutabilidade
-PY-020 PY.03.06 tupla
-PY-021 PY.03.07 desempacotamento
-PY-022 PY.03.TD tarefa de domínio
-M PY.04 Dicionários e conjuntos | PS, CD, SI | Contar ocorrências e agrupar valores com dicionário
-PY-023 PY.04.01 dicionário
-PY-024 PY.04.02 chave e valor
-PY-025 PY.04.03 iterar `items()`
-PY-026 PY.04.04 `get` com padrão
-PY-027 PY.04.05 conjunto
-PY-028 PY.04.06 operações de conjunto
-PY-029 PY.04.TD tarefa de domínio
-M PY.05 Referências e mutabilidade | PS, AE, EX | Explicar um bug causado por lista compartilhada
-PY-030 PY.05.01 nome aponta para objeto
-PY-031 PY.05.02 `is` e `==`
-PY-032 PY.05.03 apelidos (aliasing)
-PY-033 PY.05.04 cópia rasa e profunda
-PY-034 PY.05.05 argumento padrão mutável
-PY-035 PY.05.TD tarefa de domínio
-M PY.06 Funções a fundo | PS, CD | Ordenar e filtrar registros passando funções
-PY-036 PY.06.01 argumentos posicionais e nomeados
-PY-037 PY.06.02 `*args` e `**kwargs`
-PY-038 PY.06.03 `lambda`
-PY-039 PY.06.04 funções como valor
-PY-040 PY.06.05 `sorted` com `key`
-PY-041 PY.06.06 closures
-PY-042 PY.06.TD tarefa de domínio
-M PY.07 Compreensões e iteração | CP, PS, CD | Reescrever laços em compreensões legíveis e processar dado grande com gerador
-PY-043 PY.07.01 compreensão de lista, dicionário e conjunto
-PY-044 PY.07.02 `enumerate`
-PY-045 PY.07.03 `zip`
-PY-046 PY.07.04 iteradores
-PY-047 PY.07.05 geradores e `yield`
-PY-048 PY.07.TD tarefa de domínio
-M PY.08 Erros e exceções | AE, PS, CD | Tornar um programa robusto a entradas ruins
-PY-049 PY.08.01 `try`, `except`, `else`, `finally`
-PY-050 PY.08.02 exceções comuns
-PY-051 PY.08.03 lançar exceção
-PY-052 PY.08.04 validar entrada
-PY-053 PY.08.TD tarefa de domínio
-M PY.09 Arquivos | CD, AE | Ler um arquivo de texto, processar e gravar o resultado
-PY-054 PY.09.01 abrir com `with`
-PY-055 PY.09.02 modos de abertura
-PY-056 PY.09.03 ler linha a linha
-PY-057 PY.09.04 escrever
-PY-058 PY.09.05 codificação
-PY-059 PY.09.06 `pathlib`
-PY-060 PY.09.TD tarefa de domínio
-M PY.10 Módulos e pacotes | ME, CD | Organizar um programa em dois módulos
-PY-061 PY.10.01 `import`
-PY-062 PY.10.02 módulos da biblioteca padrão (`math`, `random`, `datetime`, `collections`, `itertools`, `json`, `csv`, `re`)
-PY-063 PY.10.03 criar o seu módulo
-PY-064 PY.10.04 `if __name__ == "__main__"`
-PY-065 PY.10.TD tarefa de domínio
-M PY.11 Classes em Python | PS, CD | Modelar registros do domínio com `dataclass`
-PY-066 PY.11.01 classe e objeto
-PY-067 PY.11.02 `__init__`
-PY-068 PY.11.03 atributos e métodos
-PY-069 PY.11.04 `__repr__` e `__str__`
-PY-070 PY.11.05 `dataclass`
-PY-071 PY.11.TD tarefa de domínio
-M PY.12 Tipagem e qualidade | AE, EX | Anotar e documentar um módulo existente
-PY-072 PY.12.01 anotações de tipo
-PY-073 PY.12.02 `mypy` (conceito)
-PY-074 PY.12.03 docstrings
-PY-075 PY.12.04 nomes bons
-PY-076 PY.12.05 funções pequenas
-PY-077 PY.12.TD tarefa de domínio
-M PY.13 Testes | CD, EX | Escrever testes que pegam um bug antes da correção
-PY-078 PY.13.01 `assert`
-PY-079 PY.13.02 `pytest`
-PY-080 PY.13.03 caso normal, de borda e de erro
-PY-081 PY.13.04 testar antes de corrigir
-PY-082 PY.13.TD tarefa de domínio
-M PY.14 Expressões regulares | CP, CD, PS | Extrair datas, valores e e-mails de texto livre
-PY-083 PY.14.01 classes de caracteres
-PY-084 PY.14.02 quantificadores
-PY-085 PY.14.03 grupos
-PY-086 PY.14.04 `findall`, `sub`
-PY-087 PY.14.05 validar e extrair
-PY-088 PY.14.TD tarefa de domínio
+M PY.02 Números e textos | PS, CP, CD | Limpar e formatar uma lista de nomes e valores | antes: LOG.03 Operadores e expressões | pronto: O que dá "Pix" * 3? E "10" + "5"? E int("10") + 5?
+PY-001 PY.02.01 `int`, `float`, `bool`
+PY-002 PY.02.02 `str` como sequência
+PY-003 PY.02.03 fatiamento
+PY-004 PY.02.04 métodos de string
+PY-005 PY.02.05 f-strings
+PY-006 PY.02.06 imutabilidade
+PY-007 PY.02.TD tarefa de domínio
+M PY.03 Listas e tuplas | PS, RT, CD | Manipular listas sem confundir cópia e referência | antes: PY.02 Números e textos; LOG.06 Repetição | pronto: Em musicas = ["a", "b", "c"], quanto valem musicas[0] e musicas[-1]?
+PY-008 PY.03.01 lista
+PY-009 PY.03.02 índice negativo
+PY-010 PY.03.03 fatias
+PY-011 PY.03.04 métodos
+PY-012 PY.03.05 mutabilidade
+PY-013 PY.03.06 tupla
+PY-014 PY.03.07 desempacotamento
+PY-015 PY.03.TD tarefa de domínio
+M PY.04 Dicionários e conjuntos | PS, CD, SI | Contar ocorrências e agrupar valores com dicionário | antes: PY.03 Listas e tuplas | pronto: Como contar quantas vezes cada palavra aparece numa lista, usando dicionário?
+PY-016 PY.04.01 dicionário
+PY-017 PY.04.02 chave e valor
+PY-018 PY.04.03 iterar `items()`
+PY-019 PY.04.04 `get` com padrão
+PY-020 PY.04.05 conjunto
+PY-021 PY.04.06 operações de conjunto
+PY-022 PY.04.TD tarefa de domínio
+M PY.05 Referências e mutabilidade | PS, AE, EX | Explicar um bug causado por lista compartilhada | antes: PY.04 Dicionários e conjuntos | pronto: a = [1, 2]; b = a; b.append(3). Quanto vale a? | ponto de virada
+PY-023 PY.05.01 nome aponta para objeto
+PY-024 PY.05.02 `is` e `==`
+PY-025 PY.05.03 apelidos (aliasing)
+PY-026 PY.05.04 cópia rasa e profunda
+PY-027 PY.05.05 argumento padrão mutável
+PY-028 PY.05.TD tarefa de domínio
+M PY.06 Funções a fundo | PS, CD | Ordenar e filtrar registros passando funções | antes: PY.05 Referências e mutabilidade; LOG.07 Funções | pronto: Como ordenar uma lista de produtos (nome, preço) pelo preço?
+PY-029 PY.06.01 argumentos posicionais e nomeados
+PY-030 PY.06.02 `*args` e `**kwargs`
+PY-031 PY.06.03 `lambda`
+PY-032 PY.06.04 funções como valor
+PY-033 PY.06.05 `sorted` com `key`
+PY-034 PY.06.06 closures
+PY-035 PY.06.TD tarefa de domínio
+M PY.08 Erros e exceções | AE, PS, CD | Tornar um programa robusto a entradas ruins | antes: PY.06 Funções a fundo; LOG.09 Depuração | pronto: O que acontece com int("abc") e como evitar que o programa pare?
+PY-036 PY.08.01 `try`, `except`, `else`, `finally`
+PY-037 PY.08.02 exceções comuns
+PY-038 PY.08.03 lançar exceção
+PY-039 PY.08.04 validar entrada
+PY-040 PY.08.TD tarefa de domínio
+M PY.09 Arquivos | CD, AE | Ler um arquivo de texto, processar e gravar o resultado | antes: PY.08 Erros e exceções | pronto: Por que usar with open(...) as f em vez de só open(...)?
+PY-041 PY.09.01 abrir com `with`
+PY-042 PY.09.02 modos de abertura
+PY-043 PY.09.03 ler linha a linha
+PY-044 PY.09.04 escrever
+PY-045 PY.09.05 codificação
+PY-046 PY.09.06 `pathlib`
+PY-047 PY.09.TD tarefa de domínio
+M PY.10 Módulos e pacotes | ME, CD | Organizar um programa em dois módulos | antes: PY.06 Funções a fundo | pronto: Para que serve import random e como sortear um item de uma lista?
+PY-048 PY.10.01 `import`
+PY-049 PY.10.02 módulos da biblioteca padrão (`math`, `random`, `datetime`, `collections`, `itertools`, `json`, `csv`, `re`)
+PY-050 PY.10.03 criar o seu módulo
+PY-051 PY.10.04 `if __name__ == "__main__"`
+PY-052 PY.10.TD tarefa de domínio
+M PY.13 Testes | CD, EX | Escrever testes que pegam um bug antes da correção | antes: PY.08 Erros e exceções; PY.10 Módulos e pacotes | pronto: Que testes você escreveria para uma função que calcula desconto?
+PY-053 PY.13.01 `assert`
+PY-054 PY.13.02 `pytest`
+PY-055 PY.13.03 caso normal, de borda e de erro
+PY-056 PY.13.04 testar antes de corrigir
+PY-057 PY.13.TD tarefa de domínio
+M PY.07 Compreensões e iteração | CP, PS, CD | Reescrever laços em compreensões legíveis e processar dado grande com gerador | antes: PY.06 Funções a fundo | pronto: Reescreva com compreensão: novos = []; para p em precos: novos.append(p + 10).
+PY-058 PY.07.01 compreensão de lista, dicionário e conjunto
+PY-059 PY.07.02 `enumerate`
+PY-060 PY.07.03 `zip`
+PY-061 PY.07.04 iteradores
+PY-062 PY.07.05 geradores e `yield`
+PY-063 PY.07.TD tarefa de domínio
+M PY.11 Classes em Python | PS, CD | Modelar registros do domínio com `dataclass` | antes: PY.06 Funções a fundo | pronto: Numa classe Pedido, o que é atributo e o que é método?
+PY-064 PY.11.01 classe e objeto
+PY-065 PY.11.02 `__init__`
+PY-066 PY.11.03 atributos e métodos
+PY-067 PY.11.04 `__repr__` e `__str__`
+PY-068 PY.11.05 `dataclass`
+PY-069 PY.11.TD tarefa de domínio
+M PY.14 Expressões regulares | CP, CD, PS | Extrair datas, valores e e-mails de texto livre | antes: PY.09 Arquivos | pronto: Que padrão acha um CEP no formato 79002-150?
+PY-070 PY.14.01 classes de caracteres
+PY-071 PY.14.02 quantificadores
+PY-072 PY.14.03 grupos
+PY-073 PY.14.04 `findall`, `sub`
+PY-074 PY.14.05 validar e extrair
+PY-075 PY.14.TD tarefa de domínio
+M PY.12 Tipagem e qualidade | AE, EX | Anotar e documentar um módulo existente | antes: PY.11 Classes em Python | pronto: O que diz a anotação def total(precos: list[float]) -> float?
+PY-076 PY.12.01 anotações de tipo
+PY-077 PY.12.02 `mypy` (conceito)
+PY-078 PY.12.03 docstrings
+PY-079 PY.12.04 nomes bons
+PY-080 PY.12.05 funções pequenas
+PY-081 PY.12.TD tarefa de domínio
 
-## CMP Como o computador funciona (3 de 16)
-M CMP.01 Representação numérica | NU, CE, PS | Converter números entre bases e explicar por que `0.1 + 0.2 != 0.3`
-CMP-001 CMP.01.01 bit e byte
-CMP-002 CMP.01.02 base 2, 10 e 16
-CMP-003 CMP.01.03 conversão entre bases
-CMP-004 CMP.01.04 inteiros com sinal (complemento de dois)
-CMP-005 CMP.01.05 estouro (overflow)
-CMP-006 CMP.01.06 ponto flutuante (IEEE 754) e arredondamento
-CMP-007 CMP.01.TD tarefa de domínio
-M CMP.02 Texto | PS, AE, CE | Diagnosticar e corrigir um arquivo com acentos quebrados
-CMP-008 CMP.02.01 caractere e código
-CMP-009 CMP.02.02 ASCII
-CMP-010 CMP.02.03 Unicode
-CMP-011 CMP.02.04 UTF-8 e Latin-1
-CMP-012 CMP.02.05 "mojibake" (acento quebrado)
-CMP-013 CMP.02.06 normalização de acentos
-CMP-014 CMP.02.TD tarefa de domínio
-M CMP.03 Lógica digital | RT, NU, CE | Montar a tabela-verdade de um circuito pequeno
-CMP-015 CMP.03.01 portas lógicas
-CMP-016 CMP.03.02 tabela-verdade
-CMP-017 CMP.03.03 circuitos combinacionais
-CMP-018 CMP.03.04 somador
-CMP-019 CMP.03.TD tarefa de domínio
-M CMP.04 Arquitetura | CE, ME | Explicar por que ler do disco é mais lento que da memória e o que isso muda numa análise
-CMP-020 CMP.04.01 CPU, memória e armazenamento
-CMP-021 CMP.04.02 hierarquia de memória e cache
-CMP-022 CMP.04.03 ciclo de instrução
-CMP-023 CMP.04.04 32 e 64 bits
-CMP-024 CMP.04.TD tarefa de domínio
-M CMP.05 Sistemas operacionais | CE, PS | Navegar e organizar arquivos por caminho sem interface gráfica
-CMP-025 CMP.05.01 processo e thread
-CMP-026 CMP.05.02 memória virtual
-CMP-027 CMP.05.03 sistema de arquivos
-CMP-028 CMP.05.04 caminhos absolutos e relativos
-CMP-029 CMP.05.05 permissões
-CMP-030 CMP.05.TD tarefa de domínio
-M CMP.06 Redes e web | CE, ME, IN | Ler uma resposta HTTP e dizer o que aconteceu
-CMP-031 CMP.06.01 IP, DNS e portas
-CMP-032 CMP.06.02 cliente e servidor
-CMP-033 CMP.06.03 HTTP (métodos, códigos de status, cabeçalhos)
-CMP-034 CMP.06.04 HTTPS
-CMP-035 CMP.06.05 o que é uma API
-CMP-036 CMP.06.TD tarefa de domínio
-M CMP.07 Como o código roda | CE, ME | Explicar a diferença entre executar Java e Python
-CMP-037 CMP.07.01 compilador, interpretador e bytecode
-CMP-038 CMP.07.02 máquina virtual (JVM, CPython)
-CMP-039 CMP.07.TD tarefa de domínio
-
-## BD Banco de dados e SQL (4 de 16)
-M BD.01 Por que bancos | CE, ME | Explicar o que um SGBD resolve que uma planilha não resolve
+## BD Banco de dados e SQL (3 de 16)
+M BD.01 Por que bancos | CE, ME | Explicar o que um SGBD resolve que uma planilha não resolve | antes: nada | pronto: Por que o app do banco não guarda seus dados numa planilha?
 BD-001 BD.01.01 dado, informação e SGBD
 BD-002 BD.01.02 problemas de planilhas e arquivos soltos
 BD-003 BD.01.03 independência de dados
 BD-004 BD.01.04 arquitetura de três esquemas
 BD-005 BD.01.TD tarefa de domínio
-M BD.02 Modelo relacional | CE, MD, AE | Identificar as chaves e as ligações do esquema da Apostila Viva
+M BD.02 Modelo relacional | CE, MD, AE | Identificar as chaves e as ligações do esquema da Apostila Viva | antes: BD.01 Por que bancos | pronto: No banco da Apostila Viva, como a tabela respostas sabe de qual usuário é cada resposta?
 BD-006 BD.02.01 relação, tupla e atributo
 BD-007 BD.02.02 domínio
 BD-008 BD.02.03 esquema e instância
 BD-009 BD.02.04 chave candidata, primária e estrangeira
 BD-010 BD.02.05 integridade de entidade e referencial
 BD-011 BD.02.TD tarefa de domínio
-M BD.03 Primeira consulta | SQ, PS | Responder perguntas simples numa tabela
+M BD.03 Primeira consulta | SQ, PS | Responder perguntas simples numa tabela | antes: BD.02 Modelo relacional | pronto: Escreva a consulta que mostra o nome e o e-mail de todos os usuários.
 BD-012 BD.03.01 `SELECT` e `FROM`
 BD-013 BD.03.02 colunas e `*`
 BD-014 BD.03.03 apelido com `AS`
 BD-015 BD.03.04 expressões
 BD-016 BD.03.05 `DISTINCT`
 BD-017 BD.03.TD tarefa de domínio
-M BD.04 Filtrar | SQ, AE, CE | Escrever filtros compostos sem erro de aspas nem de precedência
+M BD.04 Filtrar | SQ, AE, CE | Escrever filtros compostos sem erro de aspas nem de precedência | antes: BD.03 Primeira consulta; LOG.04 Lógica booleana | pronto: Escreva a consulta das questões fáceis da disciplina 1.
 BD-018 BD.04.01 `WHERE`
 BD-019 BD.04.02 comparação
 BD-020 BD.04.03 `AND`, `OR`, `NOT` e precedência
@@ -247,100 +199,100 @@ BD-022 BD.04.05 `BETWEEN`
 BD-023 BD.04.06 `LIKE`
 BD-024 BD.04.07 aspas simples para texto
 BD-025 BD.04.TD tarefa de domínio
-M BD.05 NULL | PS, AE, CE | Prever o resultado de filtros com NULL
+M BD.05 NULL | PS, AE, CE | Prever o resultado de filtros com NULL | antes: BD.04 Filtrar | pronto: WHERE email = NULL encontra os usuários sem e-mail?
 BD-026 BD.05.01 o que é NULL
 BD-027 BD.05.02 lógica de três valores
 BD-028 BD.05.03 `IS NULL`
 BD-029 BD.05.04 NULL em comparações e contas
 BD-030 BD.05.05 `COALESCE`
 BD-031 BD.05.TD tarefa de domínio
-M BD.06 Ordenar e limitar | SQ, PS | Montar rankings e páginas de resultado
+M BD.06 Ordenar e limitar | SQ, PS | Montar rankings e páginas de resultado | antes: BD.03 Primeira consulta | pronto: Mostre as 5 respostas mais recentes.
 BD-032 BD.06.01 `ORDER BY` com várias colunas
 BD-033 BD.06.02 `ASC` e `DESC`
 BD-034 BD.06.03 `LIMIT` e `OFFSET`
 BD-035 BD.06.04 onde ficam os NULL
 BD-036 BD.06.TD tarefa de domínio
-M BD.07 Agregação | SQ, PS, AE | Resumir dados por grupo e filtrar grupos
-BD-037 BD.07.01 `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
-BD-038 BD.07.02 `COUNT(*)` e `COUNT(coluna)`
-BD-039 BD.07.03 `GROUP BY`
-BD-040 BD.07.04 `HAVING`
-BD-041 BD.07.05 ordem lógica de execução
-BD-042 BD.07.TD tarefa de domínio
-M BD.08 Junções | SQ, PS, AE, SI | Cruzar as quatro tabelas da Apostila Viva sem perder nem duplicar linhas
-BD-043 BD.08.01 produto cartesiano
-BD-044 BD.08.02 `INNER JOIN`
-BD-045 BD.08.03 `LEFT JOIN`
-BD-046 BD.08.04 `RIGHT` e `FULL JOIN`
-BD-047 BD.08.05 autojunção
-BD-048 BD.08.06 junção com várias tabelas
-BD-049 BD.08.07 linhas duplicadas por junção
-BD-050 BD.08.TD tarefa de domínio
-M BD.09 Subconsultas | SQ, PS | Resolver a mesma pergunta com junção e com subconsulta
-BD-051 BD.09.01 subconsulta escalar
-BD-052 BD.09.02 em `WHERE` com `IN` e `EXISTS`
-BD-053 BD.09.03 correlacionada
-BD-054 BD.09.04 em `FROM`
-BD-055 BD.09.TD tarefa de domínio
-M BD.10 Operações de conjunto | SQ, CE | Comparar dois conjuntos de alunos ou questões
-BD-056 BD.10.01 `UNION` e `UNION ALL`
-BD-057 BD.10.02 `INTERSECT`
-BD-058 BD.10.03 `EXCEPT`
-BD-059 BD.10.04 compatibilidade de colunas
-BD-060 BD.10.TD tarefa de domínio
-M BD.11 Funções úteis | SQ, CP | Criar faixas e rótulos dentro da consulta
-BD-061 BD.11.01 texto (`UPPER`, `SUBSTR`, `TRIM`, concatenação)
-BD-062 BD.11.02 datas
-BD-063 BD.11.03 `CASE WHEN`
-BD-064 BD.11.04 conversão de tipo
-BD-065 BD.11.TD tarefa de domínio
-M BD.12 Modelagem conceitual | MD, CE | Modelar um caso pequeno do zero e gerar as tabelas
-BD-066 BD.12.01 entidade, atributo, relacionamento
-BD-067 BD.12.02 cardinalidade (1:1, 1:N, N:M)
-BD-068 BD.12.03 entidade fraca
-BD-069 BD.12.04 diagrama ER
-BD-070 BD.12.05 passar do ER para tabelas
-BD-071 BD.12.TD tarefa de domínio
-M BD.13 Normalização | MD, CE, EX | Levar uma tabela "planilhão" até a 3FN
-BD-072 BD.13.01 dependência funcional
-BD-073 BD.13.02 anomalias de inserção, atualização e remoção
-BD-074 BD.13.03 1FN, 2FN, 3FN e FNBC
-BD-075 BD.13.04 quando desnormalizar
-BD-076 BD.13.TD tarefa de domínio
-M BD.14 Criar e alterar | SQ, AE | Criar o esquema da Apostila Viva com todas as restrições
-BD-077 BD.14.01 `CREATE TABLE`
-BD-078 BD.14.02 tipos de dados
-BD-079 BD.14.03 restrições (`PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`)
-BD-080 BD.14.04 `INSERT`, `UPDATE`, `DELETE`
-BD-081 BD.14.05 `ALTER TABLE`
-BD-082 BD.14.TD tarefa de domínio
-M BD.15 SQL analítico | SQ, PS | Calcular ranking por disciplina e evolução das respostas no tempo
-BD-083 BD.15.01 CTE com `WITH`
-BD-084 BD.15.02 CTE recursiva
-BD-085 BD.15.03 funções de janela (`ROW_NUMBER`, `RANK`, `LAG`, `LEAD`, somas acumuladas, `PARTITION BY`)
-BD-086 BD.15.TD tarefa de domínio
-M BD.16 Transações | CE, ME, EX | Explicar o que acontece com duas transferências simultâneas
-BD-087 BD.16.01 ACID
-BD-088 BD.16.02 `BEGIN`, `COMMIT`, `ROLLBACK`
-BD-089 BD.16.03 concorrência
-BD-090 BD.16.04 níveis de isolamento e anomalias (leitura suja, não repetível, fantasma)
-BD-091 BD.16.TD tarefa de domínio
-M BD.17 Desempenho | IN, CE | Ler um plano de execução e propor um índice
-BD-092 BD.17.01 índice e árvore B
-BD-093 BD.17.02 quando o índice ajuda e quando atrapalha
-BD-094 BD.17.03 plano de execução (`EXPLAIN`)
-BD-095 BD.17.04 seletividade
-BD-096 BD.17.TD tarefa de domínio
-M BD.18 Álgebra relacional | CE, CP | Traduzir consultas entre álgebra relacional e SQL (cai em concurso)
-BD-097 BD.18.01 seleção, projeção, junção, união, diferença, renomeação
-BD-098 BD.18.02 equivalência com SQL
-BD-099 BD.18.TD tarefa de domínio
-M BD.19 Visões, permissões e rotinas | CE, SQ | Criar uma visão para um relatório recorrente
+M BD.11 Funções úteis | SQ, CP | Criar faixas e rótulos dentro da consulta | antes: BD.04 Filtrar | pronto: Como mostrar “fácil”, “média” ou “difícil” com acento a partir da coluna dificuldade?
+BD-037 BD.11.01 texto (`UPPER`, `SUBSTR`, `TRIM`, concatenação)
+BD-038 BD.11.02 datas
+BD-039 BD.11.03 `CASE WHEN`
+BD-040 BD.11.04 conversão de tipo
+BD-041 BD.11.TD tarefa de domínio
+M BD.07 Agregação | SQ, PS, AE | Resumir dados por grupo e filtrar grupos | antes: BD.05 NULL; BD.06 Ordenar e limitar | pronto: Por que WHERE COUNT(*) > 20 dá erro e HAVING COUNT(*) > 20 funciona?
+BD-042 BD.07.01 `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
+BD-043 BD.07.02 `COUNT(*)` e `COUNT(coluna)`
+BD-044 BD.07.03 `GROUP BY`
+BD-045 BD.07.04 `HAVING`
+BD-046 BD.07.05 ordem lógica de execução
+BD-047 BD.07.TD tarefa de domínio
+M BD.08 Junções | SQ, PS, AE, SI | Cruzar as quatro tabelas da Apostila Viva sem perder nem duplicar linhas | antes: BD.02 Modelo relacional; BD.07 Agregação | pronto: Que junção mostra também os usuários que nunca responderam nada?
+BD-048 BD.08.01 produto cartesiano
+BD-049 BD.08.02 `INNER JOIN`
+BD-050 BD.08.03 `LEFT JOIN`
+BD-051 BD.08.04 `RIGHT` e `FULL JOIN`
+BD-052 BD.08.06 junção com várias tabelas
+BD-053 BD.08.07 linhas duplicadas por junção
+BD-054 BD.08.05 autojunção
+BD-055 BD.08.TD tarefa de domínio
+M BD.09 Subconsultas | SQ, PS | Resolver a mesma pergunta com junção e com subconsulta | antes: BD.08 Junções | pronto: Liste o nome dos usuários que têm pelo menos uma resposta, usando IN.
+BD-056 BD.09.01 subconsulta escalar
+BD-057 BD.09.02 em `WHERE` com `IN` e `EXISTS`
+BD-058 BD.09.04 em `FROM`
+BD-059 BD.09.03 correlacionada
+BD-060 BD.09.TD tarefa de domínio
+M BD.10 Operações de conjunto | SQ, CE | Comparar dois conjuntos de alunos ou questões | antes: BD.03 Primeira consulta | pronto: Qual a diferença entre UNION e UNION ALL?
+BD-061 BD.10.01 `UNION` e `UNION ALL`
+BD-062 BD.10.02 `INTERSECT`
+BD-063 BD.10.03 `EXCEPT`
+BD-064 BD.10.04 compatibilidade de colunas
+BD-065 BD.10.TD tarefa de domínio
+M BD.18 Álgebra relacional | CE, CP | Traduzir consultas entre álgebra relacional e SQL (cai em concurso) | antes: BD.10 Operações de conjunto; BD.08 Junções | pronto: Que operação da álgebra relacional faz o papel do WHERE? E da escolha de colunas no SELECT?
+BD-066 BD.18.01 seleção, projeção, junção, união, diferença, renomeação
+BD-067 BD.18.02 equivalência com SQL
+BD-068 BD.18.TD tarefa de domínio
+M BD.12 Modelagem conceitual | MD, CE | Modelar um caso pequeno do zero e gerar as tabelas | antes: BD.08 Junções | pronto: Um aluno faz várias disciplinas e cada disciplina tem vários alunos. Como guardar isso?
+BD-069 BD.12.01 entidade, atributo, relacionamento
+BD-070 BD.12.02 cardinalidade (1:1, 1:N, N:M)
+BD-071 BD.12.03 entidade fraca
+BD-072 BD.12.04 diagrama ER
+BD-073 BD.12.05 passar do ER para tabelas
+BD-074 BD.12.TD tarefa de domínio
+M BD.13 Normalização | MD, CE, EX | Levar uma tabela "planilhão" até a 3FN | antes: BD.12 Modelagem conceitual | pronto: Uma tabela de pedidos repete o endereço do cliente em cada pedido. Que problema isso causa?
+BD-075 BD.13.01 dependência funcional
+BD-076 BD.13.02 anomalias de inserção, atualização e remoção
+BD-077 BD.13.03 1FN, 2FN, 3FN e FNBC
+BD-078 BD.13.04 quando desnormalizar
+BD-079 BD.13.TD tarefa de domínio
+M BD.14 Criar e alterar | SQ, AE | Criar o esquema da Apostila Viva com todas as restrições | antes: BD.13 Normalização | pronto: Que restrição impede cadastrar dois usuários com o mesmo e-mail?
+BD-080 BD.14.01 `CREATE TABLE`
+BD-081 BD.14.02 tipos de dados
+BD-082 BD.14.03 restrições (`PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`)
+BD-083 BD.14.04 `INSERT`, `UPDATE`, `DELETE`
+BD-084 BD.14.05 `ALTER TABLE`
+BD-085 BD.14.TD tarefa de domínio
+M BD.15 SQL analítico | SQ, PS | Calcular ranking por disciplina e evolução das respostas no tempo | antes: BD.07 Agregação; BD.09 Subconsultas | pronto: Como numerar as respostas de cada usuário da mais antiga para a mais nova?
+BD-086 BD.15.01 CTE com `WITH`
+BD-087 BD.15.02 CTE recursiva
+BD-088 BD.15.03 funções de janela (`ROW_NUMBER`, `RANK`, `LAG`, `LEAD`, somas acumuladas, `PARTITION BY`)
+BD-089 BD.15.TD tarefa de domínio
+M BD.16 Transações | CE, ME, EX | Explicar o que acontece com duas transferências simultâneas | antes: BD.14 Criar e alterar | pronto: Num Pix, o que garante que o dinheiro não sai da sua conta sem entrar na outra?
+BD-090 BD.16.01 ACID
+BD-091 BD.16.02 `BEGIN`, `COMMIT`, `ROLLBACK`
+BD-092 BD.16.03 concorrência
+BD-093 BD.16.04 níveis de isolamento e anomalias (leitura suja, não repetível, fantasma)
+BD-094 BD.16.TD tarefa de domínio
+M BD.17 Desempenho | IN, CE | Ler um plano de execução e propor um índice | antes: BD.07 Agregação | pronto: Por que um índice na coluna email deixa a busca por e-mail rápida?
+BD-095 BD.17.01 índice e árvore B
+BD-096 BD.17.02 quando o índice ajuda e quando atrapalha
+BD-097 BD.17.03 plano de execução (`EXPLAIN`)
+BD-098 BD.17.04 seletividade
+BD-099 BD.17.TD tarefa de domínio
+M BD.19 Visões, permissões e rotinas | CE, SQ | Criar uma visão para um relatório recorrente | antes: BD.14 Criar e alterar | pronto: Para que serve uma VIEW?
 BD-100 BD.19.01 `VIEW`
 BD-101 BD.19.02 `GRANT` e `REVOKE`
 BD-102 BD.19.03 procedimentos e gatilhos (conceito)
 BD-103 BD.19.TD tarefa de domínio
-M BD.20 Analítico e transacional | MD, CE | Desenhar um modelo estrela para as respostas da Apostila Viva
+M BD.20 Analítico e transacional | MD, CE | Desenhar um modelo estrela para as respostas da Apostila Viva | antes: BD.13 Normalização; BD.15 SQL analítico | pronto: Por que o banco que registra cada compra não é o mesmo que gera o relatório anual?
 BD-104 BD.20.01 OLTP e OLAP
 BD-105 BD.20.02 data warehouse
 BD-106 BD.20.03 modelo estrela e floco de neve
@@ -348,15 +300,63 @@ BD-107 BD.20.04 fato e dimensão
 BD-108 BD.20.05 ETL e ELT
 BD-109 BD.20.TD tarefa de domínio
 
-## MAT Matemática para dados (5 de 16)
-M MAT.01 Conjuntos e funções | CE, NU | Resolver problemas de conjuntos e composição
+## CMP Como o computador funciona (4 de 16)
+M CMP.01 Representação numérica | NU, CE, PS | Converter números entre bases e explicar por que `0.1 + 0.2 != 0.3` | antes: LOG.03 Operadores e expressões | pronto: Por que 0.1 + 0.2 dá 0.30000000000000004?
+CMP-001 CMP.01.01 bit e byte
+CMP-002 CMP.01.02 base 2, 10 e 16
+CMP-003 CMP.01.03 conversão entre bases
+CMP-004 CMP.01.04 inteiros com sinal (complemento de dois)
+CMP-005 CMP.01.05 estouro (overflow)
+CMP-006 CMP.01.06 ponto flutuante (IEEE 754) e arredondamento
+CMP-007 CMP.01.TD tarefa de domínio
+M CMP.02 Texto | PS, AE, CE | Diagnosticar e corrigir um arquivo com acentos quebrados | antes: CMP.01 Representação numérica | pronto: Por que “São Paulo” vira “SÃ£o Paulo”?
+CMP-008 CMP.02.01 caractere e código
+CMP-009 CMP.02.02 ASCII
+CMP-010 CMP.02.03 Unicode
+CMP-011 CMP.02.04 UTF-8 e Latin-1
+CMP-012 CMP.02.05 "mojibake" (acento quebrado)
+CMP-013 CMP.02.06 normalização de acentos
+CMP-014 CMP.02.TD tarefa de domínio
+M CMP.03 Lógica digital | RT, NU, CE | Montar a tabela-verdade de um circuito pequeno | antes: LOG.04 Lógica booleana | pronto: Qual a saída de uma porta E com entradas 1 e 0?
+CMP-015 CMP.03.01 portas lógicas
+CMP-016 CMP.03.02 tabela-verdade
+CMP-017 CMP.03.03 circuitos combinacionais
+CMP-018 CMP.03.04 somador
+CMP-019 CMP.03.TD tarefa de domínio
+M CMP.04 Arquitetura | CE, ME | Explicar por que ler do disco é mais lento que da memória e o que isso muda numa análise | antes: CMP.01 Representação numérica | pronto: Qual a diferença entre memória RAM e armazenamento?
+CMP-020 CMP.04.01 CPU, memória e armazenamento
+CMP-021 CMP.04.02 hierarquia de memória e cache
+CMP-022 CMP.04.03 ciclo de instrução
+CMP-023 CMP.04.04 32 e 64 bits
+CMP-024 CMP.04.TD tarefa de domínio
+M CMP.05 Sistemas operacionais | CE, PS | Navegar e organizar arquivos por caminho sem interface gráfica | antes: CMP.04 Arquitetura | pronto: Qual a diferença entre os caminhos C:\dados\vendas.csv e dados/vendas.csv?
+CMP-025 CMP.05.01 processo e thread
+CMP-026 CMP.05.02 memória virtual
+CMP-027 CMP.05.03 sistema de arquivos
+CMP-028 CMP.05.04 caminhos absolutos e relativos
+CMP-029 CMP.05.05 permissões
+CMP-030 CMP.05.TD tarefa de domínio
+M CMP.06 Redes e web | CE, ME, IN | Ler uma resposta HTTP e dizer o que aconteceu | antes: CMP.05 Sistemas operacionais | pronto: O que significa o erro 404? E o 500?
+CMP-031 CMP.06.01 IP, DNS e portas
+CMP-032 CMP.06.02 cliente e servidor
+CMP-033 CMP.06.03 HTTP (métodos, códigos de status, cabeçalhos)
+CMP-034 CMP.06.04 HTTPS
+CMP-035 CMP.06.05 o que é uma API
+CMP-036 CMP.06.TD tarefa de domínio
+M CMP.07 Como o código roda | CE, ME | Explicar a diferença entre executar Java e Python | antes: PY.01 Primeiros passos; CMP.04 Arquitetura | pronto: Qual a diferença entre compilar (Java) e interpretar (Python)?
+CMP-037 CMP.07.01 compilador, interpretador e bytecode
+CMP-038 CMP.07.02 máquina virtual (JVM, CPython)
+CMP-039 CMP.07.TD tarefa de domínio
+
+## MAT Matemática básica e lógica (5 de 16)
+M MAT.01 Conjuntos e funções | CE, NU | Resolver problemas de conjuntos e composição | antes: nada | pronto: Se A são os clientes que usam Pix e B os que usam cartão, quem está em A ∩ B?
 MAT-001 MAT.01.01 conjunto, pertinência, operações
 MAT-002 MAT.01.02 produto cartesiano
 MAT-003 MAT.01.03 função, domínio e imagem
 MAT-004 MAT.01.04 composição
 MAT-005 MAT.01.05 inversa
 MAT-006 MAT.01.TD tarefa de domínio
-M MAT.02 Lógica proposicional | CE, RT | Resolver itens de lógica no estilo Cebraspe
+M MAT.02 Lógica proposicional | CE, RT | Resolver itens de lógica no estilo Cebraspe | antes: LOG.04 Lógica booleana; MAT.01 Conjuntos e funções | pronto: Qual a negação de “Todo boleto vence no dia 10”?
 MAT-007 MAT.02.01 proposição
 MAT-008 MAT.02.02 conectivos
 MAT-009 MAT.02.03 tabela-verdade
@@ -365,72 +365,22 @@ MAT-011 MAT.02.05 equivalências
 MAT-012 MAT.02.06 implicação e contrapositiva
 MAT-013 MAT.02.07 quantificadores
 MAT-014 MAT.02.TD tarefa de domínio
-M MAT.03 Contagem | NU, CE | Contar casos sem fórmula decorada, pela lógica
+M MAT.03 Contagem | NU, CE | Contar casos sem fórmula decorada, pela lógica | antes: MAT.01 Conjuntos e funções | pronto: Quantas senhas de 4 dígitos existem?
 MAT-015 MAT.03.01 princípio multiplicativo
 MAT-016 MAT.03.02 permutação
 MAT-017 MAT.03.03 arranjo
 MAT-018 MAT.03.04 combinação
 MAT-019 MAT.03.05 com e sem reposição
 MAT-020 MAT.03.TD tarefa de domínio
-M MAT.04 Vetores | NU, PS, CD | Calcular similaridade de cosseno entre dois vetores e interpretar
-MAT-021 MAT.04.01 vetor como seta e como lista
-MAT-022 MAT.04.02 soma
-MAT-023 MAT.04.03 múltiplo
-MAT-024 MAT.04.04 norma
-MAT-025 MAT.04.05 produto interno
-MAT-026 MAT.04.06 ângulo
-MAT-027 MAT.04.07 projeção
-MAT-028 MAT.04.TD tarefa de domínio
-M MAT.05 Matrizes | NU, PS, CD | Multiplicar matrizes à mão e com NumPy e interpretar como transformação
-MAT-029 MAT.05.01 operações
-MAT-030 MAT.05.02 produto de matrizes
-MAT-031 MAT.05.03 transposta
-MAT-032 MAT.05.04 identidade
-MAT-033 MAT.05.05 inversa
-MAT-034 MAT.05.06 matriz como transformação
-MAT-035 MAT.05.TD tarefa de domínio
-M MAT.06 Sistemas lineares | NU, RT | Resolver e classificar sistemas
-MAT-036 MAT.06.01 escalonamento
-MAT-037 MAT.06.02 posto
-MAT-038 MAT.06.03 solução única, infinitas ou nenhuma
-MAT-039 MAT.06.04 determinante
-MAT-040 MAT.06.TD tarefa de domínio
-M MAT.07 Espaços vetoriais | CE, NU | Decidir se um conjunto de vetores é base
-MAT-041 MAT.07.01 combinação linear
-MAT-042 MAT.07.02 independência linear
-MAT-043 MAT.07.03 base
-MAT-044 MAT.07.04 dimensão
-MAT-045 MAT.07.05 subespaço
-MAT-046 MAT.07.TD tarefa de domínio
-M MAT.08 Mínimos quadrados | NU, CD, EX | Ajustar uma reta por mínimos quadrados à mão e em código
-MAT-047 MAT.08.01 projeção em subespaço
-MAT-048 MAT.08.02 equações normais
-MAT-049 MAT.08.03 ligação com regressão linear
-MAT-050 MAT.08.TD tarefa de domínio
-M MAT.09 Autovalores e decomposições | NU, CD, IN | Reduzir dados a duas dimensões com PCA e interpretar os componentes
-MAT-051 MAT.09.01 autovalor e autovetor
-MAT-052 MAT.09.02 diagonalização
-MAT-053 MAT.09.03 SVD
-MAT-054 MAT.09.04 PCA como rotação para as direções de maior variância
-MAT-055 MAT.09.TD tarefa de domínio
-M MAT.10 Cálculo para otimização | NU, CD, EX | Implementar descida do gradiente para ajustar uma reta
-MAT-056 MAT.10.01 derivada como taxa
-MAT-057 MAT.10.02 regras de derivação
-MAT-058 MAT.10.03 regra da cadeia
-MAT-059 MAT.10.04 derivada parcial
-MAT-060 MAT.10.05 gradiente
-MAT-061 MAT.10.06 descida do gradiente
-MAT-062 MAT.10.07 integral como área (intuição)
-MAT-063 MAT.10.TD tarefa de domínio
 
 ## EST Probabilidade e estatística (6 de 16)
-M EST.01 Tipos de dado e coleta | CE, ME | Classificar variáveis e dizer o que um estudo permite concluir
+M EST.01 Tipos de dado e coleta | CE, ME | Classificar variáveis e dizer o que um estudo permite concluir | antes: nada | pronto: Uma pesquisa feita só com quem segue a loja numa rede social serve para falar de todos os clientes?
 EST-001 EST.01.01 variável qualitativa e quantitativa
 EST-002 EST.01.02 nominal, ordinal, discreta, contínua
 EST-003 EST.01.03 população e amostra
 EST-004 EST.01.04 estudo observacional e experimento
 EST-005 EST.01.TD tarefa de domínio
-M EST.02 Estatística descritiva | NU, IN, CD | Resumir uma variável e escolher a medida certa para dados assimétricos
+M EST.02 Estatística descritiva | NU, IN, CD | Resumir uma variável e escolher a medida certa para dados assimétricos | antes: EST.01 Tipos de dado e coleta; LOG.06 Repetição | pronto: Nove pessoas ganham R$ 3 mil e uma ganha R$ 300 mil. Que medida descreve melhor o salário típico?
 EST-006 EST.02.01 média, mediana e moda
 EST-007 EST.02.02 amplitude
 EST-008 EST.02.03 variância e desvio-padrão
@@ -438,7 +388,7 @@ EST-009 EST.02.04 quartis e intervalo interquartil
 EST-010 EST.02.05 valores atípicos
 EST-011 EST.02.06 assimetria
 EST-012 EST.02.TD tarefa de domínio
-M EST.03 Probabilidade | NU, CE, CD | Resolver problemas de Bayes, como teste com falso positivo
+M EST.03 Probabilidade | NU, CE, CD | Resolver problemas de Bayes, como teste com falso positivo | antes: MAT.01 Conjuntos e funções; MAT.03 Contagem; EST.02 Estatística descritiva | pronto: Um teste acerta 99% dos doentes e dá falso positivo em 5% dos saudáveis; a doença atinge 1% das pessoas. Deu positivo: a chance de estar doente é alta?
 EST-013 EST.03.01 espaço amostral
 EST-014 EST.03.02 eventos
 EST-015 EST.03.03 regras da soma e do produto
@@ -446,14 +396,14 @@ EST-016 EST.03.04 probabilidade condicional
 EST-017 EST.03.05 independência
 EST-018 EST.03.06 teorema de Bayes
 EST-019 EST.03.TD tarefa de domínio
-M EST.04 Variáveis aleatórias | NU, CD | Calcular esperança e variância e conferir por simulação
+M EST.04 Variáveis aleatórias | NU, CD | Calcular esperança e variância e conferir por simulação | antes: EST.03 Probabilidade | pronto: Num sorteio você ganha R$ 10 com chance de 1 em 5 e nada no resto. Quanto ganha, em média, por sorteio?
 EST-020 EST.04.01 discreta e contínua
 EST-021 EST.04.02 função de probabilidade e densidade
 EST-022 EST.04.03 esperança
 EST-023 EST.04.04 variância
 EST-024 EST.04.05 acumulada
 EST-025 EST.04.TD tarefa de domínio
-M EST.05 Distribuições | NU, ME, CD | Associar fenômenos às distribuições e calcular probabilidades
+M EST.05 Distribuições | NU, ME, CD | Associar fenômenos às distribuições e calcular probabilidades | antes: EST.04 Variáveis aleatórias | pronto: Número de mensagens que chegam por minuto no suporte: que distribuição costuma descrever isso?
 EST-026 EST.05.01 Bernoulli
 EST-027 EST.05.02 binomial
 EST-028 EST.05.03 Poisson
@@ -462,7 +412,7 @@ EST-030 EST.05.05 normal
 EST-031 EST.05.06 exponencial
 EST-032 EST.05.07 quando cada uma aparece
 EST-033 EST.05.TD tarefa de domínio
-M EST.06 Amostragem | CD, IN, CE | Mostrar o teorema central do limite por simulação
+M EST.06 Amostragem | CD, IN, CE | Mostrar o teorema central do limite por simulação | antes: EST.05 Distribuições; PY.10 Módulos e pacotes | pronto: Por que uma pesquisa com 2 mil pessoas fala pelo país inteiro?
 EST-034 EST.06.01 lei dos grandes números
 EST-035 EST.06.02 teorema central do limite
 EST-036 EST.06.03 distribuição amostral
@@ -470,29 +420,29 @@ EST-037 EST.06.04 erro-padrão
 EST-038 EST.06.05 amostragem aleatória, estratificada e por conglomerado
 EST-039 EST.06.06 viés de seleção
 EST-040 EST.06.TD tarefa de domínio
-M EST.07 Estimação | NU, IN, CE | Construir e interpretar um intervalo de confiança sem o erro clássico de interpretação
-EST-041 EST.07.01 estimador
-EST-042 EST.07.02 viés e variância
-EST-043 EST.07.03 intervalo de confiança
-EST-044 EST.07.04 interpretação correta
-EST-045 EST.07.TD tarefa de domínio
-M EST.08 Testes de hipótese | NU, IN, CE | Fazer um teste de duas médias e explicar o p-valor corretamente
-EST-046 EST.08.01 hipóteses nula e alternativa
-EST-047 EST.08.02 estatística de teste
-EST-048 EST.08.03 p-valor
-EST-049 EST.08.04 nível de significância
-EST-050 EST.08.05 erros tipo I e II
-EST-051 EST.08.06 poder
-EST-052 EST.08.07 teste t
-EST-053 EST.08.08 qui-quadrado
-EST-054 EST.08.09 múltiplos testes
-EST-055 EST.08.TD tarefa de domínio
-M EST.09 Reamostragem | CD, IN | Fazer um intervalo por bootstrap e comparar com o teórico
-EST-056 EST.09.01 bootstrap
-EST-057 EST.09.02 teste de permutação
-EST-058 EST.09.03 quando usar
-EST-059 EST.09.TD tarefa de domínio
-M EST.10 Correlação e causalidade | IN, CE, EX | Explicar por que uma correlação observada não prova causa, com um exemplo de confusão
+M EST.09 Reamostragem | CD, IN | Fazer um intervalo por bootstrap e comparar com o teórico | antes: EST.06 Amostragem; PY.06 Funções a fundo | pronto: O que é bootstrap, em uma frase?
+EST-041 EST.09.01 bootstrap
+EST-042 EST.09.02 teste de permutação
+EST-043 EST.09.03 quando usar
+EST-044 EST.09.TD tarefa de domínio
+M EST.07 Estimação | NU, IN, CE | Construir e interpretar um intervalo de confiança sem o erro clássico de interpretação | antes: EST.09 Reamostragem | pronto: O que quer dizer um intervalo de confiança de 95% que vai de 40% a 46%?
+EST-045 EST.07.01 estimador
+EST-046 EST.07.02 viés e variância
+EST-047 EST.07.03 intervalo de confiança
+EST-048 EST.07.04 interpretação correta
+EST-049 EST.07.TD tarefa de domínio
+M EST.08 Testes de hipótese | NU, IN, CE | Fazer um teste de duas médias e explicar o p-valor corretamente | antes: EST.07 Estimação | pronto: p-valor de 0,03 quer dizer que a hipótese nula tem 3% de chance de ser verdadeira?
+EST-050 EST.08.01 hipóteses nula e alternativa
+EST-051 EST.08.02 estatística de teste
+EST-052 EST.08.03 p-valor
+EST-053 EST.08.04 nível de significância
+EST-054 EST.08.05 erros tipo I e II
+EST-055 EST.08.06 poder
+EST-056 EST.08.07 teste t
+EST-057 EST.08.08 qui-quadrado
+EST-058 EST.08.09 múltiplos testes
+EST-059 EST.08.TD tarefa de domínio
+M EST.10 Correlação e causalidade | IN, CE, EX | Explicar por que uma correlação observada não prova causa, com um exemplo de confusão | antes: EST.02 Estatística descritiva | pronto: Cidades com mais academias têm mais casos de lesão. Academia causa lesão?
 EST-060 EST.10.01 covariância
 EST-061 EST.10.02 correlação de Pearson e de Spearman
 EST-062 EST.10.03 confusão
@@ -500,7 +450,7 @@ EST-063 EST.10.04 paradoxo de Simpson
 EST-064 EST.10.05 experimento aleatorizado
 EST-065 EST.10.06 teste A/B
 EST-066 EST.10.TD tarefa de domínio
-M EST.11 Regressão linear | IN, CD, NU | Ajustar e interpretar uma regressão e diagnosticar pelos resíduos
+M EST.11 Regressão linear | IN, CD, NU | Ajustar e interpretar uma regressão e diagnosticar pelos resíduos | antes: EST.10 Correlação e causalidade; EST.08 Testes de hipótese | pronto: No modelo salário = 2.000 + 300 × anos_de_estudo, o que significa o 300?
 EST-067 EST.11.01 regressão simples e múltipla
 EST-068 EST.11.02 interpretação de coeficientes
 EST-069 EST.11.03 R²
@@ -509,174 +459,172 @@ EST-071 EST.11.05 suposições
 EST-072 EST.11.06 variáveis categóricas
 EST-073 EST.11.07 interação
 EST-074 EST.11.TD tarefa de domínio
-M EST.12 Além do básico | IN, CE | Ler a saída de uma regressão logística e explicar os coeficientes
+M EST.12 Além do básico | IN, CE | Ler a saída de uma regressão logística e explicar os coeficientes | antes: EST.11 Regressão linear | pronto: Quando usar regressão logística em vez de linear?
 EST-075 EST.12.01 regressão logística (interpretação)
 EST-076 EST.12.02 ANOVA
 EST-077 EST.12.03 séries temporais (tendência, sazonalidade, autocorrelação)
 EST-078 EST.12.04 inferência bayesiana (introdução)
 EST-079 EST.12.TD tarefa de domínio
 
-## ED Estruturas de dados (7 de 16)
-M ED.01 Tipos abstratos | CE, EX | Descrever uma estrutura pelas operações e custos, sem falar de código
-ED-001 ED.01.01 tipo abstrato de dados
-ED-002 ED.01.02 interface e implementação
-ED-003 ED.01.03 operações e custos
-ED-004 ED.01.TD tarefa de domínio
-M ED.02 Vetores | SI, NU, CE | Explicar por que `append` é rápido e `insert(0, x)` é lento
-ED-005 ED.02.01 vetor contíguo
-ED-006 ED.02.02 acesso por índice em O(1)
-ED-007 ED.02.03 inserção no meio em O(n)
-ED-008 ED.02.04 vetor dinâmico e realocação
-ED-009 ED.02.TD tarefa de domínio
-M ED.03 Listas ligadas | SI, RT, CD | Implementar inserção e remoção numa lista ligada
-ED-010 ED.03.01 nó e ponteiro
-ED-011 ED.03.02 lista simples, dupla e circular
-ED-012 ED.03.03 inserção e remoção
-ED-013 ED.03.04 comparação com vetor
-ED-014 ED.03.TD tarefa de domínio
-M ED.04 Pilhas | SI, CD, CE | Validar expressões com parênteses usando pilha
-ED-015 ED.04.01 LIFO
-ED-016 ED.04.02 empilhar e desempilhar
-ED-017 ED.04.03 pilha de chamadas
-ED-018 ED.04.04 parênteses balanceados
-ED-019 ED.04.05 notação pós-fixa
-ED-020 ED.04.TD tarefa de domínio
-M ED.05 Filas | SI, CD | Simular uma fila de atendimento
-ED-021 ED.05.01 FIFO
-ED-022 ED.05.02 fila circular
-ED-023 ED.05.03 `deque`
-ED-024 ED.05.04 fila de prioridade (conceito)
-ED-025 ED.05.TD tarefa de domínio
-M ED.06 Tabelas hash | SI, NU, CE | Calcular posições, tratar colisões e explicar o custo médio
-ED-026 ED.06.01 função de espalhamento
-ED-027 ED.06.02 colisão
-ED-028 ED.06.03 encadeamento
-ED-029 ED.06.04 endereçamento aberto
-ED-030 ED.06.05 fator de carga
-ED-031 ED.06.06 por que `dict` é O(1) em média
-ED-032 ED.06.TD tarefa de domínio
-M ED.07 Árvores | SI, RT, CD | Percorrer uma árvore à mão nos quatro percursos
-ED-033 ED.07.01 raiz, folha, altura, nível
-ED-034 ED.07.02 árvore binária
-ED-035 ED.07.03 percursos (pré, em e pós-ordem
-ED-036 ED.07.04 por nível)
-ED-037 ED.07.TD tarefa de domínio
-M ED.08 Árvore binária de busca | SI, CD, CE | Inserir e remover numa ABB e prever o formato
-ED-038 ED.08.01 propriedade de ordem
-ED-039 ED.08.02 busca, inserção e remoção
-ED-040 ED.08.03 árvore degenerada
-ED-041 ED.08.TD tarefa de domínio
-M ED.09 Árvores balanceadas | SI, CE | Explicar por que o índice de um banco é uma árvore B
-ED-042 ED.09.01 AVL e fator de balanceamento
-ED-043 ED.09.02 rotações
-ED-044 ED.09.03 árvore B e o índice de banco
-ED-045 ED.09.TD tarefa de domínio
-M ED.10 Heaps | SI, CD | Manter os k maiores valores de um fluxo com heap
-ED-046 ED.10.01 heap mínimo e máximo
-ED-047 ED.10.02 subir e descer
-ED-048 ED.10.03 fila de prioridade
-ED-049 ED.10.04 `heapq`
-ED-050 ED.10.TD tarefa de domínio
-M ED.11 Grafos | SI, MD, CE | Representar uma rede pequena nas duas formas
-ED-051 ED.11.01 vértice e aresta
-ED-052 ED.11.02 dirigido e ponderado
-ED-053 ED.11.03 lista e matriz de adjacência
-ED-054 ED.11.TD tarefa de domínio
-M ED.12 Matrizes | CE, EX | Escolher a representação certa para uma matriz quase toda de zeros
-ED-055 ED.12.01 matriz densa e esparsa
-ED-056 ED.12.02 armazenamento por linha e por coluna
-ED-057 ED.12.03 por que o pandas e o NumPy são colunares
-ED-058 ED.12.TD tarefa de domínio
+## ED Estruturas de dados e algoritmos (7 de 16)
+M ALG.01 Custo | NU, ME, CE | Dar a complexidade de trechos de código e justificar | antes: LOG.06 Repetição; PY.03 Listas e tuplas | pronto: Uma função percorre a lista uma vez para achar o maior valor. Se a lista dobra de tamanho, o tempo faz o quê?
+ED-001 ALG.01.01 contar operações
+ED-002 ALG.01.02 melhor, pior e caso médio
+ED-003 ALG.01.03 notação O
+ED-004 ALG.01.04 classes comuns (1, log n, n, n log n, n², 2ⁿ)
+ED-005 ALG.01.05 custo de memória
+ED-006 ALG.01.TD tarefa de domínio
+M ED.01 Tipos abstratos | CE, EX | Descrever uma estrutura pelas operações e custos, sem falar de código | antes: ALG.01 Custo; PY.04 Dicionários e conjuntos | pronto: O que uma fila precisa saber fazer, sem falar de código?
+ED-007 ED.01.01 tipo abstrato de dados
+ED-008 ED.01.02 interface e implementação
+ED-009 ED.01.03 operações e custos
+ED-010 ED.01.TD tarefa de domínio
+M ED.02 Vetores | SI, NU, CE | Explicar por que `append` é rápido e `insert(0, x)` é lento | antes: ED.01 Tipos abstratos; PY.03 Listas e tuplas | pronto: Por que lista.append(x) é rápido e lista.insert(0, x) é lento numa lista enorme?
+ED-011 ED.02.01 vetor contíguo
+ED-012 ED.02.02 acesso por índice em O(1)
+ED-013 ED.02.03 inserção no meio em O(n)
+ED-014 ED.02.04 vetor dinâmico e realocação
+ED-015 ED.02.TD tarefa de domínio
+M ED.04 Pilhas | SI, CD, CE | Validar expressões com parênteses usando pilha | antes: ED.02 Vetores | pronto: Você empilha a, b e c e desempilha uma vez. O que sai?
+ED-016 ED.04.01 LIFO
+ED-017 ED.04.02 empilhar e desempilhar
+ED-018 ED.04.03 pilha de chamadas
+ED-019 ED.04.04 parênteses balanceados
+ED-020 ED.04.05 notação pós-fixa
+ED-021 ED.04.TD tarefa de domínio
+M ED.05 Filas | SI, CD | Simular uma fila de atendimento | antes: ED.04 Pilhas | pronto: Chegam Ana, Bruno e Carla. Quem é atendido primeiro, e por que usar deque e não lista?
+ED-022 ED.05.01 FIFO
+ED-023 ED.05.02 fila circular
+ED-024 ED.05.03 `deque`
+ED-025 ED.05.04 fila de prioridade (conceito)
+ED-026 ED.05.TD tarefa de domínio
+M ED.03 Listas ligadas | SI, RT, CD | Implementar inserção e remoção numa lista ligada | antes: ED.02 Vetores; PY.05 Referências e mutabilidade; PY.11 Classes em Python | pronto: Para inserir no fim de uma lista ligada que guarda o último nó (tail), o que precisa ser atualizado?
+ED-027 ED.03.01 nó e ponteiro
+ED-028 ED.03.02 lista simples, dupla e circular
+ED-029 ED.03.03 inserção e remoção
+ED-030 ED.03.04 comparação com vetor
+ED-031 ED.03.TD tarefa de domínio
+M ALG.04 Recursão | RT, CD, AE | Escrever funções recursivas corretas e rastreá-las | antes: LOG.07 Funções; ED.04 Pilhas | pronto: O que acontece com uma função recursiva sem caso base? | ponto de virada
+ED-032 ALG.04.01 caso base e passo
+ED-033 ALG.04.02 pilha de chamadas
+ED-034 ALG.04.03 recursão e iteração
+ED-035 ALG.04.04 recursão de cauda (conceito)
+ED-036 ALG.04.TD tarefa de domínio
+M ALG.02 Busca | RT, CD, NU | Implementar a busca binária sem erro de limite | antes: ED.02 Vetores; ALG.01 Custo | pronto: Quantas comparações, no máximo, a busca binária faz numa lista ordenada de 1 milhão de itens?
+ED-037 ALG.02.01 busca linear
+ED-038 ALG.02.02 busca binária
+ED-039 ALG.02.03 pré-condição de ordenação
+ED-040 ALG.02.TD tarefa de domínio
+M ED.06 Tabelas hash | SI, NU, CE | Calcular posições, tratar colisões e explicar o custo médio | antes: ED.02 Vetores; LOG.03 Operadores e expressões | pronto: Por que achar uma chave num dicionário é rápido mesmo com milhões de itens?
+ED-041 ED.06.01 função de espalhamento
+ED-042 ED.06.02 colisão
+ED-043 ED.06.03 encadeamento
+ED-044 ED.06.04 endereçamento aberto
+ED-045 ED.06.05 fator de carga
+ED-046 ED.06.06 por que `dict` é O(1) em média
+ED-047 ED.06.TD tarefa de domínio
+M ALG.03 Ordenação simples | RT, SI, CE | Rastrear cada algoritmo numa lista pequena | antes: ED.02 Vetores; LOG.06 Repetição | pronto: Na ordenação por inserção, o que acontece com cada novo item?
+ED-048 ALG.03.01 seleção
+ED-049 ALG.03.02 inserção
+ED-050 ALG.03.03 bolha
+ED-051 ALG.03.04 estabilidade
+ED-052 ALG.03.TD tarefa de domínio
+M ALG.05 Dividir e conquistar | RT, SI, CE | Explicar quando o quicksort degrada | antes: ALG.04 Recursão; ALG.03 Ordenação simples | pronto: Como o merge sort ordena uma lista de 8 itens?
+ED-053 ALG.05.01 merge sort
+ED-054 ALG.05.02 quicksort e pivô
+ED-055 ALG.05.03 custo n log n
+ED-056 ALG.05.TD tarefa de domínio
+M ALG.06 Ordenação por contagem | CE, NU | Dizer quando dá para ordenar em tempo linear | antes: ALG.05 Dividir e conquistar | pronto: Quando dá para ordenar sem comparar os itens entre si?
+ED-057 ALG.06.01 counting sort
+ED-058 ALG.06.02 limite de n log n para comparação
+ED-059 ALG.06.TD tarefa de domínio
+M ED.07 Árvores | SI, RT, CD | Percorrer uma árvore à mão nos quatro percursos | antes: ALG.04 Recursão; ED.05 Filas | pronto: Em que ordem a pré-ordem visita uma árvore com raiz A e filhos B (esquerda) e C (direita)?
+ED-060 ED.07.01 raiz, folha, altura, nível
+ED-061 ED.07.02 árvore binária
+ED-062 ED.07.03 percursos (pré, em e pós-ordem
+ED-063 ED.07.04 por nível)
+ED-064 ED.07.TD tarefa de domínio
+M ED.10 Heaps | SI, CD | Manter os k maiores valores de um fluxo com heap | antes: ED.07 Árvores; ED.02 Vetores | pronto: Num heap mínimo, onde fica o menor valor?
+ED-065 ED.10.01 heap mínimo e máximo
+ED-066 ED.10.02 subir e descer
+ED-067 ED.10.03 fila de prioridade
+ED-068 ED.10.04 `heapq`
+ED-069 ED.10.TD tarefa de domínio
+M ED.08 Árvore binária de busca | SI, CD, CE | Inserir e remover numa ABB e prever o formato | antes: ED.07 Árvores; ALG.02 Busca | pronto: Você insere 1, 2, 3, 4 e 5, nessa ordem, numa árvore de busca. Que formato ela fica?
+ED-070 ED.08.01 propriedade de ordem
+ED-071 ED.08.02 busca, inserção e remoção
+ED-072 ED.08.03 árvore degenerada
+ED-073 ED.08.TD tarefa de domínio
+M ED.09 Árvores balanceadas | SI, CE | Explicar por que o índice de um banco é uma árvore B | antes: ED.08 Árvore binária de busca | pronto: Para que servem as rotações de uma árvore AVL?
+ED-074 ED.09.01 AVL e fator de balanceamento
+ED-075 ED.09.02 rotações
+ED-076 ED.09.03 árvore B e o índice de banco
+ED-077 ED.09.TD tarefa de domínio
+M ED.11 Grafos | SI, MD, CE | Representar uma rede pequena nas duas formas | antes: PY.04 Dicionários e conjuntos; ED.02 Vetores | pronto: Como guardar “quem segue quem” num dicionário Python?
+ED-078 ED.11.01 vértice e aresta
+ED-079 ED.11.02 dirigido e ponderado
+ED-080 ED.11.03 lista e matriz de adjacência
+ED-081 ED.11.TD tarefa de domínio
+M ALG.09 Grafos | SI, RT, CD | Achar o caminho mínimo num grafo pequeno à mão e em código | antes: ED.11 Grafos; ED.05 Filas; ED.10 Heaps | pronto: Qual percurso acha o caminho com menos conexões entre duas pessoas numa rede?
+ED-082 ALG.09.01 busca em largura
+ED-083 ALG.09.02 busca em profundidade
+ED-084 ALG.09.03 caminho mínimo (Dijkstra)
+ED-085 ALG.09.04 ordenação topológica
+ED-086 ALG.09.TD tarefa de domínio
+M ALG.07 Gulosos | RT, CE | Mostrar um caso em que o guloso erra | antes: ALG.03 Ordenação simples | pronto: Dar troco de 6 com moedas de 1, 3 e 4, escolhendo sempre a maior, dá o menor número de moedas?
+ED-087 ALG.07.01 escolha gulosa
+ED-088 ALG.07.02 troco
+ED-089 ALG.07.03 agendamento de intervalos
+ED-090 ALG.07.04 quando falha
+ED-091 ALG.07.TD tarefa de domínio
+M ALG.08 Programação dinâmica | RT, CD | Transformar uma recursão lenta numa solução memorizada | antes: ALG.04 Recursão | pronto: Por que calcular Fibonacci de 40 com recursão simples demora tanto?
+ED-092 ALG.08.01 subproblemas sobrepostos
+ED-093 ALG.08.02 memorização
+ED-094 ALG.08.03 tabela
+ED-095 ALG.08.04 mochila e maior subsequência comum (introdução)
+ED-096 ALG.08.TD tarefa de domínio
+M ED.12 Matrizes | CE, EX | Escolher a representação certa para uma matriz quase toda de zeros | antes: ED.02 Vetores | pronto: Uma matriz de 1 milhão por 1 milhão com quase tudo zero: guardar inteira é boa ideia?
+ED-097 ED.12.01 matriz densa e esparsa
+ED-098 ED.12.02 armazenamento por linha e por coluna
+ED-099 ED.12.03 por que o pandas e o NumPy são colunares
+ED-100 ED.12.TD tarefa de domínio
+M ALG.10 Medir na prática | CD, IN | Comparar duas soluções medindo o tempo para tamanhos crescentes | antes: ALG.01 Custo; PY.10 Módulos e pacotes | pronto: Como comparar de verdade duas soluções para o mesmo problema?
+ED-101 ALG.10.01 `timeit`
+ED-102 ALG.10.02 crescimento empírico
+ED-103 ALG.10.03 vetorização como algoritmo melhor
+ED-104 ALG.10.TD tarefa de domínio
 
-## ALG Algoritmos e complexidade (8 de 16)
-M ALG.01 Custo | NU, ME, CE | Dar a complexidade de trechos de código e justificar
-ALG-001 ALG.01.01 contar operações
-ALG-002 ALG.01.02 melhor, pior e caso médio
-ALG-003 ALG.01.03 notação O
-ALG-004 ALG.01.04 classes comuns (1, log n, n, n log n, n², 2ⁿ)
-ALG-005 ALG.01.05 custo de memória
-ALG-006 ALG.01.TD tarefa de domínio
-M ALG.02 Busca | RT, CD, NU | Implementar a busca binária sem erro de limite
-ALG-007 ALG.02.01 busca linear
-ALG-008 ALG.02.02 busca binária
-ALG-009 ALG.02.03 pré-condição de ordenação
-ALG-010 ALG.02.TD tarefa de domínio
-M ALG.03 Ordenação simples | RT, SI, CE | Rastrear cada algoritmo numa lista pequena
-ALG-011 ALG.03.01 seleção
-ALG-012 ALG.03.02 inserção
-ALG-013 ALG.03.03 bolha
-ALG-014 ALG.03.04 estabilidade
-ALG-015 ALG.03.TD tarefa de domínio
-M ALG.04 Recursão | RT, CD, AE | Escrever funções recursivas corretas e rastreá-las
-ALG-016 ALG.04.01 caso base e passo
-ALG-017 ALG.04.02 pilha de chamadas
-ALG-018 ALG.04.03 recursão e iteração
-ALG-019 ALG.04.04 recursão de cauda (conceito)
-ALG-020 ALG.04.TD tarefa de domínio
-M ALG.05 Dividir e conquistar | RT, SI, CE | Explicar quando o quicksort degrada
-ALG-021 ALG.05.01 merge sort
-ALG-022 ALG.05.02 quicksort e pivô
-ALG-023 ALG.05.03 custo n log n
-ALG-024 ALG.05.TD tarefa de domínio
-M ALG.06 Ordenação por contagem | CE, NU | Dizer quando dá para ordenar em tempo linear
-ALG-025 ALG.06.01 counting sort
-ALG-026 ALG.06.02 limite de n log n para comparação
-ALG-027 ALG.06.TD tarefa de domínio
-M ALG.07 Gulosos | RT, CE | Mostrar um caso em que o guloso erra
-ALG-028 ALG.07.01 escolha gulosa
-ALG-029 ALG.07.02 troco
-ALG-030 ALG.07.03 agendamento de intervalos
-ALG-031 ALG.07.04 quando falha
-ALG-032 ALG.07.TD tarefa de domínio
-M ALG.08 Programação dinâmica | RT, CD | Transformar uma recursão lenta numa solução memorizada
-ALG-033 ALG.08.01 subproblemas sobrepostos
-ALG-034 ALG.08.02 memorização
-ALG-035 ALG.08.03 tabela
-ALG-036 ALG.08.04 mochila e maior subsequência comum (introdução)
-ALG-037 ALG.08.TD tarefa de domínio
-M ALG.09 Grafos | SI, RT, CD | Achar o caminho mínimo num grafo pequeno à mão e em código
-ALG-038 ALG.09.01 busca em largura
-ALG-039 ALG.09.02 busca em profundidade
-ALG-040 ALG.09.03 caminho mínimo (Dijkstra)
-ALG-041 ALG.09.04 ordenação topológica
-ALG-042 ALG.09.TD tarefa de domínio
-M ALG.10 Medir na prática | CD, IN | Comparar duas soluções medindo o tempo para tamanhos crescentes
-ALG-043 ALG.10.01 `timeit`
-ALG-044 ALG.10.02 crescimento empírico
-ALG-045 ALG.10.03 vetorização como algoritmo melhor
-ALG-046 ALG.10.TD tarefa de domínio
-
-## POO Orientação a objetos (9 de 16)
-M POO.01 Classe e objeto | PS, CD | Modelar uma entidade nas duas linguagens
+## POO Orientação a objetos (8 de 16)
+M POO.01 Classe e objeto | PS, CD | Modelar uma entidade nas duas linguagens | antes: PY.11 Classes em Python; ED.03 Listas ligadas | pronto: Qual a diferença entre a classe Conta e a conta do Kaio? | ponto de virada
 POO-001 POO.01.01 estado e comportamento
 POO-002 POO.01.02 construtor
 POO-003 POO.01.03 instância
 POO-004 POO.01.04 referência
 POO-005 POO.01.05 `this` e `self`
 POO-006 POO.01.TD tarefa de domínio
-M POO.02 Encapsulamento | AE, CE | Proteger as regras de uma classe
+M POO.02 Encapsulamento | AE, CE | Proteger as regras de uma classe | antes: POO.01 Classe e objeto | pronto: Por que o saldo não deve ser alterado direto, por fora da classe?
 POO-007 POO.02.01 modificadores de acesso
 POO-008 POO.02.02 getters e setters
 POO-009 POO.02.03 invariantes
 POO-010 POO.02.TD tarefa de domínio
-M POO.03 Herança | PS, CE | Montar uma hierarquia pequena sem repetição
+M POO.03 Herança | PS, CE | Montar uma hierarquia pequena sem repetição | antes: POO.01 Classe e objeto | pronto: ContaPoupanca herda de Conta. O que ela ganha sem escrever nada?
 POO-011 POO.03.01 superclasse e subclasse
 POO-012 POO.03.02 `extends`
 POO-013 POO.03.03 `super`
 POO-014 POO.03.04 sobrescrita
 POO-015 POO.03.TD tarefa de domínio
-M POO.04 Polimorfismo | PS, CD, CE | Corrigir uma lista de questões de tipos diferentes sem nenhum `if` de tipo
+M POO.04 Polimorfismo | PS, CD, CE | Corrigir uma lista de questões de tipos diferentes sem nenhum `if` de tipo | antes: POO.03 Herança | pronto: Uma lista tem um Pix, um boleto e um cartão. Como pagar todos sem if perguntando o tipo? | ponto de virada
 POO-016 POO.04.01 sobrescrita e sobrecarga
 POO-017 POO.04.02 ligação dinâmica
 POO-018 POO.04.03 tratar tipos diferentes pela mesma interface
 POO-019 POO.04.TD tarefa de domínio
-M POO.05 Abstração e interfaces | CE, MD | Decidir entre herança e composição em três casos
+M POO.05 Abstração e interfaces | CE, MD | Decidir entre herança e composição em três casos | antes: POO.04 Polimorfismo | pronto: Qual a diferença entre herdar e compor?
 POO-020 POO.05.01 classe abstrata
 POO-021 POO.05.02 interface
 POO-022 POO.05.03 contrato
 POO-023 POO.05.04 composição e herança
 POO-024 POO.05.TD tarefa de domínio
-M POO.06 Java essencial | PS, CE, AE | Prever a saída de programas Java típicos de prova
+M POO.06 Java essencial | PS, CE, AE | Prever a saída de programas Java típicos de prova | antes: POO.01 Classe e objeto; CMP.07 Como o código roda | pronto: Em Java, s1 == s2 compara o texto de duas Strings?
 POO-025 POO.06.01 JVM e bytecode
 POO-026 POO.06.02 tipos primitivos e referência
 POO-027 POO.06.03 `==` e `equals`
@@ -684,64 +632,64 @@ POO-028 POO.06.04 `String`
 POO-029 POO.06.05 `static`
 POO-030 POO.06.06 exceções verificadas
 POO-031 POO.06.TD tarefa de domínio
-M POO.07 Coleções | PS, CE | Escolher a coleção certa em Java e em Python
+M POO.07 Coleções | PS, CE | Escolher a coleção certa em Java e em Python | antes: POO.06 Java essencial; PY.04 Dicionários e conjuntos | pronto: Qual o equivalente em Java do dicionário do Python?
 POO-032 POO.07.01 `ArrayList`, `HashMap`, `HashSet` em Java
 POO-033 POO.07.02 equivalentes em Python
 POO-034 POO.07.03 genéricos
 POO-035 POO.07.TD tarefa de domínio
-M POO.08 Princípios de projeto | CE, EX | Refatorar uma classe que faz coisas demais
+M POO.08 Princípios de projeto | CE, EX | Refatorar uma classe que faz coisas demais | antes: POO.05 Abstração e interfaces | pronto: O que está errado numa classe Pedido que também manda e-mail, gera PDF e calcula imposto?
 POO-036 POO.08.01 coesão e acoplamento
 POO-037 POO.08.02 responsabilidade única
 POO-038 POO.08.03 padrões comuns (estratégia, fábrica) em nível de conceito
 POO-039 POO.08.TD tarefa de domínio
 
-## ENG Ferramentas do ofício (10 de 16)
-M ENG.01 Terminal | PS, CP | Achar e filtrar arquivos e linhas só pelo terminal
+## ENG Ferramentas do ofício (9 de 16)
+M ENG.01 Terminal | PS, CP | Achar e filtrar arquivos e linhas só pelo terminal | antes: CMP.05 Sistemas operacionais | pronto: O que fazem cd dados e depois ls?
 ENG-001 ENG.01.01 diretório atual
 ENG-002 ENG.01.02 `ls`, `cd`, `mkdir`, `cp`, `mv`, `rm`
 ENG-003 ENG.01.03 caminhos
 ENG-004 ENG.01.04 `cat`, `head`, `grep`, `wc`
 ENG-005 ENG.01.05 redirecionamento e encadeamento
 ENG-006 ENG.01.TD tarefa de domínio
-M ENG.02 Git | PS, PA, CE | Versionar um projeto e voltar a uma versão anterior
-ENG-007 ENG.02.01 repositório
-ENG-008 ENG.02.02 `add` e `commit`
-ENG-009 ENG.02.03 histórico
-ENG-010 ENG.02.04 `diff`
-ENG-011 ENG.02.05 desfazer com segurança
-ENG-012 ENG.02.TD tarefa de domínio
-M ENG.03 Git em equipe | PA, CE | Resolver um conflito de merge
-ENG-013 ENG.03.01 ramos
-ENG-014 ENG.03.02 `merge`
-ENG-015 ENG.03.03 conflito
-ENG-016 ENG.03.04 GitHub
-ENG-017 ENG.03.05 pull request
-ENG-018 ENG.03.06 revisão
-ENG-019 ENG.03.TD tarefa de domínio
-M ENG.04 Ambientes | CE, AE | Recriar o ambiente de um projeto do zero
-ENG-020 ENG.04.01 ambiente virtual
-ENG-021 ENG.04.02 dependências e versões
-ENG-022 ENG.04.03 `requirements` e arquivo de projeto
-ENG-023 ENG.04.04 por que "na minha máquina funciona"
-ENG-024 ENG.04.TD tarefa de domínio
-M ENG.05 Jupyter e editor | AE, CE | Achar o erro causado por células rodadas fora de ordem
-ENG-025 ENG.05.01 células
-ENG-026 ENG.05.02 ordem de execução e estado oculto
-ENG-027 ENG.05.03 quando sair do notebook para módulo
-ENG-028 ENG.05.TD tarefa de domínio
-M ENG.06 Projeto de dados | MD, EX | Organizar um projeto que outra pessoa consiga rodar
+M ENG.04 Ambientes | CE, AE | Recriar o ambiente de um projeto do zero | antes: ENG.01 Terminal; PY.10 Módulos e pacotes | pronto: Por que cada projeto deveria ter seu ambiente virtual?
+ENG-007 ENG.04.01 ambiente virtual
+ENG-008 ENG.04.02 dependências e versões
+ENG-009 ENG.04.03 `requirements` e arquivo de projeto
+ENG-010 ENG.04.04 por que "na minha máquina funciona"
+ENG-011 ENG.04.TD tarefa de domínio
+M ENG.05 Jupyter e editor | AE, CE | Achar o erro causado por células rodadas fora de ordem | antes: ENG.04 Ambientes | pronto: Uma variável usada na célula 5 foi criada numa célula que você já apagou. O notebook ainda funciona?
+ENG-012 ENG.05.01 células
+ENG-013 ENG.05.02 ordem de execução e estado oculto
+ENG-014 ENG.05.03 quando sair do notebook para módulo
+ENG-015 ENG.05.TD tarefa de domínio
+M ENG.02 Git | PS, PA, CE | Versionar um projeto e voltar a uma versão anterior | antes: ENG.01 Terminal | pronto: Qual a diferença entre git add e git commit?
+ENG-016 ENG.02.01 repositório
+ENG-017 ENG.02.02 `add` e `commit`
+ENG-018 ENG.02.03 histórico
+ENG-019 ENG.02.04 `diff`
+ENG-020 ENG.02.05 desfazer com segurança
+ENG-021 ENG.02.TD tarefa de domínio
+M ENG.03 Git em equipe | PA, CE | Resolver um conflito de merge | antes: ENG.02 Git | pronto: O que é um conflito de merge?
+ENG-022 ENG.03.01 ramos
+ENG-023 ENG.03.02 `merge`
+ENG-024 ENG.03.03 conflito
+ENG-025 ENG.03.04 GitHub
+ENG-026 ENG.03.05 pull request
+ENG-027 ENG.03.06 revisão
+ENG-028 ENG.03.TD tarefa de domínio
+M ENG.06 Projeto de dados | MD, EX | Organizar um projeto que outra pessoa consiga rodar | antes: ENG.02 Git; ENG.04 Ambientes | pronto: Por que nunca editar o arquivo de dados brutos?
 ENG-029 ENG.06.01 estrutura de pastas
 ENG-030 ENG.06.02 dados brutos imutáveis
 ENG-031 ENG.06.03 configuração separada do código
 ENG-032 ENG.06.04 README
 ENG-033 ENG.06.TD tarefa de domínio
-M ENG.07 Qualidade | CD, AE | Pôr testes e validação num pipeline de análise
+M ENG.07 Qualidade | CD, AE | Pôr testes e validação num pipeline de análise | antes: PY.13 Testes; ENG.06 Projeto de dados | pronto: Que validação você poria na chegada de um arquivo de vendas?
 ENG-034 ENG.07.01 testes
 ENG-035 ENG.07.02 validação de dados
 ENG-036 ENG.07.03 registro de execução (logging)
 ENG-037 ENG.07.04 revisão de código
 ENG-038 ENG.07.TD tarefa de domínio
-M ENG.08 Pipelines | MD, CE | Desenhar um pipeline diário idempotente
+M ENG.08 Pipelines | MD, CE | Desenhar um pipeline diário idempotente | antes: ENG.06 Projeto de dados; BD.14 Criar e alterar | pronto: O que quer dizer um pipeline idempotente?
 ENG-039 ENG.08.01 ETL e ELT
 ENG-040 ENG.08.02 tarefa e dependência
 ENG-041 ENG.08.03 agendamento
@@ -749,14 +697,14 @@ ENG-042 ENG.08.04 idempotência
 ENG-043 ENG.08.05 orquestrador (conceito: Airflow)
 ENG-044 ENG.08.06 transformação em SQL versionado (conceito: dbt)
 ENG-045 ENG.08.TD tarefa de domínio
-M ENG.09 Contêineres e nuvem | CE, ME | Explicar como empacotar uma análise para rodar em outro lugar
+M ENG.09 Contêineres e nuvem | CE, ME | Explicar como empacotar uma análise para rodar em outro lugar | antes: ENG.04 Ambientes | pronto: O que um contêiner resolve?
 ENG-046 ENG.09.01 contêiner e imagem (Docker)
 ENG-047 ENG.09.02 armazenamento de objetos
 ENG-048 ENG.09.03 computação sob demanda
 ENG-049 ENG.09.04 permissões
 ENG-050 ENG.09.05 custo
 ENG-051 ENG.09.TD tarefa de domínio
-M ENG.10 Processo de software | CE, ME | Resolver itens de engenharia de software no estilo Cebraspe
+M ENG.10 Processo de software | CE, ME | Resolver itens de engenharia de software no estilo Cebraspe | antes: ENG.03 Git em equipe | pronto: O que é um sprint no Scrum?
 ENG-052 ENG.10.01 requisitos
 ENG-053 ENG.10.02 ciclo de vida
 ENG-054 ENG.10.03 métodos ágeis (Scrum, Kanban)
@@ -764,88 +712,88 @@ ENG-055 ENG.10.04 qualidade e testes
 ENG-056 ENG.10.05 documentação
 ENG-057 ENG.10.TD tarefa de domínio
 
-## FMT Formatos e coleta de dados (11 de 16)
-M FMT.01 CSV | AE, CD, PS | Ler sem erro um CSV brasileiro com acentos, `;` e vírgula decimal
+## FMT Formatos e coleta de dados (10 de 16)
+M FMT.01 CSV | AE, CD, PS | Ler sem erro um CSV brasileiro com acentos, `;` e vírgula decimal | antes: PY.09 Arquivos; CMP.02 Texto | pronto: Ao abrir um CSV, tudo veio numa coluna só. O que fazer?
 FMT-001 FMT.01.01 separador, aspas e escape
 FMT-002 FMT.01.02 cabeçalho
 FMT-003 FMT.01.03 ponto e vírgula e vírgula decimal (padrão brasileiro)
 FMT-004 FMT.01.04 codificação
 FMT-005 FMT.01.05 módulo `csv` e `pandas.read_csv`
 FMT-006 FMT.01.TD tarefa de domínio
-M FMT.02 JSON | PS, CD | Transformar um JSON aninhado em tabela
+M FMT.02 JSON | PS, CD | Transformar um JSON aninhado em tabela | antes: PY.04 Dicionários e conjuntos | pronto: Como pegar a cidade em {"endereco": {"cidade": "Campo Grande"}}?
 FMT-007 FMT.02.01 objeto, lista e tipos
 FMT-008 FMT.02.02 aninhamento
 FMT-009 FMT.02.03 JSON Lines
 FMT-010 FMT.02.04 achatar estrutura aninhada
 FMT-011 FMT.02.TD tarefa de domínio
-M FMT.03 Excel e planilhas | AE, CD | Extrair uma tabela limpa de uma planilha mal formatada
-FMT-012 FMT.03.01 abas
-FMT-013 FMT.03.02 células mescladas
-FMT-014 FMT.03.03 datas como número
-FMT-015 FMT.03.04 armadilhas de planilha
-FMT-016 FMT.03.TD tarefa de domínio
-M FMT.04 XML e HTML | CD, PS | Extrair uma tabela de uma página HTML salva
-FMT-017 FMT.04.01 árvore de elementos
-FMT-018 FMT.04.02 atributos
-FMT-019 FMT.04.03 seletores
-FMT-020 FMT.04.04 extrair tabela de página
-FMT-021 FMT.04.TD tarefa de domínio
-M FMT.05 Parquet e Arrow | CE, CD | Converter CSV para Parquet e comparar tamanho e velocidade
-FMT-022 FMT.05.01 formato colunar
-FMT-023 FMT.05.02 esquema e tipos
-FMT-024 FMT.05.03 compressão
-FMT-025 FMT.05.04 partição
-FMT-026 FMT.05.TD tarefa de domínio
-M FMT.06 Datas e horas | PS, AE, CD | Corrigir uma série com datas em formatos misturados
-FMT-027 FMT.06.01 ISO 8601
-FMT-028 FMT.06.02 fuso horário
-FMT-029 FMT.06.03 data sem hora
-FMT-030 FMT.06.04 `datetime`
-FMT-031 FMT.06.05 conversão e aritmética de datas
-FMT-032 FMT.06.TD tarefa de domínio
-M FMT.07 APIs | CD, IN | Baixar uma série completa de uma API pública paginada
-FMT-033 FMT.07.01 REST
-FMT-034 FMT.07.02 requisição e resposta
-FMT-035 FMT.07.03 parâmetros
-FMT-036 FMT.07.04 paginação
-FMT-037 FMT.07.05 autenticação por chave
-FMT-038 FMT.07.06 limites de taxa
-FMT-039 FMT.07.TD tarefa de domínio
-M FMT.08 Raspagem | CE, CD | Coletar dados de uma página permitida, sem sobrecarregá-la
-FMT-040 FMT.08.01 quando é permitido (termos de uso, `robots.txt`)
-FMT-041 FMT.08.02 requisição
-FMT-042 FMT.08.03 leitura de HTML
-FMT-043 FMT.08.04 respeitar o servidor
-FMT-044 FMT.08.TD tarefa de domínio
-M FMT.09 Dados públicos brasileiros | IN, CD | Montar uma base a partir de duas fontes oficiais com dicionário de dados
-FMT-045 FMT.09.01 portal dados.gov.br
-FMT-046 FMT.09.02 API do IBGE
-FMT-047 FMT.09.03 séries do Banco Central (SGS)
-FMT-048 FMT.09.04 microdados do INEP
-FMT-049 FMT.09.05 Portal da Transparência
-FMT-050 FMT.09.06 dicionários de dados
-FMT-051 FMT.09.TD tarefa de domínio
-M FMT.10 Texto como dado | CD, PS | Comparar documentos por TF-IDF
+M FMT.06 Datas e horas | PS, AE, CD | Corrigir uma série com datas em formatos misturados | antes: PY.10 Módulos e pacotes | pronto: Por que guardar datas como 2026-10-12 e não como 12/10/2026?
+FMT-012 FMT.06.01 ISO 8601
+FMT-013 FMT.06.02 fuso horário
+FMT-014 FMT.06.03 data sem hora
+FMT-015 FMT.06.04 `datetime`
+FMT-016 FMT.06.05 conversão e aritmética de datas
+FMT-017 FMT.06.TD tarefa de domínio
+M FMT.03 Excel e planilhas | AE, CD | Extrair uma tabela limpa de uma planilha mal formatada | antes: FMT.01 CSV | pronto: Por que uma data do Excel aparece como 45210 no Python?
+FMT-018 FMT.03.01 abas
+FMT-019 FMT.03.02 células mescladas
+FMT-020 FMT.03.03 datas como número
+FMT-021 FMT.03.04 armadilhas de planilha
+FMT-022 FMT.03.TD tarefa de domínio
+M FMT.05 Parquet e Arrow | CE, CD | Converter CSV para Parquet e comparar tamanho e velocidade | antes: FMT.01 CSV; ED.12 Matrizes | pronto: Por que o mesmo dado ocupa muito menos em Parquet do que em CSV?
+FMT-023 FMT.05.01 formato colunar
+FMT-024 FMT.05.02 esquema e tipos
+FMT-025 FMT.05.03 compressão
+FMT-026 FMT.05.04 partição
+FMT-027 FMT.05.TD tarefa de domínio
+M FMT.07 APIs | CD, IN | Baixar uma série completa de uma API pública paginada | antes: FMT.02 JSON; CMP.06 Redes e web | pronto: A API devolveu só 100 itens de 5.000. O que faltou?
+FMT-028 FMT.07.01 REST
+FMT-029 FMT.07.02 requisição e resposta
+FMT-030 FMT.07.03 parâmetros
+FMT-031 FMT.07.04 paginação
+FMT-032 FMT.07.05 autenticação por chave
+FMT-033 FMT.07.06 limites de taxa
+FMT-034 FMT.07.TD tarefa de domínio
+M FMT.09 Dados públicos brasileiros | IN, CD | Montar uma base a partir de duas fontes oficiais com dicionário de dados | antes: FMT.07 APIs; FMT.01 CSV | pronto: Onde achar as séries da Selic e do IPCA?
+FMT-035 FMT.09.01 portal dados.gov.br
+FMT-036 FMT.09.02 API do IBGE
+FMT-037 FMT.09.03 séries do Banco Central (SGS)
+FMT-038 FMT.09.04 microdados do INEP
+FMT-039 FMT.09.05 Portal da Transparência
+FMT-040 FMT.09.06 dicionários de dados
+FMT-041 FMT.09.TD tarefa de domínio
+M FMT.04 XML e HTML | CD, PS | Extrair uma tabela de uma página HTML salva | antes: FMT.02 JSON | pronto: Em <produto preco="10">Café</produto>, o que é elemento e o que é atributo?
+FMT-042 FMT.04.01 árvore de elementos
+FMT-043 FMT.04.02 atributos
+FMT-044 FMT.04.03 seletores
+FMT-045 FMT.04.04 extrair tabela de página
+FMT-046 FMT.04.TD tarefa de domínio
+M FMT.08 Raspagem | CE, CD | Coletar dados de uma página permitida, sem sobrecarregá-la | antes: FMT.04 XML e HTML; CMP.06 Redes e web | pronto: Antes de raspar um site, o que conferir?
+FMT-047 FMT.08.01 quando é permitido (termos de uso, `robots.txt`)
+FMT-048 FMT.08.02 requisição
+FMT-049 FMT.08.03 leitura de HTML
+FMT-050 FMT.08.04 respeitar o servidor
+FMT-051 FMT.08.TD tarefa de domínio
+M FMT.10 Texto como dado | CD, PS | Comparar documentos por TF-IDF | antes: PY.14 Expressões regulares; PY.04 Dicionários e conjuntos | pronto: O que o TF-IDF valoriza numa palavra?
 FMT-052 FMT.10.01 tokenização
 FMT-053 FMT.10.02 contagem de palavras
 FMT-054 FMT.10.03 n-gramas
 FMT-055 FMT.10.04 stop words
 FMT-056 FMT.10.05 TF-IDF
 FMT-057 FMT.10.TD tarefa de domínio
-M FMT.11 Imagem como dado | PS, CD | Fazer operações básicas numa imagem como matriz NumPy
+M FMT.11 Imagem como dado | PS, CD | Fazer operações básicas numa imagem como matriz NumPy | antes: ED.12 Matrizes | pronto: Como o computador guarda uma foto colorida de 1000 × 1000 pixels?
 FMT-058 FMT.11.01 pixel
 FMT-059 FMT.11.02 canais
 FMT-060 FMT.11.03 matriz e tensor
 FMT-061 FMT.11.04 operações simples
 FMT-062 FMT.11.TD tarefa de domínio
-M FMT.12 Serialização | CE | Escolher formato de troca seguro entre sistemas
+M FMT.12 Serialização | CE | Escolher formato de troca seguro entre sistemas | antes: FMT.02 JSON | pronto: Por que não abrir um arquivo pickle recebido de um desconhecido?
 FMT-063 FMT.12.01 `pickle` e seus riscos
 FMT-064 FMT.12.02 JSON para troca
 FMT-065 FMT.12.03 versões de esquema
 FMT-066 FMT.12.TD tarefa de domínio
 
-## AD Análise de dados (12 de 16)
-M AD.01 NumPy | PS, CD, NU | Trocar laços por operações vetorizadas e medir o ganho
+## AD Análise de dados (11 de 16)
+M AD.01 NumPy | PS, CD, NU | Trocar laços por operações vetorizadas e medir o ganho | antes: PY.07 Compreensões e iteração; ED.12 Matrizes | pronto: Como somar 10 a todos os preços de um array, sem laço?
 AD-001 AD.01.01 `ndarray`
 AD-002 AD.01.02 forma e tipo
 AD-003 AD.01.03 criação
@@ -855,38 +803,38 @@ AD-006 AD.01.06 vetorização
 AD-007 AD.01.07 broadcasting
 AD-008 AD.01.08 agregações por eixo
 AD-009 AD.01.TD tarefa de domínio
-M AD.02 pandas: estruturas | PS, CD | Carregar e descrever um conjunto de dados novo em minutos
+M AD.02 pandas: estruturas | PS, CD | Carregar e descrever um conjunto de dados novo em minutos | antes: AD.01 NumPy; FMT.01 CSV | pronto: O que df.info() mostra de útil logo de cara?
 AD-010 AD.02.01 `Series` e `DataFrame`
 AD-011 AD.02.02 índice
 AD-012 AD.02.03 tipos de coluna
 AD-013 AD.02.04 ler e inspecionar (`head`, `info`, `describe`)
 AD-014 AD.02.TD tarefa de domínio
-M AD.03 Selecionar e filtrar | PS, AE, CD | Responder perguntas filtrando sem o erro de cópia encadeada
+M AD.03 Selecionar e filtrar | PS, AE, CD | Responder perguntas filtrando sem o erro de cópia encadeada | antes: AD.02 pandas: estruturas; BD.04 Filtrar | pronto: Como pegar só os pedidos acima de R$ 100?
 AD-015 AD.03.01 `loc` e `iloc`
 AD-016 AD.03.02 filtro booleano
 AD-017 AD.03.03 `query`
 AD-018 AD.03.04 criar e transformar colunas
 AD-019 AD.03.05 aviso de cópia
 AD-020 AD.03.TD tarefa de domínio
-M AD.04 Agrupar | CD, PS | Fazer em pandas a mesma análise feita em SQL e conferir
+M AD.04 Agrupar | CD, PS | Fazer em pandas a mesma análise feita em SQL e conferir | antes: AD.03 Selecionar e filtrar; BD.07 Agregação | pronto: Como calcular a taxa de acerto por disciplina?
 AD-021 AD.04.01 `groupby`
 AD-022 AD.04.02 `agg` com várias funções
 AD-023 AD.04.03 `transform`
 AD-024 AD.04.04 tabela dinâmica (`pivot_table`)
 AD-025 AD.04.05 equivalência com SQL
 AD-026 AD.04.TD tarefa de domínio
-M AD.05 Juntar | CD, AE | Juntar tabelas e provar que nenhuma linha se perdeu ou duplicou
+M AD.05 Juntar | CD, AE | Juntar tabelas e provar que nenhuma linha se perdeu ou duplicou | antes: AD.04 Agrupar; BD.08 Junções | pronto: Como saber se um merge duplicou linhas?
 AD-027 AD.05.01 `merge` (tipos de junção)
 AD-028 AD.05.02 `concat`
 AD-029 AD.05.03 chaves duplicadas
 AD-030 AD.05.04 validar a junção
 AD-031 AD.05.TD tarefa de domínio
-M AD.06 Arrumar dados | CD, PS | Arrumar uma tabela larga de planilha para formato longo
+M AD.06 Arrumar dados | CD, PS | Arrumar uma tabela larga de planilha para formato longo | antes: AD.04 Agrupar | pronto: Uma planilha tem uma coluna por mês (jan, fev, mar). Por que passar para o formato longo?
 AD-032 AD.06.01 dado arrumado (tidy data)
 AD-033 AD.06.02 `melt` e `pivot`
 AD-034 AD.06.03 colunas com mais de uma informação
 AD-035 AD.06.TD tarefa de domínio
-M AD.07 Limpeza | AE, CD, IN | Limpar uma base real e documentar cada decisão
+M AD.07 Limpeza | AE, CD, IN | Limpar uma base real e documentar cada decisão | antes: AD.05 Juntar; AD.06 Arrumar dados | pronto: A coluna cidade tem “Campo Grande”, “campo grande” e “C. Grande”. O que fazer?
 AD-036 AD.07.01 dados ausentes (tipos e tratamentos)
 AD-037 AD.07.02 duplicados
 AD-038 AD.07.03 tipos errados
@@ -894,82 +842,134 @@ AD-039 AD.07.04 inconsistência de categorias
 AD-040 AD.07.05 valores atípicos
 AD-041 AD.07.06 validação de regras
 AD-042 AD.07.TD tarefa de domínio
-M AD.08 Datas e séries | CD, IN | Calcular a inflação acumulada em 12 meses a partir da série mensal
+M AD.08 Datas e séries | CD, IN | Calcular a inflação acumulada em 12 meses a partir da série mensal | antes: AD.04 Agrupar; FMT.06 Datas e horas | pronto: Como calcular a inflação acumulada em 12 meses a partir das variações mensais?
 AD-043 AD.08.01 índice de tempo
 AD-044 AD.08.02 reamostragem
 AD-045 AD.08.03 janelas móveis
 AD-046 AD.08.04 defasagem
 AD-047 AD.08.05 variação percentual
 AD-048 AD.08.TD tarefa de domínio
-M AD.09 Análise exploratória | IN, EX, CD | Fazer uma análise exploratória completa com cinco achados justificados
-AD-049 AD.09.01 perguntas antes dos gráficos
-AD-050 AD.09.02 distribuições
-AD-051 AD.09.03 relações
-AD-052 AD.09.04 segmentação
-AD-053 AD.09.05 hipóteses a testar
-AD-054 AD.09.TD tarefa de domínio
-M AD.10 Desempenho e alternativas | CD, IN | Analisar um arquivo maior que o confortável sem travar
-AD-055 AD.10.01 memória por tipo
-AD-056 AD.10.02 `category`
-AD-057 AD.10.03 leitura em partes
-AD-058 AD.10.04 Polars e DuckDB a partir do Python
-AD-059 AD.10.TD tarefa de domínio
+M AD.10 Desempenho e alternativas | CD, IN | Analisar um arquivo maior que o confortável sem travar | antes: AD.04 Agrupar; CMP.04 Arquitetura | pronto: O arquivo tem 5 GB e o computador, 8 GB de RAM. Como analisar?
+AD-049 AD.10.01 memória por tipo
+AD-050 AD.10.02 `category`
+AD-051 AD.10.03 leitura em partes
+AD-052 AD.10.04 Polars e DuckDB a partir do Python
+AD-053 AD.10.TD tarefa de domínio
 
-## VIS Visualização e comunicação (13 de 16)
-M VIS.01 Percepção | GR, CE | Ordenar codificações visuais por precisão
+## VIS Visualização e comunicação (12 de 16)
+M VIS.01 Percepção | GR, CE | Ordenar codificações visuais por precisão | antes: nada | pronto: Para comparar 5 valores com precisão, pizza ou barras?
 VIS-001 VIS.01.01 posição, comprimento, ângulo e cor
 VIS-002 VIS.01.02 o que o olho compara bem e mal
 VIS-003 VIS.01.TD tarefa de domínio
-M VIS.02 Escolher o gráfico | GR, ME | Escolher o gráfico certo para dez perguntas
+M VIS.02 Escolher o gráfico | GR, ME | Escolher o gráfico certo para dez perguntas | antes: VIS.01 Percepção; EST.02 Estatística descritiva | pronto: Que gráfico mostra como a Selic mudou mês a mês?
 VIS-004 VIS.02.01 comparação
 VIS-005 VIS.02.02 distribuição (histograma, boxplot)
 VIS-006 VIS.02.03 relação (dispersão)
 VIS-007 VIS.02.04 composição
 VIS-008 VIS.02.05 tempo (linha)
 VIS-009 VIS.02.TD tarefa de domínio
-M VIS.03 Matplotlib | CD, PS | Fazer um painel de quatro gráficos legível
+M VIS.03 Matplotlib | CD, PS | Fazer um painel de quatro gráficos legível | antes: VIS.02 Escolher o gráfico; AD.02 pandas: estruturas | pronto: O que todo gráfico precisa ter antes de ir para um relatório?
 VIS-010 VIS.03.01 figura e eixos
 VIS-011 VIS.03.02 tipos de gráfico
 VIS-012 VIS.03.03 rótulos e títulos
 VIS-013 VIS.03.04 vários painéis
 VIS-014 VIS.03.TD tarefa de domínio
-M VIS.04 Gráficos que mentem | GR, AE | Corrigir três gráficos enganosos
+M VIS.04 Gráficos que mentem | GR, AE | Corrigir três gráficos enganosos | antes: VIS.03 Matplotlib | pronto: Barras com o eixo começando em 50 comparando 52% e 55%: o que está errado?
 VIS-015 VIS.04.01 eixo truncado
 VIS-016 VIS.04.02 escala dupla
 VIS-017 VIS.04.03 área enganosa
 VIS-018 VIS.04.04 excesso de cor
 VIS-019 VIS.04.TD tarefa de domínio
-M VIS.05 Gráfico explicativo | GR, EX | Transformar um gráfico exploratório em explicativo
+M VIS.05 Gráfico explicativo | GR, EX | Transformar um gráfico exploratório em explicativo | antes: VIS.04 Gráficos que mentem | pronto: O que muda entre um gráfico para explorar e um para explicar?
 VIS-020 VIS.05.01 um recado por gráfico
 VIS-021 VIS.05.02 título que diz a conclusão
 VIS-022 VIS.05.03 destaque e contexto
 VIS-023 VIS.05.TD tarefa de domínio
-M VIS.06 Relatório e notebook | EX, IN | Escrever um relatório de uma página a partir de uma análise
-VIS-024 VIS.06.01 estrutura (pergunta, método, resultado, limite)
-VIS-025 VIS.06.02 notebook reproduzível
-VIS-026 VIS.06.03 Markdown
-VIS-027 VIS.06.TD tarefa de domínio
-M VIS.07 Painéis | GR, EX | Desenhar um painel de acompanhamento com cinco indicadores
-VIS-028 VIS.07.01 indicadores
-VIS-029 VIS.07.02 filtros
-VIS-030 VIS.07.03 quando um painel ajuda e quando atrapalha
-VIS-031 VIS.07.TD tarefa de domínio
+M AD.09 Análise exploratória | IN, EX, CD | Fazer uma análise exploratória completa com cinco achados justificados | antes: AD.07 Limpeza; VIS.03 Matplotlib; EST.02 Estatística descritiva | pronto: Antes de qualquer gráfico, o que define uma boa análise exploratória?
+VIS-024 AD.09.01 perguntas antes dos gráficos
+VIS-025 AD.09.02 distribuições
+VIS-026 AD.09.03 relações
+VIS-027 AD.09.04 segmentação
+VIS-028 AD.09.05 hipóteses a testar
+VIS-029 AD.09.TD tarefa de domínio
+M VIS.06 Relatório e notebook | EX, IN | Escrever um relatório de uma página a partir de uma análise | antes: VIS.05 Gráfico explicativo; AD.09 Análise exploratória; ENG.05 Jupyter e editor | pronto: Quais as quatro partes de um relatório de análise?
+VIS-030 VIS.06.01 estrutura (pergunta, método, resultado, limite)
+VIS-031 VIS.06.02 notebook reproduzível
+VIS-032 VIS.06.03 Markdown
+VIS-033 VIS.06.TD tarefa de domínio
+M VIS.07 Painéis | GR, EX | Desenhar um painel de acompanhamento com cinco indicadores | antes: VIS.06 Relatório e notebook | pronto: Quantos indicadores cabem num painel útil?
+VIS-034 VIS.07.01 indicadores
+VIS-035 VIS.07.02 filtros
+VIS-036 VIS.07.03 quando um painel ajuda e quando atrapalha
+VIS-037 VIS.07.TD tarefa de domínio
+
+## ALC Álgebra linear e cálculo para dados (13 de 16)
+M MAT.04 Vetores | NU, PS, CD | Calcular similaridade de cosseno entre dois vetores e interpretar | antes: MAT.01 Conjuntos e funções; AD.01 NumPy | pronto: Dois clientes gastam (100, 0, 50) e (200, 0, 100) em três categorias. Eles são parecidos?
+ALC-001 MAT.04.01 vetor como seta e como lista
+ALC-002 MAT.04.02 soma
+ALC-003 MAT.04.03 múltiplo
+ALC-004 MAT.04.04 norma
+ALC-005 MAT.04.05 produto interno
+ALC-006 MAT.04.06 ângulo
+ALC-007 MAT.04.07 projeção
+ALC-008 MAT.04.TD tarefa de domínio
+M MAT.05 Matrizes | NU, PS, CD | Multiplicar matrizes à mão e com NumPy e interpretar como transformação | antes: MAT.04 Vetores | pronto: Uma tabela de 1.000 clientes por 3 colunas, multiplicada por um vetor de 3 pesos, dá o quê?
+ALC-009 MAT.05.01 operações
+ALC-010 MAT.05.02 produto de matrizes
+ALC-011 MAT.05.03 transposta
+ALC-012 MAT.05.04 identidade
+ALC-013 MAT.05.05 inversa
+ALC-014 MAT.05.06 matriz como transformação
+ALC-015 MAT.05.TD tarefa de domínio
+M MAT.06 Sistemas lineares | NU, RT | Resolver e classificar sistemas | antes: MAT.05 Matrizes | pronto: x + y = 10 e x − y = 2. Quanto valem x e y?
+ALC-016 MAT.06.01 escalonamento
+ALC-017 MAT.06.02 posto
+ALC-018 MAT.06.03 solução única, infinitas ou nenhuma
+ALC-019 MAT.06.04 determinante
+ALC-020 MAT.06.TD tarefa de domínio
+M MAT.07 Espaços vetoriais | CE, NU | Decidir se um conjunto de vetores é base | antes: MAT.06 Sistemas lineares | pronto: Se uma coluna é o dobro de outra, ela traz informação nova?
+ALC-021 MAT.07.01 combinação linear
+ALC-022 MAT.07.02 independência linear
+ALC-023 MAT.07.03 base
+ALC-024 MAT.07.04 dimensão
+ALC-025 MAT.07.05 subespaço
+ALC-026 MAT.07.TD tarefa de domínio
+M MAT.08 Mínimos quadrados | NU, CD, EX | Ajustar uma reta por mínimos quadrados à mão e em código | antes: MAT.07 Espaços vetoriais; EST.11 Regressão linear | pronto: O que a reta de mínimos quadrados minimiza?
+ALC-027 MAT.08.01 projeção em subespaço
+ALC-028 MAT.08.02 equações normais
+ALC-029 MAT.08.03 ligação com regressão linear
+ALC-030 MAT.08.TD tarefa de domínio
+M MAT.09 Autovalores e decomposições | NU, CD, IN | Reduzir dados a duas dimensões com PCA e interpretar os componentes | antes: MAT.08 Mínimos quadrados | pronto: O que o primeiro componente principal representa?
+ALC-031 MAT.09.01 autovalor e autovetor
+ALC-032 MAT.09.02 diagonalização
+ALC-033 MAT.09.03 SVD
+ALC-034 MAT.09.04 PCA como rotação para as direções de maior variância
+ALC-035 MAT.09.TD tarefa de domínio
+M MAT.10 Cálculo para otimização | NU, CD, EX | Implementar descida do gradiente para ajustar uma reta | antes: MAT.08 Mínimos quadrados | pronto: O que a descida do gradiente faz, em uma frase?
+ALC-036 MAT.10.01 derivada como taxa
+ALC-037 MAT.10.02 regras de derivação
+ALC-038 MAT.10.03 regra da cadeia
+ALC-039 MAT.10.04 derivada parcial
+ALC-040 MAT.10.05 gradiente
+ALC-041 MAT.10.06 descida do gradiente
+ALC-042 MAT.10.07 integral como área (intuição)
+ALC-043 MAT.10.TD tarefa de domínio
 
 ## ML Aprendizado de máquina (14 de 16)
-M ML.01 O problema | CE, ME | Enquadrar dez problemas reais no tipo certo
+M ML.01 O problema | CE, ME | Enquadrar dez problemas reais no tipo certo | antes: EST.11 Regressão linear; AD.07 Limpeza | pronto: Prever se um cliente vai cancelar a assinatura é regressão ou classificação?
 ML-001 ML.01.01 supervisionado e não supervisionado
 ML-002 ML.01.02 regressão e classificação
 ML-003 ML.01.03 variável-alvo e atributos
 ML-004 ML.01.04 o que um modelo aprende
 ML-005 ML.01.TD tarefa de domínio
-M ML.02 Avaliação honesta | CE, AE, IN | Achar o vazamento num pipeline com resultado bom demais
+M ML.02 Avaliação honesta | CE, AE, IN | Achar o vazamento num pipeline com resultado bom demais | antes: ML.01 O problema; EST.06 Amostragem | pronto: Por que o modelo não pode ser avaliado com os mesmos dados do treino?
 ML-006 ML.02.01 treino, validação e teste
 ML-007 ML.02.02 sobreajuste e subajuste
 ML-008 ML.02.03 viés e variância
 ML-009 ML.02.04 vazamento de dados
 ML-010 ML.02.05 validação cruzada
 ML-011 ML.02.TD tarefa de domínio
-M ML.03 Métricas | NU, IN, CE | Escolher a métrica para um caso com classes desbalanceadas e justificar
+M ML.03 Métricas | NU, IN, CE | Escolher a métrica para um caso com classes desbalanceadas e justificar | antes: ML.02 Avaliação honesta | pronto: Com 1% de fraudes, um modelo que diz sempre “não é fraude” tem 99% de acurácia. Ele é bom?
 ML-012 ML.03.01 MAE, RMSE e R²
 ML-013 ML.03.02 matriz de confusão
 ML-014 ML.03.03 acurácia
@@ -979,69 +979,69 @@ ML-017 ML.03.06 F1
 ML-018 ML.03.07 curva ROC e AUC
 ML-019 ML.03.08 escolha da métrica pelo custo do erro
 ML-020 ML.03.TD tarefa de domínio
-M ML.04 Modelos lineares | CD, IN | Ajustar, regularizar e interpretar um modelo linear
+M ML.04 Modelos lineares | CD, IN | Ajustar, regularizar e interpretar um modelo linear | antes: ML.03 Métricas; MAT.08 Mínimos quadrados; MAT.10 Cálculo para otimização | pronto: Para que serve a regularização?
 ML-021 ML.04.01 regressão linear
 ML-022 ML.04.02 regressão logística
 ML-023 ML.04.03 regularização Ridge e Lasso
 ML-024 ML.04.TD tarefa de domínio
-M ML.05 Vizinhos e distância | CD, CE | Mostrar o efeito de padronizar no kNN
+M ML.05 Vizinhos e distância | CD, CE | Mostrar o efeito de padronizar no kNN | antes: ML.04 Modelos lineares; MAT.04 Vetores | pronto: Por que padronizar as colunas antes do kNN?
 ML-025 ML.05.01 k vizinhos mais próximos
 ML-026 ML.05.02 padronização das escalas
 ML-027 ML.05.03 maldição da dimensionalidade
 ML-028 ML.05.TD tarefa de domínio
-M ML.06 Árvores e conjuntos | CD, IN, CE | Comparar árvore, floresta e boosting no mesmo problema
-ML-029 ML.06.01 árvore de decisão
-ML-030 ML.06.02 impureza
-ML-031 ML.06.03 poda
-ML-032 ML.06.04 bagging
-ML-033 ML.06.05 random forest
-ML-034 ML.06.06 boosting
-ML-035 ML.06.TD tarefa de domínio
-M ML.07 Atributos | CD, AE | Montar um pipeline completo sem vazamento
-ML-036 ML.07.01 codificação de categorias
-ML-037 ML.07.02 padronização
-ML-038 ML.07.03 criar atributos
-ML-039 ML.07.04 seleção
-ML-040 ML.07.05 pipelines do scikit-learn
-ML-041 ML.07.TD tarefa de domínio
-M ML.08 Não supervisionado | CD, IN | Segmentar dados e descrever cada grupo
+M ML.07 Atributos | CD, AE | Montar um pipeline completo sem vazamento | antes: ML.05 Vizinhos e distância; AD.07 Limpeza | pronto: Como transformar a coluna cidade para o modelo usar?
+ML-029 ML.07.01 codificação de categorias
+ML-030 ML.07.02 padronização
+ML-031 ML.07.03 criar atributos
+ML-032 ML.07.04 seleção
+ML-033 ML.07.05 pipelines do scikit-learn
+ML-034 ML.07.TD tarefa de domínio
+M ML.06 Árvores e conjuntos | CD, IN, CE | Comparar árvore, floresta e boosting no mesmo problema | antes: ML.07 Atributos | pronto: Por que uma floresta aleatória costuma errar menos que uma árvore sozinha?
+ML-035 ML.06.01 árvore de decisão
+ML-036 ML.06.02 impureza
+ML-037 ML.06.03 poda
+ML-038 ML.06.04 bagging
+ML-039 ML.06.05 random forest
+ML-040 ML.06.06 boosting
+ML-041 ML.06.TD tarefa de domínio
+M ML.08 Não supervisionado | CD, IN | Segmentar dados e descrever cada grupo | antes: ML.05 Vizinhos e distância; MAT.09 Autovalores e decomposições | pronto: No k-means, o que você precisa escolher antes de rodar?
 ML-042 ML.08.01 k-means
 ML-043 ML.08.02 agrupamento hierárquico
 ML-044 ML.08.03 DBSCAN
 ML-045 ML.08.04 escolher o número de grupos
 ML-046 ML.08.05 PCA na prática
 ML-047 ML.08.TD tarefa de domínio
-M ML.09 Ajuste e escolha | CD, IN | Ajustar hiperparâmetros sem contaminar o teste
+M ML.09 Ajuste e escolha | CD, IN | Ajustar hiperparâmetros sem contaminar o teste | antes: ML.06 Árvores e conjuntos; ML.02 Avaliação honesta | pronto: Por que não escolher os hiperparâmetros olhando o resultado no teste?
 ML-048 ML.09.01 busca de hiperparâmetros
 ML-049 ML.09.02 validação cruzada aninhada (conceito)
 ML-050 ML.09.03 curva de aprendizado
 ML-051 ML.09.TD tarefa de domínio
-M ML.10 Problemas reais | CE, IN | Tratar um problema desbalanceado e explicar a escolha
+M ML.10 Problemas reais | CE, IN | Tratar um problema desbalanceado e explicar a escolha | antes: ML.09 Ajuste e escolha | pronto: O que é deriva de dados?
 ML-052 ML.10.01 classes desbalanceadas
 ML-053 ML.10.02 dados faltantes no modelo
 ML-054 ML.10.03 deriva de dados
 ML-055 ML.10.04 calibração
 ML-056 ML.10.TD tarefa de domínio
-M ML.11 Interpretação | IN, EX | Explicar um modelo para um gestor em cinco linhas
+M ML.11 Interpretação | IN, EX | Explicar um modelo para um gestor em cinco linhas | antes: ML.06 Árvores e conjuntos | pronto: Como explicar a um gestor por que o modelo negou crédito a alguém?
 ML-057 ML.11.01 importância de atributos
 ML-058 ML.11.02 dependência parcial
 ML-059 ML.11.03 valores SHAP (conceito)
 ML-060 ML.11.04 explicar para quem decide
 ML-061 ML.11.TD tarefa de domínio
-M ML.12 Redes neurais | CE, PS | Explicar o que uma rede pequena aprende num exemplo simples
-ML-062 ML.12.01 perceptron
-ML-063 ML.12.02 camadas
-ML-064 ML.12.03 ativação
-ML-065 ML.12.04 retropropagação (intuição)
-ML-066 ML.12.05 quando vale a pena
-ML-067 ML.12.TD tarefa de domínio
-M ML.13 Texto e tempo | CD, IN | Bater uma previsão ingênua numa série real com validação temporal
-ML-068 ML.13.01 classificação de texto com TF-IDF
-ML-069 ML.13.02 previsão de séries (base ingênua, validação temporal)
-ML-070 ML.13.TD tarefa de domínio
+M ML.13 Texto e tempo | CD, IN | Bater uma previsão ingênua numa série real com validação temporal | antes: ML.04 Modelos lineares; FMT.10 Texto como dado; AD.08 Datas e séries | pronto: Por que não embaralhar os dados ao validar uma previsão de vendas?
+ML-062 ML.13.01 classificação de texto com TF-IDF
+ML-063 ML.13.02 previsão de séries (base ingênua, validação temporal)
+ML-064 ML.13.TD tarefa de domínio
+M ML.12 Redes neurais | CE, PS | Explicar o que uma rede pequena aprende num exemplo simples | antes: ML.04 Modelos lineares; MAT.10 Cálculo para otimização | pronto: O que uma rede neural ajusta quando aprende?
+ML-065 ML.12.01 perceptron
+ML-066 ML.12.02 camadas
+ML-067 ML.12.03 ativação
+ML-068 ML.12.04 retropropagação (intuição)
+ML-069 ML.12.05 quando vale a pena
+ML-070 ML.12.TD tarefa de domínio
 
 ## NSQ Dados além do relacional (15 de 16)
-M NSQ.01 Por que NoSQL | CE, ME | Escolher o tipo de banco para cinco cenários e justificar
+M NSQ.01 Por que NoSQL | CE, ME | Escolher o tipo de banco para cinco cenários e justificar | antes: BD.16 Transações | pronto: Por que um app global às vezes mostra a contagem de curtidas com atraso?
 NSQ-001 NSQ.01.01 limites do relacional
 NSQ-002 NSQ.01.02 esquema flexível
 NSQ-003 NSQ.01.03 escala horizontal
@@ -1049,66 +1049,66 @@ NSQ-004 NSQ.01.04 teorema CAP
 NSQ-005 NSQ.01.05 consistência eventual
 NSQ-006 NSQ.01.06 BASE e ACID
 NSQ-007 NSQ.01.TD tarefa de domínio
-M NSQ.02 Documentos | PS, CE, MD | Modelar a Apostila Viva como documentos e consultar
+M NSQ.02 Documentos | PS, CE, MD | Modelar a Apostila Viva como documentos e consultar | antes: NSQ.01 Por que NoSQL; FMT.02 JSON | pronto: Quando vale embutir os itens dentro do documento do pedido?
 NSQ-008 NSQ.02.01 documento JSON
 NSQ-009 NSQ.02.02 coleção
 NSQ-010 NSQ.02.03 consulta e agregação no MongoDB
 NSQ-011 NSQ.02.04 embutir ou referenciar
 NSQ-012 NSQ.02.TD tarefa de domínio
-M NSQ.03 Colunar e análise | SQ, IN | Consultar um Parquet grande com DuckDB e explicar a velocidade
+M NSQ.03 Colunar e análise | SQ, IN | Consultar um Parquet grande com DuckDB e explicar a velocidade | antes: NSQ.01 Por que NoSQL; FMT.05 Parquet e Arrow; BD.07 Agregação | pronto: Por que somar uma coluna de 100 milhões de linhas é rápido no DuckDB?
 NSQ-013 NSQ.03.01 armazenamento por linha e por coluna
 NSQ-014 NSQ.03.02 compressão
 NSQ-015 NSQ.03.03 Parquet
 NSQ-016 NSQ.03.04 DuckDB consultando arquivo direto
 NSQ-017 NSQ.03.TD tarefa de domínio
-M NSQ.04 Chave-valor e cache | CE | Desenhar um cache para uma consulta cara
+M NSQ.04 Chave-valor e cache | CE | Desenhar um cache para uma consulta cara | antes: NSQ.01 Por que NoSQL | pronto: O que é um cache?
 NSQ-018 NSQ.04.01 Redis
 NSQ-019 NSQ.04.02 expiração
 NSQ-020 NSQ.04.03 contadores
 NSQ-021 NSQ.04.04 quando usar cache
 NSQ-022 NSQ.04.TD tarefa de domínio
-M NSQ.05 Coluna larga e grafo | CE, ME | Reconhecer problemas que pedem grafo
+M NSQ.05 Coluna larga e grafo | CE, ME | Reconhecer problemas que pedem grafo | antes: NSQ.01 Por que NoSQL; ED.11 Grafos | pronto: Que tipo de banco responde bem a “amigos de amigos que moram em Campo Grande”?
 NSQ-023 NSQ.05.01 Cassandra (conceito)
 NSQ-024 NSQ.05.02 Neo4j e consultas de caminho (conceito)
 NSQ-025 NSQ.05.TD tarefa de domínio
-M NSQ.06 Big data | CE, EX | Explicar como uma contagem roda dividida em muitas máquinas
+M NSQ.06 Big data | CE, EX | Explicar como uma contagem roda dividida em muitas máquinas | antes: NSQ.03 Colunar e análise; ALG.05 Dividir e conquistar | pronto: Como contar as palavras de um bilhão de documentos usando muitas máquinas?
 NSQ-026 NSQ.06.01 volume, velocidade e variedade
 NSQ-027 NSQ.06.02 processamento distribuído
 NSQ-028 NSQ.06.03 MapReduce
 NSQ-029 NSQ.06.04 Spark e DataFrames distribuídos (conceito)
 NSQ-030 NSQ.06.05 data lake e lakehouse
 NSQ-031 NSQ.06.TD tarefa de domínio
-M NSQ.07 Fluxos | CE | Dizer quando um problema pede processamento contínuo
+M NSQ.07 Fluxos | CE | Dizer quando um problema pede processamento contínuo | antes: NSQ.06 Big data | pronto: Qual a diferença entre processar em lote e em fluxo?
 NSQ-032 NSQ.07.01 dado em lote e em fluxo
 NSQ-033 NSQ.07.02 fila de mensagens (conceito: Kafka)
 NSQ-034 NSQ.07.03 janela de tempo
 NSQ-035 NSQ.07.TD tarefa de domínio
 
 ## ETI Ética, privacidade e governança (16 de 16)
-M ETI.01 LGPD | CE | Classificar dados de um projeto pela LGPD com o texto oficial à mão
+M ETI.01 LGPD | CE | Classificar dados de um projeto pela LGPD com o texto oficial à mão | antes: EST.01 Tipos de dado e coleta | pronto: Nome e CPF de um cliente são dados pessoais? E uma informação sobre a saúde dele?
 ETI-001 ETI.01.01 dado pessoal e dado pessoal sensível
 ETI-002 ETI.01.02 bases legais
 ETI-003 ETI.01.03 direitos do titular
 ETI-004 ETI.01.04 papéis (controlador, operador, encarregado)
 ETI-005 ETI.01.TD tarefa de domínio
-M ETI.02 Anonimização | CE, IN | Mostrar como uma base "anônima" pode ser reidentificada
+M ETI.02 Anonimização | CE, IN | Mostrar como uma base "anônima" pode ser reidentificada | antes: ETI.01 LGPD; AD.07 Limpeza | pronto: Tirar o nome de uma base basta para anonimizar?
 ETI-006 ETI.02.01 anonimização e pseudonimização
 ETI-007 ETI.02.02 reidentificação por cruzamento
 ETI-008 ETI.02.03 agregação mínima
 ETI-009 ETI.02.TD tarefa de domínio
-M ETI.03 Segurança de dados | CE, ME | Achar falhas de segurança num projeto de exemplo
+M ETI.03 Segurança de dados | CE, ME | Achar falhas de segurança num projeto de exemplo | antes: ETI.01 LGPD; CMP.06 Redes e web | pronto: Por que as senhas são guardadas como hash, e não como texto?
 ETI-010 ETI.03.01 confidencialidade, integridade e disponibilidade
 ETI-011 ETI.03.02 criptografia simétrica e assimétrica
 ETI-012 ETI.03.03 hash
 ETI-013 ETI.03.04 controle de acesso
 ETI-014 ETI.03.05 segredos fora do código
 ETI-015 ETI.03.TD tarefa de domínio
-M ETI.04 Viés e justiça | IN, EX | Auditar um modelo simples por grupo
+M ETI.04 Viés e justiça | IN, EX | Auditar um modelo simples por grupo | antes: ML.03 Métricas; ETI.01 LGPD | pronto: Um modelo acerta 95% no geral e 70% num grupo. O que fazer?
 ETI-016 ETI.04.01 viés na coleta, no rótulo e no modelo
 ETI-017 ETI.04.02 métricas de justiça (conceito)
 ETI-018 ETI.04.03 impacto de decisões automáticas
 ETI-019 ETI.04.TD tarefa de domínio
-M ETI.05 Governança e qualidade | CE, MD | Escrever o dicionário de dados e as regras de qualidade de uma base
+M ETI.05 Governança e qualidade | CE, MD | Escrever o dicionário de dados e as regras de qualidade de uma base | antes: AD.07 Limpeza | pronto: O que um dicionário de dados descreve?
 ETI-020 ETI.05.01 dimensões de qualidade (completude, exatidão, consistência, atualidade)
 ETI-021 ETI.05.02 metadados
 ETI-022 ETI.05.03 dicionário de dados
@@ -1116,7 +1116,7 @@ ETI-023 ETI.05.04 linhagem
 ETI-024 ETI.05.05 dono do dado
 ETI-025 ETI.05.06 DAMA-DMBOK (conceito)
 ETI-026 ETI.05.TD tarefa de domínio
-M ETI.06 Reprodutibilidade | CE, EX | Tornar uma análise reproduzível por outra pessoa
+M ETI.06 Reprodutibilidade | CE, EX | Tornar uma análise reproduzível por outra pessoa | antes: ENG.06 Projeto de dados | pronto: O que guardar para outra pessoa refazer a sua análise e chegar ao mesmo número?
 ETI-027 ETI.06.01 semente aleatória
 ETI-028 ETI.06.02 versão de dados e código
 ETI-029 ETI.06.03 registro de decisões
