@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algoritmo · Lógica de programação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+</head>
+<body>
+<div class="casca">
+  <nav class="lateral" aria-label="Conceitos da lição">
+    <div class="marca"><b>Lógica de programação</b><span>Módulo 1 · Algoritmo</span></div>
+    <a href="../index.html#LOG"><span class="n">&lt;</span>Voltar ao guia</a>
+    <div class="grupo">Conceitos</div>
+    <a href="#c1" data-conceito="c1"><span class="n">01</span>O que é algoritmo</a>
+    <a href="#c2" data-conceito="c2"><span class="n">02</span>Entrada, processamento e saída</a>
+    <a href="#c3" data-conceito="c3"><span class="n">03</span>Pseudocódigo</a>
+    <a href="#c4" data-conceito="c4"><span class="n">04</span>Fluxograma</a>
+    <a href="#c5" data-conceito="c5"><span class="n">05</span>Teste de mesa</a>
+    <a href="#td" data-conceito="td"><span class="n">TD</span>Tarefa de domínio</a>
+  </nav>
+
+  <main class="conteudo">
+    <div class="coluna">
+      <header class="bloco">
+        <p class="sobretitulo">Lógica de programação · Módulo 1 de 9</p>
+        <h1 class="titulo-pagina">Algoritmo</h1>
+        <p class="lede">Antes de qualquer linguagem de programação, o que importa é saber descrever uma tarefa em passos tão claros que ninguém possa entender de outro jeito. Este módulo não usa computador: só papel, lápis e atenção.</p>
+        <p class="sobretitulo">5 conceitos · cada um com desafio, explicação, exemplo resolvido e prática</p>
+      </header>
+
+      <!-- 1 -->
+      <section class="secao" id="c1">
+        <p class="rotulo">Conceito 1 de 5</p>
+        <h2>O que é algoritmo</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">A instrução “adoce a gosto” pode fazer parte de um algoritmo.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="“A gosto” depende de quem executa: duas pessoas adoçariam diferente. Num algoritmo, cada passo tem um único jeito de ser feito." data-nao-texto="O gabarito é Errado. “A gosto” depende de quem executa: duas pessoas adoçariam diferente. Num algoritmo, cada passo tem um único jeito de ser feito. A explicação abaixo mostra por quê."></div>
+        </div>
+
+        <h3>A ideia</h3>
+        <div class="prosa">
+          <p>Um <strong>algoritmo</strong> é uma sequência de passos para resolver uma tarefa. A palavra assusta, mas você usa algoritmos todo dia: uma receita, o caminho para o trabalho, o passo a passo para pagar um boleto.</p>
+          <p>Para um algoritmo servir a uma máquina, ele precisa de três coisas:</p>
+          <p><strong>1. Passos em ordem.</strong> Cada passo vem depois do anterior, e a ordem importa: não dá para despejar a água antes de fervê-la.<br>
+          <strong>2. Nenhuma ambiguidade.</strong> Cada passo tem um único jeito de ser feito. “Um pouco”, “a gosto” e “quando estiver bom” não servem, porque a máquina não tem bom senso para decidir.<br>
+          <strong>3. Um fim.</strong> O algoritmo termina, e entrega um resultado.</p>
+        </div>
+        <figure>
+          <div class="rolagem" data-figura="RECEITA"></div>
+          <figcaption>A mesma receita escrita para uma pessoa e para uma máquina. As palavras vagas da esquerda viraram quantidades e uma ordem numerada à direita.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: transformar “faça um café” num algoritmo</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Listar o que é preciso: pó de café, água, filtro, açúcar, xícara.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Pôr os passos em ordem, verificando se cada um usa o que um anterior preparou: primeiro ferver a água, depois despejar.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Trocar cada palavra vaga por algo exato: “um pouco de pó” vira “2 colheres de pó”; “água quente” vira “200 ml de água fervida”.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que “ferver a água” precisa vir antes de “despejar a água sobre o pó”?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque o passo de despejar usa o resultado do passo de ferver</button>
+            <button class="botao" type="button">Porque é costume fazer assim</button>
+            <button class="botao" type="button">Tanto faz a ordem, desde que todos os passos sejam feitos</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Um passo que usa o resultado de outro precisa vir depois dele. É a regra que decide a ordem de qualquer algoritmo." data-nao-texto="O que decide a ordem é a dependência: despejar usa a água que o passo de ferver preparou. Se a ordem não importasse, você despejaria água fria."></div>
+        </div>
+
+        <h3>Pratique</h3>
+        <div class="exercicio" data-escolha>
+          <p class="pergunta">Qual destas instruções serve para um algoritmo?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button">Ande um pouco e vire</button>
+            <button class="botao" type="button" data-ok>Ande 10 passos e vire à direita</button>
+            <button class="botao" type="button">Vire quando achar melhor</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Certo: quantidade exata e direção definida. Qualquer pessoa, ou máquina, faria exatamente a mesma coisa." data-nao-texto="Essa deixa a decisão para quem executa (“um pouco”, “quando achar melhor”). A instrução que serve é a que tem quantidade e direção exatas: 10 passos, à direita."></div>
+        </div>
+        <div class="exercicio" data-escolha>
+          <p class="pergunta">Um algoritmo pode ter infinitos passos, desde que cada passo seja claro.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Clareza não basta: o algoritmo precisa terminar e entregar um resultado." data-nao-texto="O gabarito é Errado. Clareza não basta: um algoritmo precisa terminar e entregar um resultado. Um passo a passo que nunca acaba não resolve a tarefa."></div>
+        </div>
+
+        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que é um algoritmo e o que ele precisa ter para uma máquina conseguir seguir. Escreva no <code>/aula</code> para o tutor corrigir.</p>
+        <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 2 -->
+      <section class="secao" id="c2">
+        <p class="rotulo">Conceito 2 de 5</p>
+        <h2>Entrada, processamento e saída</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">No cálculo do troco, o valor que o cliente pagou é:</p>
+          <div class="opcoes"><button class="botao" type="button" data-ok>Entrada</button><button class="botao" type="button">Processamento</button><button class="botao" type="button">Saída</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso: é um dado que chega de fora, e o algoritmo trabalha com ele." data-nao-texto="É entrada: um dado que chega de fora (o cliente entrega), e o algoritmo trabalha com ele. Processamento é a conta; saída é o troco."></div>
+        </div>
+
+        <h3>A ideia</h3>
+        <div class="prosa">
+          <p>Todo algoritmo segue o mesmo desenho, em três partes. A <strong>entrada</strong> são os dados que chegam de fora. O <strong>processamento</strong> é o que se faz com eles: contas, comparações, decisões. A <strong>saída</strong> é o resultado que o algoritmo entrega.</p>
+          <p>Diante de qualquer problema, a primeira pergunta é sempre: o que eu recebo, o que eu preciso entregar e que caminho leva de um ao outro?</p>
+        </div>
+        <figure>
+          <div class="rolagem" data-figura="EPS"></div>
+          <figcaption>O troco em três partes. A seta ← quer dizer “recebe”: a variável troco recebe o resultado da conta.</figcaption>
+        </figure>
+        <table class="tabela">
+          <thead><tr><th>Tarefa</th><th>Entrada</th><th>Processamento</th><th>Saída</th></tr></thead>
+          <tbody>
+            <tr><td>Saque no caixa eletrônico</td><td>senha, valor</td><td>conferir a senha e o saldo, descontar</td><td>notas, comprovante</td></tr>
+            <tr><td>Média do semestre</td><td>as notas</td><td>somar e dividir pela quantidade</td><td>a média</td></tr>
+            <tr><td>Converter reais em dólares</td><td>valor em reais, cotação</td><td>dividir o valor pela cotação</td><td>valor em dólares</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo resolvido: conta de restaurante com 10% de serviço</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Achar a entrada: o que alguém precisa informar? Só o valor da conta.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Achar o processamento: <code>servico ← conta × 0,10</code> e depois <code>total ← conta + servico</code>.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Achar a saída: o total a pagar.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o serviço é processamento, e não entrada?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque é calculado a partir da entrada; ninguém precisa informá-lo</button>
+            <button class="botao" type="button">Porque é um número com vírgula</button>
+            <button class="botao" type="button">Porque aparece no meio da conta</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Se um valor pode ser calculado a partir de outro, ele é processamento. Entrada é só o que vem de fora." data-nao-texto="O critério é de onde o valor vem. O serviço sai de uma conta feita com a entrada, então é processamento. Entrada é só o que precisa ser informado de fora."></div>
+        </div>
+
+        <h3>Pratique: classifique cada parte do cálculo do IMC</h3>
+        <div class="exercicio" data-classificar>
+          <p class="pergunta">O IMC é o peso dividido pela altura ao quadrado. Diga o papel de cada item.</p>
+          <div>
+            <div class="linha-classifica"><span>o peso da pessoa</span><select data-resposta="entrada" aria-label="Papel de: o peso da pessoa"><option value="">escolha</option><option value="entrada">entrada</option><option value="processamento">processamento</option><option value="saida">saída</option></select></div>
+            <div class="linha-classifica"><span>a altura da pessoa</span><select data-resposta="entrada" aria-label="Papel de: a altura da pessoa"><option value="">escolha</option><option value="entrada">entrada</option><option value="processamento">processamento</option><option value="saida">saída</option></select></div>
+            <div class="linha-classifica"><span><code>imc ← peso / (altura × altura)</code></span><select data-resposta="processamento" aria-label="Papel do cálculo do IMC"><option value="">escolha</option><option value="entrada">entrada</option><option value="processamento">processamento</option><option value="saida">saída</option></select></div>
+            <div class="linha-classifica"><span>decidir se o IMC está na faixa normal</span><select data-resposta="processamento" aria-label="Papel de: decidir a faixa"><option value="">escolha</option><option value="entrada">entrada</option><option value="processamento">processamento</option><option value="saida">saída</option></select></div>
+            <div class="linha-classifica"><span>mostrar o IMC e a faixa na tela</span><select data-resposta="saida" aria-label="Papel de: mostrar o resultado"><option value="">escolha</option><option value="entrada">entrada</option><option value="processamento">processamento</option><option value="saida">saída</option></select></div>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Repare que decidir também é processamento: é trabalho feito com os dados, não algo que chega nem algo que sai." data-nao-texto="Os campos em vermelho estão trocados. Pergunte para cada um: chega de fora (entrada), é feito com os dados (processamento) ou é entregue no fim (saída)?"></div>
+        </div>
+
+        <p class="explique"><strong>Explique em 3 linhas:</strong> escolha uma tarefa do seu trabalho e diga qual é a entrada, o processamento e a saída dela.</p>
+        <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 3 -->
+      <section class="secao" id="c3">
+        <p class="rotulo">Conceito 3 de 5</p>
+        <h2>Pseudocódigo</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Pseudocódigo precisa seguir exatamente as regras de uma linguagem de programação.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Pseudocódigo é para pessoas lerem; ele não roda no computador, então não tem regra rígida de escrita." data-nao-texto="O gabarito é Errado. Pseudocódigo é escrito para pessoas, não roda no computador, então não segue regra rígida. Ele serve para pensar a lógica antes de escolher a linguagem."></div>
+        </div>
+
+        <h3>A ideia</h3>
+        <div class="prosa">
+          <p><strong>Pseudocódigo</strong> é o algoritmo escrito em português, mas com o formato de um programa: um passo por linha e algumas palavras combinadas. Ele fica no meio do caminho entre a receita e o código de verdade, e permite pensar a lógica sem se preocupar com a linguagem.</p>
+          <p>As palavras combinadas são poucas: <code>leia</code> (receber uma entrada), <code>escreva</code> (mostrar uma saída), <code>←</code> (guardar um valor), <code>se ... então ... senão ... fimse</code> (decidir).</p>
+          <p>A seta <code>←</code> se lê “recebe”. Usamos seta, e não <code>=</code>, porque é uma ação: <code>troco ← pago − preco</code> quer dizer “calcule pago menos preço e guarde em troco”.</p>
+        </div>
+        <figure>
+          <table class="tabela">
+            <thead><tr><th>Pseudocódigo do troco</th><th>Papel</th></tr></thead>
+            <tbody>
+              <tr><td class="m">leia preco</td><td>entrada</td></tr>
+              <tr><td class="m">leia pago</td><td>entrada</td></tr>
+              <tr><td class="m">se pago &gt;= preco então</td><td>processamento: decisão</td></tr>
+              <tr><td class="m">&nbsp;&nbsp;troco ← pago - preco</td><td>processamento: conta</td></tr>
+              <tr><td class="m">&nbsp;&nbsp;escreva troco</td><td>saída</td></tr>
+              <tr><td class="m">senão</td><td>o outro caminho da decisão</td></tr>
+              <tr><td class="m">&nbsp;&nbsp;escreva "falta dinheiro"</td><td>saída</td></tr>
+              <tr><td class="m">fimse</td><td>fim da decisão</td></tr>
+            </tbody>
+          </table>
+          <figcaption>Cada linha faz uma coisa só. O recuo mostra o que pertence a cada caminho da decisão.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: média de duas notas, com aprovação a partir de 7</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Ler as entradas.</p><pre>leia n1
+leia n2</pre></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Calcular. Os parênteses fazem a soma acontecer antes da divisão.</p><pre>media ← (n1 + n2) / 2</pre></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Decidir e mostrar a saída.</p><pre>se media &gt;= 7 então
+  escreva "aprovado"
+senão
+  escreva "reprovado"
+fimse</pre></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">O que aconteceria se a linha fosse <code>media ← n1 + n2 / 2</code>, sem parênteses, com n1 = 6 e n2 = 8?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button">Daria 7, a média correta</button>
+            <button class="botao" type="button" data-ok>Daria 10, porque a divisão acontece antes da soma</button>
+            <button class="botao" type="button">Daria erro</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso: 8 / 2 = 4, e 6 + 4 = 10. Como na matemática, divisão vem antes de soma; os parênteses mudam a ordem." data-nao-texto="Sem parênteses, a divisão vem antes da soma, como na matemática: 8 / 2 = 4, e 6 + 4 = 10. Os parênteses garantem que a soma aconteça primeiro."></div>
+        </div>
+
+        <h3>Pratique: monte o pseudocódigo na ordem certa</h3>
+        <div class="exercicio" data-ordenar data-resposta="leia reais|leia cotacao|dolares ← reais / cotacao|escreva dolares">
+          <p class="pergunta">Converter um valor em reais para dólares. Clique nas linhas na ordem em que devem acontecer; clique de novo para devolver.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">escreva dolares</button>
+            <button class="botao linha" type="button">dolares ← reais / cotacao</button>
+            <button class="botao linha" type="button">leia cotacao</button>
+            <button class="botao linha" type="button">leia reais</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. As entradas vêm antes da conta que usa as duas, e a saída só pode vir depois que dolares existe. A ordem entre as duas leituras tanto faz, mas ler primeiro o valor é o mais natural." data-nao-texto="Ainda não. Pergunte para cada linha: ela usa algo que outra linha prepara? A conta usa reais e cotacao, então vem depois das duas leituras; escrever dolares só dá certo depois da conta."></div>
+        </div>
+
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que se usa a seta ← e não o sinal de igual para guardar um valor.</p>
+        <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="secao" id="c4">
+        <p class="rotulo">Conceito 4 de 5</p>
+        <h2>Fluxograma</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">No fluxograma, qual forma representa uma pergunta de resposta sim ou não?</p>
+          <div class="opcoes"><button class="botao" type="button" data-ok>Losango</button><button class="botao" type="button">Retângulo</button><button class="botao" type="button">Oval</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O losango tem duas saídas, uma para sim e outra para não." data-nao-texto="É o losango: é a única forma com duas saídas, uma para sim e outra para não. O retângulo é uma conta ou ação; o oval marca início e fim."></div>
+        </div>
+
+        <h3>A ideia</h3>
+        <div class="prosa">
+          <p>O <strong>fluxograma</strong> é o algoritmo desenhado. Cada forma tem um papel fixo e as setas mostram o caminho. É ótimo para enxergar decisões: os caminhos se separam no losango e você vê, de uma vez, tudo o que pode acontecer.</p>
+          <p>As quatro formas que você precisa: <strong>oval</strong> para início e fim, <strong>paralelogramo</strong> para entrada e saída, <strong>retângulo</strong> para processamento e <strong>losango</strong> para decisão.</p>
+        </div>
+        <figure>
+          <div class="rolagem" data-figura="LOG"></div>
+          <figcaption>O troco em fluxograma. Siga as setas com o dedo: há dois caminhos possíveis, e os dois chegam ao fim.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: percorrer o fluxograma com preço 30 e pago 20</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Começar no oval “início” e ler as entradas: preço 30, pago 20.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>No losango, responder a pergunta com os valores: 20 ≥ 30? Não. Seguir a seta do “não”.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Mostrar “falta dinheiro” e seguir até o “fim”. A conta do troco nem chegou a ser feita.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o retângulo “troco ← pago − preço” não foi executado nesse caso?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque ele fica só no caminho do “sim”, e a resposta foi “não”</button>
+            <button class="botao" type="button">Porque o troco daria negativo e o computador não aceita</button>
+            <button class="botao" type="button">Porque retângulos só rodam no fim</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Depois de uma decisão, só um dos caminhos é percorrido. O que está no outro caminho é pulado." data-nao-texto="Depois do losango, só um caminho é percorrido. A conta está no caminho do “sim”; como a resposta foi “não”, ela foi pulada."></div>
+        </div>
+
+        <h3>Pratique: qual forma usar?</h3>
+        <div class="exercicio" data-classificar>
+          <p class="pergunta">Escolha a forma de cada passo de um algoritmo que verifica se alguém pode votar.</p>
+          <div>
+            <div class="linha-classifica"><span>ler a idade</span><select data-resposta="paralelogramo" aria-label="Forma de: ler a idade"><option value="">escolha</option><option value="oval">oval</option><option value="paralelogramo">paralelogramo</option><option value="retangulo">retângulo</option><option value="losango">losango</option></select></div>
+            <div class="linha-classifica"><span>idade ≥ 16?</span><select data-resposta="losango" aria-label="Forma de: idade maior ou igual a 16"><option value="">escolha</option><option value="oval">oval</option><option value="paralelogramo">paralelogramo</option><option value="retangulo">retângulo</option><option value="losango">losango</option></select></div>
+            <div class="linha-classifica"><span><code>faltam ← 16 − idade</code></span><select data-resposta="retangulo" aria-label="Forma de: calcular quanto falta"><option value="">escolha</option><option value="oval">oval</option><option value="paralelogramo">paralelogramo</option><option value="retangulo">retângulo</option><option value="losango">losango</option></select></div>
+            <div class="linha-classifica"><span>mostrar “pode votar”</span><select data-resposta="paralelogramo" aria-label="Forma de: mostrar pode votar"><option value="">escolha</option><option value="oval">oval</option><option value="paralelogramo">paralelogramo</option><option value="retangulo">retângulo</option><option value="losango">losango</option></select></div>
+            <div class="linha-classifica"><span>fim</span><select data-resposta="oval" aria-label="Forma de: fim"><option value="">escolha</option><option value="oval">oval</option><option value="paralelogramo">paralelogramo</option><option value="retangulo">retângulo</option><option value="losango">losango</option></select></div>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Entrada e saída dividem a mesma forma (paralelogramo); a pergunta é sempre losango; a conta, retângulo." data-nao-texto="Os campos em vermelho estão trocados. Lembre: ler e mostrar são paralelogramo; pergunta é losango; conta é retângulo; início e fim são oval."></div>
+        </div>
+
+        <p class="explique"><strong>Explique em 3 linhas:</strong> quando um fluxograma ajuda mais que o pseudocódigo?</p>
+        <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 5 -->
+      <section class="secao" id="c5">
+        <p class="rotulo">Conceito 5 de 5</p>
+        <h2>Teste de mesa</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Teste de mesa é executar o algoritmo à mão, anotando o valor das variáveis a cada passo.</p>
+          <div class="opcoes"><button class="botao" type="button" data-ok>Certo</button><button class="botao" type="button">Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Você faz o papel do computador, passo a passo, com papel e lápis." data-nao-texto="O gabarito é Certo. No teste de mesa você faz o papel do computador: executa cada passo à mão e anota o valor de cada variável."></div>
+        </div>
+
+        <h3>A ideia</h3>
+        <div class="prosa">
+          <p>Antes de confiar num algoritmo, você o executa com valores de exemplo, à mão. Monta uma tabela: <strong>uma coluna para cada variável</strong> e uma para a saída, e <strong>uma linha para cada passo executado</strong>. A cada passo, anota o que mudou.</p>
+          <p>É o jeito mais barato de achar erro, e é exatamente o que as provas pedem quando mostram um algoritmo e perguntam “qual é a saída?”.</p>
+        </div>
+
+        <h3>Exemplo resolvido: a média, com n1 = 6 e n2 = 9</h3>
+        <pre>1  leia n1
+2  leia n2
+3  media ← (n1 + n2) / 2
+4  se media &gt;= 7 então
+5    escreva "aprovado"
+6  senão
+7    escreva "reprovado"
+8  fimse</pre>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Montar as colunas: passo, n1, n2, media e saída.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Executar linha por linha, anotando só o que muda. Na linha 4, a pergunta 7,5 ≥ 7 dá sim, então vai para a 5 e pula a 7.</p>
+            <table class="tabela"><thead><tr><th>passo</th><th>n1</th><th>n2</th><th>media</th><th>saída</th></tr></thead>
+            <tbody><tr><td>1</td><td class="m">6</td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td class="m">9</td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td class="m">7.5</td><td></td></tr><tr><td>4</td><td colspan="4">7.5 &gt;= 7? sim</td></tr><tr><td>5</td><td></td><td></td><td></td><td class="m">aprovado</td></tr></tbody></table></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Conferir a saída com o que se esperava: média 7,5 deve aprovar. Bateu.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que a linha 7 não aparece na tabela?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque a decisão deu sim, e a linha 7 só roda quando dá não</button>
+            <button class="botao" type="button">Porque esquecemos de anotar</button>
+            <button class="botao" type="button">Porque escreva não muda variável</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. O teste de mesa registra só o que de fato foi executado." data-nao-texto="A tabela registra só o que foi executado. Como 7,5 ≥ 7 deu sim, o caminho foi o da linha 5; a linha 7 foi pulada."></div>
+        </div>
+
+        <h3>Pratique: faça o teste de mesa com n1 = 5 e n2 = 7</h3>
+        <div class="exercicio" data-preencher>
+          <p class="pergunta">Preencha os campos. Use ponto como separador decimal, como no computador.</p>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>passo</th><th>n1</th><th>n2</th><th>media</th><th>saída</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><input data-resposta="5" aria-label="n1 no passo 1"></td><td></td><td></td><td></td></tr>
+            <tr><td>2</td><td></td><td><input data-resposta="7" aria-label="n2 no passo 2"></td><td></td><td></td></tr>
+            <tr><td>3</td><td></td><td></td><td><input data-resposta="6|6.0" aria-label="media no passo 3"></td><td></td></tr>
+            <tr><td>4</td><td colspan="4"><span class="m">media &gt;= 7?</span> <select data-resposta="nao" aria-label="Resultado da decisão no passo 4"><option value="">escolha</option><option value="sim">sim</option><option value="nao">não</option></select></td></tr>
+            <tr><td><select data-resposta="7" aria-label="Próximo passo executado"><option value="">qual linha?</option><option value="5">5</option><option value="7">7</option></select></td><td></td><td></td><td></td><td><input data-resposta="reprovado" aria-label="Saída"></td></tr>
+          </tbody></table>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. (5 + 7) / 2 = 6; como 6 ≥ 7 é falso, o caminho é a linha 7: reprovado." data-nao-texto="Confira os campos em vermelho. Primeiro a conta: some antes de dividir. Depois a pergunta: 6 é maior ou igual a 7? A resposta decide se a próxima linha é a 5 ou a 7."></div>
+        </div>
+
+        <p class="explique"><strong>Explique em 3 linhas:</strong> para que serve o teste de mesa, e por que ele pega erros que só ler o algoritmo não pega.</p>
+        <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- TD -->
+      <section class="secao" id="td">
+        <p class="rotulo">Tarefa de domínio do módulo</p>
+        <h2>A conta de luz</h2>
+        <div class="prosa">
+          <p>Sem olhar as seções acima, escreva o algoritmo que calcula a conta de luz. As entradas são a leitura anterior do relógio, a leitura atual e o preço do kWh. O consumo é a diferença entre as leituras. O valor é o consumo vezes o preço. Se o consumo passar de 200 kWh, o valor tem um acréscimo de 10%.</p>
+          <p><strong>1.</strong> Escreva o pseudocódigo. <strong>2.</strong> Desenhe o fluxograma no papel. <strong>3.</strong> Faça o teste de mesa com leitura anterior 1200, atual 1450 e preço 0,80.</p>
+        </div>
+        <p class="explique">Mande o pseudocódigo e o teste de mesa no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
+        <details class="cartao">
+          <summary>Ver uma resposta possível (só depois de tentar)</summary>
+          <pre>leia anterior
+leia atual
+leia preco
+consumo ← atual - anterior
+valor ← consumo * preco
+se consumo &gt; 200 então
+  valor ← valor * 1.10
+fimse
+escreva valor</pre>
+          <p>Teste de mesa: consumo = 1450 − 1200 = 250; valor = 250 × 0,80 = 200; 250 &gt; 200 é verdade, então valor = 200 × 1,10 = 220. Saída: 220.</p>
+        </details>
+        <button class="botao" type="button" data-marcar="td">Marcar a tarefa como feita</button>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="../figuras.js" charset="utf-8"></script>
+<script>
+(function () {
+  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
+  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
+
+  function mostrar(retorno, ok) {
+    retorno.hidden = false;
+    retorno.className = "retorno " + (ok ? "ok" : "nao");
+    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
+  }
+
+  document.querySelectorAll("[data-escolha]").forEach((ex) => {
+    const botoes = ex.querySelectorAll(".opcoes .botao");
+    botoes.forEach((b) => b.addEventListener("click", () => {
+      botoes.forEach((x) => {
+        x.disabled = true;
+        if (x.hasAttribute("data-ok")) x.classList.add("certo");
+      });
+      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
+      b.setAttribute("aria-pressed", "true");
+      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
+    }));
+  });
+
+  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
+
+  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      let tudo = true;
+      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
+        const aceitas = campo.dataset.resposta.split("|");
+        const ok = aceitas.includes(normalizar(campo.value));
+        campo.classList.toggle("ok", ok);
+        campo.classList.toggle("nao", !ok);
+        if (!ok) tudo = false;
+      });
+      mostrar(ex.querySelector(".retorno"), tudo);
+    });
+  });
+
+  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
+    const banco = ex.querySelector("[data-banco]");
+    const montagem = ex.querySelector("[data-montagem]");
+    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
+      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
+    }));
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
+      const certa = ex.dataset.resposta.split("|");
+      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
+      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
+      mostrar(ex.querySelector(".retorno"), ok);
+    });
+  });
+
+  const CHAVE = "dominio:licao:LOG.01";
+  let feitos = [];
+  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
+  function pintar() {
+    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
+    document.querySelectorAll("[data-marcar]").forEach((b) => {
+      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
+    });
+  }
+  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
+    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
+    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
+    pintar();
+  }));
+  pintar();
+
+  const links = [...document.querySelectorAll("[data-conceito]")];
+  const obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
+})();
+</script>
+</body>
+</html>

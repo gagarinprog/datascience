@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "blob-report/**",
+    // Apostila: páginas estáticas, fora do app Next.
+    "apostila/**",
   ]),
 ]);
 

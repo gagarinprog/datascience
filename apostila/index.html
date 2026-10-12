@@ -1,0 +1,323 @@
+<meta charset="utf-8">
+<title>Guia das matérias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="estilo.css">
+
+<div class="casca">
+  <nav class="lateral" id="nav" aria-label="Matérias"></nav>
+  <main class="conteudo">
+    <div class="coluna" id="guia">
+      <header class="bloco">
+        <p class="sobretitulo">Apostila do Domínio</p>
+        <h1 class="titulo-pagina">Guia das matérias</h1>
+        <p class="lede">Como funciona cada matéria da ciência de dados, explicada do zero, com desenho e exemplo. As 16 matérias estão em ordem: cada uma só usa o que as anteriores já ensinaram.</p>
+      </header>
+      <section class="bloco" aria-labelledby="mapa-titulo">
+        <h2 id="mapa-titulo" style="font-size:18px">O mapa</h2>
+        <div class="mapa" id="mapa"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="figuras.js" charset="utf-8"></script>
+<script src="materias.js" charset="utf-8"></script>
+<script>
+(function () {
+  const ETAPAS = [
+    ["Base: pensar e escrever instruções", ["LOG", "PY", "CMP"]],
+    ["Dados e números", ["BD", "MAT", "EST"]],
+    ["Programar bem", ["ED", "ALG", "POO", "ENG"]],
+    ["Trabalhar com dados", ["FMT", "AD", "VIS"]],
+    ["Modelar e produzir", ["ML", "NSQ", "ETI"]],
+  ];
+  const LICOES = { "LOG.01": "licoes/LOG.01.html" };
+
+  const C = {
+    LOG: {
+      frase: "Programar é dar instruções tão claras que até uma máquina sem bom senso consiga seguir.",
+      texto: [
+        "O computador não entende intenção, só instrução. “Ponha um pouco de sal” funciona para uma pessoa, mas não para ele: quanto é um pouco? Um <strong>algoritmo</strong> é uma sequência finita de passos sem ambiguidade, que sempre termina com um resultado.",
+        "Todo algoritmo tem três partes: a <strong>entrada</strong> (os dados que chegam), o <strong>processamento</strong> (o que se faz com eles) e a <strong>saída</strong> (o resultado). No caixa do mercado entram o preço e o valor pago, calcula-se a diferença e sai o troco.",
+        "Com quatro peças se escreve qualquer programa: guardar valores (<strong>variáveis</strong>), fazer contas e comparações (<strong>operadores</strong>), escolher um caminho (<strong>decisão</strong>) e repetir passos (<strong>repetição</strong>). As <strong>funções</strong> dão nome a um grupo de passos para usá-lo de novo.",
+        "Antes de confiar num algoritmo, você o executa à mão, anotando o valor de cada variável a cada passo. Isso se chama <strong>teste de mesa</strong> e é o jeito mais barato de achar erro.",
+      ],
+      legenda: "O algoritmo do troco desenhado como fluxograma. Cada forma tem um papel, e as setas mostram a ordem.",
+      dia: "Receita de bolo, manual de montagem de móvel, o passo a passo da declaração do imposto de renda: todos são algoritmos escritos para pessoas. Programar é escrever o mesmo tipo de coisa para uma máquina.",
+      codigo: 'preco = 18\npago = 50\nif pago >= preco:\n    troco = pago - preco\n    print("Troco:", troco)\nelse:\n    print("Falta dinheiro")\n# Troco: 32',
+      onde: [["UFMS", "Algoritmos I e II"], ["Concursos", "lógica de programação, raciocínio lógico"], ["Trabalho", "a base de todo código"]],
+    },
+    PY: {
+      frase: "Python é a língua em que você escreve algoritmos para o computador executar, e a ferramenta de trabalho do cientista de dados.",
+      texto: [
+        "Você escreve instruções num arquivo de texto (um <strong>script</strong>) ou direto no <strong>interpretador</strong>. O interpretador lê uma linha por vez, de cima para baixo, e executa.",
+        "Uma <strong>variável</strong> é uma etiqueta presa a um valor: <code>preco = 18</code> cola a etiqueta <code>preco</code> no número 18. Se depois você escrever <code>preco = 20</code>, a etiqueta passa para o 20.",
+        "Cada valor tem um <strong>tipo</strong>, que diz o que dá para fazer com ele: número inteiro (<code>int</code>), número com casas decimais (<code>float</code>), texto (<code>str</code>), verdadeiro ou falso (<code>bool</code>). Somar dois números faz a conta; somar dois textos cola um no outro.",
+        "Para guardar muitos valores há as coleções: a <strong>lista</strong> (valores em fila, numerados a partir de zero), o <strong>dicionário</strong> (pares de chave e valor, como um índice remissivo) e o <strong>conjunto</strong> (valores sem repetição).",
+        "Os blocos são marcados pela <strong>indentação</strong>, o recuo no começo da linha. Tudo o que está recuado logo abaixo de um <code>if</code> pertence a ele.",
+      ],
+      legenda: "Variáveis são etiquetas. A linha 4 não muda o 18: tira a etiqueta preco dele e cola no 20.",
+      dia: "Uma planilha faz as contas que você define célula a célula. Python faz o mesmo com instruções escritas, e repete para um milhão de linhas sem se cansar nem errar.",
+      codigo: 'notas = [7.5, 9.0, 6.0, 8.5]\nmedia = sum(notas) / len(notas)\naprovado = media >= 7\nprint(f"Média {media:.2f}, aprovado: {aprovado}")\n# Média 7.75, aprovado: True',
+      onde: [["UFMS", "Algoritmos II, Estrutura de Dados, Introdução à Ciência de Dados"], ["Concursos", "linguagens de programação"], ["Trabalho", "análise, automação, modelos"]],
+    },
+    CMP: {
+      frase: "Por dentro, tudo é número em binário, levado entre um processador rápido, uma memória temporária e um disco permanente.",
+      texto: [
+        "O <strong>processador</strong> (CPU) executa instruções simples, bilhões por segundo: somar, comparar, copiar. Ele trabalha com o que está na <strong>memória</strong> (RAM), que é rápida mas se apaga quando o computador desliga.",
+        "O <strong>disco</strong> guarda tudo de forma permanente, mas é muito mais lento que a memória. Por isso abrir um arquivo grande demora, e uma análise que cabe inteira na memória roda rápido.",
+        "Tudo vira número em <strong>base 2</strong> (binário), que só tem os algarismos 0 e 1. Cada algarismo é um <strong>bit</strong>; oito bits formam um <strong>byte</strong>. Texto vira número por uma tabela (o Unicode); imagem vira uma grade de números (os pixels).",
+        "Números com casas decimais são guardados de forma aproximada. Por isso <code>0.1 + 0.2</code> dá <code>0.30000000000000004</code> no computador: não é defeito, é o formato.",
+        "Por cima disso, o <strong>sistema operacional</strong> organiza programas e arquivos, e a <strong>rede</strong> leva dados de um computador a outro por regras combinadas, como o HTTP, que o navegador e as APIs usam.",
+      ],
+      legenda: "Os dados entram, são processados pela CPU com ajuda da memória, ficam guardados no disco e saem na tela. Embaixo, como o número 13 vira 1101.",
+      dia: "A memória é a mesa de trabalho; o disco é o arquivo de aço. Você só trabalha no que está em cima da mesa, e buscar uma pasta no arquivo leva tempo.",
+      codigo: 'print(bin(13))              # 0b1101\nprint(0.1 + 0.2)            # 0.30000000000000004\nprint("Á".encode("utf-8"))  # b\'\\xc3\\x81\' (dois bytes)',
+      onde: [["UFMS", "Introdução a Conceitos de Computação"], ["Concursos", "fundamentos, infraestrutura de TI"], ["Trabalho", "entender lentidão, memória e acentos quebrados"]],
+    },
+    BD: {
+      frase: "Um banco relacional guarda dados em tabelas ligadas por chaves, e o SQL é a língua para fazer perguntas a elas.",
+      texto: [
+        "Cada <strong>tabela</strong> guarda um tipo de coisa: usuários, disciplinas, questões, respostas. Cada <strong>linha</strong> é um registro; cada <strong>coluna</strong>, um atributo. Parece uma planilha, só que com regras que impedem bagunça.",
+        "A <strong>chave primária</strong> identifica cada linha sem repetição (o <code>id</code>). A <strong>chave estrangeira</strong> aponta para a chave de outra tabela: <code>questoes.disciplina_id</code> diz a qual disciplina cada questão pertence. Assim cada informação é escrita uma vez só.",
+        "Em SQL você diz <em>o que</em> quer, não <em>como</em> buscar: <code>SELECT nome FROM usuarios WHERE ...</code>. O banco escolhe o caminho mais rápido.",
+        "A consulta é escrita numa ordem e executada em outra: <code>FROM</code> escolhe a tabela, <code>WHERE</code> filtra linhas, <code>GROUP BY</code> forma grupos, <code>HAVING</code> filtra grupos, <code>SELECT</code> escolhe as colunas e <code>ORDER BY</code> ordena. Entender essa ordem resolve a maior parte das dúvidas.",
+        "Texto vai entre <strong>aspas simples</strong> (<code>'Kaio'</code>). Aspas duplas são para nomes de coluna. Esse é o erro mais comum de quem começa.",
+      ],
+      legenda: "Em cima, duas tabelas do banco de estudo ligadas por chave. Embaixo, o caminho da consulta ao lado, com os números reais do banco: de 120 questões até 6 grupos.",
+      dia: "Um sistema de matrícula: os alunos numa lista, as disciplinas em outra e uma terceira que liga quem cursa o quê. Ninguém copia o nome do aluno em cada matrícula; usa o número de matrícula dele.",
+      lang: "sql",
+      codigo: "SELECT d.nome, COUNT(*) AS questoes\nFROM questoes q\nJOIN disciplinas d ON d.id = q.disciplina_id\nWHERE q.dificuldade = 'facil'\nGROUP BY d.nome\nORDER BY questoes DESC;\n-- Estruturas de Dados | 8 (a primeira das 6 linhas)",
+      onde: [["UFMS", "Banco de Dados"], ["Concursos", "presente em quase toda prova de TI"], ["Trabalho", "a habilidade mais pedida nas vagas de dados"]],
+    },
+    MAT: {
+      frase: "Dados viram listas de números, e a matemática diz como medir, comparar e transformar essas listas.",
+      texto: [
+        "Um <strong>vetor</strong> é uma lista de números com significado, como (idade, renda, anos de estudo) de uma pessoa. Desenhado, é uma seta que sai da origem.",
+        "Somar vetores é andar uma seta e depois a outra. O <strong>produto interno</strong> mede o quanto duas setas apontam para o mesmo lado; é a base para medir a semelhança entre clientes, textos e produtos.",
+        "Uma <strong>matriz</strong> é uma tabela de números, e multiplicar por ela transforma o espaço: estica, gira, inclina. Uma tabela de dados também é uma matriz: as linhas são as observações e as colunas, os atributos.",
+        "<strong>Sistemas lineares</strong> resolvem várias equações juntas; os <strong>mínimos quadrados</strong> acham a reta que passa mais perto dos pontos, que é a regressão linear.",
+        "A <strong>derivada</strong> mede quanto uma coisa muda quando outra muda. O <strong>gradiente</strong> aponta a direção de maior subida; descer por ele é como os modelos de aprendizado ajustam seus números. A matéria também traz conjuntos, lógica proposicional e contagem, que caem em raciocínio lógico.",
+      ],
+      legenda: "À esquerda, somar vetores: andar u e depois v leva ao mesmo ponto que a seta u + v. À direita, uma matriz que inclina o quadrado.",
+      dia: "Custo marginal e elasticidade, da economia, são derivadas. Uma matriz insumo-produto é álgebra linear. Você já usou essas ideias; aqui elas ganham forma de cálculo com dados.",
+      codigo: "import numpy as np\nu = np.array([3, 1])\nv = np.array([1, 2])\nprint(u + v)   # [4 3]\nprint(u @ v)   # 5, o produto interno: 3*1 + 1*2",
+      onde: [["UFMS", "Geometria Analítica e Álgebra Linear, Cálculo"], ["Concursos", "raciocínio lógico e matemático"], ["Trabalho", "entender o que os modelos fazem"]],
+    },
+    EST: {
+      frase: "Estatística é decidir com dados incompletos sabendo o tamanho da incerteza.",
+      texto: [
+        "Primeiro se resume: a <strong>média</strong> e a <strong>mediana</strong> dizem onde fica o centro; o <strong>desvio-padrão</strong> diz o quanto os valores se espalham em volta dele. O <strong>histograma</strong> mostra a forma inteira.",
+        "A média engana quando há valores extremos: a renda média de uma sala sobe muito se entra um bilionário, e a mediana quase não muda.",
+        "A <strong>probabilidade</strong> mede chance, de 0 a 1. A probabilidade condicional pergunta a chance de A sabendo que B aconteceu; o <strong>teorema de Bayes</strong> inverte essa pergunta.",
+        "Quase nunca se vê a população inteira, só uma <strong>amostra</strong>. O <strong>teorema central do limite</strong> garante que as médias de amostras se distribuem em forma de sino em volta da média verdadeira, e isso permite calcular a margem de erro.",
+        "Os <strong>testes de hipótese</strong> perguntam se uma diferença pode ser só acaso. E <strong>correlação não é causa</strong>: venda de sorvete e afogamentos sobem juntos porque os dois dependem do calor.",
+      ],
+      legenda: "Mil notas formam um sino. A linha vertical é a média; a faixa clara vai de um desvio-padrão abaixo a um acima dela.",
+      dia: "Pesquisa eleitoral com margem de erro de 2 pontos, inflação medida por uma amostra de preços, teste de duas versões de um site para ver qual vende mais.",
+      codigo: "import statistics as st\nacertos = [55, 60, 62, 64, 65, 70, 98]\nprint(st.mean(acertos))    # 67.71...  o 98 puxa a média\nprint(st.median(acertos))  # 64        a mediana nem liga\nprint(st.stdev(acertos))   # 14.12...",
+      onde: [["UFMS", "Estatística, nos próximos semestres"], ["Concursos", "conhecimentos gerais e específicos"], ["Trabalho", "dar confiança a qualquer conclusão"]],
+    },
+    ED: {
+      frase: "A forma de organizar os dados na memória decide o que fica rápido e o que fica lento.",
+      texto: [
+        "Um <strong>vetor</strong> guarda os itens lado a lado, numerados: pegar o item 4 é imediato, mas inserir no começo obriga a empurrar todos os outros.",
+        "Uma <strong>lista ligada</strong> guarda cada item com uma seta para o próximo: inserir é fácil, mas achar o item 4 exige seguir as setas desde o começo.",
+        "<strong>Pilha</strong>: o último que entra é o primeiro que sai, como pratos empilhados (é assim que funciona o desfazer de um editor). <strong>Fila</strong>: o primeiro que entra é o primeiro que sai, como a fila do banco.",
+        "<strong>Tabela hash</strong>: uma função transforma a chave no número de uma gaveta, então achar “kaio” é ir direto à gaveta certa. É por isso que o dicionário do Python e o <code>GROUP BY</code> são rápidos.",
+        "<strong>Árvore</strong>: cada item tem filhos. Na árvore binária de busca, os menores ficam à esquerda e os maiores à direita, então cada comparação descarta metade do caminho. Os índices dos bancos de dados são árvores.",
+      ],
+      legenda: "Seis maneiras de organizar os mesmos tipos de dado, cada uma boa para uma coisa.",
+      dia: "A agenda em ordem alfabética é uma busca organizada; um arquivo com uma gaveta por letra é uma tabela hash; a pilha de pratos e a fila do caixa são exatamente o que parecem.",
+      codigo: 'pilha = []\npilha.append("a")\npilha.append("b")\nprint(pilha.pop())      # b, o último que entrou\n\nfrom collections import deque\nfila = deque(["a", "b"])\nprint(fila.popleft())   # a, o primeiro que entrou',
+      onde: [["UFMS", "Estrutura de Dados"], ["Concursos", "estruturas de dados"], ["Trabalho", "escolher a ferramenta certa e entender por que algo é lento"]],
+    },
+    ALG: {
+      frase: "Tão importante quanto um algoritmo funcionar é saber como ele se comporta quando os dados crescem.",
+      texto: [
+        "Mede-se o custo contando passos em função do tamanho da entrada, chamado <strong>n</strong>. A <strong>notação O</strong> descreve o crescimento: O(n) cresce junto com n; O(n²) fica quatro vezes maior quando n dobra.",
+        "Procurar um nome numa lista desordenada pode exigir olhar todos (O(n)). Numa lista ordenada, a <strong>busca binária</strong> olha o meio e descarta metade a cada passo: acha um nome entre um milhão em 20 passos (O(log n)).",
+        "<strong>Ordenar</strong> é um problema clássico: os métodos simples custam O(n²); o merge sort divide a lista em metades, ordena cada uma e junta, em O(n log n).",
+        "<strong>Recursão</strong> é uma função que chama a si mesma num problema menor, até chegar num caso tão pequeno que se resolve direto.",
+        "Em dados, a lição prática é esta: trocar um laço em Python por uma operação vetorizada do NumPy ou do pandas é trocar de algoritmo, e pode deixar o código cem vezes mais rápido.",
+      ],
+      legenda: "Quantos passos cada tipo de algoritmo dá conforme a entrada cresce. Com 20 itens a diferença já aparece; com um milhão, vira abismo.",
+      dia: "Procurar uma palavra no dicionário abrindo no meio, e não folheando página por página, é busca binária.",
+      codigo: "def busca_binaria(lista, alvo):\n    inicio, fim = 0, len(lista) - 1\n    while inicio <= fim:\n        meio = (inicio + fim) // 2\n        if lista[meio] == alvo:\n            return meio\n        if lista[meio] < alvo:\n            inicio = meio + 1   # descarta a metade da esquerda\n        else:\n            fim = meio - 1      # descarta a metade da direita\n    return -1",
+      onde: [["UFMS", "Algoritmos II, Estrutura de Dados"], ["Concursos", "algoritmos e complexidade"], ["Trabalho", "código que aguenta dados grandes"]],
+    },
+    POO: {
+      frase: "Em vez de deixar dados e funções soltos pelo programa, você junta cada coisa com o que ela sabe fazer.",
+      texto: [
+        "Uma <strong>classe</strong> é o molde; um <strong>objeto</strong> é uma peça feita com ele. A classe <code>Questao</code> diz que toda questão tem enunciado e gabarito e sabe se corrigir; <code>q1</code> e <code>q2</code> são questões concretas.",
+        "<strong>Encapsular</strong> é proteger o que está dentro: ninguém altera o gabarito por fora, só pelos métodos que a classe oferece.",
+        "<strong>Herança</strong> cria um tipo especial a partir de um geral: <code>QuestaoCertoErrado</code> é uma <code>Questao</code>, com o seu próprio jeito de corrigir.",
+        "<strong>Polimorfismo</strong> é chamar o mesmo método em objetos diferentes e cada um responder do seu jeito: um laço corrige uma lista misturada de questões sem nenhum <code>if</code> perguntando o tipo.",
+        "No trabalho com dados isso aparece o tempo todo: todo modelo do scikit-learn tem <code>fit</code> e <code>predict</code>, e um DataFrame é um objeto. Na UFMS a matéria é dada em Java; aqui o conceito é visto em Java e em Python.",
+      ],
+      legenda: "A classe é o molde (no centro), os objetos são peças feitas com ele (nas laterais), e as classes filhas herdam o molde e mudam só o que precisam.",
+      dia: "A planta de uma casa é a classe; cada casa construída com ela é um objeto, com a sua cor de parede. Casa com piscina é uma casa, com algo a mais: herança.",
+      codigo: 'class Questao:\n    def __init__(self, enunciado, gabarito):\n        self.enunciado = enunciado\n        self.gabarito = gabarito\n\n    def corrigir(self, resposta):\n        return resposta == self.gabarito\n\nq1 = Questao("2 + 2 = 4", "C")\nprint(q1.corrigir("C"))   # True',
+      onde: [["UFMS", "Programação Orientada a Objetos (Java)"], ["Concursos", "programação orientada a objetos"], ["Trabalho", "usar e escrever bibliotecas"]],
+    },
+    ENG: {
+      frase: "As ferramentas que tornam o seu trabalho repetível, guardado e compartilhável.",
+      texto: [
+        "O <strong>terminal</strong> é conversar com o computador por texto: <code>ls</code> lista os arquivos, <code>cd</code> entra numa pasta. É mais rápido que clicar e dá para automatizar.",
+        "O <strong>Git</strong> tira fotografias do projeto, chamadas <strong>commits</strong>. Você pode voltar a qualquer foto, ver o que mudou e trabalhar numa cópia paralela (um <strong>ramo</strong>) sem estragar a principal, juntando depois (o <strong>merge</strong>).",
+        "O <strong>GitHub</strong> guarda o repositório na nuvem e vira o seu portfólio.",
+        "<strong>Ambientes virtuais</strong> isolam as versões das bibliotecas de cada projeto, para que ele rode igual na sua máquina e na de outra pessoa.",
+        "<strong>Notebooks</strong> (Jupyter) misturam código, resultado e texto, e são ótimos para explorar; o código que vai durar sai do notebook para módulos com testes.",
+      ],
+      legenda: "Cada bolinha é um commit. O ramo da análise saiu da main, ganhou dois commits e voltou para ela.",
+      dia: "O histórico de versões de um documento compartilhado é um Git simplificado: dá para ver quem mudou o quê e voltar atrás.",
+      lang: "bash",
+      codigo: 'git add analise.py\ngit commit -m "Calcula a média por disciplina"\ngit log --oneline\n# 3f2a1c9 Calcula a média por disciplina',
+      onde: [["Concursos", "engenharia de software"], ["Trabalho", "todo dia, em qualquer equipe"]],
+    },
+    FMT: {
+      frase: "Os dados chegam em muitos formatos e de muitos lugares; trazê-los inteiros e corretos é metade do trabalho.",
+      texto: [
+        "<strong>CSV</strong> é uma tabela em texto: uma linha por registro, valores separados por um caractere. No Brasil o separador costuma ser o ponto e vírgula, porque a vírgula é a casa decimal.",
+        "<strong>JSON</strong> guarda dados aninhados, com chaves e listas, e é o formato das APIs. Para analisar, você achata o aninhado numa tabela.",
+        "<strong>Parquet</strong> guarda os dados por coluna e comprimidos: o mesmo conteúdo ocupa muito menos espaço e é lido muito mais rápido numa análise.",
+        "<strong>APIs</strong> são endereços na web que devolvem dados quando você pede: o Banco Central entrega séries de juros e inflação; o IBGE, dados de municípios.",
+        "Acento quebrado (“SÃ£o Paulo”) é sinal de texto lido com a <strong>codificação</strong> errada. O padrão é UTF-8; arquivos antigos podem estar em Latin-1.",
+      ],
+      legenda: "A mesma informação em três formatos. No Python, todos viram a mesma tabela.",
+      dia: "Exportar o extrato do banco em CSV e abrir na planilha: se tudo vier numa coluna só, o separador estava errado; se os acentos vierem estranhos, a codificação.",
+      codigo: 'import pandas as pd\ndf = pd.read_csv("respostas.csv", sep=";", decimal=",", encoding="utf-8")\nprint(df.shape)   # (linhas, colunas)',
+      onde: [["UFMS", "Introdução à Ciência de Dados"], ["Concursos", "ciência de dados: coleta e integração"], ["Trabalho", "o começo de todo projeto"]],
+    },
+    AD: {
+      frase: "Carregar, limpar, transformar e resumir dados com pandas: o dia a dia do cientista de dados.",
+      texto: [
+        "Um <strong>DataFrame</strong> é uma tabela dentro do Python: colunas com nome e tipo, linhas com um índice. Uma <strong>Series</strong> é uma coluna sozinha.",
+        "<strong>Filtrar</strong> é escolher as linhas que obedecem a uma condição, como o <code>WHERE</code> do SQL.",
+        "<strong>Agrupar</strong> tem três passos: separar as linhas por grupo, aplicar uma conta em cada grupo e juntar os resultados. É o <code>GROUP BY</code> do SQL.",
+        "<strong>Juntar</strong> tabelas por uma chave (<code>merge</code>) é o <code>JOIN</code> do SQL; o cuidado é não perder nem duplicar linhas no caminho.",
+        "<strong>Limpar</strong> é tratar o que vem errado: valores ausentes, linhas duplicadas, números guardados como texto, a mesma categoria escrita de jeitos diferentes. Cada decisão fica registrada. Por baixo, o NumPy faz as contas em bloco (vetorização), por isso tudo é rápido.",
+      ],
+      legenda: "Separar, aplicar e juntar: a taxa de acerto por disciplina sai de seis respostas.",
+      dia: "A tabela dinâmica do Excel é um agrupamento: você escolhe o grupo (linhas) e a conta (soma, média).",
+      codigo: 'import pandas as pd\nr = pd.read_sql("SELECT * FROM respostas", conexao)\ntaxa = r.groupby("usuario_id")["correta"].mean()\nprint(taxa.sort_values(ascending=False).head(3))',
+      onde: [["UFMS", "Introdução à Ciência de Dados"], ["Concursos", "ciência de dados: preparação de dados"], ["Trabalho", "todos os dias"]],
+    },
+    VIS: {
+      frase: "Um gráfico bom responde uma pergunta num olhar; um gráfico ruim engana sem mentir nos números.",
+      texto: [
+        "O olho compara bem <strong>posições e comprimentos</strong> e mal ângulos e áreas. Por isso barras e pontos funcionam melhor que pizza para comparar valores.",
+        "Cada pergunta pede um gráfico: comparar categorias, <strong>barras</strong>; ver a distribuição, <strong>histograma</strong>; relação entre duas variáveis, <strong>dispersão</strong>; evolução no tempo, <strong>linha</strong>.",
+        "Em gráfico de barras, eixo que não começa no zero exagera as diferenças. Duas escalas no mesmo gráfico sugerem relações que não existem.",
+        "Gráfico para explicar tem um recado só, título que diz a conclusão e destaque no que importa.",
+      ],
+      legenda: "Os mesmos números, 52% e 55%. O eixo cortado faz 3 pontos parecerem o triplo.",
+      dia: "O gráfico de inflação do jornal: uma linha mês a mês, com a meta marcada, e o título dizendo se subiu ou caiu.",
+      codigo: 'import matplotlib.pyplot as plt\nplt.bar(["Fácil", "Média", "Difícil"], [77, 62, 39])\nplt.ylim(0, 100)\nplt.title("Quanto mais difícil, menos acertos (%)")\nplt.show()',
+      onde: [["Concursos", "pouco cobrado"], ["Trabalho", "toda análise termina num gráfico ou num relatório"]],
+    },
+    ML: {
+      frase: "Em vez de escrever a regra, você mostra exemplos e o algoritmo encontra a regra sozinho.",
+      texto: [
+        "No aprendizado <strong>supervisionado</strong>, cada exemplo vem com a resposta certa (o <strong>alvo</strong>): o preço de casas vendidas, o cliente que pagou ou não. O modelo aprende a ligar as características ao alvo.",
+        "<strong>Regressão</strong> prevê um número; <strong>classificação</strong> prevê uma categoria. O <strong>agrupamento</strong>, não supervisionado, acha grupos sem resposta certa.",
+        "O teste honesto usa dados que o modelo nunca viu. Um modelo que acerta tudo no treino e erra nos dados novos <strong>decorou</strong> (sobreajuste); um simples demais erra nos dois (subajuste).",
+        "A <strong>métrica</strong> depende do custo do erro: para detectar fraude, deixar passar uma fraude custa mais que um alarme falso.",
+        "Por baixo há estatística e álgebra linear: a regressão linear é mínimos quadrados, e o ajuste é feito descendo pelo gradiente.",
+      ],
+      legenda: "Os mesmos pontos e três modelos. Só o do meio vai acertar pontos novos.",
+      dia: "O filtro de spam aprendeu com e-mails marcados como spam; a recomendação de filmes aprendeu com o que pessoas parecidas com você assistiram.",
+      codigo: "from sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(X, y, test_size=0.25, random_state=0)\nmodelo = LogisticRegression().fit(X_treino, y_treino)\nprint(modelo.score(X_teste, y_teste))   # acerto em dados nunca vistos",
+      onde: [["Concursos", "aprendizado de máquina, cada vez mais presente"], ["Trabalho", "a parte mais visível da profissão"]],
+    },
+    NSQ: {
+      frase: "Quando o dado não cabe bem em tabelas, ou não cabe numa máquina só, existem outros modelos de banco.",
+      texto: [
+        "<strong>Documento</strong> (MongoDB): cada registro é um JSON, com campos que podem variar de um para outro. Bom quando a estrutura muda muito.",
+        "<strong>Chave-valor</strong> (Redis): uma chave leva direto a um valor, muito rápido. Bom para guardar sessões, contadores e resultados prontos (cache).",
+        "<strong>Grafo</strong> (Neo4j): pessoas e ligações entre elas são o próprio dado. Bom para redes, rotas e recomendações.",
+        "<strong>Colunar</strong> (DuckDB, Parquet, data warehouses): guarda cada coluna junta, ótimo para somar e agrupar milhões de linhas.",
+        "Quando o volume passa do que uma máquina aguenta, o trabalho é dividido entre muitas (Spark). E num sistema espalhado em várias máquinas, se a rede falha, é preciso escolher entre responder sempre ou responder sempre igual: é o teorema CAP.",
+      ],
+      legenda: "Quatro modelos de dados e para que cada um é bom.",
+      dia: "A rede de amigos de uma rede social é um grafo; o carrinho de compras guardado por alguns minutos é um chave-valor.",
+      lang: "json",
+      codigo: '{\n  "nome": "Kaio Mendes",\n  "respostas": [\n    {"questao": 12, "resposta": "C", "correta": true},\n    {"questao": 47, "resposta": "E", "correta": false}\n  ]\n}',
+      onde: [["UFMS", "Banco de Dados, módulo 4 (NoSQL)"], ["Concursos", "big data, NoSQL"], ["Trabalho", "onde o dado de muitas empresas mora"]],
+    },
+    ETI: {
+      frase: "Dado sobre pessoas tem lei, dono e consequência; cuidar dele é parte do trabalho, não um extra.",
+      texto: [
+        "A <strong>LGPD</strong> (Lei 13.709/2018) é a lei brasileira sobre dados pessoais. Na matéria, os artigos são estudados pelo texto oficial, nunca por resumo.",
+        "<strong>Anonimizar</strong> é tirar o que identifica a pessoa. Mas cruzar bases pode <strong>reidentificar</strong>: data de nascimento, CEP e sexo juntos já apontam muita gente.",
+        "<strong>Segurança</strong>: acesso só para quem precisa, senhas e chaves fora do código, dados sensíveis criptografados.",
+        "Modelos podem repetir os <strong>vieses</strong> da coleta: se os dados de treino quase não têm um grupo, o modelo erra mais com ele. Por isso o desempenho é medido por grupo.",
+        "<strong>Governança</strong> é saber de onde veio cada dado, quem responde por ele e se ele tem qualidade.",
+      ],
+      legenda: "Cada etapa da vida de um dado pessoal tem uma pergunta a responder. Embaixo, um registro antes e depois de pseudonimizar.",
+      dia: "O aviso de cookies que aparece nos sites e o pedido de exclusão de cadastro numa loja são a proteção de dados na prática.",
+      codigo: 'import hashlib\nemail = "kaio.mendes@exemplo.com.br"\ncodigo = hashlib.sha256(email.encode()).hexdigest()[:12]\nprint(codigo)   # d50e7201730c\n# esconde o e-mail, mas quem tem a lista de e-mails consegue refazer: não é anonimizar',
+      onde: [["Concursos", "segurança da informação, LGPD, governança"], ["Trabalho", "obrigatório em qualquer empresa"]],
+    },
+  };
+
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function realcar(codigo, lang) {
+    const marca = lang === "sql" ? "--" : lang === "json" ? null : "#";
+    return codigo.split("\n").map((l) => {
+      const e = esc(l);
+      if (!marca) return e;
+      const i = l.indexOf(marca);
+      if (i < 0) return e;
+      return esc(l.slice(0, i)) + '<span class="c">' + esc(l.slice(i)) + "</span>";
+    }).join("\n");
+  }
+
+  const ordem = window.MATERIAS.map((m) => m.sigla);
+  const porSigla = Object.fromEntries(window.MATERIAS.map((m) => [m.sigla, m]));
+
+  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
+
+  let nav = '<div class="marca"><b>Domínio</b><span>Guia das matérias</span></div>';
+  ETAPAS.forEach(([nome, siglas]) => {
+    nav += `<div class="grupo">${esc(nome)}</div>`;
+    siglas.forEach((s) => { nav += `<a href="#${s}"><span class="n">${String(ordem.indexOf(s) + 1).padStart(2, "0")}</span>${esc(porSigla[s].nome)}</a>`; });
+  });
+  document.getElementById("nav").innerHTML = nav;
+
+  document.getElementById("mapa").innerHTML = ETAPAS.map(([nome, siglas]) =>
+    `<div class="etapa"><h3>${esc(nome)}</h3>${siglas.map((s) => `<a href="#${s}"><span class="n">${String(ordem.indexOf(s) + 1).padStart(2, "0")}</span>${esc(porSigla[s].nome)}</a>`).join("")}</div>`).join("");
+
+  const guia = document.getElementById("guia");
+  window.MATERIAS.forEach((m, i) => {
+    const c = C[m.sigla];
+    const topicos = m.modulos.map((mod) => `<li><b>${esc(mod.nome)}</b><span class="conceitos">${mod.conceitos.map(esc).join(" · ")}</span><span class="final"><span>Ao final você consegue:</span> ${esc(mod.dominio.charAt(0).toLowerCase() + mod.dominio.slice(1))}.${LICOES[mod.codigo] ? ` <a href="${LICOES[mod.codigo]}">Abrir a lição ilustrada</a>` : ""}</span></li>`).join("");
+    guia.insertAdjacentHTML("beforeend", `
+      <section class="secao" id="${m.sigla}" aria-labelledby="t-${m.sigla}">
+        <p class="sobretitulo">Matéria ${i + 1} de ${window.MATERIAS.length} · ${m.modulos.length} tópicos</p>
+        <h2 id="t-${m.sigla}">${esc(m.nome)}</h2>
+        <p class="lede">${esc(c.frase)}</p>
+        <figure><div class="rolagem">${window.FIG[m.sigla]()}</div><figcaption>${esc(c.legenda)}</figcaption></figure>
+        <h3>Como funciona</h3>
+        <div class="prosa">${c.texto.map((p) => `<p>${p}</p>`).join("")}</div>
+        <div class="par">
+          <div class="cartao"><h3>No dia a dia</h3><p>${esc(c.dia)}</p></div>
+          <div class="cartao"><h3>No computador</h3><pre>${realcar(c.codigo, c.lang)}</pre></div>
+        </div>
+        <h3>Os tópicos, em ordem</h3>
+        <ol class="topicos">${topicos}</ol>
+        <div class="onde">${c.onde.map(([r, v]) => `<span><b>${esc(r)}:</b> ${esc(v)}</span>`).join("")}</div>
+      </section>`);
+  });
+
+  const links = [...document.querySelectorAll("#nav a")];
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => {
+      if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll(".secao").forEach((s) => observador.observe(s));
+})();
+</script>
