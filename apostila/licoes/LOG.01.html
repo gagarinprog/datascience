@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap">
 <link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+</style>
 </head>
 <body>
 <div class="casca">
@@ -26,11 +33,13 @@
   <main class="conteudo">
     <div class="coluna">
       <header class="bloco">
-        <p class="sobretitulo">Lógica de programação · Módulo 1 de 9</p>
+        <p class="sobretitulo">Lógica de programação · Módulo 1 de 10</p>
         <h1 class="titulo-pagina">Algoritmo</h1>
         <p class="lede">Antes de qualquer linguagem de programação, o que importa é saber descrever uma tarefa em passos tão claros que ninguém possa entender de outro jeito. Este módulo não usa computador: só papel, lápis e atenção.</p>
-        <p class="sobretitulo">5 conceitos · cada um com desafio, explicação, exemplo resolvido e prática</p>
+        <p class="sobretitulo">5 conceitos e uma tarefa · um passo por vez: termine os exercícios para avançar</p>
+        <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
       </header>
+      <nav class="passos-barra passos-licao" id="passos-licao" aria-label="Passos da lição"></nav>
 
       <!-- 1 -->
       <section class="secao" id="c1">
@@ -462,6 +471,67 @@ escreva valor</pre>
     if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
   }), { rootMargin: "-20% 0px -70% 0px" });
   document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
+
+  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
+  const secoes = [...document.querySelectorAll(".secao")];
+  const nomes = ["O que é algoritmo", "Entrada, processamento e saída", "Pseudocódigo", "Fluxograma", "Teste de mesa", "Tarefa de domínio"];
+  const verTudo = document.getElementById("ver-tudo");
+  const barra = document.getElementById("passos-licao");
+  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
+  const feito = (ex) => {
+    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
+    const r = ex.querySelector(".retorno");
+    return !!r && r.classList.contains("ok");
+  };
+  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
+  secoes.forEach((s, i) => {
+    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
+    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
+    const prox = s.querySelector("[data-proximo]");
+    if (prox) prox.addEventListener("click", () => ir(i + 1));
+  });
+  function atualizar() {
+    secoes.forEach((s, i) => {
+      const ok = completo(i);
+      const prox = s.querySelector("[data-proximo]");
+      if (prox) prox.disabled = !ok && !verTudo.checked;
+      const est = s.querySelector(".estado-licao");
+      const total = s.querySelectorAll(".exercicio").length;
+      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
+      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
+      est.classList.toggle("ok", ok && total > 0);
+    });
+    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
+    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
+  }
+  function ir(i) {
+    atual = Math.max(0, Math.min(secoes.length - 1, i));
+    secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
+    atualizar();
+    secoes[atual].scrollIntoView({ block: "start" });
+  }
+  let espera = null;
+  document.addEventListener("click", (e) => {
+    const ex = e.target.closest(".exercicio");
+    if (!ex) return;
+    setTimeout(() => {
+      atualizar();
+      const i = secoes.indexOf(ex.closest(".secao"));
+      const certo = ex.querySelector(".retorno.ok");
+      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
+        const est = secoes[i].querySelector(".estado-licao");
+        est.textContent = "Tudo certo. Indo para o próximo conceito...";
+        clearTimeout(espera);
+        espera = setTimeout(() => ir(i + 1), 2200);
+      }
+    }, 0);
+  });
+  window.addEventListener("hashchange", () => {
+    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
+    if (k >= 0) ir(k);
+  });
+  verTudo.addEventListener("change", () => ir(atual));
+  ir(atual);
 })();
 </script>
 </body>
