@@ -14,13 +14,15 @@
   .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
   .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
   .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
 </style>
 </head>
 <body>
 <div class="casca">
   <nav class="lateral" aria-label="Conceitos da lição">
     <div class="marca"><b>Lógica de programação</b><span>Módulo 1 · Algoritmo</span></div>
-    <a href="../index.html#trilha-LOG"><span class="n">&lt;</span>Voltar ao guia</a>
+    <a href="../index.html#trilha-LOG"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
     <div class="grupo">Conceitos</div>
     <a href="#c1" data-conceito="c1"><span class="n">01</span>O que é algoritmo</a>
     <a href="#c2" data-conceito="c2"><span class="n">02</span>Entrada, processamento e saída</a>
@@ -504,11 +506,16 @@ escreva valor</pre>
     barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
     barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
   }
+  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function ir(i) {
-    atual = Math.max(0, Math.min(secoes.length - 1, i));
-    secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-    atualizar();
-    secoes[atual].scrollIntoView({ block: "start" });
+    const fazer = () => {
+      atual = Math.max(0, Math.min(secoes.length - 1, i));
+      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
+      atualizar();
+      secoes[atual].scrollIntoView({ block: "start" });
+    };
+    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
+    else fazer();
   }
   let espera = null;
   document.addEventListener("click", (e) => {

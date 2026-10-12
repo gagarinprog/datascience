@@ -1,13 +1,18 @@
 /* Apostila do DOMÍNIO: estilo comum ao guia e às lições.
    Direção de desktop: IBM Plex Sans (interface), Source Serif 4 (leitura), IBM Plex Mono (código). */
 :root {
-  --fundo: #f1f2f4;
+  /* Neutros: escala slate do Radix Colors (github.com/radix-ui/colors, MIT).
+     fundo = passo 3, folha-2 = passo 2, linha = passo 6, linha-forte = passo 7, texto = passos 12 e 11. */
+  --fundo: #f0f0f3;
   --folha: #ffffff;
-  --folha-2: #f6f7f9;
-  --linha: #dadde3;
-  --linha-forte: #bfc5cf;
-  --texto: #1b1f27;
-  --texto-2: #576071;
+  --folha-2: #f9f9fb;
+  --linha: #d9d9e0;
+  --linha-forte: #cdced6;
+  --linha-hover: #b9bbc6;
+  --texto: #1c2024;
+  --texto-2: #60646c;
+  --r1: 3px; --r2: 4px; --r3: 6px;
+  --curva: cubic-bezier(0.2, 0, 0, 1);
   --tinta: #2b5c8a;
   --tinta-suave: #e7eef6;
   --sobre-tinta: #ffffff;
@@ -24,15 +29,15 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --fundo: #15171b; --folha: #1b1e23; --folha-2: #20242a; --linha: #2e333b; --linha-forte: #434a55;
-    --texto: #e3e5e8; --texto-2: #9aa1ad; --tinta: #8db4e2; --tinta-suave: #22303f; --sobre-tinta: #0f1a26;
+    --fundo: #111113; --folha: #18191b; --folha-2: #212225; --linha: #363a3f; --linha-forte: #43484e; --linha-hover: #5a6169;
+    --texto: #edeef0; --texto-2: #b0b4ba; --tinta: #8db4e2; --tinta-suave: #22303f; --sobre-tinta: #0f1a26;
     --certo: #63c493; --certo-suave: #1b2d24; --erro: #f08a80; --erro-suave: #33201f; --aviso: #e2b45c; --aviso-suave: #2e2717;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --fundo: #15171b; --folha: #1b1e23; --folha-2: #20242a; --linha: #2e333b; --linha-forte: #434a55;
-  --texto: #e3e5e8; --texto-2: #9aa1ad; --tinta: #8db4e2; --tinta-suave: #22303f; --sobre-tinta: #0f1a26;
+  --fundo: #111113; --folha: #18191b; --folha-2: #212225; --linha: #363a3f; --linha-forte: #43484e; --linha-hover: #5a6169;
+  --texto: #edeef0; --texto-2: #b0b4ba; --tinta: #8db4e2; --tinta-suave: #22303f; --sobre-tinta: #0f1a26;
   --certo: #63c493; --certo-suave: #1b2d24; --erro: #f08a80; --erro-suave: #33201f; --aviso: #e2b45c; --aviso-suave: #2e2717;
   color-scheme: dark;
 }

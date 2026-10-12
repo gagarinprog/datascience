@@ -16,6 +16,18 @@
     const i = id("sel");
     return `<label class="campo" for="${i}"><span>${esc(rotulo)}</span><select id="${i}">${opcoes.map(([v, t]) => `<option value="${esc(v)}"${v === valor ? " selected" : ""}>${esc(t)}</option>`).join("")}</select></label>`;
   }
+  // AutoAnimate (carregado pela página como módulo) anima itens que entram e saem de uma lista.
+  function animar(el) {
+    const aplicar = () => window.autoAnimate && window.autoAnimate(el, { duration: 200 });
+    if (window.autoAnimate) aplicar();
+    else window.addEventListener("autoanimate", aplicar, { once: true });
+  }
+  function caixa(texto, topo) {
+    const s = document.createElement("span");
+    s.textContent = texto;
+    if (topo) s.className = "topo";
+    return s;
+  }
   function ligar(raiz, atualizar) {
     raiz.querySelectorAll("input, select, textarea").forEach((c) => c.addEventListener("input", atualizar));
     atualizar();
@@ -177,22 +189,30 @@
       const pilha = ["pedido A", "pedido B"], fila = ["Ana", "Bruno"];
       let n = 3;
       const nota = el.querySelector(".nota-exp");
-      const desenhar = () => {
-        el.querySelector(".pilha-vis").innerHTML = pilha.slice().reverse().map((x, i) => `<span class="${i === 0 ? "topo" : ""}">${esc(x)}</span>`).join("") || "<em>vazia</em>";
-        el.querySelector(".fila-vis").innerHTML = fila.map((x, i) => `<span class="${i === 0 ? "topo" : ""}">${esc(x)}</span>`).join("") || "<em>vazia</em>";
-      };
+      const pv = el.querySelector(".pilha-vis"), fv = el.querySelector(".fila-vis");
+      pilha.slice().reverse().forEach((x, i) => pv.appendChild(caixa(x, i === 0)));
+      fila.forEach((x, i) => fv.appendChild(caixa(x, i === 0)));
+      animar(pv);
+      animar(fv);
+      const marcarTopo = (lista) => [...lista.children].forEach((c, i) => c.classList.toggle("topo", i === 0));
       el.querySelectorAll("[data-a]").forEach((b) => b.addEventListener("click", () => {
         const v = item.value.trim() || `item ${n}`;
         const a = b.dataset.a;
-        if (a === "empilhar") { pilha.push(v); nota.textContent = `“${v}” foi para o topo da pilha.`; }
-        if (a === "desempilhar") nota.textContent = pilha.length ? `Saiu “${pilha.pop()}”: o último que entrou.` : "A pilha está vazia.";
-        if (a === "entrar") { fila.push(v); nota.textContent = `“${v}” entrou no fim da fila.`; }
-        if (a === "sair") nota.textContent = fila.length ? `Atendido: “${fila.shift()}”, o primeiro que chegou.` : "A fila está vazia.";
+        if (a === "empilhar") { pilha.push(v); pv.prepend(caixa(v, true)); nota.textContent = `“${v}” foi para o topo da pilha.`; }
+        if (a === "desempilhar") {
+          if (pilha.length) { nota.textContent = `Saiu “${pilha.pop()}”: o último que entrou.`; pv.firstElementChild.remove(); }
+          else nota.textContent = "A pilha está vazia.";
+        }
+        if (a === "entrar") { fila.push(v); fv.appendChild(caixa(v, false)); nota.textContent = `“${v}” entrou no fim da fila.`; }
+        if (a === "sair") {
+          if (fila.length) { nota.textContent = `Atendido: “${fila.shift()}”, o primeiro que chegou.`; fv.firstElementChild.remove(); }
+          else nota.textContent = "A fila está vazia.";
+        }
+        marcarTopo(pv);
+        marcarTopo(fv);
         n += 1;
         item.value = `pedido ${n}`;
-        desenhar();
       }));
-      desenhar();
       const tam = el.querySelectorAll("input")[1];
       ligar(el, () => {
         const v = Math.max(1, Math.floor(Number(tam.value) || 1));
@@ -236,17 +256,19 @@
     montar(el) {
       el.innerHTML = `<div class="controles">${campo("mensagem do commit", { type: "text", value: "Lê o extrato do cartão" })}</div><div class="botoes"><button type="button" class="botao primario">git commit</button></div><ol class="historico"></ol>`;
       const msg = el.querySelector("input");
-      const hist = [{ h: "1a2b3c4", m: "Cria o projeto" }];
-      const desenhar = () => { el.querySelector(".historico").innerHTML = hist.slice().reverse().map((c, i) => `<li><span class="m">${c.h}</span> ${esc(c.m)}${i === 0 ? ' <small class="selo-aqui">você está aqui</small>' : ""}</li>`).join(""); };
+      const lista = el.querySelector(".historico");
+      const novo = (h, m) => {
+        lista.querySelectorAll(".selo-aqui").forEach((s) => s.remove());
+        lista.insertAdjacentHTML("afterbegin", `<li><span class="m">${h}</span> ${esc(m)} <small class="selo-aqui">você está aqui</small></li>`);
+      };
+      novo("1a2b3c4", "Cria o projeto");
+      animar(lista);
       el.querySelector("button").addEventListener("click", () => {
         const m = msg.value.trim();
         if (!m) return;
-        const h = Array.from({ length: 7 }, () => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("");
-        hist.push({ h, m });
+        novo(Array.from({ length: 7 }, () => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join(""), m);
         msg.value = "";
-        desenhar();
       });
-      desenhar();
     },
   };
 
@@ -411,6 +433,7 @@
       const precos = { cafe: 18.9, fone: 149, tenis: 399.9 };
       const cache = {};
       const lista = el.querySelector(".historico");
+      animar(lista);
       el.querySelector("button").addEventListener("click", () => {
         const chave = "preco:" + sel.value;
         const agora = Date.now();

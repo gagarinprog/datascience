@@ -10,10 +10,10 @@
   <aside class="lat" aria-label="Navegação">
     <div class="marca"><b>Domínio</b><span>apostila</span></div>
     <nav class="nav-lat" id="nav-lat">
-      <a href="#mapa" data-v="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5 11 16M16 7.5 13 16M8.5 6h7"/></svg>Mapa de estudo</a>
-      <a href="#trilha" data-v="trilha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2Z"/><path d="M8 7h6M8 11h6"/></svg>Trilha<span class="conta" id="conta-trilha"></span></a>
-      <a href="#guia" data-v="guia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Guia das matérias</a>
-      <a href="#fontes" data-v="fontes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M8 13h8M8 17h5"/></svg>Fontes</a>
+      <a href="#mapa" data-v="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>Mapa de estudo</a>
+      <a href="#trilha" data-v="trilha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>Trilha<span class="conta" id="conta-trilha"></span></a>
+      <a href="#guia" data-v="guia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Guia das matérias</a>
+      <a href="#fontes" data-v="fontes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>Fontes</a>
     </nav>
     <div class="secao-lat"><span>Matérias, em ordem</span><span>dominados</span></div>
     <div class="materias-lat" id="materias-lat"></div>
@@ -35,6 +35,12 @@
   <div id="conteudo-ampliado"></div>
 </dialog>
 
+<script type="module">
+  // AutoAnimate (github.com/formkit/auto-animate, MIT): anima itens que entram e saem de listas.
+  import autoAnimate from "https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/index.mjs";
+  window.autoAnimate = autoAnimate;
+  window.dispatchEvent(new Event("autoanimate"));
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="logos.js" charset="utf-8"></script>
 <script src="figuras.js" charset="utf-8"></script>
@@ -56,6 +62,19 @@
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const cor = (s) => `var(--m-${s})`;
   const minusc = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  const LUCIDE = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+  const ICONE = {
+    voltar: `<svg ${LUCIDE}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>`,
+    avancar: `<svg ${LUCIDE}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
+    ok: `<svg ${LUCIDE}><path d="M20 6 9 17l-5-5"/></svg>`,
+    ampliar: `<svg ${LUCIDE}><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>`,
+  };
+  // transição entre telas e passos (View Transitions do navegador); sem suporte ou com movimento reduzido, troca direto
+  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function transicao(fazer) {
+    if (document.startViewTransition && !semMovimento) document.startViewTransition(fazer);
+    else fazer();
+  }
   const PASSOS = ["Antes de começar", "Para que serve", "O que você aprende", "Cuidado com", "Pronto para avançar?"];
 
   // ---- progresso: base de dados do artefato quando houver; navegador como reserva ----
@@ -227,20 +246,20 @@
       <label class="campo largo" for="resp-estudo"><span>escreva a sua resposta antes de ver a nossa</span><textarea id="resp-estudo" rows="3"></textarea></label>
       <div class="botoes"><button type="button" class="botao primario" data-comparar disabled>Comparar com a resposta</button><button type="button" class="botao" data-naosei>Ainda não sei</button></div>
       <div class="resposta" hidden>${esc(mod.resposta)}</div>
-      <div class="botoes" data-avaliar hidden><button type="button" class="botao sucesso" data-acertei>Acertei: avançar para o próximo módulo</button><button type="button" class="botao" data-rever>Ainda não: rever os conceitos</button></div>
+      <div class="botoes" data-avaliar hidden><button type="button" class="botao sucesso" data-acertei>${ICONE.ok}Acertei: avançar para o próximo módulo</button><button type="button" class="botao" data-rever>Ainda não: rever os conceitos</button></div>
       <p class="parabens" data-parabens hidden></p>`;
     const seguinte = ORDEM_GLOBAL[ORDEM_GLOBAL.indexOf(cod) + 1];
     document.getElementById("centro").innerHTML = `
       <div class="cabeca" style="--cor:${cor(m.sigla)}"><span class="selo"><i></i>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}${estadoDe(cod) === "dominado" ? " · dominado" : ""}</span><h1>${esc(mod.nome)} ${mod.virada ? '<span class="selo virada">ponto de virada</span>' : ""}</h1></div>
       <nav class="passos-barra" style="--cor:${cor(m.sigla)}" aria-label="Passos do módulo">${barra}</nav>
       <div class="celula"><div class="rotulo"><b>[${p + 1}/5]</b>${esc(PASSOS[p].toLowerCase())}</div><div class="corpo ativa">${corpo}</div></div>
-      <div class="nav-passos"><button type="button" class="botao" data-voltar${p === 0 ? " disabled" : ""}>Voltar <span class="tecla">←</span></button><span class="dica">${p === 3 ? "Leia o tropeço e confirme para seguir." : p === 4 ? "Acertou: o módulo fica dominado e você segue para o próximo." : ""}</span>${p < 4 ? `<button type="button" class="botao primario" data-avancar${estudo.liberado[p] ? "" : " disabled"}>Avançar <span class="tecla">→</span></button>` : seguinte ? `<a class="botao" href="#estudo-${seguinte}">Pular para o próximo módulo</a>` : ""}</div>`;
+      <div class="nav-passos"><button type="button" class="botao" data-voltar${p === 0 ? " disabled" : ""}>${ICONE.voltar}Voltar</button><span class="dica">${p === 3 ? "Leia o tropeço e confirme para seguir." : p === 4 ? "Acertou: o módulo fica dominado e você segue para o próximo." : ""}</span>${p < 4 ? `<button type="button" class="botao primario" data-avancar${estudo.liberado[p] ? "" : " disabled"}>Avançar${ICONE.avancar}</button>` : seguinte ? `<a class="botao" href="#estudo-${seguinte}">Pular para o próximo módulo</a>` : ""}</div>`;
     document.getElementById("trilho").innerHTML = `
       <div><h3>Neste módulo</h3><ul>${PASSOS.map((n, k) => `<li style="color:${k === p ? "var(--texto)" : "var(--texto-2)"};${k === p ? "font-weight:500" : ""}">${k + 1}. ${n}${k < p ? " (feito)" : ""}</li>`).join("")}</ul></div>
       <div><h3>Próximos módulos</h3><ul>${m.modulos.slice(indice + 1, indice + 4).map((x) => `<li><a href="#estudo-${x.codigo}">${esc(x.nome)}</a></li>`).join("") || "<li>fim da matéria</li>"}</ul></div>
       ${fontesDe(m.sigla)}`;
 
-    const ir = (k) => { estudo.passo = Math.max(0, Math.min(4, k)); vistaEstudo(cod); document.getElementById("centro").scrollIntoView({ block: "start" }); };
+    const ir = (k) => { estudo.passo = Math.max(0, Math.min(4, k)); transicao(() => vistaEstudo(cod)); document.getElementById("centro").scrollIntoView({ block: "start" }); };
     const avancar = () => { if (estudo.passo < 4 && estudo.liberado[estudo.passo]) { estudo.liberado[estudo.passo + 1] = estudo.liberado[estudo.passo + 1] || estudo.passo + 1 < 3; ir(estudo.passo + 1); } };
     document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.ir))));
     const voltar = document.querySelector("[data-voltar]");
@@ -285,7 +304,7 @@
     const c = C[sigla];
     const i = MATERIAS.indexOf(m);
     const lang = c.lang || "python";
-    const figuras = c.figuras.map(([chave, legenda], k) => `<figure data-fig="${chave}" class="largo"><button class="ampliar" type="button">Ampliar</button><div class="rolagem">${window.FIG[chave]()}</div><figcaption>${esc(legenda)}</figcaption></figure>`).join("");
+    const figuras = c.figuras.map(([chave, legenda], k) => `<figure data-fig="${chave}" class="largo"><button class="ampliar" type="button">${ICONE.ampliar} Ampliar</button><div class="rolagem">${window.FIG[chave]()}</div><figcaption>${esc(legenda)}</figcaption></figure>`).join("");
     const exp = window.EXPERIMENTE && window.EXPERIMENTE[sigla];
     const topicos = m.modulos.map((mod, k) => {
       const est = estadoDe(mod.codigo);
@@ -353,7 +372,7 @@
 
   document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
   document.getElementById("fechar-ampliado").addEventListener("click", () => document.getElementById("ampliado").close());
-  window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); });
+  window.addEventListener("hashchange", () => transicao(() => { render(); window.scrollTo(0, 0); }));
   render();
 })();
 </script>
