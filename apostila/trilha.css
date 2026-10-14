@@ -1,26 +1,30 @@
-/* Apostila do DOMÍNIO: aplicação no padrão do protótipo de desktop aprovado.
-   Barra lateral com as matérias, topo com o caminho, centro de leitura e painel de apoio à direita.
-   Linhas finas, cantos de 3 a 6 px, nenhuma sombra decorativa, números em fonte monoespaçada. */
+/* Apostila do DOMÍNIO: cores das matérias, caixas interativas (experimente), figuras e realce de código.
+   Também guarda o esqueleto antigo de barra lateral, ainda usado pelas lições ilustradas.
+   O visual de jogo (mapa, cascata, lição em tela cheia, clipes) fica em jornada.css. */
 :root {
-  --m-LOG: #5e5297; --m-PY: #2f6690; --m-BD: #9a5b0e; --m-CMP: #3b5ba0; --m-MAT: #3f6e4a; --m-EST: #a0482e;
-  --m-ED: #923a5e; --m-POO: #5b6b1e; --m-ENG: #535b66; --m-FMT: #286c6c; --m-AD: #1f6f8b; --m-VIS: #8a4f9e;
-  --m-ALC: #4d6a2f; --m-ML: #b0412e; --m-NSQ: #6b5a2a; --m-ETI: #4a5568;
+  --m-LOG: #6d28d9; --m-PY: #1d4ed8; --m-BD: #b45309; --m-CMP: #0e7490; --m-MAT: #15803d; --m-EST: #c2410c;
+  --m-ED: #be185d; --m-POO: #4d7c0f; --m-ENG: #b91c1c; --m-FMT: #0f766e; --m-AD: #0369a1; --m-VIS: #7e22ce;
+  --m-ALC: #047857; --m-ML: #a21caf; --m-NSQ: #4338ca; --m-ETI: #be123c;
+  /* versões vivas, para fundos escuros, brilhos e clipes */
+  --mv-LOG: #a78bfa; --mv-PY: #60a5fa; --mv-BD: #fbbf24; --mv-CMP: #22d3ee; --mv-MAT: #4ade80; --mv-EST: #fb923c;
+  --mv-ED: #f472b6; --mv-POO: #a3e635; --mv-ENG: #f87171; --mv-FMT: #2dd4bf; --mv-AD: #38bdf8; --mv-VIS: #c084fc;
+  --mv-ALC: #34d399; --mv-ML: #e879f9; --mv-NSQ: #818cf8; --mv-ETI: #fb7185;
   --hl-chave: #8b2f6b; --hl-texto: #2f6d2a; --hl-numero: #9a5b0e; --hl-funcao: #2b5c8a; --hl-comentario: #6b7280;
   --tinta-hover: #234d75;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --m-LOG: #a99ce6; --m-PY: #82b5de; --m-BD: #e3a65a; --m-CMP: #95aee6; --m-MAT: #8cc49a; --m-EST: #ec9a80;
-    --m-ED: #e08bae; --m-POO: #b6c77a; --m-ENG: #a3abb6; --m-FMT: #7cc1c1; --m-AD: #7cc0dc; --m-VIS: #c9a0db;
-    --m-ALC: #a8c98a; --m-ML: #f0927e; --m-NSQ: #d2bf86; --m-ETI: #b3bccb;
+    --m-LOG: #a78bfa; --m-PY: #60a5fa; --m-BD: #fbbf24; --m-CMP: #22d3ee; --m-MAT: #4ade80; --m-EST: #fb923c;
+    --m-ED: #f472b6; --m-POO: #a3e635; --m-ENG: #f87171; --m-FMT: #2dd4bf; --m-AD: #38bdf8; --m-VIS: #c084fc;
+    --m-ALC: #34d399; --m-ML: #e879f9; --m-NSQ: #818cf8; --m-ETI: #fb7185;
     --hl-chave: #e08bc4; --hl-texto: #9fd79a; --hl-numero: #e3b45c; --hl-funcao: #8db4e2; --hl-comentario: #8b93a1;
     --tinta-hover: #a7c5ea;
   }
 }
 :root[data-theme="dark"] {
-  --m-LOG: #a99ce6; --m-PY: #82b5de; --m-BD: #e3a65a; --m-CMP: #95aee6; --m-MAT: #8cc49a; --m-EST: #ec9a80;
-  --m-ED: #e08bae; --m-POO: #b6c77a; --m-ENG: #a3abb6; --m-FMT: #7cc1c1; --m-AD: #7cc0dc; --m-VIS: #c9a0db;
-  --m-ALC: #a8c98a; --m-ML: #f0927e; --m-NSQ: #d2bf86; --m-ETI: #b3bccb;
+  --m-LOG: #a78bfa; --m-PY: #60a5fa; --m-BD: #fbbf24; --m-CMP: #22d3ee; --m-MAT: #4ade80; --m-EST: #fb923c;
+  --m-ED: #f472b6; --m-POO: #a3e635; --m-ENG: #f87171; --m-FMT: #2dd4bf; --m-AD: #38bdf8; --m-VIS: #c084fc;
+  --m-ALC: #34d399; --m-ML: #e879f9; --m-NSQ: #818cf8; --m-ETI: #fb7185;
   --hl-chave: #e08bc4; --hl-texto: #9fd79a; --hl-numero: #e3b45c; --hl-funcao: #8db4e2; --hl-comentario: #8b93a1;
   --tinta-hover: #a7c5ea;
 }

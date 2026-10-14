@@ -183,6 +183,15 @@ Revisão feita do ponto de vista de quem usa, com as capturas antes e depois. O 
 - **Código sem ligaduras** (`>=` não vira `≥`) e bloco de código focável quando rola.
 - Testes: 91 de unidade e 76 de fluxo em 390 e 1280 px (inclui o desafio jogado nos dois caminhos, o axe com o painel aberto e as transições disparando), mais 16 capturas.
 
+## Apostila em estilo de jogo (13/10/2026, fora das fases)
+
+A apostila estática (`apostila/`, publicada como artefato) virou um jogo no estilo Mimo, a pedido do Kaio:
+- **Mapa:** as 16 matérias numa estrada sinuosa em 6 mundos, com anel de progresso em cada parada, o mascote marcando "você está aqui" e a parte já percorrida da estrada acesa nas cores das matérias.
+- **Matéria:** a jornada dos módulos em ziguezague; ao tocar num módulo, ele abre em cascata (o que ensina, conceitos, pré-requisitos, XP) e o resto recua. "Como funciona" virou subtópicos em sanfona, um aberto por vez, com contagem dos já vistos.
+- **Clipes:** 8 vídeos curtos animados com GSAP (frete, variáveis, bits, consulta SQL, pilha e fila, busca binária, média e mediana, sobreajuste), com legenda, barra de tempo e velocidade; com movimento reduzido, viram quadros.
+- **Lição em tela cheia:** 5 passos com barra segmentada, balões do glossário (96 termos), cartão de vitória com confete e avanço automático. XP, nível e ofensiva saem do progresso salvo.
+- Testes: capturas em 1366 e 390 px, claro e escuro, com movimento reduzido; nenhuma tela transborda e nenhum erro de página.
+
 ---
 
 ## Regra de conteúdo para todas as fases

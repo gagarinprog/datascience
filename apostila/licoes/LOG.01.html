@@ -6,9 +6,10 @@
 <title>Algoritmo · Lógica de programação</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
 <link rel="stylesheet" href="../estilo.css">
 <link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
 <style>
   .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
   .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
@@ -16,6 +17,30 @@
   .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
   .coluna { view-transition-name: conteudo; }
   .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--m-LOG); --cv: var(--mv-LOG); --tinta: var(--m-LOG); --tinta-suave: color-mix(in srgb, var(--mv-LOG) 16%, var(--folha)); }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--cv); box-shadow: 0 0 10px color-mix(in srgb, var(--cv) 70%, transparent); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--cor); border-color: var(--cor); color: var(--sobre-cor); box-shadow: 0 4px 0 color-mix(in srgb, var(--cor) 55%, #000), 0 10px 24px -10px color-mix(in srgb, var(--cv) 80%, transparent); }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
 </style>
 </head>
 <body>

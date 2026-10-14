@@ -1,44 +1,55 @@
 /* Apostila do DOMÍNIO: estilo comum ao guia e às lições.
-   Direção de desktop: IBM Plex Sans (interface), Source Serif 4 (leitura), IBM Plex Mono (código). */
+   Direção de jogo (estilo Mimo): Bricolage Grotesque nos títulos, Atkinson Hyperlegible Next no texto
+   e Atkinson Hyperlegible Mono no código. Cores vivas por matéria, brilhos e movimento que respeitam
+   prefers-reduced-motion. */
 :root {
-  /* Neutros: escala slate do Radix Colors (github.com/radix-ui/colors, MIT).
-     fundo = passo 3, folha-2 = passo 2, linha = passo 6, linha-forte = passo 7, texto = passos 12 e 11. */
-  --fundo: #f0f0f3;
+  --fundo: #f5f4fb;
   --folha: #ffffff;
-  --folha-2: #f9f9fb;
-  --linha: #d9d9e0;
-  --linha-forte: #cdced6;
-  --linha-hover: #b9bbc6;
-  --texto: #1c2024;
-  --texto-2: #60646c;
-  --r1: 3px; --r2: 4px; --r3: 6px;
+  --folha-2: #f8f7fd;
+  --linha: #e4e2f0;
+  --linha-forte: #d2cfe4;
+  --linha-hover: #b7b3d1;
+  --texto: #17152c;
+  --texto-2: #5c5978;
+  --r1: 6px; --r2: 10px; --r3: 16px;
   --curva: cubic-bezier(0.2, 0, 0, 1);
-  --tinta: #2b5c8a;
-  --tinta-suave: #e7eef6;
+  --mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --tinta: #5b45e0;
+  --tinta-suave: #ece9fd;
   --sobre-tinta: #ffffff;
-  --certo: #1e7148;
-  --certo-suave: #e5f2ea;
-  --erro: #b3261e;
-  --erro-suave: #fae9e7;
-  --aviso: #8a5a00;
-  --aviso-suave: #f8efdc;
-  --f-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --f-leitura: "Source Serif 4", Georgia, serif;
-  --f-codigo: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --sobre-cor: #ffffff;
+  --certo: #13804a;
+  --certo-suave: #e3f6ec;
+  --erro: #c4283d;
+  --erro-suave: #fde9ec;
+  --aviso: #9a5800;
+  --aviso-suave: #fff3dc;
+  --ouro: #f5a524;
+  --ouro-texto: #8f5b00;
+  --chama: #ff7a1a;
+  --sombra: 0 1px 2px rgb(23 21 44 / 0.06), 0 8px 24px -12px rgb(23 21 44 / 0.18);
+  --f-ui: "Atkinson Hyperlegible Next", "Segoe UI", system-ui, sans-serif;
+  --f-leitura: "Atkinson Hyperlegible Next", "Segoe UI", system-ui, sans-serif;
+  --f-titulo: "Bricolage Grotesque", "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  --f-codigo: "Atkinson Hyperlegible Mono", ui-monospace, Consolas, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --fundo: #111113; --folha: #18191b; --folha-2: #212225; --linha: #363a3f; --linha-forte: #43484e; --linha-hover: #5a6169;
-    --texto: #edeef0; --texto-2: #b0b4ba; --tinta: #8db4e2; --tinta-suave: #22303f; --sobre-tinta: #0f1a26;
-    --certo: #63c493; --certo-suave: #1b2d24; --erro: #f08a80; --erro-suave: #33201f; --aviso: #e2b45c; --aviso-suave: #2e2717;
+    --fundo: #0c0e1b; --folha: #151830; --folha-2: #1b1f3a; --linha: #2a2f52; --linha-forte: #3a4170; --linha-hover: #525a92;
+    --texto: #eef0ff; --texto-2: #a9aed0; --tinta: #9d8cff; --tinta-suave: #262449; --sobre-tinta: #0f0b2e; --sobre-cor: #0c0e1b;
+    --certo: #3ee08f; --certo-suave: #12301f; --erro: #ff6f86; --erro-suave: #3a1621; --aviso: #ffc65c; --aviso-suave: #34270c;
+    --ouro: #ffd166; --ouro-texto: #ffd166; --chama: #ff9142;
+    --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -14px rgb(0 0 0 / 0.7);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --fundo: #111113; --folha: #18191b; --folha-2: #212225; --linha: #363a3f; --linha-forte: #43484e; --linha-hover: #5a6169;
-  --texto: #edeef0; --texto-2: #b0b4ba; --tinta: #8db4e2; --tinta-suave: #22303f; --sobre-tinta: #0f1a26;
-  --certo: #63c493; --certo-suave: #1b2d24; --erro: #f08a80; --erro-suave: #33201f; --aviso: #e2b45c; --aviso-suave: #2e2717;
+  --fundo: #0c0e1b; --folha: #151830; --folha-2: #1b1f3a; --linha: #2a2f52; --linha-forte: #3a4170; --linha-hover: #525a92;
+  --texto: #eef0ff; --texto-2: #a9aed0; --tinta: #9d8cff; --tinta-suave: #262449; --sobre-tinta: #0f0b2e; --sobre-cor: #0c0e1b;
+  --certo: #3ee08f; --certo-suave: #12301f; --erro: #ff6f86; --erro-suave: #3a1621; --aviso: #ffc65c; --aviso-suave: #34270c;
+  --ouro: #ffd166; --ouro-texto: #ffd166; --chama: #ff9142;
+  --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -14px rgb(0 0 0 / 0.7);
   color-scheme: dark;
 }
 
@@ -48,7 +59,7 @@ html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; }
 a { color: var(--tinta); text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
-h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-weight: 600; font-stretch: 90%; }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-family: var(--f-titulo); font-weight: 700; letter-spacing: -0.01em; }
 p { margin: 0; }
 code { font-family: var(--f-codigo); font-size: 0.88em; background: var(--folha-2); border: 1px solid var(--linha); border-radius: 3px; padding: 0 4px; font-variant-ligatures: none; }
 pre { margin: 0; font-family: var(--f-codigo); font-size: 13.5px; line-height: 1.6; background: var(--folha-2); border: 1px solid var(--linha); border-radius: 4px; padding: 12px 14px; overflow-x: auto; font-variant-ligatures: none; }
@@ -78,12 +89,12 @@ pre .k { color: var(--tinta); font-weight: 500; }
 }
 
 .sobretitulo { font-size: 12.5px; color: var(--texto-2); display: flex; gap: 8px; align-items: center; }
-.titulo-pagina { font-size: clamp(28px, 3.2vw, 36px); line-height: 1.1; letter-spacing: -0.01em; font-stretch: 88%; }
+.titulo-pagina { font-size: clamp(30px, 3.6vw, 42px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 800; }
 .lede { font-family: var(--f-leitura); font-size: 19px; line-height: 1.55; }
 .prosa { font-family: var(--f-leitura); font-size: 17.5px; line-height: 1.65; display: grid; gap: 12px; max-width: 68ch; }
 .prosa strong { font-weight: 600; }
 .secao { border-top: 1px solid var(--linha); padding-top: 32px; margin-top: 24px; display: grid; gap: 18px; scroll-margin-top: 16px; }
-.secao h2 { font-size: 26px; line-height: 1.15; font-stretch: 88%; }
+.secao h2 { font-size: 28px; line-height: 1.1; font-weight: 800; }
 .secao h3 { font-size: 16px; }
 
 /* figuras */

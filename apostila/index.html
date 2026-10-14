@@ -1,378 +1,66 @@
 <meta charset="utf-8">
-<title>Guia das matérias</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa · Domínio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
 <link rel="stylesheet" href="estilo.css">
 <link rel="stylesheet" href="trilha.css">
+<link rel="stylesheet" href="jornada.css">
 
-<div class="app">
-  <aside class="lat" aria-label="Navegação">
-    <div class="marca"><b>Domínio</b><span>apostila</span></div>
-    <nav class="nav-lat" id="nav-lat">
-      <a href="#mapa" data-v="mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>Mapa de estudo</a>
-      <a href="#trilha" data-v="trilha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>Trilha<span class="conta" id="conta-trilha"></span></a>
-      <a href="#guia" data-v="guia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Guia das matérias</a>
-      <a href="#fontes" data-v="fontes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>Fontes</a>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="hud">
+  <div class="hud-dentro">
+    <a class="logo" href="#mapa" aria-label="Domínio, voltar ao mapa"><span class="logo-marca" id="logo-marca"></span><b>Domínio</b></a>
+    <nav class="hud-nav" aria-label="Seções">
+      <a href="#mapa" data-v="mapa" id="nav-mapa"></a>
+      <a href="#trilha" data-v="materia" id="nav-materia"></a>
+      <a href="#fontes" data-v="fontes" id="nav-fontes"></a>
     </nav>
-    <div class="secao-lat"><span>Matérias, em ordem</span><span>dominados</span></div>
-    <div class="materias-lat" id="materias-lat"></div>
-    <div class="rodape-lat" id="sincronia">progresso salvo neste navegador</div>
-  </aside>
-  <div class="principal">
-    <header class="topo">
-      <div class="migalhas" id="migalhas"></div>
-      <div class="progresso-topo"><span><b id="geral">0/167</b> módulos dominados</span><span class="barra-fina" aria-hidden="true"><i id="barra-geral" style="width:0%"></i></span></div>
-    </header>
-    <div class="area">
-      <main class="centro" id="centro"></main>
-      <aside class="trilho" id="trilho" aria-label="Apoio"></aside>
+    <div class="hud-status">
+      <span class="stat ofensiva apagada" id="stat-ofensiva"><b id="hud-ofensiva">0</b></span>
+      <span class="stat xp" title="Pontos de experiência: 20 por módulo dominado, 30 nos pontos de virada" id="stat-xp"><b id="hud-xp">0</b><em>XP</em></span>
+      <span class="stat"><span class="nivel-anel" id="hud-nivel"><span>1</span></span><small>nível</small></span>
     </div>
   </div>
-</div>
+</header>
+<main class="palco" id="conteudo" tabindex="-1"></main>
+<div class="balao-termo" id="balao" role="tooltip" hidden></div>
+<canvas class="confete" id="confete" aria-hidden="true"></canvas>
 <dialog class="ampliado" id="ampliado" aria-label="Ilustração ampliada">
-  <button class="botao fechar" type="button" id="fechar-ampliado">Fechar</button>
+  <button class="btn fechar" type="button" id="fechar-ampliado">Fechar</button>
   <div id="conteudo-ampliado"></div>
 </dialog>
 
 <script type="module">
-  // AutoAnimate (github.com/formkit/auto-animate, MIT): anima itens que entram e saem de listas.
+  // AutoAnimate (github.com/formkit/auto-animate, MIT): anima itens que entram e saem de listas nas caixas interativas.
   import autoAnimate from "https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/index.mjs";
   window.autoAnimate = autoAnimate;
   window.dispatchEvent(new Event("autoanimate"));
 </script>
+<!-- GSAP (github.com/greensock/GSAP): linha do tempo dos clipes animados -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="icones.js" charset="utf-8"></script>
+<script src="mascote.js" charset="utf-8"></script>
 <script src="logos.js" charset="utf-8"></script>
 <script src="figuras.js" charset="utf-8"></script>
 <script src="materias.js" charset="utf-8"></script>
 <script src="guia-textos.js" charset="utf-8"></script>
 <script src="fontes.js" charset="utf-8"></script>
+<script src="glossario.js" charset="utf-8"></script>
 <script src="experimente.js" charset="utf-8"></script>
+<script src="clipes.js" charset="utf-8"></script>
 <script>
-(function () {
-  const LICOES = { "LOG.01": "licoes/LOG.01.html" };
-  const MATERIAS = window.MATERIAS;
-  const C = window.GUIA;
-  const { F: FONTE, POR_MATERIA, GRUPOS } = window.FONTES;
-  const POR_SIGLA = Object.fromEntries(MATERIAS.map((m) => [m.sigla, m]));
-  const MODULO = {};
-  MATERIAS.forEach((m) => m.modulos.forEach((mod, i) => { MODULO[mod.codigo] = { mod, materia: m, indice: i }; }));
-  const ORDEM_GLOBAL = MATERIAS.flatMap((m) => m.modulos.map((mod) => mod.codigo));
-  const TOTAL = ORDEM_GLOBAL.length;
-  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const cor = (s) => `var(--m-${s})`;
-  const minusc = (t) => t.charAt(0).toLowerCase() + t.slice(1);
-  const LUCIDE = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
-  const ICONE = {
-    voltar: `<svg ${LUCIDE}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>`,
-    avancar: `<svg ${LUCIDE}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
-    ok: `<svg ${LUCIDE}><path d="M20 6 9 17l-5-5"/></svg>`,
-    ampliar: `<svg ${LUCIDE}><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>`,
-  };
-  // transição entre telas e passos (View Transitions do navegador); sem suporte ou com movimento reduzido, troca direto
-  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function transicao(fazer) {
-    if (document.startViewTransition && !semMovimento) document.startViewTransition(fazer);
-    else fazer();
-  }
-  const PASSOS = ["Antes de começar", "Para que serve", "O que você aprende", "Cuidado com", "Pronto para avançar?"];
-
-  // ---- progresso: base de dados do artefato quando houver; navegador como reserva ----
-  const CHAVE_LOCAL = "dominio:progresso:v1";
-  let progresso = { modulos: {} };
-  try { progresso = JSON.parse(localStorage.getItem(CHAVE_LOCAL)) || progresso; } catch (e) { /* sem armazenamento */ }
-  let refDoc = null;
-  let fila = Promise.resolve();
-  const estadoDe = (cod) => (progresso.modulos[cod] || {}).estado || "";
-  function salvarLocal() { try { localStorage.setItem(CHAVE_LOCAL, JSON.stringify(progresso)); } catch (e) { /* sem armazenamento */ } }
-  function marcar(cod, estado, redesenhar = true) {
-    if (estado) progresso.modulos[cod] = { estado, em: new Date().toISOString().slice(0, 10) };
-    else delete progresso.modulos[cod];
-    salvarLocal();
-    if (refDoc) {
-      const corpo = { modulos: progresso.modulos, atualizado: new Date().toISOString() };
-      fila = fila.then(() => refDoc.set(corpo)).catch(() => { document.getElementById("sincronia").textContent = "não foi possível salvar na nuvem; ficou neste navegador"; });
-    }
-    if (redesenhar) render(); else { desenharLateral(); desenharTopo(); }
-  }
-  if (window.claude && typeof window.claude.use === "function") {
-    window.claude.use("db").then((db) => {
-      if (!db) return;
-      refDoc = db.doc("progresso/geral");
-      document.getElementById("sincronia").textContent = "progresso sincronizado entre seus aparelhos";
-      refDoc.onSnapshot((snap) => {
-        if (!snap.exists) return;
-        const novos = Object.assign({}, (snap.data() || {}).modulos || {});
-        if (JSON.stringify(novos) === JSON.stringify(progresso.modulos)) return;
-        progresso = { modulos: novos };
-        salvarLocal();
-        if (rota().v !== "estudo") render(); else { desenharLateral(); desenharTopo(); }
-      }, () => { document.getElementById("sincronia").textContent = "progresso salvo neste navegador"; });
-    });
-  }
-
-  const dominados = (m) => m.modulos.filter((mod) => estadoDe(mod.codigo) === "dominado").length;
-  const materiaAtual = () => MATERIAS.find((m) => dominados(m) < m.modulos.length) || MATERIAS[MATERIAS.length - 1];
-  const proximoModulo = (m) => m.modulos.find((mod) => estadoDe(mod.codigo) !== "dominado") || m.modulos[m.modulos.length - 1];
-
-  function rota() {
-    const h = location.hash.replace("#", "") || "mapa";
-    const partes = h.split("-");
-    const v = partes[0];
-    if (v === "estudo" && MODULO[partes[1]]) return { v, cod: partes[1], sigla: MODULO[partes[1]].materia.sigla };
-    if (v === "trilha" && MODULO[partes[2]]) return { v: "estudo", cod: partes[2], sigla: partes[1] };
-    if ((v === "trilha" || v === "guia") && POR_SIGLA[partes[1]]) return { v, sigla: partes[1] };
-    if (v === "trilha" || v === "guia") return { v, sigla: v === "trilha" ? materiaAtual().sigla : "LOG" };
-    if (v === "fontes") return { v };
-    return { v: "mapa" };
-  }
-
-  function logosLista(lista) {
-    const itens = (lista || []).filter((n) => window.LOGOS && window.LOGOS[n]);
-    return itens.map((n) => `<span><img src="${window.LOGOS[n].uri}" alt="" width="22" height="22">${esc(window.LOGOS[n].nome)}</span>`).join("");
-  }
-  function logosMini(lista) {
-    return (lista || []).filter((n) => window.LOGOS && window.LOGOS[n]).slice(0, 4).map((n) => `<img src="${window.LOGOS[n].uri}" alt="${esc(window.LOGOS[n].nome)}" title="${esc(window.LOGOS[n].nome)}" width="18" height="18">`).join("");
-  }
-  function fontesDe(sigla) {
-    return `<div><h3>Fontes desta matéria</h3><ul class="fontes-lat">${(POR_MATERIA[sigla] || []).map((k) => `<li><a href="${FONTE[k][1]}" target="_blank" rel="noopener">${esc(FONTE[k][0])}</a><small>${esc(FONTE[k][2])}</small></li>`).join("")}</ul></div>`;
-  }
-  function dependencias(m) {
-    const precisa = new Set(), prepara = new Set();
-    m.modulos.forEach((mod) => mod.antes.forEach((a) => { if (a.materia !== m.sigla) precisa.add(a.materia); }));
-    MATERIAS.forEach((o) => o.modulos.forEach((mod) => mod.antes.forEach((a) => { if (a.materia === m.sigla && o.sigla !== m.sigla) prepara.add(o.sigla); })));
-    const ord = (s) => [...s].sort((a, b) => MATERIAS.indexOf(POR_SIGLA[a]) - MATERIAS.indexOf(POR_SIGLA[b]));
-    return { precisa: ord(precisa), prepara: ord(prepara) };
-  }
-  const linkMateria = (s, v = "trilha") => `<li><a href="#${v}-${s}" class="selo" style="--cor:${cor(s)}"><i></i>${esc(POR_SIGLA[s].nome)}</a></li>`;
-
-  function desenharLateral() {
-    const r = rota();
-    document.querySelectorAll("#nav-lat a").forEach((a) => {
-      const ativo = a.dataset.v === r.v || (r.v === "estudo" && a.dataset.v === "trilha");
-      if (ativo) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
-    });
-    const destino = r.v === "guia" ? "guia" : "trilha";
-    document.getElementById("materias-lat").innerHTML = MATERIAS.map((m, i) => {
-      const d = dominados(m);
-      return `<a href="#${destino}-${m.sigla}" style="--cor:${cor(m.sigla)}" class="${m.sigla === r.sigla ? "ativa" : ""}${d === m.modulos.length ? " feita" : ""}"${m.sigla === r.sigla ? ' aria-current="true"' : ""}><i></i><span>${esc(m.nome)}</span><small>${d}/${m.modulos.length}</small></a>`;
-    }).join("");
-  }
-  function desenharTopo() {
-    const total = MATERIAS.reduce((a, m) => a + dominados(m), 0);
-    document.getElementById("geral").textContent = `${total}/${TOTAL}`;
-    document.getElementById("barra-geral").style.width = `${(total / TOTAL) * 100}%`;
-    document.getElementById("conta-trilha").textContent = `${total}/${TOTAL}`;
-    const r = rota();
-    let m = '<a href="#mapa">Domínio</a>';
-    if (r.v === "mapa") m += " <span>›</span> <b>Mapa de estudo</b>";
-    if (r.v === "fontes") m += " <span>›</span> <b>Fontes</b>";
-    if (r.v === "trilha") m += ` <span>›</span> <a href="#mapa">Trilha</a> <span>›</span> <b>${esc(POR_SIGLA[r.sigla].nome)}</b>`;
-    if (r.v === "guia") m += ` <span>›</span> Guia <span>›</span> <b>${esc(POR_SIGLA[r.sigla].nome)}</b>`;
-    if (r.v === "estudo") m += ` <span>›</span> <a href="#trilha-${r.sigla}">${esc(POR_SIGLA[r.sigla].nome)}</a> <span>›</span> <b>${esc(MODULO[r.cod].mod.nome)}</b>`;
-    document.getElementById("migalhas").innerHTML = m;
-  }
-
-  // ---- Mapa de estudo ----
-  function vistaMapa() {
-    const aqui = materiaAtual();
-    const linhas = MATERIAS.map((m, i) => {
-      const d = dominados(m), n = m.modulos.length;
-      const situacao = d === n ? "concluída" : m === aqui ? "você está aqui" : d > 0 ? "em andamento" : "";
-      return `<tr class="${m === aqui ? "aqui" : ""}"><td class="n">${String(i + 1).padStart(2, "0")}</td><td><a class="nome" href="#trilha-${m.sigla}" style="--cor:${cor(m.sigla)}"><i></i>${esc(m.nome)}</a></td><td><span class="logos-mini">${logosMini(m.logos)}</span></td><td class="prog"><small>${d}/${n}</small><span class="barra-fina" style="--cor:${cor(m.sigla)}"><i style="width:${(d / n) * 100}%"></i></span></td><td class="situacao">${situacao}</td></tr>`;
-    }).join("");
-    const prox = proximoModulo(aqui);
-    document.getElementById("centro").innerHTML = `
-      <div class="cabeca"><h1>Mapa de estudo</h1><p>Dezesseis matérias, da base às aplicações. Cada uma só pede o que as anteriores ensinaram; a ordem e as fontes estão em cada matéria.</p></div>
-      <div class="agenda"><div class="agenda-pe" style="border-top:0;border-radius:6px"><a class="botao primario" href="#estudo-${prox.codigo}">Continuar: ${esc(prox.nome)} <span class="tecla">Enter</span></a><span>${esc(aqui.nome)}, módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</span></div></div>
-      <div class="largo rolagem"><table class="mapa-tabela"><thead><tr><th>#</th><th>Matéria</th><th>Tecnologias</th><th>Domínio</th><th>Situação</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
-    const viradas = ORDEM_GLOBAL.filter((c) => MODULO[c].mod.virada);
-    document.getElementById("trilho").innerHTML = `
-      <div><h3>Onde você está</h3><p style="font-size:13.5px"><b>${esc(aqui.nome)}</b><br><span style="color:var(--texto-2)">próximo módulo: ${esc(prox.nome)}</span></p></div>
-      <div><h3>Pontos de virada</h3><ul>${viradas.map((c) => `<li><a href="#estudo-${c}">${esc(MODULO[c].mod.nome)}</a> <small style="color:var(--texto-2)">${esc(MODULO[c].materia.nome)}</small></li>`).join("")}</ul><p class="nota-exp" style="margin-top:8px">Conceitos que demoram a fazer sentido e depois mudam tudo (Boustedt e colegas, 2007). Vá devagar neles.</p></div>
-      <div><h3>Como a ordem foi montada</h3><p class="nota-exp">Pela pesquisa sobre ordem de aprendizagem e erros comuns de iniciantes. Todas as referências estão em <a href="#fontes">Fontes</a>.</p></div>`;
-    const continuar = document.querySelector(".agenda-pe .botao");
-    teclas = (e) => { if (e.key === "Enter" && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) continuar.click(); };
-  }
-
-  // ---- Trilha de uma matéria ----
-  function vistaTrilha(sigla) {
-    const m = POR_SIGLA[sigla];
-    const i = MATERIAS.indexOf(m);
-    const prox = proximoModulo(m);
-    const d = dominados(m);
-    const linhas = m.modulos.map((mod, k) => {
-      const est = estadoDe(mod.codigo);
-      const rotulo = est === "dominado" ? "dominado" : est === "rever" ? "rever" : mod === prox ? "próximo" : "";
-      const classe = est === "dominado" ? "dominado" : est === "rever" ? "rever" : mod === prox ? "proximo" : "";
-      const antes = mod.antes.length ? "antes: " + mod.antes.map((a) => a.nome + (a.materia !== sigla ? ` (${POR_SIGLA[a.materia].nome})` : "")).join(", ") : "não exige nada antes";
-      return `<li class="${classe}"><a href="#estudo-${mod.codigo}"><span class="num">${String(k + 1).padStart(2, "0")}</span><span><strong>${esc(mod.nome)}${mod.virada ? '<span class="selo virada">ponto de virada</span>' : ""}</strong><span class="sub">${esc(antes)}</span></span><span class="estado ${classe}">${rotulo}</span></a></li>`;
-    }).join("");
-    const dep = dependencias(m);
-    const ant = MATERIAS[i - 1], seg = MATERIAS[i + 1];
-    document.getElementById("centro").innerHTML = `
-      <div class="cabeca" style="--cor:${cor(sigla)}"><span class="selo"><i></i>Matéria ${i + 1} de ${MATERIAS.length} · ${d} de ${m.modulos.length} módulos dominados</span><h1>${esc(m.nome)}</h1></div>
-      <div class="prosa"><p>${esc(m.porque)}</p></div>
-      <div class="agenda"><ol>${linhas}</ol><div class="agenda-pe"><a class="botao primario" href="#estudo-${prox.codigo}">Estudar passo a passo: ${esc(prox.nome)} <span class="tecla">Enter</span></a><a href="#guia-${sigla}" style="font-size:13px">Como esta matéria funciona</a></div></div>
-      <nav class="navegar">${ant ? `<a href="#trilha-${ant.sigla}"><small>anterior</small>${esc(ant.nome)}</a>` : "<span></span>"}${seg ? `<a href="#trilha-${seg.sigla}"><small>próxima</small>${esc(seg.nome)}</a>` : ""}</nav>`;
-    document.getElementById("trilho").innerHTML = `
-      <div style="--cor:${cor(sigla)}"><h3>Progresso</h3><p style="font-family:var(--f-codigo);font-size:13px">${d}/${m.modulos.length} módulos</p><span class="barra-fina larga"><i style="width:${(d / m.modulos.length) * 100}%"></i></span></div>
-      <div><h3>Usa o que você viu em</h3><ul>${dep.precisa.map((s) => linkMateria(s)).join("") || "<li>nada: é um começo</li>"}</ul></div>
-      <div><h3>Prepara para</h3><ul>${dep.prepara.map((s) => linkMateria(s)).join("") || "<li>o fim do percurso</li>"}</ul></div>
-      ${m.logos.length ? `<div><h3>Tecnologias</h3><div class="logo-lista">${logosLista(m.logos)}</div></div>` : ""}
-      ${fontesDe(sigla)}`;
-    const botao = document.querySelector(".agenda-pe .botao");
-    teclas = (e) => { if (e.key === "Enter" && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) botao.click(); };
-  }
-
-  // ---- Estudo passo a passo de um módulo ----
-  let estudo = { cod: null, passo: 0, liberado: [true, true, true, false, false] };
-  function vistaEstudo(cod) {
-    if (estudo.cod !== cod) estudo = { cod, passo: 0, liberado: [true, true, true, false, false] };
-    const { mod, materia: m, indice } = MODULO[cod];
-    const p = estudo.passo;
-    const barra = PASSOS.map((nome, k) => `<button type="button" data-ir="${k}" class="${k < p ? "feito" : k === p ? "atual" : ""}"${k > p && !estudo.liberado.slice(0, k).every(Boolean) ? " disabled" : ""}><i></i><span>${k + 1}. ${nome}</span></button>`).join("");
-    let corpo = "";
-    if (p === 0) {
-      const falta = mod.antes.filter((a) => estadoDe(a.codigo) !== "dominado");
-      corpo = mod.antes.length
-        ? `<p>Este módulo usa o que você aprendeu em:</p><ul class="lista-pre">${mod.antes.map((a) => `<li><span class="marca-estado ${estadoDe(a.codigo) === "dominado" ? "dominado" : ""}">${estadoDe(a.codigo) === "dominado" ? "dominado" : "não marcado"}</span><a href="#estudo-${a.codigo}">${esc(a.nome)}</a>${a.materia !== m.sigla ? ` <small style="color:var(--texto-2)">(${esc(POR_SIGLA[a.materia].nome)})</small>` : ""}</li>`).join("")}</ul>${falta.length ? `<p class="aviso-pre">Você ainda não marcou ${falta.length === 1 ? "esse pré-requisito" : "esses pré-requisitos"} como dominado. Pode seguir, mas, se travar, volte ${falta.length === 1 ? "nele" : "neles"} primeiro.</p>` : ""}`
-        : "<p>Este módulo não exige nada antes: é um começo.</p>";
-    }
-    if (p === 1) corpo = `<p class="grande">${esc(mod.dia)}</p><p><b>Ao final deste módulo você consegue:</b> ${esc(minusc(mod.dominio))}.</p>`;
-    if (p === 2) corpo = `<p>Os conceitos, na ordem em que aparecem:</p><ol class="conceitos-lista">${mod.conceitos.map((c) => `<li>${esc(c)}</li>`).join("")}</ol>${LICOES[cod] ? `<p><a class="botao" href="${LICOES[cod]}">Abrir a lição ilustrada deste módulo</a></p>` : `<p class="nota-exp">A aula de cada conceito, com exercícios corrigidos, está no tutor: no Claude Code, digite <code>/aula</code>.</p>`}${m.sigla ? `<p class="nota-exp"><a href="#guia-${m.sigla}">Ver as ilustrações e a caixa interativa de ${esc(m.nome)}</a></p>` : ""}`;
-    if (p === 3) corpo = `<p class="grande">${esc(mod.tropeco)}</p><p class="nota-exp">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p><div class="botoes"><button type="button" class="botao primario" data-entendi>Entendi, seguir <span class="tecla">Enter</span></button></div>`;
-    if (p === 4) corpo = `<p class="grande">${esc(mod.pergunta)}</p>
-      <label class="campo largo" for="resp-estudo"><span>escreva a sua resposta antes de ver a nossa</span><textarea id="resp-estudo" rows="3"></textarea></label>
-      <div class="botoes"><button type="button" class="botao primario" data-comparar disabled>Comparar com a resposta</button><button type="button" class="botao" data-naosei>Ainda não sei</button></div>
-      <div class="resposta" hidden>${esc(mod.resposta)}</div>
-      <div class="botoes" data-avaliar hidden><button type="button" class="botao sucesso" data-acertei>${ICONE.ok}Acertei: avançar para o próximo módulo</button><button type="button" class="botao" data-rever>Ainda não: rever os conceitos</button></div>
-      <p class="parabens" data-parabens hidden></p>`;
-    const seguinte = ORDEM_GLOBAL[ORDEM_GLOBAL.indexOf(cod) + 1];
-    document.getElementById("centro").innerHTML = `
-      <div class="cabeca" style="--cor:${cor(m.sigla)}"><span class="selo"><i></i>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}${estadoDe(cod) === "dominado" ? " · dominado" : ""}</span><h1>${esc(mod.nome)} ${mod.virada ? '<span class="selo virada">ponto de virada</span>' : ""}</h1></div>
-      <nav class="passos-barra" style="--cor:${cor(m.sigla)}" aria-label="Passos do módulo">${barra}</nav>
-      <div class="celula"><div class="rotulo"><b>[${p + 1}/5]</b>${esc(PASSOS[p].toLowerCase())}</div><div class="corpo ativa">${corpo}</div></div>
-      <div class="nav-passos"><button type="button" class="botao" data-voltar${p === 0 ? " disabled" : ""}>${ICONE.voltar}Voltar</button><span class="dica">${p === 3 ? "Leia o tropeço e confirme para seguir." : p === 4 ? "Acertou: o módulo fica dominado e você segue para o próximo." : ""}</span>${p < 4 ? `<button type="button" class="botao primario" data-avancar${estudo.liberado[p] ? "" : " disabled"}>Avançar${ICONE.avancar}</button>` : seguinte ? `<a class="botao" href="#estudo-${seguinte}">Pular para o próximo módulo</a>` : ""}</div>`;
-    document.getElementById("trilho").innerHTML = `
-      <div><h3>Neste módulo</h3><ul>${PASSOS.map((n, k) => `<li style="color:${k === p ? "var(--texto)" : "var(--texto-2)"};${k === p ? "font-weight:500" : ""}">${k + 1}. ${n}${k < p ? " (feito)" : ""}</li>`).join("")}</ul></div>
-      <div><h3>Próximos módulos</h3><ul>${m.modulos.slice(indice + 1, indice + 4).map((x) => `<li><a href="#estudo-${x.codigo}">${esc(x.nome)}</a></li>`).join("") || "<li>fim da matéria</li>"}</ul></div>
-      ${fontesDe(m.sigla)}`;
-
-    const ir = (k) => { estudo.passo = Math.max(0, Math.min(4, k)); transicao(() => vistaEstudo(cod)); document.getElementById("centro").scrollIntoView({ block: "start" }); };
-    const avancar = () => { if (estudo.passo < 4 && estudo.liberado[estudo.passo]) { estudo.liberado[estudo.passo + 1] = estudo.liberado[estudo.passo + 1] || estudo.passo + 1 < 3; ir(estudo.passo + 1); } };
-    document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.ir))));
-    const voltar = document.querySelector("[data-voltar]");
-    voltar.addEventListener("click", () => ir(estudo.passo - 1));
-    const botaoAvancar = document.querySelector("[data-avancar]");
-    if (botaoAvancar) botaoAvancar.addEventListener("click", avancar);
-    const entendi = document.querySelector("[data-entendi]");
-    if (entendi) entendi.addEventListener("click", () => { estudo.liberado[3] = true; estudo.liberado[4] = true; ir(4); });
-    if (p === 4) {
-      const area = document.getElementById("resp-estudo");
-      const comparar = document.querySelector("[data-comparar]");
-      const mostrar = (podeAcertar) => {
-        document.querySelector(".resposta").hidden = false;
-        document.querySelector("[data-avaliar]").hidden = false;
-        document.querySelector("[data-acertei]").hidden = !podeAcertar;
-      };
-      area.addEventListener("input", () => { comparar.disabled = area.value.trim().length < 3; });
-      comparar.addEventListener("click", () => mostrar(true));
-      document.querySelector("[data-naosei]").addEventListener("click", () => mostrar(false));
-      document.querySelector("[data-rever]").addEventListener("click", () => { marcar(cod, "rever", false); ir(2); });
-      document.querySelector("[data-acertei]").addEventListener("click", () => {
-        marcar(cod, "dominado", false);
-        const aviso = document.querySelector("[data-parabens]");
-        aviso.hidden = false;
-        aviso.textContent = seguinte ? `Módulo dominado. Indo para: ${MODULO[seguinte].mod.nome}.` : "Módulo dominado. Você terminou o percurso.";
-        document.querySelector("[data-avaliar]").hidden = true;
-        if (seguinte) setTimeout(() => { if (location.hash === "#estudo-" + cod) location.hash = "#estudo-" + seguinte; }, 1400);
-      });
-      area.focus({ preventScroll: true });
-    }
-    teclas = (e) => {
-      if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-      if (e.key === "ArrowRight" || (e.key === "Enter" && estudo.passo < 3)) { e.preventDefault(); avancar(); }
-      if (e.key === "Enter" && estudo.passo === 3 && entendi) { e.preventDefault(); entendi.click(); }
-      if (e.key === "ArrowLeft") { e.preventDefault(); if (estudo.passo > 0) ir(estudo.passo - 1); }
-    };
-  }
-
-  // ---- Guia de uma matéria ----
-  function vistaGuia(sigla) {
-    const m = POR_SIGLA[sigla];
-    const c = C[sigla];
-    const i = MATERIAS.indexOf(m);
-    const lang = c.lang || "python";
-    const figuras = c.figuras.map(([chave, legenda], k) => `<figure data-fig="${chave}" class="largo"><button class="ampliar" type="button">${ICONE.ampliar} Ampliar</button><div class="rolagem">${window.FIG[chave]()}</div><figcaption>${esc(legenda)}</figcaption></figure>`).join("");
-    const exp = window.EXPERIMENTE && window.EXPERIMENTE[sigla];
-    const topicos = m.modulos.map((mod, k) => {
-      const est = estadoDe(mod.codigo);
-      return `<li class="${est === "dominado" ? "dominado" : ""}"><a href="#estudo-${mod.codigo}"><span class="num">${String(k + 1).padStart(2, "0")}</span><span><strong>${esc(mod.nome)}</strong><span class="sub">${mod.conceitos.map(esc).join(" · ")}</span></span><span class="estado ${est}">${est === "dominado" ? "dominado" : ""}</span></a></li>`;
-    }).join("");
-    const ant = MATERIAS[i - 1], seg = MATERIAS[i + 1];
-    document.getElementById("centro").innerHTML = `
-      <div class="cabeca" style="--cor:${cor(sigla)}"><span class="selo"><i></i>Guia · matéria ${i + 1} de ${MATERIAS.length}</span><h1>${esc(m.nome)}</h1></div>
-      <p class="lede">${esc(c.frase)}</p>
-      ${figuras}
-      ${exp ? `<section class="experimente" style="--cor:${cor(sigla)}"><header><b>experimente</b><span>${esc(exp.titulo)}</span></header><div class="area-exp"></div></section>` : ""}
-      <h2 style="font-size:18px">Como funciona</h2>
-      <div class="prosa">${c.texto.map((p) => `<p>${p}</p>`).join("")}</div>
-      <div class="par">
-        <div class="cartao"><h3>No dia a dia</h3><p>${esc(c.dia)}</p></div>
-        <div class="cartao"><h3>No computador</h3><pre><code class="language-${lang}">${esc(c.codigo)}</code></pre></div>
-        ${c.codigo2 ? `<div class="cartao"><h3>Busca binária</h3><pre><code class="language-${lang}">${esc(c.codigo2)}</code></pre></div>` : ""}
-      </div>
-      <h2 style="font-size:18px">Os módulos, em ordem</h2>
-      <div class="agenda"><ol>${topicos}</ol><div class="agenda-pe"><a class="botao primario" href="#estudo-${proximoModulo(m).codigo}">Estudar passo a passo</a><span>${c.onde.map(([a, b]) => `${esc(a)}: ${esc(b)}`).join(" · ")}</span></div></div>
-      <nav class="navegar">${ant ? `<a href="#guia-${ant.sigla}"><small>anterior</small>${esc(ant.nome)}</a>` : "<span></span>"}${seg ? `<a href="#guia-${seg.sigla}"><small>próxima</small>${esc(seg.nome)}</a>` : ""}</nav>`;
-    const d = dominados(m);
-    document.getElementById("trilho").innerHTML = `
-      ${m.logos.length ? `<div><h3>Tecnologias</h3><div class="logo-lista">${logosLista(m.logos)}</div></div>` : ""}
-      <div style="--cor:${cor(sigla)}"><h3>Na sua trilha</h3><p style="font-family:var(--f-codigo);font-size:13px">${d}/${m.modulos.length} módulos dominados</p><span class="barra-fina larga"><i style="width:${(d / m.modulos.length) * 100}%"></i></span><p style="margin-top:8px;font-size:13px"><a href="#trilha-${sigla}">Ver a sequência e os pré-requisitos</a></p></div>
-      ${fontesDe(sigla)}`;
-    if (exp) exp.montar(document.querySelector(".area-exp"), document.querySelector("figure"));
-    if (window.hljs) document.querySelectorAll("#centro pre code").forEach((b) => window.hljs.highlightElement(b));
-    document.querySelectorAll("#centro figure").forEach((fig) => {
-      const abrir = () => {
-        document.getElementById("conteudo-ampliado").innerHTML = fig.querySelector(".rolagem").innerHTML + `<p>${esc(fig.querySelector("figcaption").textContent)}</p>`;
-        const dlg = document.getElementById("ampliado");
-        if (typeof dlg.showModal === "function") dlg.showModal();
-      };
-      fig.querySelector(".ampliar").addEventListener("click", abrir);
-      fig.querySelector(".rolagem").addEventListener("click", abrir);
-    });
-    teclas = null;
-  }
-
-  // ---- Fontes ----
-  function vistaFontes() {
-    const usadoEm = {};
-    Object.entries(POR_MATERIA).forEach(([s, ks]) => ks.forEach((k) => { (usadoEm[k] = usadoEm[k] || []).push(s); }));
-    document.getElementById("centro").innerHTML = `
-      <div class="cabeca"><h1>Fontes</h1><p>De onde vêm a ordem das matérias, os pré-requisitos, os tropeços comuns e o material de estudo. A pesquisa completa está no repositório, em docs/05 e docs/06.</p></div>
-      ${GRUPOS.map(([titulo, ks]) => `<section class="fontes-grupo"><h2>${esc(titulo)}</h2><ol>${ks.map((k) => `<li><a href="${FONTE[k][1]}" target="_blank" rel="noopener">${esc(FONTE[k][0])}</a><small>${esc(FONTE[k][2])}${usadoEm[k] ? " · " + usadoEm[k].map((s) => POR_SIGLA[s].nome).join(", ") : ""}</small></li>`).join("")}</ol></section>`).join("")}`;
-    document.getElementById("trilho").innerHTML = `<div><h3>Sobre as marcas</h3><p class="nota-exp">Os logos vêm do Devicon e do Simple Icons. As marcas pertencem aos seus donos e aparecem só para identificar cada tecnologia.</p></div>`;
-    teclas = null;
-  }
-
-  let teclas = null;
-  document.addEventListener("keydown", (e) => { if (teclas && !e.ctrlKey && !e.metaKey && !e.altKey) teclas(e); });
-
-  function render() {
-    const r = rota();
-    desenharLateral();
-    desenharTopo();
-    if (r.v === "mapa") vistaMapa();
-    else if (r.v === "trilha") vistaTrilha(r.sigla);
-    else if (r.v === "estudo") vistaEstudo(r.cod);
-    else if (r.v === "guia") vistaGuia(r.sigla);
-    else vistaFontes();
-  }
-
-  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
-  document.getElementById("fechar-ampliado").addEventListener("click", () => document.getElementById("ampliado").close());
-  window.addEventListener("hashchange", () => transicao(() => { render(); window.scrollTo(0, 0); }));
-  render();
-})();
+  // ícones do topo (Phosphor), montados aqui para não repetir o SVG no HTML
+  (function () {
+    const I = window.ICONE;
+    document.getElementById("logo-marca").innerHTML = I("map-trifold-duotone");
+    document.getElementById("nav-mapa").innerHTML = I("map-trifold-duotone") + "<span>Mapa</span>";
+    document.getElementById("nav-materia").innerHTML = I("path-duotone") + "<span>Matéria atual</span>";
+    document.getElementById("nav-fontes").innerHTML = I("books-duotone") + "<span>Fontes</span>";
+    document.getElementById("stat-ofensiva").insertAdjacentHTML("afterbegin", I("flame-duotone"));
+    document.getElementById("stat-xp").insertAdjacentHTML("afterbegin", I("lightning-duotone"));
+  })();
 </script>
+<script src="jornada.js" charset="utf-8"></script>
