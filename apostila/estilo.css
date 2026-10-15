@@ -1,21 +1,21 @@
 /* Apostila do DOMÍNIO: estilo comum ao guia e às lições.
-   Direção de jogo (estilo Mimo): Bricolage Grotesque nos títulos, Atkinson Hyperlegible Next no texto
+   Direção sóbria de formação (mapa de linhas, estilo profissional): Bricolage Grotesque nos títulos, Atkinson Hyperlegible Next no texto
    e Atkinson Hyperlegible Mono no código. Cores vivas por matéria, brilhos e movimento que respeitam
    prefers-reduced-motion. */
 :root {
-  --fundo: #f5f4fb;
+  --fundo: #f4f5f7;
   --folha: #ffffff;
-  --folha-2: #f8f7fd;
-  --linha: #e4e2f0;
-  --linha-forte: #d2cfe4;
-  --linha-hover: #b7b3d1;
-  --texto: #17152c;
-  --texto-2: #5c5978;
-  --r1: 6px; --r2: 10px; --r3: 16px;
+  --folha-2: #f8f9fb;
+  --linha: #e2e5ea;
+  --linha-forte: #cfd4dc;
+  --linha-hover: #aeb6c2;
+  --texto: #14171f;
+  --texto-2: #59616e;
+  --r1: 4px; --r2: 6px; --r3: 10px;
   --curva: cubic-bezier(0.2, 0, 0, 1);
   --mola: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --tinta: #5b45e0;
-  --tinta-suave: #ece9fd;
+  --tinta: #2a56c6;
+  --tinta-suave: #e8eefb;
   --sobre-tinta: #ffffff;
   --sobre-cor: #ffffff;
   --certo: #13804a;
@@ -36,8 +36,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --fundo: #0c0e1b; --folha: #151830; --folha-2: #1b1f3a; --linha: #2a2f52; --linha-forte: #3a4170; --linha-hover: #525a92;
-    --texto: #eef0ff; --texto-2: #a9aed0; --tinta: #9d8cff; --tinta-suave: #262449; --sobre-tinta: #0f0b2e; --sobre-cor: #0c0e1b;
+    --fundo: #0d1017; --folha: #141922; --folha-2: #1a202b; --linha: #262d3a; --linha-forte: #343d4e; --linha-hover: #4a566b;
+    --texto: #e8ebf2; --texto-2: #9aa4b5; --tinta: #7ea2ff; --tinta-suave: #1b2640; --sobre-tinta: #0a1020; --sobre-cor: #0b0e14;
     --certo: #3ee08f; --certo-suave: #12301f; --erro: #ff6f86; --erro-suave: #3a1621; --aviso: #ffc65c; --aviso-suave: #34270c;
     --ouro: #ffd166; --ouro-texto: #ffd166; --chama: #ff9142;
     --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -14px rgb(0 0 0 / 0.7);
@@ -45,8 +45,8 @@
   }
 }
 :root[data-theme="dark"] {
-  --fundo: #0c0e1b; --folha: #151830; --folha-2: #1b1f3a; --linha: #2a2f52; --linha-forte: #3a4170; --linha-hover: #525a92;
-  --texto: #eef0ff; --texto-2: #a9aed0; --tinta: #9d8cff; --tinta-suave: #262449; --sobre-tinta: #0f0b2e; --sobre-cor: #0c0e1b;
+  --fundo: #0d1017; --folha: #141922; --folha-2: #1a202b; --linha: #262d3a; --linha-forte: #343d4e; --linha-hover: #4a566b;
+  --texto: #e8ebf2; --texto-2: #9aa4b5; --tinta: #7ea2ff; --tinta-suave: #1b2640; --sobre-tinta: #0a1020; --sobre-cor: #0b0e14;
   --certo: #3ee08f; --certo-suave: #12301f; --erro: #ff6f86; --erro-suave: #3a1621; --aviso: #ffc65c; --aviso-suave: #34270c;
   --ouro: #ffd166; --ouro-texto: #ffd166; --chama: #ff9142;
   --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -14px rgb(0 0 0 / 0.7);

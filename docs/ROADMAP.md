@@ -183,7 +183,7 @@ Revisão feita do ponto de vista de quem usa, com as capturas antes e depois. O 
 - **Código sem ligaduras** (`>=` não vira `≥`) e bloco de código focável quando rola.
 - Testes: 91 de unidade e 76 de fluxo em 390 e 1280 px (inclui o desafio jogado nos dois caminhos, o axe com o painel aberto e as transições disparando), mais 16 capturas.
 
-## Apostila em estilo de jogo (13/10/2026, fora das fases)
+## Apostila: estilo de jogo (13/10/2026) e depois visual sóbrio (15/10/2026), fora das fases
 
 A apostila estática (`apostila/`, publicada como artefato) virou um jogo no estilo Mimo, a pedido do Kaio:
 - **Mapa:** as 16 matérias numa estrada sinuosa em 6 mundos, com anel de progresso em cada parada, o mascote marcando "você está aqui" e a parte já percorrida da estrada acesa nas cores das matérias.
@@ -192,7 +192,8 @@ A apostila estática (`apostila/`, publicada como artefato) virou um jogo no est
 - **Lição em tela cheia:** 5 passos com barra segmentada, balões do glossário (96 termos), cartão de vitória com confete e avanço automático. XP, nível e ofensiva saem do progresso salvo.
 - **Panda estudante (14/10/2026):** o mascote Dado virou um panda com capelo, óculos e blusão na cor da matéria, neutro de gênero, com cinco expressões (padrão, explica, feliz, uau, pensa). Pisca, balança a borla do capelo, acena quando explica e comenta os clipes ao lado da legenda.
 - **Refino de movimento e organização:** barra de mundos fixa no mapa (pula para o mundo e acompanha a rolagem), mundos e paradas que entram conforme a rolagem, números do topo que sobem, clipes com marcas de capítulo na barra de tempo.
-- Testes: capturas em 1366 e 390 px, claro e escuro, com movimento reduzido; nenhuma tela transborda (inclui os 5 passos da lição) e nenhum erro de página.
+- **Visual sóbrio (15/10/2026):** o Kaio achou a trilha infantil. O mapa virou um diagrama de linhas (como um mapa de metrô): 16 estações em 6 linhas, com a parte percorrida acesa e as dependências destacadas ao passar o mouse. A matéria virou uma linha do tempo de módulos, um aberto por vez. Botões planos, cantos contidos, sem brilhos nem confete. Os guias passaram a ser um elenco original em estilo anime (Rin, Takumi, Mei), com o panda como opção, escolhido no topo. Não foram usados personagens de franquias: a busca no GitHub só achou geradores por IA sem licença e personagens de terceiros.
+- Testes: capturas em 1366 e 390 px, claro e escuro, com movimento reduzido; nenhuma tela transborda (inclui os 5 passos da lição, medido contra a largura fixa do aparelho) e nenhum erro de página.
 
 ---
 

@@ -6,25 +6,25 @@
   --m-ED: #be185d; --m-POO: #4d7c0f; --m-ENG: #b91c1c; --m-FMT: #0f766e; --m-AD: #0369a1; --m-VIS: #7e22ce;
   --m-ALC: #047857; --m-ML: #a21caf; --m-NSQ: #4338ca; --m-ETI: #be123c;
   /* versões vivas, para fundos escuros, brilhos e clipes */
-  --mv-LOG: #a78bfa; --mv-PY: #60a5fa; --mv-BD: #fbbf24; --mv-CMP: #22d3ee; --mv-MAT: #4ade80; --mv-EST: #fb923c;
-  --mv-ED: #f472b6; --mv-POO: #a3e635; --mv-ENG: #f87171; --mv-FMT: #2dd4bf; --mv-AD: #38bdf8; --mv-VIS: #c084fc;
-  --mv-ALC: #34d399; --mv-ML: #e879f9; --mv-NSQ: #818cf8; --mv-ETI: #fb7185;
+  --mv-LOG: #9a8fe8; --mv-PY: #6ea0e6; --mv-BD: #d9a441; --mv-CMP: #4cb8c9; --mv-MAT: #5cbf86; --mv-EST: #e08a5a;
+  --mv-ED: #d9709f; --mv-POO: #98c24f; --mv-ENG: #d97070; --mv-FMT: #4fbfb0; --mv-AD: #5aaedc; --mv-VIS: #b58be0;
+  --mv-ALC: #52c29b; --mv-ML: #cf7fd8; --mv-NSQ: #8a94e6; --mv-ETI: #e0708a;
   --hl-chave: #8b2f6b; --hl-texto: #2f6d2a; --hl-numero: #9a5b0e; --hl-funcao: #2b5c8a; --hl-comentario: #6b7280;
   --tinta-hover: #234d75;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --m-LOG: #a78bfa; --m-PY: #60a5fa; --m-BD: #fbbf24; --m-CMP: #22d3ee; --m-MAT: #4ade80; --m-EST: #fb923c;
-    --m-ED: #f472b6; --m-POO: #a3e635; --m-ENG: #f87171; --m-FMT: #2dd4bf; --m-AD: #38bdf8; --m-VIS: #c084fc;
-    --m-ALC: #34d399; --m-ML: #e879f9; --m-NSQ: #818cf8; --m-ETI: #fb7185;
+    --m-LOG: #9a8fe8; --m-PY: #6ea0e6; --m-BD: #d9a441; --m-CMP: #4cb8c9; --m-MAT: #5cbf86; --m-EST: #e08a5a;
+    --m-ED: #d9709f; --m-POO: #98c24f; --m-ENG: #d97070; --m-FMT: #4fbfb0; --m-AD: #5aaedc; --m-VIS: #b58be0;
+    --m-ALC: #52c29b; --m-ML: #cf7fd8; --m-NSQ: #8a94e6; --m-ETI: #e0708a;
     --hl-chave: #e08bc4; --hl-texto: #9fd79a; --hl-numero: #e3b45c; --hl-funcao: #8db4e2; --hl-comentario: #8b93a1;
     --tinta-hover: #a7c5ea;
   }
 }
 :root[data-theme="dark"] {
-  --m-LOG: #a78bfa; --m-PY: #60a5fa; --m-BD: #fbbf24; --m-CMP: #22d3ee; --m-MAT: #4ade80; --m-EST: #fb923c;
-  --m-ED: #f472b6; --m-POO: #a3e635; --m-ENG: #f87171; --m-FMT: #2dd4bf; --m-AD: #38bdf8; --m-VIS: #c084fc;
-  --m-ALC: #34d399; --m-ML: #e879f9; --m-NSQ: #818cf8; --m-ETI: #fb7185;
+  --m-LOG: #9a8fe8; --m-PY: #6ea0e6; --m-BD: #d9a441; --m-CMP: #4cb8c9; --m-MAT: #5cbf86; --m-EST: #e08a5a;
+  --m-ED: #d9709f; --m-POO: #98c24f; --m-ENG: #d97070; --m-FMT: #4fbfb0; --m-AD: #5aaedc; --m-VIS: #b58be0;
+  --m-ALC: #52c29b; --m-ML: #cf7fd8; --m-NSQ: #8a94e6; --m-ETI: #e0708a;
   --hl-chave: #e08bc4; --hl-texto: #9fd79a; --hl-numero: #e3b45c; --hl-funcao: #8db4e2; --hl-comentario: #8b93a1;
   --tinta-hover: #a7c5ea;
 }

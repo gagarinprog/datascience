@@ -404,7 +404,7 @@
           <small>${mmss(clipe.fim)} · ${quadros ? "quadro a quadro" : "animação com legenda"}</small>
         </button>
       </div>
-      <div class="clipe-fala"><span class="clipe-panda" aria-hidden="true">${window.MASCOTE ? window.MASCOTE.explica : ""}</span><p class="clipe-legenda" aria-live="polite"></p></div>
+      <div class="clipe-fala"><span class="clipe-panda" aria-hidden="true">${window.guiaAtual ? window.guiaAtual().expr.explica : ""}</span><p class="clipe-legenda" aria-live="polite"></p></div>
       <div class="clipe-controles">
         <button type="button" class="clipe-botao" data-tocar aria-label="${quadros ? "Próximo quadro" : "Reproduzir"}">${ic(quadros ? "arrow-right-bold" : "play-bold")}</button>
         <div class="clipe-trilho"><input type="range" min="0" max="1000" value="0" step="1" aria-label="Posição no clipe" class="clipe-barra">${clipe.legendas.slice(1).map(([t]) => `<i style="left:${(t / clipe.fim) * 100}%"></i>`).join("")}</div>

@@ -46,11 +46,15 @@
   const mov = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
   const semMovimento = () => mov.matches;
   const centro = () => document.getElementById("conteudo");
-  let idUnico = 0;
+  // guia (personagem): o elenco original de personagens.js e o panda; a escolha fica neste navegador
+  const CHAVE_GUIA = "dominio:guia:v1";
+  let guiaId = "rin";
+  try { const salvo = localStorage.getItem(CHAVE_GUIA); if (salvo && window.GUIAS && window.GUIAS[salvo]) guiaId = salvo; } catch (e) { /* sem armazenamento */ }
+  const guia = () => window.GUIAS[guiaId] || window.GUIAS.rin;
+  window.guiaAtual = guia;
   function mascote(expr = "padrao", classe = "") {
-    const n = ++idUnico;
-    const svg = (window.MASCOTE && window.MASCOTE[expr]) || "";
-    return `<div class="mascote ${classe}" aria-hidden="true">${svg.replace(/viewboxMask/g, "vm" + n)}</div>`;
+    const g = guia();
+    return `<div class="mascote${g.id === "panda" ? "" : " retrato"} ${classe}" aria-hidden="true">${g.expr[expr] || g.expr.padrao}</div>`;
   }
 
   // ---------- progresso: base de dados do artefato quando houver; navegador como reserva ----------
@@ -156,150 +160,153 @@
     anel.parentElement.title = `Nível ${nv.n}: ${nv.resto} de 100 XP para o próximo`;
   }
 
-  // ---------- estrada (SVG desenhado a partir da posição real dos nós) ----------
-  function caminho(pts) {
-    if (pts.length < 2) return "";
-    let d = `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
-    for (let i = 1; i < pts.length; i++) {
-      const a = pts[i - 1], b = pts[i], my = (a.y + b.y) / 2;
-      d += ` C${a.x.toFixed(1)},${my.toFixed(1)} ${b.x.toFixed(1)},${my.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
-    }
-    return d;
-  }
+  // ---------- MAPA: diagrama de linhas, como um mapa de metrô ----------
+  const colunasMetro = () => (innerWidth >= 1000 ? 4 : innerWidth >= 640 ? 3 : 2);
   let observador = null;
   const observadores = [];
-  function estrada(raiz, seletor, feitoAte, animar) {
-    const svg = raiz.querySelector(":scope > svg.estrada");
-    let primeira = animar;
+  function logosMini(lista) {
+    return (lista || []).filter((n) => window.LOGOS && window.LOGOS[n]).slice(0, 4).map((n) => `<img src="${window.LOGOS[n].uri}" alt="${esc(window.LOGOS[n].nome)}" title="${esc(window.LOGOS[n].nome)}" width="18" height="18">`).join("");
+  }
+  // polilinha com cantos arredondados
+  function arredondar(pts, r) {
+    let d = `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const a = pts[i - 1], b = pts[i], c = pts[i + 1];
+      const l1 = Math.hypot(b.x - a.x, b.y - a.y), l2 = Math.hypot(c.x - b.x, c.y - b.y);
+      const rr = Math.min(r, l1 / 2, l2 / 2);
+      const p1 = { x: b.x + ((a.x - b.x) / l1) * rr, y: b.y + ((a.y - b.y) / l1) * rr };
+      const p2 = { x: b.x + ((c.x - b.x) / l2) * rr, y: b.y + ((c.y - b.y) / l2) * rr };
+      d += ` L${p1.x.toFixed(1)},${p1.y.toFixed(1)} Q${b.x.toFixed(1)},${b.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+    }
+    const u = pts[pts.length - 1];
+    return d + ` L${u.x.toFixed(1)},${u.y.toFixed(1)}`;
+  }
+  function desenharLinhas(raiz) {
+    const svg = raiz.querySelector(".metro-linhas");
+    const colunas = colunasMetro();
+    let primeira = true;
     const desenhar = () => {
-      const caixa = raiz.getBoundingClientRect();
-      const nos = [...raiz.querySelectorAll(seletor)];
-      if (!nos.length || !caixa.width) return;
-      const pts = nos.map((n) => {
-        const r = n.getBoundingClientRect();
-        return { x: r.left + r.width / 2 - caixa.left, y: r.top + r.height / 2 - caixa.top, cor: getComputedStyle(n).getPropertyValue("--cv").trim() };
+      const cx = raiz.getBoundingClientRect();
+      if (!cx.width) return;
+      if (colunasMetro() !== colunas && rota().v === "mapa") { render(); return; }
+      const marc = [...raiz.querySelectorAll(".estacao .marcador")].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { x: r.left + r.width / 2 - cx.left, y: r.top + r.height / 2 - cx.top };
       });
-      svg.setAttribute("viewBox", `0 0 ${caixa.width} ${caixa.height}`);
-      const d = caminho(pts);
-      const feito = caminho(pts.slice(0, feitoAte + 1));
-      const y0 = pts[0].y, y1 = Math.max(pts[pts.length - 1].y, y0 + 1);
-      const paradas = pts.map((p) => `<stop offset="${((p.y - y0) / (y1 - y0)).toFixed(3)}" stop-color="${p.cor || "currentColor"}"/>`).join("");
-      svg.innerHTML = `<defs><linearGradient id="grad-estrada" gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}">${paradas}</linearGradient></defs>
-        <path class="estrada-leito" d="${d}"/><path class="estrada-faixa" d="${d}"/>${feito ? `<path class="estrada-feita" stroke="url(#grad-estrada)" d="${feito}"/>` : ""}`;
-      const pf = svg.querySelector(".estrada-feita");
-      if (pf && primeira && !semMovimento()) {
-        const L = pf.getTotalLength();
-        pf.style.strokeDasharray = `${L} ${L}`;
-        pf.style.strokeDashoffset = L;
-        pf.getBoundingClientRect();
-        pf.style.transition = "stroke-dashoffset 1500ms cubic-bezier(.6,0,.2,1) 200ms";
-        pf.style.strokeDashoffset = 0;
+      svg.setAttribute("viewBox", `0 0 ${cx.width} ${cx.height}`);
+      let html = "";
+      for (let i = 1; i < marc.length; i++) {
+        const a = marc[i - 1], b = marc[i];
+        const x = Math.floor((i - 1) / colunas) % 2 === 0 ? cx.width - 12 : 12;
+        const pts = Math.abs(a.y - b.y) < 2 ? [a, b] : [a, { x, y: a.y }, { x, y: b.y }, b];
+        const origem = MATERIAS[i - 1];
+        const feito = dominados(origem) === origem.modulos.length;
+        html += `<path class="trecho${feito ? " feito" : ""}" data-w="${MUNDO_DE[MATERIAS[i].sigla]}" style="--cv:var(--mv-${MATERIAS[i].sigla})" d="${arredondar(pts, 34)}"/>`;
+      }
+      svg.innerHTML = html;
+      if (primeira && !semMovimento() && svg.animate) {
+        svg.querySelectorAll(".trecho.feito").forEach((p, k) => {
+          const L = p.getTotalLength();
+          p.style.strokeDasharray = L;
+          p.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: 650, delay: 150 + k * 90, easing: "cubic-bezier(.4,0,.2,1)", fill: "backwards" });
+        });
       }
       primeira = false;
     };
     let pedido = 0;
-    const agendar = () => { cancelAnimationFrame(pedido); pedido = requestAnimationFrame(desenhar); };
     if (observador) observador.disconnect();
-    if ("ResizeObserver" in window) { observador = new ResizeObserver(agendar); observador.observe(raiz); }
-    window.addEventListener("resize", agendar, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(agendar);
+    if ("ResizeObserver" in window) { observador = new ResizeObserver(() => { cancelAnimationFrame(pedido); pedido = requestAnimationFrame(desenhar); }); observador.observe(raiz); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(desenhar));
     desenhar();
   }
 
-  // ---------- MAPA ----------
-  function anel(d, n) {
-    const p = n ? Math.round((d / n) * 100) : 0;
-    return `<svg class="anel-prog" viewBox="0 0 120 120" aria-hidden="true"><circle class="trilho-anel" cx="60" cy="60" r="56" pathLength="100"/>${p ? `<circle class="feito-anel" cx="60" cy="60" r="56" pathLength="100" stroke-dasharray="${p} 100"/>` : ""}</svg>`;
-  }
-  function logosMini(lista) {
-    return (lista || []).filter((n) => window.LOGOS && window.LOGOS[n]).slice(0, 4).map((n) => `<img src="${window.LOGOS[n].uri}" alt="${esc(window.LOGOS[n].nome)}" title="${esc(window.LOGOS[n].nome)}" width="18" height="18">`).join("");
-  }
   function vistaMapa() {
     const aqui = materiaAtual();
     const prox = proximoModulo(aqui);
     const xp = xpTotal(), nv = nivelDe(xp), of = ofensiva();
     const total = MATERIAS.reduce((a, m) => a + dominados(m), 0);
-    let g = 0;
-    const zonas = MUNDOS.map((w, wi) => {
-      const cr = `var(--mv-${w.siglas[0]})`;
-      const paradas = w.siglas.map((s) => {
-        const m = POR_SIGLA[s];
-        const i = MATERIAS.indexOf(m);
-        const k = ONDA_MAPA[g++ % ONDA_MAPA.length];
-        const d = dominados(m), n = m.modulos.length;
-        const estado = d === n ? "concluida" : m === aqui ? "aqui" : i > MATERIAS.indexOf(aqui) ? "futura" : "andamento";
-        const situacao = { concluida: "concluída", aqui: "você está aqui", futura: "a seguir", andamento: "em andamento" }[estado];
-        const selo = estado === "concluida" ? ic("star-duotone") : estado === "futura" ? ic("lock-simple-duotone") : "";
-        return `<div class="parada ${k <= 0 ? "lado-esq" : "lado-dir"} ${estado}" style="--k:${k};${coresDe(s)}">
-          ${estado === "aqui" ? `<div class="voce-aqui">${mascote("padrao")}<span>você está aqui</span></div>` : ""}
-          <a class="no" href="#trilha-${s}" aria-label="${esc(m.nome)}: ${d} de ${n} módulos, ${situacao}">${anel(d, n)}${ic(EMBLEMA[s])}${selo ? `<span class="selo-no">${selo}</span>` : ""}</a>
-          <a class="parada-info" href="#trilha-${s}" tabindex="-1" aria-hidden="true">
-            <small>matéria ${doisDig(i + 1)} · ${situacao}</small>
-            <b>${esc(m.nome)}</b>
-            <span class="barrinha"><i style="width:${(d / n) * 100}%"></i></span>
-            <span class="linha-meta"><span>${d}/${n} módulos</span><span class="logos-mini">${logosMini(m.logos)}</span></span>
-          </a>
-        </div>`;
-      }).join("");
-      return `<section class="zona" id="mundo-${wi}" style="--cr:${cr}" aria-label="Mundo ${wi + 1}: ${esc(w.nome)}">
-        <span class="cenario e" aria-hidden="true">${ic(w.cenario[0])}</span><span class="cenario d" aria-hidden="true">${ic(w.cenario[1])}</span>
-        <div class="regiao"><div class="regiao-placa"><span class="chip">${ic(w.icone)}Mundo ${wi + 1}</span><h2>${esc(w.nome)}</h2><p>${esc(w.desc)}</p></div></div>
-        ${paradas}
-      </section>`;
+    const cols = colunasMetro();
+    const g = guia();
+    const estacoes = MATERIAS.map((m, i) => {
+      const s = m.sigla, d = dominados(m), n = m.modulos.length;
+      const est = d === n ? "feita" : m === aqui ? "atual" : d > 0 ? "iniciada" : "futura";
+      const linha = Math.floor(i / cols), pos = i % cols;
+      const col = linha % 2 === 0 ? pos : cols - 1 - pos;
+      const situacao = { feita: "concluída", atual: "em curso", iniciada: "iniciada", futura: "a estudar" }[est];
+      return `<li class="estacao ${est}" data-s="${s}" data-w="${MUNDO_DE[s]}" style="${coresDe(s)};grid-row:${linha + 1};grid-column:${col + 1}">
+        <a class="est-link" href="#trilha-${s}" aria-label="${doisDig(i + 1)}. ${esc(m.nome)}: ${d} de ${n} módulos, ${situacao}">
+          ${est === "atual" ? `<span class="aqui-tag">Você está aqui</span>` : ""}
+          <span class="marcador" aria-hidden="true">${est === "feita" ? ic("check-bold") : ""}</span>
+          <span class="est-cod">${doisDig(i + 1)} · ${s}</span>
+          <span class="est-nome">${esc(m.nome)}</span>
+          <span class="est-meta">${d}/${n} módulos</span>
+          <span class="est-barra" aria-hidden="true"><i style="width:${(d / n) * 100}%"></i></span>
+        </a>
+      </li>`;
     }).join("");
-    const iAqui = MATERIAS.indexOf(aqui);
+    const linhas = MUNDOS.map((w, wi) => {
+      const ms = w.siglas.map((s) => POR_SIGLA[s]);
+      const dd = ms.reduce((a, mm) => a + dominados(mm), 0), nn = ms.reduce((a, mm) => a + mm.modulos.length, 0);
+      return `<button type="button" class="linha-chip" data-linha="${wi}" aria-pressed="false" style="--cv:var(--mv-${w.siglas[0]})"><i aria-hidden="true"></i><span><b>${esc(w.nome)}</b><small>${dd}/${nn} módulos</small></span></button>`;
+    }).join("");
+    const fala = total ? `Você domina ${total} de ${TOTAL} módulos. A próxima estação é ${prox.nome}.` : `Vamos começar por ${prox.nome}. São cinco passos curtos.`;
     centro().innerHTML = `
-      <section class="mapa-hero">
-        <div class="hero-texto">
-          <span class="chip">${ic("sparkle-duotone")}Sua jornada em ciência de dados</span>
-          <h1>16 matérias. <span class="grad">Um caminho.</span></h1>
-          <p>Da lógica ao aprendizado de máquina, na ordem em que uma coisa prepara a outra. Siga a estrada; cada parada abre a matéria.</p>
-          <div class="hero-acoes">
-            <a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}Continuar: ${esc(prox.nome)}</a>
-            <span class="hero-onde">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</span>
-          </div>
+      <section class="mapa-cab">
+        <div class="mapa-cab-txt">
+          <p class="eyebrow">Mapa de formação · Ciência de Dados</p>
+          <h1>Do raciocínio lógico ao aprendizado de máquina</h1>
+          <p class="mapa-sub">${MATERIAS.length} matérias e ${TOTAL} módulos, em sequência. Cada estação só pede o que as anteriores ensinaram.</p>
+          <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
         </div>
-        <div class="hero-mascote" style="${coresDe(aqui.sigla)}">
-          <div class="balao cor">${total ? `Você já dominou <b>${total}</b> ${total === 1 ? "módulo" : "módulos"}. ` : "Oi! Eu sou o Dado e vou com você. "}Próxima parada: <b>${esc(prox.nome)}</b>.</div>
-          ${mascote(total ? "feliz" : "explica", "flutua")}
-        </div>
-        <div class="hero-stats">
-          <div class="cartao-stat"><span class="ic-grande ic-tinta">${ic("map-trifold-duotone")}</span><div style="flex:1"><b>${total}<small> / ${TOTAL}</small></b><small>módulos dominados</small><div class="barrinha"><i style="width:${(total / TOTAL) * 100}%"></i></div></div></div>
-          <div class="cartao-stat"><span class="ic-grande ic-chama">${ic("flame-duotone")}</span><div><b>${of} ${of === 1 ? "dia" : "dias"}</b><small>${of ? "seguidos estudando" : "domine um módulo hoje para acender"}</small></div></div>
-          <div class="cartao-stat"><span class="ic-grande ic-ouro">${ic("lightning-duotone")}</span><div style="flex:1"><b>Nível ${nv.n}</b><small>${xp} XP · faltam ${100 - nv.resto} para o nível ${nv.n + 1}</small><div class="barrinha" style="--cv:var(--ouro)"><i style="width:${nv.resto}%"></i></div></div></div>
-        </div>
+        <figure class="mentor" style="${coresDe(aqui.sigla)}">
+          <div class="mascote retrato">${g.expr[total ? "feliz" : "padrao"]}</div>
+          <figcaption><b>${esc(g.nome)}</b><span>${esc(g.funcao)}</span><p>${esc(fala)}</p></figcaption>
+        </figure>
+        <dl class="metricas">
+          <div><dt>Módulos dominados</dt><dd>${total}<small> / ${TOTAL}</small></dd><span class="barra-fina"><i style="width:${(total / TOTAL) * 100}%"></i></span></div>
+          <div><dt>Nível</dt><dd>${nv.n}<small> · ${xp} XP</small></dd><span class="barra-fina"><i style="width:${nv.resto}%"></i></span></div>
+          <div><dt>Ofensiva</dt><dd>${of}<small> ${of === 1 ? "dia" : "dias"}</small></dd><span class="nota">${of ? "estudando em dias seguidos" : "domine um módulo hoje"}</span></div>
+        </dl>
       </section>
-      <nav class="mundos-nav" aria-label="Ir para um mundo">${MUNDOS.map((w, wi) => {
-        const ms = w.siglas.map((s) => POR_SIGLA[s]);
-        const dd = ms.reduce((a, mm) => a + dominados(mm), 0), nn = ms.reduce((a, mm) => a + mm.modulos.length, 0);
-        const atual = w.siglas.includes(aqui.sigla);
-        return `<button type="button" class="mundo-chip${atual ? " atual" : ""}${dd === nn ? " feito" : ""}" data-mundo="${wi}" style="--cv:var(--mv-${w.siglas[0]})">${ic(dd === nn ? "check-circle-duotone" : w.icone)}<span><b>${wi + 1}. ${esc(w.nome)}</b><small>${dd}/${nn} módulos</small></span></button>`;
-      }).join("")}</nav>
-      <div class="mundo" id="mundo">
-        <svg class="estrada" aria-hidden="true"></svg>
-        ${zonas}
-        <div class="fim-jornada"><span class="trofeu">${ic("trophy-duotone")}</span><b>Fim da jornada</b><small>${TOTAL} módulos, ${ORDEM.filter((c) => MODULO[c].mod.virada).length} pontos de virada</small></div>
-      </div>`;
-    const mundoEl = document.getElementById("mundo");
-    estrada(mundoEl, ".no", iAqui, true);
-    // os mundos entram na tela conforme você rola; a barra de mundos acompanha onde você está
-    if ("IntersectionObserver" in window) {
-      if (!semMovimento()) {
-        mundoEl.classList.add("rev");
-        const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" });
-        mundoEl.querySelectorAll(".parada, .regiao, .fim-jornada").forEach((el) => io.observe(el));
-        observadores.push(io);
-      }
-      const chips = [...document.querySelectorAll(".mundo-chip")];
-      const io2 = new IntersectionObserver((es) => es.forEach((e) => {
-        if (!e.isIntersecting) return;
-        chips.forEach((c) => c.classList.toggle("atual", c.dataset.mundo === e.target.id.replace("mundo-", "")));
-      }), { rootMargin: "-35% 0px -60% 0px" });
-      mundoEl.querySelectorAll(".zona").forEach((z) => io2.observe(z));
-      observadores.push(io2);
-    }
-    document.querySelectorAll(".mundo-chip").forEach((c) => c.addEventListener("click", () => {
-      document.getElementById("mundo-" + c.dataset.mundo).scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "start" });
+      <section class="metro-bloco" aria-label="Diagrama das matérias">
+        <div class="legenda-linhas" role="group" aria-label="Destacar uma linha">${linhas}</div>
+        <p class="metro-dica" id="metro-dica" aria-live="polite">Passe o mouse numa estação para ver o que ela usa e o que ela prepara.</p>
+        <div class="metro" id="metro" data-cols="${cols}">
+          <svg class="metro-linhas" aria-hidden="true"></svg>
+          <ol class="estacoes" style="--cols:${cols}">${estacoes}</ol>
+        </div>
+      </section>`;
+    const metro = document.getElementById("metro");
+    desenharLinhas(metro);
+    const dica = document.getElementById("metro-dica");
+    const padrao = dica.textContent;
+    const lis = [...metro.querySelectorAll(".estacao")];
+    const limpar = () => { metro.classList.remove("relacionando"); lis.forEach((l) => l.classList.remove("rel-pre", "rel-dep", "rel-este")); dica.textContent = padrao; };
+    const relacionar = (li) => {
+      const m = POR_SIGLA[li.dataset.s];
+      const dep = dependencias(m);
+      metro.classList.add("relacionando");
+      lis.forEach((l) => {
+        l.classList.toggle("rel-este", l === li);
+        l.classList.toggle("rel-pre", dep.precisa.includes(l.dataset.s));
+        l.classList.toggle("rel-dep", dep.prepara.includes(l.dataset.s));
+      });
+      const nomes = (a) => a.map((s) => POR_SIGLA[s].nome).join(", ");
+      dica.textContent = `${m.nome}: ${dep.precisa.length ? "usa " + nomes(dep.precisa) : "não usa nenhuma matéria anterior"}. ${dep.prepara.length ? "Prepara " + nomes(dep.prepara) + "." : "Fecha o percurso."}`;
+    };
+    lis.forEach((li) => {
+      li.addEventListener("mouseenter", () => relacionar(li));
+      li.addEventListener("mouseleave", limpar);
+      li.querySelector("a").addEventListener("focus", () => relacionar(li));
+      li.querySelector("a").addEventListener("blur", limpar);
+    });
+    let linhaAtiva = null;
+    document.querySelectorAll(".linha-chip").forEach((b) => b.addEventListener("click", () => {
+      linhaAtiva = linhaAtiva === b.dataset.linha ? null : b.dataset.linha;
+      document.querySelectorAll(".linha-chip").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.linha === linhaAtiva)));
+      metro.classList.toggle("com-linha", linhaAtiva !== null);
+      lis.forEach((l) => l.classList.toggle("da-linha", l.dataset.w === linhaAtiva));
+      metro.querySelectorAll(".trecho").forEach((p) => p.classList.toggle("da-linha", p.dataset.w === linhaAtiva));
     }));
     teclas = (e) => { if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click(); };
   }
@@ -321,18 +328,21 @@
     const prox = proximoModulo(m);
     const xpM = m.modulos.reduce((a, mod) => a + (estadoDe(mod.codigo) === "dominado" ? xpDe(mod.codigo) : 0), 0);
     const g = GUIA[sigla] || {};
-    const abas = [["jornada", "trilha", "Jornada", "path-duotone"], ["guia", "guia", "Como funciona", "lightbulb-duotone"], ["fontes", "fontes", "Fontes", "books-duotone"]];
+    const gd = guia();
+    const abas = [["jornada", "trilha", "Módulos", "path-duotone"], ["guia", "guia", "Como funciona", "lightbulb-duotone"], ["fontes", "fontes", "Fontes", "books-duotone"]];
     centro().innerHTML = `
-      <section class="mat-hero" style="${coresDe(sigla)}">
-        <a class="voltar-mapa" href="#mapa">${ic("arrow-left-bold")}Mapa</a>
-        <div class="emblema"><span class="no" aria-hidden="true">${anel(d, n)}${ic(EMBLEMA[sigla])}</span></div>
-        <div class="mat-titulo">
-          <span class="chip">Mundo ${MUNDO_DE[sigla] + 1} · matéria ${i + 1} de ${MATERIAS.length}</span>
-          <h1>${esc(m.nome)}</h1>
-          <div class="mat-meta"><span class="barrinha"><i style="width:${(d / n) * 100}%"></i></span><span><b>${d}/${n}</b> módulos</span><span><b>${xpM}</b> XP</span>${m.logos.length ? `<span class="logos-mini">${logosMini(m.logos)}</span>` : ""}</div>
+      <section class="mat-cab" style="${coresDe(sigla)}">
+        <a class="voltar" href="#mapa">${ic("arrow-left-bold")}Mapa de formação</a>
+        <div class="mat-linha">
+          <span class="mat-icone" aria-hidden="true">${ic(EMBLEMA[sigla])}</span>
+          <div class="mat-titulo">
+            <p class="eyebrow">Linha ${MUNDO_DE[sigla] + 1} · estação ${i + 1} de ${MATERIAS.length}</p>
+            <h1>${esc(m.nome)}</h1>
+            <div class="mat-meta"><span class="barra-fina"><i style="width:${(d / n) * 100}%"></i></span><span><b>${d}/${n}</b> módulos</span><span><b>${xpM}</b> XP</span>${m.logos.length ? `<span class="logos-mini">${logosMini(m.logos)}</span>` : ""}</div>
+          </div>
+          <div class="mat-cta"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" data-principal>${ic("play-bold")}<span>${d === n ? "Revisar" : d ? "Continuar" : "Começar"}: ${esc(prox.nome)}<small>módulo ${MODULO[prox.codigo].indice + 1} de ${n} · +${xpDe(prox.codigo)} XP</small></span></a></div>
         </div>
-        <div class="mat-cta"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" data-principal>${ic("play-bold")}${d === n ? "Revisar" : d ? "Continuar" : "Começar"}: ${esc(prox.nome)}</a><small>módulo ${MODULO[prox.codigo].indice + 1} de ${n} · +${xpDe(prox.codigo)} XP</small></div>
-        ${g.frase ? `<div class="mat-fala">${mascote("explica")}<p class="balao cor glossavel">${esc(g.frase)}</p></div>` : ""}
+        ${g.frase ? `<figure class="resumo"><div class="mascote retrato">${gd.expr.explica}</div><p class="glossavel">${esc(g.frase)}</p></figure>` : ""}
       </section>
       <nav class="abas" aria-label="Partes da matéria" style="${coresDe(sigla)}">
         ${abas.map(([id, rotaAba, nome, icone]) => `<a class="aba" href="#${rotaAba}-${sigla}"${id === aba ? ' aria-current="page"' : ""}>${ic(icone)}${nome}</a>`).join("")}
@@ -341,107 +351,74 @@
     if (aba === "jornada") abaJornada(m);
     else if (aba === "guia") abaGuia(m);
     else abaFontes(m);
-    glossar(document.querySelector(".mat-fala"), sigla, 2);
+    glossar(document.querySelector(".resumo"), sigla, 2);
     teclas = (e) => {
-      if (e.key === "Escape") fecharCascata(true);
       if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click();
     };
   }
 
-  // jornada: os módulos como nós; selecionar um abre a cascata
-  let cascataAberta = null;
+  // módulos: linha do tempo vertical; um módulo aberto por vez
+  function htmlModulo(cod) {
+    const { mod, materia: m } = MODULO[cod];
+    const est = estadoDe(cod);
+    return `<div class="mod-detalhe">
+      <div class="mod-col">
+        <h4>Para que serve</h4><p class="glossavel">${esc(mod.dia)}</p>
+        <h4>Ao final, você consegue</h4><p class="glossavel">${esc(mod.dominio)}.</p>
+      </div>
+      <div class="mod-col">
+        <h4>Conceitos, em ordem</h4>
+        <ol class="conceitos-ol">${mod.conceitos.map((c) => `<li>${esc(c)}</li>`).join("")}</ol>
+        <h4>Antes deste</h4>
+        ${mod.antes.length ? `<ul class="lista-antes">${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}">${ic(estadoDe(a.codigo) === "dominado" ? "check-circle-duotone" : "question-duotone")}<a href="#estudo-${a.codigo}">${esc(a.nome)}</a>${a.materia !== m.sigla ? `<small>${esc(POR_SIGLA[a.materia].nome)}</small>` : ""}</li>`).join("")}</ul>` : "<p>Nada: dá para começar direto.</p>"}
+      </div>
+    </div>
+    <div class="mod-pe"><span class="chip ouro">${ic("lightning-duotone")}+${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</span><a class="btn btn-3d" href="#estudo-${cod}">${ic("play-bold")}${est === "dominado" ? "Revisar a lição" : "Começar a lição"}</a></div>`;
+  }
   function abaJornada(m) {
     const prox = proximoModulo(m);
     const dep = dependencias(m);
     const ant = MATERIAS[MATERIAS.indexOf(m) - 1], seg = MATERIAS[MATERIAS.indexOf(m) + 1];
-    const iProx = m.modulos.indexOf(prox);
-    const nos = m.modulos.map((mod, k) => {
+    const itens = m.modulos.map((mod, k) => {
       const est = estadoDe(mod.codigo);
       const classe = est === "dominado" ? "dominado" : est === "rever" ? "rever" : mod === prox ? "proximo" : "nova";
-      const kk = ONDA_MOD[k % ONDA_MOD.length];
-      const miolo = est === "dominado" ? ic("check-bold") : est === "rever" ? ic("arrow-counter-clockwise-bold") : mod === prox ? ic("play-bold") : k + 1;
-      const rotulo = est === "dominado" ? "dominado" : est === "rever" ? "rever" : mod === prox ? "próximo" : "";
-      return `<div class="etapa ${classe} ${kk <= 0 ? "lado-esq" : "lado-dir"}${mod.virada ? " virada" : ""}" style="--k:${kk};--n:${k}" data-cod="${mod.codigo}">
-        ${mod === prox && est !== "dominado" ? `<span class="comece-aqui">${d0(m) ? "continue aqui" : "comece aqui"}</span>` : ""}
-        <button type="button" class="no-mod" aria-expanded="false" aria-controls="cascata" aria-label="Módulo ${k + 1}: ${esc(mod.nome)}${rotulo ? ", " + rotulo : ""}${mod.virada ? ", ponto de virada" : ""}">${miolo}${mod.virada ? `<span class="raio-virada">${ic("lightning-duotone")}</span>` : ""}</button>
-        <span class="etapa-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} conceitos${mod.virada ? " · ponto de virada" : ""}${rotulo ? " · " + rotulo : ""}</small></span>
-      </div>`;
+      const rotulo = est === "dominado" ? "Dominado" : est === "rever" ? "Rever" : mod === prox ? "Próximo" : "";
+      return `<li class="mod ${classe}${mod.virada ? " virada" : ""}" data-cod="${mod.codigo}">
+        <button type="button" class="mod-cab" aria-expanded="false" aria-controls="mod-${mod.codigo}">
+          <span class="mod-marca" aria-hidden="true">${est === "dominado" ? ic("check-bold") : mod.virada ? ic("lightning-duotone") : ""}</span>
+          <span class="mod-num">${doisDig(k + 1)}</span>
+          <span class="mod-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} conceitos${mod.virada ? " · ponto de virada" : ""}</small></span>
+          <span class="mod-estado">${rotulo}</span>
+          ${ic("caret-down-bold", "ic seta")}
+        </button>
+        <div class="mod-corpo-wrap"><div class="mod-corpo" id="mod-${mod.codigo}" role="region" aria-label="Módulo ${k + 1}: ${esc(mod.nome)}"></div></div>
+      </li>`;
     }).join("");
     document.getElementById("aba").innerHTML = `
       <div class="jornada">
-        <div class="trilha-nos" id="trilha-nos"><svg class="estrada" aria-hidden="true"></svg>${nos}</div>
+        <ol class="modulos-lista" id="modulos-lista">${itens}</ol>
         <aside class="jornada-lado">
-          <div class="painel"><h3>${ic("hand-waving-duotone")}Como jogar</h3><p>Toque num módulo para abrir o que ele ensina. O brilho marca o próximo; o raio, um ponto de virada (vá devagar).</p></div>
           <div class="painel"><h3>${ic("path-duotone")}Usa o que veio de</h3><ul>${dep.precisa.map((s) => seloMat(s)).join("") || "<li>Nada: é um começo.</li>"}</ul></div>
-          <div class="painel"><h3>${ic("rocket-launch-duotone")}Prepara para</h3><ul>${dep.prepara.map((s) => seloMat(s)).join("") || "<li>O fim da jornada.</li>"}</ul></div>
-          <div class="painel"><h3>${ic("compass-duotone")}Vizinhas</h3><ul>${ant ? seloMat(ant.sigla) : ""}${seg ? seloMat(seg.sigla) : ""}</ul></div>
+          <div class="painel"><h3>${ic("rocket-launch-duotone")}Prepara para</h3><ul>${dep.prepara.map((s) => seloMat(s)).join("") || "<li>O fim do percurso.</li>"}</ul></div>
+          <div class="painel"><h3>${ic("compass-duotone")}Estações vizinhas</h3><ul>${ant ? seloMat(ant.sigla) : ""}${seg ? seloMat(seg.sigla) : ""}</ul></div>
         </aside>
       </div>`;
-    function d0(mm) { return dominados(mm) > 0; }
-    const trilha = document.getElementById("trilha-nos");
-    estrada(trilha, ".no-mod", Math.max(0, iProx), true);
-    trilha.addEventListener("click", (e) => {
-      const b = e.target.closest(".no-mod");
-      if (b) { const cod = b.closest(".etapa").dataset.cod; if (cascataAberta === cod) fecharCascata(); else abrirCascata(cod); }
-      if (e.target.closest("[data-fechar]")) fecharCascata(true);
-    });
-    cascataAberta = null;
-  }
-  function htmlCascata(cod) {
-    const { mod, materia: m, indice } = MODULO[cod];
-    const est = estadoDe(cod);
-    let i = 0;
-    const iv = () => `style="--i:${i++}"`;
-    return `<div class="cascata" role="region" aria-label="Módulo ${indice + 1}: ${esc(mod.nome)}">
-      <div class="cascata-cab" ${iv()}>
-        <div class="tags"><span class="chip">módulo ${indice + 1} de ${m.modulos.length}</span>${mod.virada ? `<span class="chip virada">${ic("lightning-duotone")}ponto de virada</span>` : ""}${est === "dominado" ? `<span class="chip" style="--cor:var(--certo)">${ic("check-circle-duotone")}dominado</span>` : ""}</div>
-        <h3>${esc(mod.nome)}</h3>
-        <button type="button" class="btn btn-redondo btn-fantasma" data-fechar aria-label="Fechar">${ic("x-bold")}</button>
-      </div>
-      <div class="fala" ${iv()}>${mascote("explica")}<p class="balao cor glossavel">${esc(mod.dia)}</p></div>
-      <div class="bloco-c" ${iv()}><h4>${ic("target-duotone")}Ao final, você consegue</h4><p class="glossavel">${esc(mod.dominio)}.</p></div>
-      <div class="bloco-c" ${iv()}><h4>${ic("book-open-text-duotone")}Conceitos, em ordem</h4><ol class="chips-conceitos">${mod.conceitos.map((c, j) => `<li style="--j:${j}"><span>${esc(c)}</span></li>`).join("")}</ol></div>
-      <div class="bloco-c" ${iv()}><h4>${ic("path-duotone")}Antes deste</h4>${mod.antes.length ? `<ul class="lista-antes">${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}">${ic(estadoDe(a.codigo) === "dominado" ? "check-circle-duotone" : "question-duotone")}<a href="#estudo-${a.codigo}">${esc(a.nome)}</a>${a.materia !== m.sigla ? `<small>${esc(POR_SIGLA[a.materia].nome)}</small>` : ""}</li>`).join("")}</ul>` : "<p>Nada: dá para começar direto.</p>"}</div>
-      <div class="cascata-pe" ${iv()}><span class="chip ouro">${ic("lightning-duotone")}+${xpDe(cod)} XP</span><a class="btn btn-3d" href="#estudo-${cod}">${ic("play-bold")}${est === "dominado" ? "Revisar" : "Começar a lição"}</a></div>
-    </div>`;
-  }
-  function abrirCascata(cod) {
-    const trilha = document.getElementById("trilha-nos");
-    if (!trilha) return;
-    fecharCascata(false, true);
-    const etapa = trilha.querySelector(`.etapa[data-cod="${cod}"]`);
-    const wrap = document.createElement("div");
-    wrap.className = "cascata-wrap";
-    wrap.id = "cascata";
-    wrap.style.setProperty("--desloc", getComputedStyle(etapa).getPropertyValue("--desloc"));
-    wrap.innerHTML = `<div class="cascata-dentro">${htmlCascata(cod)}</div>`;
-    etapa.after(wrap);
-    etapa.classList.add("aberta");
-    trilha.classList.add("focando");
-    etapa.querySelector(".no-mod").setAttribute("aria-expanded", "true");
-    glossar(wrap, MODULO[cod].materia.sigla, 3);
-    cascataAberta = cod;
-    requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add("aberta")));
-    // se a cascata não couber na tela, rola até o nó selecionado, com a cascata logo abaixo
-    setTimeout(() => {
-      const r = wrap.getBoundingClientRect();
-      if (r.bottom > window.innerHeight || r.top < 70) etapa.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "start" });
-    }, semMovimento() ? 0 : 480);
-  }
-  function fecharCascata(focarNo, imediato) {
-    const trilha = document.getElementById("trilha-nos");
-    if (!trilha || !cascataAberta) return;
-    const cod = cascataAberta;
-    cascataAberta = null;
-    const wrap = trilha.querySelector(".cascata-wrap");
-    const etapa = trilha.querySelector(`.etapa[data-cod="${cod}"]`);
-    if (etapa) { etapa.classList.remove("aberta"); etapa.querySelector(".no-mod").setAttribute("aria-expanded", "false"); if (focarNo) etapa.querySelector(".no-mod").focus(); }
-    trilha.classList.remove("focando");
-    if (!wrap) return;
-    if (imediato || semMovimento()) { wrap.remove(); return; }
-    wrap.classList.remove("aberta");
-    wrap.querySelector(".cascata-dentro").style.overflow = "hidden";
-    setTimeout(() => wrap.remove(), 460);
+    const lista = document.getElementById("modulos-lista");
+    const alternar = (li, abrir) => {
+      const aberto = abrir !== undefined ? abrir : !li.classList.contains("aberto");
+      lista.querySelectorAll(".mod.aberto").forEach((o) => { if (o !== li) { o.classList.remove("aberto"); o.querySelector(".mod-cab").setAttribute("aria-expanded", "false"); } });
+      li.classList.toggle("aberto", aberto);
+      li.querySelector(".mod-cab").setAttribute("aria-expanded", String(aberto));
+      const corpo = li.querySelector(".mod-corpo");
+      if (aberto && !corpo.firstChild) { corpo.innerHTML = htmlModulo(li.dataset.cod); glossar(corpo, m.sigla, 3); }
+    };
+    lista.addEventListener("click", (e) => { const b = e.target.closest(".mod-cab"); if (b) alternar(b.closest(".mod")); });
+    const inicial = lista.querySelector(`.mod[data-cod="${prox.codigo}"]`);
+    if (inicial) alternar(inicial, true);
+    teclas = (e) => {
+      if (e.key === "Escape") { const o = lista.querySelector(".mod.aberto"); if (o) { alternar(o, false); o.querySelector(".mod-cab").focus(); } }
+      if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click();
+    };
   }
 
   // como funciona: subtópicos em sanfona, um aberto por vez
@@ -629,7 +606,7 @@
     const caixa = document.querySelector("[data-resposta]");
     const mostrar = (podeAcertar) => {
       const pf = document.querySelector(".cartao-passo .mascote");
-      if (pf) pf.innerHTML = window.MASCOTE[podeAcertar ? "explica" : "padrao"].replace(/viewboxMask/g, "vmx");
+      if (pf) pf.innerHTML = guia().expr[podeAcertar ? "explica" : "padrao"];
       caixa.hidden = false;
       caixa.innerHTML = `<div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div>
         <div class="botoes-j" style="margin-top:14px">${podeAcertar ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Acertei: dominar módulo</button>` : ""}<button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Ainda não: rever os conceitos</button></div>`;
@@ -666,8 +643,6 @@
       <div class="vitoria-acoes">${seguinte ? `<button type="button" class="btn btn-3d" data-seguir>${ic("arrow-right-bold")}Seguir agora</button><button type="button" class="btn" data-ficar>Ficar aqui</button>` : `<a class="btn btn-3d" href="#mapa">${ic("map-trifold-duotone")}Ver o mapa</a>`}</div>
     </div>`;
     document.body.appendChild(el);
-    const rc = el.querySelector(".vitoria-cartao").getBoundingClientRect();
-    confete(rc.left + rc.width / 2, rc.top + rc.height * 0.3, m.sigla);
     const ganho = xpDe(cod);
     const alvoXp = el.querySelector("[data-xp]");
     if (semMovimento()) alvoXp.textContent = ganho;
@@ -684,37 +659,6 @@
     el.addEventListener("keydown", (e) => { if (e.key === "Escape") { fechar(); render(); } });
   }
 
-  // ---------- confete (sem biblioteca) ----------
-  function confete(x, y, sigla) {
-    if (semMovimento()) return;
-    const cv = document.getElementById("confete");
-    const ctx = cv.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    const tela = cv.getBoundingClientRect();
-    const W = tela.width, H = tela.height;
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    const limpar = () => { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
-    const css = getComputedStyle(document.documentElement);
-    const cores = [`--mv-${sigla}`, "--ouro", "--mv-ED", "--mv-CMP", "--mv-MAT", "--tinta"].map((v) => css.getPropertyValue(v).trim() || "#ffd166");
-    const ps = Array.from({ length: 140 }, () => {
-      const a = Math.random() * Math.PI * 2, v = 6 + Math.random() * 10;
-      return { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 7, r: 4 + Math.random() * 5, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.35, cor: cores[(Math.random() * cores.length) | 0], forma: Math.random() < 0.55, vida: 1 };
-    });
-    const quadro = () => {
-      limpar();
-      let vivos = 0;
-      for (const q of ps) {
-        q.vy += 0.36; q.vx *= 0.985; q.x += q.vx; q.y += q.vy; q.rot += q.vr; q.vida -= 0.009;
-        if (q.vida <= 0 || q.y > H + 30) continue;
-        vivos++;
-        ctx.save(); ctx.globalAlpha = Math.min(1, q.vida * 1.6); ctx.translate(q.x, q.y); ctx.rotate(q.rot); ctx.fillStyle = q.cor;
-        if (q.forma) ctx.fillRect(-q.r, -q.r / 2.4, q.r * 2, q.r / 1.2); else { ctx.beginPath(); ctx.arc(0, 0, q.r / 1.5, 0, 7); ctx.fill(); }
-        ctx.restore();
-      }
-      if (vivos) requestAnimationFrame(quadro); else limpar();
-    };
-    requestAnimationFrame(quadro);
-  }
   let tToast = 0;
   function toast(texto, icone = "sparkle-duotone") {
     document.querySelectorAll(".toast").forEach((t) => t.remove());
@@ -828,6 +772,29 @@
     const titulo = r.v === "mapa" ? "Mapa" : r.v === "fontes" ? "Fontes" : r.v === "estudo" ? MODULO[r.cod].mod.nome : POR_SIGLA[r.sigla].nome;
     document.title = `${titulo} · Domínio`;
   }
+  // seletor de guia no topo
+  function montarSeletorGuia() {
+    const btn = document.getElementById("guia-btn"), menu = document.getElementById("guia-menu"), mini = document.getElementById("guia-mini");
+    const ordem = ["rin", "takumi", "mei", "panda"].filter((id) => window.GUIAS[id]);
+    const atualizar = () => {
+      mini.innerHTML = guia().expr.padrao;
+      mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
+      menu.innerHTML = `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" role="menuitemradio" aria-checked="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("");
+    };
+    const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+    btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });
+    menu.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-guia]");
+      if (!b) return;
+      guiaId = b.dataset.guia;
+      try { localStorage.setItem(CHAVE_GUIA, guiaId); } catch (err) { /* sem armazenamento */ }
+      atualizar(); fechar(); render();
+    });
+    document.addEventListener("click", (e) => { if (!e.target.closest(".guia-seletor")) fechar(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { fechar(); btn.focus(); } });
+    atualizar();
+  }
+  montarSeletorGuia();
   document.querySelector(".hud-nav [data-v='materia']").addEventListener("click", (e) => { e.preventDefault(); location.hash = "#trilha-" + materiaAtual().sigla; });
   document.getElementById("fechar-ampliado").addEventListener("click", () => document.getElementById("ampliado").close());
   document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
