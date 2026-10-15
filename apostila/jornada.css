@@ -773,3 +773,108 @@ dialog.ampliado { border-radius: 12px; }
   .metricas dd small { font-size: 12px; }
   .metricas .nota { font-size: 11.5px; }
 }
+
+/* =====================================================================
+   Explicação em azul metálico (16/10/2026). O mapa mantém as cores das matérias;
+   as telas de explicação (matéria, trilha, lição, vitória) usam este azul.
+   ===================================================================== */
+:root {
+  --azul-cor: #1d4ed8; --azul-cv: #3b7cf0; --metal-aresta: #1c45b0;
+  --metal: linear-gradient(110deg, #173a94 0%, #2457d4 28%, #5d93f2 45%, #2a5fdb 58%, #1a43a8 80%, #16388d 100%);
+  --metal-barra: linear-gradient(90deg, #1e4fc9 0%, #6aa0ff 50%, #1e4fc9 100%);
+  --metal-suave: linear-gradient(145deg, #eaf1ff 0%, #ffffff 45%, #dfe8fb 100%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --azul-cor: #8db8ff; --azul-cv: #4f8ff7; --metal-aresta: #2a5fdb;
+    --metal: linear-gradient(110deg, #13317d 0%, #2453c9 28%, #5f95f5 45%, #2a5fdb 58%, #183c99 80%, #122c70 100%);
+    --metal-barra: linear-gradient(90deg, #2453c9 0%, #7fb0ff 50%, #2453c9 100%);
+    --metal-suave: linear-gradient(145deg, #142240 0%, #1b2d55 45%, #121d37 100%);
+  }
+}
+:root[data-theme="dark"] {
+  --azul-cor: #8db8ff; --azul-cv: #4f8ff7; --metal-aresta: #2a5fdb;
+  --metal: linear-gradient(110deg, #13317d 0%, #2453c9 28%, #5f95f5 45%, #2a5fdb 58%, #183c99 80%, #122c70 100%);
+  --metal-barra: linear-gradient(90deg, #2453c9 0%, #7fb0ff 50%, #2453c9 100%);
+  --metal-suave: linear-gradient(145deg, #142240 0%, #1b2d55 45%, #121d37 100%);
+}
+.tema-exp { --sobre-cor: #ffffff; --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); }
+/* botão principal: metal escovado com um reflexo que corre ao passar o mouse */
+.tema-exp .btn-3d, .vitoria.tema-exp .btn-3d {
+  background: var(--metal); background-size: 230% 100%; background-position: 0% 0;
+  border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 -1px 0 rgb(0 0 0 / 0.25), 0 1px 2px rgb(0 0 0 / 0.25);
+  transition: background-position 700ms var(--curva), transform 140ms var(--curva), filter 200ms;
+}
+.tema-exp .btn-3d:hover:not(:disabled) { background: var(--metal); background-size: 230% 100%; background-position: 100% 0; border-color: var(--metal-aresta); filter: saturate(1.08); }
+.tema-exp .btn-3d:disabled { filter: grayscale(0.6); }
+/* peças cheias em metal */
+.tema-exp .mat-icone, .tema-exp .sub.aberto .medalha, .tema-exp .sub.feita .medalha, .tema-exp .alvo .ic-a, .tema-exp .cartao-link .ic-a,
+.tema-exp .mod.dominado .mod-marca, .tema-exp .mod.proximo .mod-marca, .tema-exp .conceito-cards li.entendido::before {
+  background: var(--metal); background-size: 200% 200%; color: #fff; border-color: var(--metal-aresta);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 -1px 0 rgb(0 0 0 / 0.2);
+}
+.tema-exp .mat-icone .ic, .tema-exp .medalha .ic { filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)); }
+.tema-exp .barra-fina i, .tema-exp .seg::before { background: var(--metal-barra); background-size: 200% 100%; }
+.tema-exp .seg.atual::before { animation: reflexo 2.6s linear infinite; }
+@keyframes reflexo { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+/* títulos com acabamento metálico (o texto continua escuro no claro e claro no escuro) */
+.tema-exp .mat-titulo h1, .tema-exp .passo-titulo {
+  background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tema-exp .mascote.retrato { background: var(--metal-suave); }
+.tema-exp .resumo { background: var(--metal-suave); border-left-color: var(--azul-cv); }
+.tema-exp .sub.aberto { border-color: color-mix(in srgb, var(--azul-cv) 60%, var(--linha)); }
+.tema-exp .chip:not(.ouro):not(.virada) { --cor: var(--azul-cor); }
+
+/* trilha de explicação */
+.trilha-cab { display: grid; grid-template-columns: auto minmax(120px, 1fr) auto; gap: 8px 20px; align-items: center; padding: 14px 18px; border-radius: 12px; background: var(--metal-suave); border: 1px solid var(--linha); }
+.trilha-cab b { font: 700 18px/1.2 var(--f-titulo); }
+.trilha-cab .barra-fina { height: 8px; }
+.salvo { font-size: 12.5px; color: var(--texto-2); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.salvo::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--certo); }
+.salvo.pisca { animation: pisca-salvo 900ms var(--curva); }
+@keyframes pisca-salvo { 0% { color: var(--certo); } 100% { color: var(--texto-2); } }
+@media (max-width: 720px) { .trilha-cab { grid-template-columns: 1fr; } .licao-topo .salvo { display: none; } }
+.sub.feita .sub-txt small::after { content: " · concluído"; color: var(--certo); font-weight: 600; }
+.sub-pe { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--linha); }
+.sub-tarefa { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; color: var(--texto-2); min-width: 0; }
+.sub-tarefa .ic { width: 20px; height: 20px; color: var(--azul-cor); flex: none; }
+.sub.feita .sub-tarefa .ic { color: var(--certo); }
+.nota-campo { display: grid; gap: 8px; }
+.nota-campo span { font-size: 14.5px; font-weight: 600; color: var(--texto); }
+.nota-campo textarea { font: inherit; font-size: 16px; line-height: 1.5; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--linha-forte); background: var(--folha); color: var(--texto); resize: vertical; width: 100%; }
+.nota-campo textarea:focus { outline: 0; border-color: var(--azul-cv); box-shadow: 0 0 0 3px color-mix(in srgb, var(--azul-cv) 25%, transparent); }
+.clipe-bloco { display: grid; gap: 8px; }
+.clipe-status { display: inline-flex; align-items: center; gap: 6px; width: fit-content; font: 600 12px/1 var(--f-ui); letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-2); }
+.clipe-status.visto { color: var(--certo); }
+.clipe-status .ic { width: 16px; height: 16px; }
+.experimente .tentativas { margin-left: auto; font: 600 12px/1 var(--f-codigo); color: var(--azul-cor); }
+.prever { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; flex-wrap: wrap; }
+.prever-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 2px 10px; border-radius: 6px; border: 1px dashed var(--azul-cv); background: color-mix(in srgb, var(--azul-cv) 10%, transparent); color: var(--azul-cor); font: 600 12.5px/1 var(--f-ui); cursor: pointer; }
+.prever-btn .ic { width: 15px; height: 15px; }
+.prever-btn:hover { background: color-mix(in srgb, var(--azul-cv) 18%, transparent); }
+.prever-in { font: 500 13.5px/1 var(--f-codigo); width: 15ch; min-height: 32px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--azul-cv); background: var(--folha); color: var(--texto); }
+.prever-ver { min-height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--metal-aresta); background: var(--metal); color: #fff; font: 600 12.5px/1 var(--f-ui); cursor: pointer; }
+.saida { color: var(--texto-2); font-style: italic; }
+.palpite { font: 600 11.5px/1 var(--f-ui); padding: 4px 7px; border-radius: 5px; background: var(--aviso-suave); color: var(--aviso); font-style: normal; }
+.palpite.ok { background: var(--certo-suave); color: var(--certo); }
+.trilha-fim { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 16px; border-radius: 12px; border: 1px solid var(--linha); background: var(--metal-suave); }
+.trilha-fim .mascote.retrato { --tam: 72px; }
+.trilha-fim b { font: 700 18px/1.2 var(--f-titulo); }
+.trilha-fim p { margin: 4px 0 0; font-size: 14.5px; color: var(--texto-2); }
+@media (max-width: 720px) { .trilha-fim { grid-template-columns: 56px minmax(0, 1fr); } .trilha-fim .btn { grid-column: 1 / -1; } .trilha-fim .mascote.retrato { --tam: 56px; } }
+.aba-n { margin-left: 4px; font: 600 11.5px/1 var(--f-codigo); padding: 3px 6px; border-radius: 5px; background: var(--folha-2); color: var(--texto-2); border: 1px solid var(--linha); }
+
+/* conceitos marcáveis na lição */
+.conta-conceitos { margin: 0; font: 600 13px/1 var(--f-ui); color: var(--azul-cor); }
+.conceito-cards li { grid-template-columns: 44px minmax(0, 1fr) auto; }
+.conceito-cards li.entendido { border-color: color-mix(in srgb, var(--azul-cv) 50%, var(--linha)); }
+.c-ok { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--linha-forte); background: var(--folha); color: var(--texto-2); font: 600 13px/1 var(--f-ui); cursor: pointer; }
+.c-ok .ic { width: 16px; height: 16px; }
+.c-ok[aria-pressed="true"] { background: var(--metal); border-color: var(--metal-aresta); color: #fff; }
+@media (max-width: 520px) { .c-ok span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .c-ok { padding: 0 10px; } }
+
+/* código em bloco: sem a caixinha do código em linha */
+pre code { display: block; background: none; border: 0; padding: 0; border-radius: 0; font-size: inherit; }

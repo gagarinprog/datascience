@@ -393,7 +393,7 @@
   const DEFS = `<defs><marker id="cl-ponta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="cl-ponta"/></marker></defs>`;
   const ic = (n) => (window.ICONE ? window.ICONE(n) : "");
 
-  function montarPlayer(el, clipe) {
+  function montarPlayer(el, clipe, opcoes = {}) {
     const quadros = semMovimento();
     el.innerHTML = `
       <div class="clipe-tela">
@@ -446,7 +446,7 @@
       tocar.setAttribute("aria-label", tocando ? "Pausar" : "Reproduzir");
       el.classList.toggle("tocando", tocando);
     };
-    tl.eventCallback("onComplete", () => { icone(false); el.classList.add("terminou"); });
+    tl.eventCallback("onComplete", () => { icone(false); el.classList.add("terminou"); if (opcoes.aoTerminar) opcoes.aoTerminar(); });
     const iniciar = () => { capa.hidden = true; el.classList.add("iniciado"); };
     // movimento reduzido: cada clique mostra o quadro final de um trecho da legenda, sem animação
     let quadro = -1;
@@ -456,6 +456,7 @@
       const seguinte = clipe.legendas[quadro + 1];
       tl.pause(seguinte ? seguinte[0] - 0.05 : clipe.fim);
       atualizar();
+      if (!seguinte && opcoes.aoTerminar) opcoes.aoTerminar();
     };
     const alternar = () => {
       if (quadros) return proximoQuadro();
@@ -468,7 +469,7 @@
     };
     capa.addEventListener("click", alternar);
     tocar.addEventListener("click", alternar);
-    barra.addEventListener("input", () => { iniciar(); tl.pause(); icone(false); tl.progress(barra.value / 1000); atualizar(); });
+    barra.addEventListener("input", () => { iniciar(); tl.pause(); icone(false); tl.progress(barra.value / 1000); atualizar(); if (Number(barra.value) >= 1000 && opcoes.aoTerminar) opcoes.aoTerminar(); });
     el.querySelector("[data-recomecar]").addEventListener("click", () => { iniciar(); el.classList.remove("terminou"); if (quadros) { quadro = -1; tl.pause(0); atualizar(); } else { tl.restart(); icone(true); } });
     const VEL = [1, 0.75, 0.5];
     vel.addEventListener("click", () => { const i = (VEL.indexOf(tl.timeScale()) + 1) % VEL.length; tl.timeScale(VEL[i]); vel.textContent = `${String(VEL[i]).replace(".", ",")}x`; });

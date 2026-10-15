@@ -43,6 +43,8 @@
   const minusc = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   const doisDig = (n) => String(n).padStart(2, "0");
   const coresDe = (s) => `--cor:var(--m-${s});--cv:var(--mv-${s})`;
+  // nas telas de explicação a cor de destaque é o azul metálico (o mapa mantém as cores das matérias)
+  const coresExp = () => "--cor:var(--azul-cor);--cv:var(--azul-cv)";
   const mov = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
   const semMovimento = () => mov.matches;
   const centro = () => document.getElementById("conteudo");
@@ -58,42 +60,63 @@
   }
 
   // ---------- progresso: base de dados do artefato quando houver; navegador como reserva ----------
+  // Um documento só (progresso/geral) guarda tudo: módulos dominados, o passo em que cada lição parou,
+  // conceitos marcados, respostas escritas, trilhas de explicação, clipes vistos, previsões e tentativas.
   const CHAVE = "dominio:progresso:v1";
-  let progresso = { modulos: {} };
-  try { progresso = JSON.parse(localStorage.getItem(CHAVE)) || progresso; } catch (e) { /* sem armazenamento */ }
+  const CAMPOS = ["modulos", "passos", "conceitos", "respostas", "trilhas", "notas", "clipes", "previsoes", "interacoes"];
+  const normalizar = (d) => Object.fromEntries(CAMPOS.map((k) => [k, d && d[k] && typeof d[k] === "object" && !Array.isArray(d[k]) ? d[k] : {}]));
+  let progresso = normalizar(null);
+  try { progresso = normalizar(JSON.parse(localStorage.getItem(CHAVE))); } catch (e) { /* sem armazenamento */ }
   let refDoc = null;
   let fila = Promise.resolve();
+  let enviando = 0, tSalvar = 0, esperando = false;
+  const hoje = () => new Date().toISOString().slice(0, 10);
   const estadoDe = (cod) => (progresso.modulos[cod] || {}).estado || "";
   const salvarLocal = () => { try { localStorage.setItem(CHAVE, JSON.stringify(progresso)); } catch (e) { /* sem armazenamento */ } };
-  function marcar(cod, estado) {
-    if (estado) progresso.modulos[cod] = { estado, em: new Date().toISOString().slice(0, 10) };
-    else delete progresso.modulos[cod];
+  const textoSalvo = () => (refDoc ? "Progresso salvo na nuvem" : "Progresso salvo neste navegador");
+  function enviar() {
+    esperando = false;
+    if (!refDoc) return;
+    enviando++;
+    const corpo = Object.assign({}, progresso, { atualizado: new Date().toISOString() });
+    fila = fila.then(() => refDoc.set(corpo)).catch(() => toast("Não deu para salvar na nuvem; ficou neste navegador.", "info-duotone")).then(() => { enviando--; });
+  }
+  // grava já no navegador e, logo depois, na nuvem (sem gravar a cada tecla)
+  function salvar(imediato) {
     salvarLocal();
-    if (refDoc) {
-      const corpo = { modulos: progresso.modulos, atualizado: new Date().toISOString() };
-      fila = fila.then(() => refDoc.set(corpo)).catch(() => toast("Não deu para salvar na nuvem; ficou neste navegador.", "info-duotone"));
-    }
+    clearTimeout(tSalvar);
+    if (imediato) enviar();
+    else { esperando = true; tSalvar = setTimeout(enviar, 700); }
+    document.querySelectorAll(".salvo").forEach((el) => { el.textContent = textoSalvo(); el.classList.remove("pisca"); void el.offsetWidth; el.classList.add("pisca"); });
+  }
+  function marcar(cod, estado) {
+    if (estado) progresso.modulos[cod] = { estado, em: hoje() };
+    else delete progresso.modulos[cod];
+    salvar(true);
     desenharHud();
   }
+  // junta o que está na nuvem com o que está neste navegador; em conflito, vale a nuvem
+  const mesclar = (local, nuvem) => Object.fromEntries(CAMPOS.map((k) => [k, Object.assign({}, local[k], nuvem[k])]));
   if (window.claude && typeof window.claude.use === "function") {
     window.claude.use("db").then((db) => {
       if (!db) return;
       refDoc = db.doc("progresso/geral");
+      document.querySelectorAll(".salvo").forEach((el) => { el.textContent = textoSalvo(); });
       refDoc.onSnapshot((snap) => {
-        if (!snap.exists) return;
-        const novos = Object.assign({}, (snap.data() || {}).modulos || {});
-        if (JSON.stringify(novos) === JSON.stringify(progresso.modulos)) return;
-        progresso = { modulos: novos };
+        if (enviando || esperando) return;
+        if (!snap.exists) { enviar(); return; }
+        const nuvem = normalizar(snap.data());
+        const junto = mesclar(progresso, nuvem);
+        const mudouAqui = JSON.stringify(junto) !== JSON.stringify(progresso);
+        progresso = junto;
         salvarLocal();
-        if (rota().v !== "estudo") render(); else desenharHud();
+        if (JSON.stringify(junto) !== JSON.stringify(nuvem)) enviar();
+        if (!mudouAqui) return;
+        const digitando = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+        if (!digitando && rota().v !== "estudo") render(); else desenharHud();
       }, () => {});
     }).catch(() => {});
   }
-  // subtópicos já vistos: conveniência deste navegador
-  const CHAVE_VISTOS = "dominio:vistos:v1";
-  let vistos = {};
-  try { vistos = JSON.parse(localStorage.getItem(CHAVE_VISTOS)) || {}; } catch (e) { /* sem armazenamento */ }
-  const salvarVistos = () => { try { localStorage.setItem(CHAVE_VISTOS, JSON.stringify(vistos)); } catch (e) { /* sem armazenamento */ } };
 
   const dominados = (m) => m.modulos.filter((mod) => estadoDe(mod.codigo) === "dominado").length;
   const materiaAtual = () => MATERIAS.find((m) => dominados(m) < m.modulos.length) || MATERIAS[MATERIAS.length - 1];
@@ -331,7 +354,7 @@
     const gd = guia();
     const abas = [["jornada", "trilha", "Módulos", "path-duotone"], ["guia", "guia", "Como funciona", "lightbulb-duotone"], ["fontes", "fontes", "Fontes", "books-duotone"]];
     centro().innerHTML = `
-      <section class="mat-cab" style="${coresDe(sigla)}">
+      <section class="mat-cab tema-exp" style="${coresExp()}">
         <a class="voltar" href="#mapa">${ic("arrow-left-bold")}Mapa de formação</a>
         <div class="mat-linha">
           <span class="mat-icone" aria-hidden="true">${ic(EMBLEMA[sigla])}</span>
@@ -344,10 +367,10 @@
         </div>
         ${g.frase ? `<figure class="resumo"><div class="mascote retrato">${gd.expr.explica}</div><p class="glossavel">${esc(g.frase)}</p></figure>` : ""}
       </section>
-      <nav class="abas" aria-label="Partes da matéria" style="${coresDe(sigla)}">
-        ${abas.map(([id, rotaAba, nome, icone]) => `<a class="aba" href="#${rotaAba}-${sigla}"${id === aba ? ' aria-current="page"' : ""}>${ic(icone)}${nome}</a>`).join("")}
+      <nav class="abas tema-exp" aria-label="Partes da matéria" style="${coresExp()}">
+        ${abas.map(([id, rotaAba, nome, icone]) => `<a class="aba" href="#${rotaAba}-${sigla}"${id === aba ? ' aria-current="page"' : ""}>${ic(icone)}${nome}${id === "guia" ? `<small class="aba-n">${concluidas(sigla).length}/${secoesDe(m).length}</small>` : ""}</a>`).join("")}
       </nav>
-      <div id="aba" style="${coresDe(sigla)}"></div>`;
+      <div id="aba" class="tema-exp" style="${coresExp()}"></div>`;
     if (aba === "jornada") abaJornada(m);
     else if (aba === "guia") abaGuia(m);
     else abaFontes(m);
@@ -373,7 +396,7 @@
         ${mod.antes.length ? `<ul class="lista-antes">${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}">${ic(estadoDe(a.codigo) === "dominado" ? "check-circle-duotone" : "question-duotone")}<a href="#estudo-${a.codigo}">${esc(a.nome)}</a>${a.materia !== m.sigla ? `<small>${esc(POR_SIGLA[a.materia].nome)}</small>` : ""}</li>`).join("")}</ul>` : "<p>Nada: dá para começar direto.</p>"}
       </div>
     </div>
-    <div class="mod-pe"><span class="chip ouro">${ic("lightning-duotone")}+${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</span><a class="btn btn-3d" href="#estudo-${cod}">${ic("play-bold")}${est === "dominado" ? "Revisar a lição" : "Começar a lição"}</a></div>`;
+    <div class="mod-pe"><span class="chip ouro">${ic("lightning-duotone")}+${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</span><a class="btn btn-3d" href="#estudo-${cod}">${ic("play-bold")}${est === "dominado" ? "Revisar a lição" : progresso.passos[cod] ? `Continuar do passo ${progresso.passos[cod] + 1}` : "Começar a lição"}</a></div>`;
   }
   function abaJornada(m) {
     const prox = proximoModulo(m);
@@ -387,7 +410,7 @@
         <button type="button" class="mod-cab" aria-expanded="false" aria-controls="mod-${mod.codigo}">
           <span class="mod-marca" aria-hidden="true">${est === "dominado" ? ic("check-bold") : mod.virada ? ic("lightning-duotone") : ""}</span>
           <span class="mod-num">${doisDig(k + 1)}</span>
-          <span class="mod-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} conceitos${mod.virada ? " · ponto de virada" : ""}</small></span>
+          <span class="mod-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} conceitos${mod.virada ? " · ponto de virada" : ""}${est !== "dominado" && progresso.passos[mod.codigo] ? ` · parou no passo ${progresso.passos[mod.codigo] + 1} de 5` : ""}</small></span>
           <span class="mod-estado">${rotulo}</span>
           ${ic("caret-down-bold", "ic seta")}
         </button>
@@ -421,32 +444,167 @@
     };
   }
 
-  // como funciona: subtópicos em sanfona, um aberto por vez
+  // ---------- como funciona: a trilha de explicação ----------
+  // Cada subtópico tem uma tarefa curta. Ao concluir, ele fica marcado (salvo na nuvem) e o próximo abre.
+  const normal = (t) => String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/["'`\s]/g, "");
+  function revelado(marca, saida, palpite) {
+    const nucleo = normal(saida).split(/[:,(]/)[0];
+    const bateu = palpite && normal(palpite).length > 0 && (normal(saida).includes(normal(palpite)) || (nucleo.length > 0 && normal(palpite).includes(nucleo)));
+    return `<span class="saida">${esc(marca)} ${esc(saida)}</span>${palpite ? `<span class="palpite${bateu ? " ok" : ""}">${bateu ? "acertou: " : "seu palpite: "}${esc(palpite)}</span>` : ""}`;
+  }
+  // mostra o código e esconde cada saída (o comentário que diz o que aparece na tela) atrás de um "prever"
+  function codigoInterativo(texto, lang, base) {
+    const linhas = texto.split("\n");
+    const hl = (t) => { try { return window.hljs && window.hljs.getLanguage(lang) ? window.hljs.highlight(t, { language: lang }).value : esc(t); } catch (e) { return esc(t); } };
+    const aspasPares = (t) => (t.match(/"/g) || []).length % 2 === 0 && (t.match(/'/g) || []).length % 2 === 0;
+    let n = 0;
+    const slot = (marca, saida) => {
+      const k = n++;
+      const salvo = progresso.previsoes[`${base}:${k}`];
+      return `<span class="prever${salvo ? " revelado" : ""}" data-k="${k}" data-marca="${esc(marca)}" data-saida="${esc(saida)}">${salvo ? revelado(marca, saida, salvo.palpite) : `<button type="button" class="prever-btn">${ic("question-duotone")}prever a saída</button>`}</span>`;
+    };
+    const html = linhas.map((l, i) => {
+      const so = l.match(/^\s*(#|--)\s+(.+)$/);
+      if (so) {
+        const ant = linhas[i - 1] || "";
+        return /print\(|git log|;\s*$/.test(ant) && !/\s(#|--)\s/.test(ant) ? slot(so[1], so[2]) : hl(l);
+      }
+      const inl = l.match(/^(.*?\S)(\s+)(#|--)\s+(.+)$/);
+      if (inl && aspasPares(inl[1])) return `${hl(inl[1])}${inl[2]}${slot(inl[3], inl[4])}`;
+      return hl(l);
+    }).join("\n");
+    return { html, total: n };
+  }
+
   function secoesDe(m) {
     const s = m.sigla, g = GUIA[s];
+    const lang = g.lang || "python";
     const lista = [];
-    lista.push({ id: "ideia", icone: "lightbulb-duotone", titulo: "A ideia", dica: "o essencial, em poucas linhas", html: () => `<p class="frase-destaque">${esc(g.frase)}</p><div class="prosa-jogo glossavel">${g.texto.map((p) => `<p>${p}</p>`).join("")}</div>` });
-    lista.push({ id: "desenho", icone: "image-duotone", titulo: "Veja o desenho", dica: g.figuras.length > 1 ? `${g.figuras.length} ilustrações; toque para ampliar` : "a ilustração; toque para ampliar", html: () => g.figuras.map(([chave, legenda]) => figura(chave, legenda)).join("") });
+    const nota = (id, rotulo, linhas = 3) => `<label class="nota-campo"><span>${rotulo}</span><textarea rows="${linhas}" data-nota="${id}">${esc(progresso.notas[`${s}:${id}`] || "")}</textarea></label>`;
+    const ligarNota = (el, id, minimo, liberar) => {
+      const t = el.querySelector(`[data-nota="${id}"]`);
+      const checar = () => { if (t.value.trim().length >= minimo) liberar(); };
+      t.addEventListener("input", () => { progresso.notas[`${s}:${id}`] = t.value; salvar(); checar(); });
+      checar();
+    };
+    lista.push({
+      id: "ideia", icone: "lightbulb-duotone", titulo: "A ideia", dica: "o essencial, em poucas linhas",
+      tarefa: "Explique com suas palavras para concluir.",
+      pronto: () => (progresso.notas[`${s}:ideia`] || "").trim().length >= 10,
+      html: () => `<p class="frase-destaque">${esc(g.frase)}</p><div class="prosa-jogo glossavel">${g.texto.map((p) => `<p>${p}</p>`).join("")}</div>${nota("ideia", "Agora com suas palavras: explique a ideia em uma ou duas frases, como se contasse a um amigo.")}`,
+      montar: (el, liberar) => ligarNota(el, "ideia", 10, liberar),
+    });
+    lista.push({
+      id: "desenho", icone: "image-duotone", titulo: "Veja o desenho", dica: g.figuras.length > 1 ? `${g.figuras.length} ilustrações; toque para ampliar` : "a ilustração; toque para ampliar",
+      tarefa: "Olhe a ilustração com calma e conclua.", pronto: () => true,
+      html: () => g.figuras.map(([chave, legenda]) => figura(chave, legenda)).join(""),
+    });
     const clipes = (window.CLIPES && window.CLIPES[s]) || [];
-    if (clipes.length) lista.push({ id: "assista", icone: "film-strip-duotone", titulo: "Assista", dica: clipes.length > 1 ? `${clipes.length} clipes curtos, com legenda` : `clipe de ${Math.round(clipes[0].fim)} segundos, com legenda`, html: () => `<div class="clipes">${clipes.map((c, k) => `<div class="clipe" data-clipe="${k}"></div>`).join("")}</div><p class="mini-legenda">Use a barra para voltar e avançar, e o botão 1x para deixar mais devagar.</p>`, montar: (el) => el.querySelectorAll("[data-clipe]").forEach((c) => window.CLIPE_PLAYER(c, clipes[Number(c.dataset.clipe)])) });
+    if (clipes.length) {
+      const vistosTodos = () => clipes.every((c, k) => progresso.clipes[`${s}:${k}`]);
+      lista.push({
+        id: "assista", icone: "film-strip-duotone", titulo: "Assista", dica: clipes.length > 1 ? `${clipes.length} clipes curtos, com legenda` : `clipe de ${Math.round(clipes[0].fim)} segundos, com legenda`,
+        tarefa: clipes.length > 1 ? "Assista aos clipes até o fim para concluir." : "Assista ao clipe até o fim para concluir.",
+        pronto: vistosTodos,
+        html: () => `<div class="clipes">${clipes.map((c, k) => `<div class="clipe-bloco"><span class="clipe-status${progresso.clipes[`${s}:${k}`] ? " visto" : ""}" data-status="${k}">${progresso.clipes[`${s}:${k}`] ? `${ic("check-circle-duotone")}assistido` : `clipe ${k + 1} de ${clipes.length}`}</span><div class="clipe" data-clipe="${k}"></div></div>`).join("")}</div><p class="mini-legenda">Use a barra para voltar e avançar, e o botão 1x para deixar mais devagar.</p>`,
+        montar: (el, liberar) => el.querySelectorAll("[data-clipe]").forEach((c) => {
+          const k = Number(c.dataset.clipe);
+          window.CLIPE_PLAYER(c, clipes[k], { aoTerminar: () => {
+            if (!progresso.clipes[`${s}:${k}`]) { progresso.clipes[`${s}:${k}`] = hoje(); salvar(true); }
+            const st = el.querySelector(`[data-status="${k}"]`);
+            st.classList.add("visto"); st.innerHTML = `${ic("check-circle-duotone")}assistido`;
+            if (vistosTodos()) liberar();
+          } });
+        }),
+      });
+    }
     const exp = window.EXPERIMENTE && window.EXPERIMENTE[s];
-    if (exp) lista.push({ id: "experimente", icone: "cursor-click-duotone", titulo: "Experimente", dica: "mude os valores e veja o resultado na hora", html: () => `${s === "LOG" ? figura(g.figuras[0][0], "O caminho que acende é o que o algoritmo segue com o valor que você digitou.") : ""}<section class="experimente"><header><b>experimente</b><span>${esc(exp.titulo)}</span></header><div class="area-exp"></div></section>`, montar: (el) => exp.montar(el.querySelector(".area-exp"), el.querySelector("figure")) });
-    lista.push({ id: "dia", icone: "coffee-duotone", titulo: "No dia a dia", dica: "onde você já usa isso sem perceber", html: () => `<div class="fala">${mascote("feliz")}<p class="balao cor glossavel">${esc(g.dia)}</p></div>` });
-    lista.push({ id: "codigo", icone: "code-duotone", titulo: "No computador", dica: "a mesma ideia escrita em código", html: () => `<div class="duo"><pre><code class="language-${g.lang || "python"}">${esc(g.codigo)}</code></pre>${g.codigo2 ? `<pre><code class="language-${g.lang || "python"}">${esc(g.codigo2)}</code></pre>` : ""}</div>` });
-    lista.push({ id: "onde", icone: "graduation-cap-duotone", titulo: "Onde isso cai", dica: "faculdade, concursos e trabalho", html: () => `<div class="onde-lista">${g.onde.map(([a, b]) => `<div><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")}</div>${m.logos.length ? `<div class="logo-lista">${m.logos.filter((l) => window.LOGOS[l]).map((l) => `<span><img src="${window.LOGOS[l].uri}" alt="" width="26" height="26">${esc(window.LOGOS[l].nome)}</span>`).join("")}</div>` : ""}` });
+    if (exp) {
+      const META = 3;
+      lista.push({
+        id: "experimente", icone: "cursor-click-duotone", titulo: "Experimente", dica: "mude os valores e veja o resultado na hora",
+        tarefa: `Faça ${META} tentativas diferentes para concluir.`,
+        pronto: () => (progresso.interacoes[s] || 0) >= META,
+        html: () => `${s === "LOG" ? figura(g.figuras[0][0], "O caminho que acende é o que o algoritmo segue com o valor que você digitou.") : ""}<section class="experimente"><header><b>experimente</b><span>${esc(exp.titulo)}</span><span class="tentativas" data-tentativas>${Math.min(META, progresso.interacoes[s] || 0)} de ${META} tentativas</span></header><div class="area-exp"></div></section>`,
+        montar: (el, liberar) => {
+          const area = el.querySelector(".area-exp");
+          exp.montar(area, el.querySelector("figure"));
+          let t = 0;
+          const contar = () => {
+            clearTimeout(t);
+            t = setTimeout(() => {
+              progresso.interacoes[s] = (progresso.interacoes[s] || 0) + 1;
+              salvar();
+              el.querySelector("[data-tentativas]").textContent = `${Math.min(META, progresso.interacoes[s])} de ${META} tentativas`;
+              if (progresso.interacoes[s] >= META) liberar();
+            }, 650);
+          };
+          area.addEventListener("input", contar);
+          area.addEventListener("click", (e) => { if (e.target.closest("button")) contar(); });
+        },
+      });
+    }
+    lista.push({
+      id: "dia", icone: "coffee-duotone", titulo: "No dia a dia", dica: "onde você já usa isso sem perceber",
+      tarefa: "Se quiser, escreva um exemplo seu; ele fica salvo.", pronto: () => true,
+      html: () => `<div class="fala">${mascote("feliz")}<p class="balao cor glossavel">${esc(g.dia)}</p></div>${nota("dia", "Onde você já viu isso no seu dia? Um exemplo seu (opcional).", 2)}`,
+      montar: (el, liberar) => ligarNota(el, "dia", 0, liberar),
+    });
+    const blocos = [g.codigo, g.codigo2].filter(Boolean).map((c, k) => codigoInterativo(c, lang, `${s}:cod${k}`));
+    const totalPrev = blocos.reduce((a, b) => a + b.total, 0);
+    const previstos = () => blocos.every((b, k) => Array.from({ length: b.total }, (x, j) => progresso.previsoes[`${s}:cod${k}:${j}`]).every(Boolean));
+    lista.push({
+      id: "codigo", icone: "code-duotone", titulo: "No computador", dica: totalPrev ? `a mesma ideia em código; preveja ${totalPrev === 1 ? "a saída" : `as ${totalPrev} saídas`}` : "a mesma ideia escrita em código",
+      tarefa: totalPrev ? "Antes de ver cada saída, escreva o que você acha que aparece." : "Leia o código com calma e conclua.",
+      pronto: () => !totalPrev || previstos(),
+      html: () => `<div class="duo">${blocos.map((b, k) => `<pre class="codigo-prever" data-bloco="${k}"><code class="hljs language-${lang}">${b.html}</code></pre>`).join("")}</div>`,
+      montar: (el, liberar) => {
+        el.addEventListener("click", (e) => {
+          const btn = e.target.closest(".prever-btn");
+          if (btn) {
+            const slot = btn.closest(".prever");
+            slot.innerHTML = `<input class="prever-in" aria-label="Seu palpite da saída" placeholder="o que aparece?" autocomplete="off"><button type="button" class="prever-ver">ver</button>`;
+            slot.querySelector("input").focus();
+            return;
+          }
+          const ver = e.target.closest(".prever-ver");
+          if (ver) revelar(ver.closest(".prever"));
+        });
+        el.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.matches(".prever-in")) { e.preventDefault(); revelar(e.target.closest(".prever")); } });
+        function revelar(slot) {
+          const bloco = slot.closest("[data-bloco]").dataset.bloco;
+          const palpite = slot.querySelector("input").value.trim();
+          progresso.previsoes[`${s}:cod${bloco}:${slot.dataset.k}`] = { palpite, em: hoje() };
+          salvar();
+          slot.classList.add("revelado");
+          slot.innerHTML = revelado(slot.dataset.marca, slot.dataset.saida, palpite);
+          if (previstos()) liberar();
+        }
+      },
+    });
+    lista.push({
+      id: "onde", icone: "graduation-cap-duotone", titulo: "Onde isso cai", dica: "faculdade, concursos e trabalho",
+      tarefa: "Veja onde isso aparece e conclua a trilha.", pronto: () => true,
+      html: () => `<div class="onde-lista">${g.onde.map(([a, b]) => `<div><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")}</div>${m.logos.length ? `<div class="logo-lista">${m.logos.filter((l) => window.LOGOS[l]).map((l) => `<span><img src="${window.LOGOS[l].uri}" alt="" width="26" height="26">${esc(window.LOGOS[l].nome)}</span>`).join("")}</div>` : ""}`,
+    });
     return lista;
   }
+  const concluidas = (s) => progresso.trilhas[s] || [];
   function figura(chave, legenda) {
     return `<figure class="figura-jogo" data-fig="${chave}"><button class="ampliar" type="button">${ic("magnifying-glass-duotone")} Ampliar</button><div class="rolagem">${window.FIG[chave]()}</div><figcaption>${esc(legenda)}</figcaption></figure>`;
   }
   function abaGuia(m) {
     const s = m.sigla;
     const secoes = secoesDe(m);
-    const visto = new Set(vistos[s] || []);
-    const abrirPrimeiro = (secoes.find((x) => !visto.has(x.id)) || secoes[0]).id;
+    const feitas = () => new Set(concluidas(s));
+    const primeiraPendente = () => secoes.find((x) => !feitas().has(x.id));
     document.getElementById("aba").innerHTML = `
       <div class="subtopicos">
-        <div class="vistos"><span id="conta-vistos"></span><span class="barrinha" aria-hidden="true"><i id="barra-vistos"></i></span></div>
+        <div class="trilha-cab">
+          <div><p class="eyebrow">Trilha de explicação</p><b id="trilha-conta"></b></div>
+          <span class="barra-fina" aria-hidden="true"><i id="trilha-barra"></i></span>
+          <span class="salvo" aria-live="polite">${textoSalvo()}</span>
+        </div>
         ${secoes.map((x, k) => `<section class="sub" data-sub="${x.id}">
           <button type="button" class="sub-cab" aria-expanded="false" aria-controls="corpo-${x.id}">
             <span class="medalha">${ic(x.icone)}<em>${k + 1}</em></span>
@@ -455,13 +613,19 @@
           </button>
           <div class="sub-corpo-wrap"><div class="sub-corpo" id="corpo-${x.id}" role="region" aria-label="${x.titulo}"><div></div></div></div>
         </section>`).join("")}
-        <div style="display:flex;justify-content:center;margin-top:8px"><a class="btn btn-3d btn-grande" href="#trilha-${s}">${ic("path-duotone")}Ir para a jornada dos módulos</a></div>
+        <div class="trilha-fim" hidden>${mascote("feliz")}<div><b>Trilha de ${esc(m.nome)} concluída</b><p>Agora é praticar: cada módulo tem uma lição de cinco passos, e o passo em que você parar fica salvo.</p></div><a class="btn btn-3d" href="#trilha-${s}">${ic("path-duotone")}Ir para os módulos</a></div>
       </div>`;
-    const atualizarVistos = () => {
-      const v = new Set(vistos[s] || []);
-      document.getElementById("conta-vistos").innerHTML = `Subtópicos vistos: <b>${secoes.filter((x) => v.has(x.id)).length} de ${secoes.length}</b>`;
-      document.getElementById("barra-vistos").style.width = `${(secoes.filter((x) => v.has(x.id)).length / secoes.length) * 100}%`;
-      document.querySelectorAll(".sub").forEach((el) => { el.querySelector(".visto-slot").innerHTML = v.has(el.dataset.sub) ? ic("check-circle-duotone", "ic visto") : ""; });
+    const atualizar = () => {
+      const f = feitas();
+      const n = secoes.filter((x) => f.has(x.id)).length;
+      document.getElementById("trilha-conta").textContent = `${n} de ${secoes.length} subtópicos concluídos`;
+      document.getElementById("trilha-barra").style.width = `${(n / secoes.length) * 100}%`;
+      document.querySelectorAll(".sub").forEach((el) => {
+        const ok = f.has(el.dataset.sub);
+        el.classList.toggle("feita", ok);
+        el.querySelector(".visto-slot").innerHTML = ok ? `${ic("check-circle-duotone", "ic visto")}<span class="visivel-leitor">concluído</span>` : "";
+      });
+      document.querySelector(".trilha-fim").hidden = n < secoes.length;
     };
     const montados = new Set();
     const abrir = (id, rolar) => {
@@ -470,25 +634,39 @@
         el.classList.toggle("aberto", aberto);
         el.querySelector(".sub-cab").setAttribute("aria-expanded", String(aberto));
         if (!aberto) return;
-        const x = secoes.find((q) => q.id === id);
-        const alvo = el.querySelector(".sub-corpo > div");
-        if (!montados.has(id)) {
-          alvo.innerHTML = x.html();
-          [...alvo.children].forEach((c, k) => c.style.setProperty("--i", k));
-          if (x.montar) x.montar(alvo);
-          if (window.hljs) alvo.querySelectorAll("pre code").forEach((b) => window.hljs.highlightElement(b));
-          alvo.querySelectorAll("figure").forEach(ampliavel);
-          glossar(alvo, s, 6);
-          montados.add(id);
-        }
-        vistos[s] = [...new Set([...(vistos[s] || []), id])];
-        salvarVistos();
+        if (!montados.has(id)) montar(el, secoes.find((q) => q.id === id));
         if (rolar) setTimeout(() => el.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "start" }), semMovimento() ? 0 : 140);
       });
-      atualizarVistos();
     };
+    function montar(el, x) {
+      const alvo = el.querySelector(".sub-corpo > div");
+      const feita = feitas().has(x.id);
+      alvo.innerHTML = x.html() + `<div class="sub-pe"><span class="sub-tarefa">${ic(feita ? "check-circle-duotone" : "target-duotone")}<span data-tarefa>${feita ? "Concluído. Pode rever quando quiser." : esc(x.tarefa)}</span></span><button type="button" class="btn btn-3d" data-concluir${feita || x.pronto() ? "" : " disabled"}>${feita ? "Próximo subtópico" : "Concluir e seguir"}${ic("arrow-right-bold")}</button></div>`;
+      [...alvo.children].forEach((c, k) => c.style.setProperty("--i", k));
+      const botao = alvo.querySelector("[data-concluir]");
+      const liberar = () => { botao.disabled = false; };
+      if (x.montar) x.montar(alvo, liberar);
+      if (window.hljs) alvo.querySelectorAll("pre code:not(.hljs)").forEach((b) => window.hljs.highlightElement(b));
+      alvo.querySelectorAll("figure").forEach(ampliavel);
+      glossar(alvo, s, 6);
+      botao.addEventListener("click", () => {
+        if (!feitas().has(x.id)) {
+          progresso.trilhas[s] = [...concluidas(s), x.id];
+          salvar(true);
+          alvo.querySelector("[data-tarefa]").textContent = "Concluído. Pode rever quando quiser.";
+          botao.innerHTML = `Próximo subtópico${ic("arrow-right-bold")}`;
+        }
+        atualizar();
+        const idx = secoes.indexOf(x);
+        const prox = secoes.slice(idx + 1).find((q) => !feitas().has(q.id)) || primeiraPendente() || secoes[idx + 1];
+        if (prox) abrir(prox.id, true);
+        else { abrir(x.id, false); document.querySelector(".trilha-fim").scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "center" }); }
+      });
+      montados.add(x.id);
+    }
     document.querySelectorAll(".sub-cab").forEach((b) => b.addEventListener("click", () => abrir(b.closest(".sub").dataset.sub, true)));
-    abrir(abrirPrimeiro, false);
+    atualizar();
+    abrir((primeiraPendente() || secoes[0]).id, false);
   }
   function ampliavel(fig) {
     const abrirAmp = () => {
@@ -524,14 +702,17 @@
   let estudo = { cod: null, passo: 0, liberado: [true, true, true, false, false], direcao: 1 };
   let autoAvanco = 0;
   function vistaEstudo(cod) {
-    if (estudo.cod !== cod) estudo = { cod, passo: 0, liberado: [true, true, true, false, false], direcao: 1 };
+    if (estudo.cod !== cod) {
+      const salvo = estadoDe(cod) === "dominado" ? 0 : Math.min(4, progresso.passos[cod] || 0);
+      estudo = { cod, passo: salvo, liberado: [0, 1, 2, 3, 4].map((k) => k < 3 || k <= salvo), direcao: 1, retomado: salvo > 0 };
+    }
     clearTimeout(autoAvanco);
     const { mod, materia: m, indice } = MODULO[cod];
     const p = estudo.passo;
     const seguinte = ORDEM[ORDEM.indexOf(cod) + 1];
     let i = 0;
     const iv = () => `style="--i:${i++}"`;
-    const rotulo = `<div class="passo-rotulo" ${iv()}><span class="chip">${ic(PASSOS[p][1])}passo ${p + 1} de 5 · ${PASSOS[p][0]}</span>${mod.virada ? `<span class="chip virada">${ic("lightning-duotone")}ponto de virada</span>` : ""}</div>`;
+    const rotulo = `<div class="passo-rotulo" ${iv()}><span class="chip">${ic(PASSOS[p][1])}passo ${p + 1} de 5 · ${PASSOS[p][0]}</span>${mod.virada ? `<span class="chip virada">${ic("lightning-duotone")}ponto de virada</span>` : ""}${estudo.retomado ? `<span class="chip">${ic("arrow-counter-clockwise-bold")}continuando de onde parou</span>` : ""}</div>`;
     let corpo = "";
     if (p === 0) {
       const falta = mod.antes.filter((a) => estadoDe(a.codigo) !== "dominado");
@@ -543,8 +724,10 @@
     if (p === 1) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Para que serve</h1>
       <div class="fala" ${iv()}>${mascote("explica", "flutua")}<p class="balao cor texto-grande glossavel">${esc(mod.dia)}</p></div>
       <div class="alvo" ${iv()}><span class="ic-a">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></div>`;
-    if (p === 2) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>O que você aprende</h1><p class="passo-sub" ${iv()}>${mod.conceitos.length} conceitos, nesta ordem. Toque nos termos sublinhados para ver o que significam.</p>
-      <ol class="conceito-cards glossavel" ${iv()}>${mod.conceitos.map((c, j) => `<li style="--j:${j}"><span>${esc(c.charAt(0).toUpperCase() + c.slice(1))}</span></li>`).join("")}</ol>
+    const marcados = new Set(progresso.conceitos[cod] || []);
+    if (p === 2) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>O que você aprende</h1><p class="passo-sub" ${iv()}>${mod.conceitos.length} conceitos, nesta ordem. Marque cada um quando sentir que entendeu; a marcação fica salva. Toque nos termos sublinhados para ver o que significam.</p>
+      <p class="conta-conceitos" id="conta-conceitos" ${iv()}>${marcados.size} de ${mod.conceitos.length} marcados como entendidos</p>
+      <ol class="conceito-cards" ${iv()}>${mod.conceitos.map((c, j) => `<li style="--j:${j}" class="${marcados.has(j) ? "entendido" : ""}"><span class="glossavel">${esc(c.charAt(0).toUpperCase() + c.slice(1))}</span><button type="button" class="c-ok" data-c="${j}" aria-pressed="${marcados.has(j)}">${ic("check-bold")}<span>${marcados.has(j) ? "entendi" : "marcar"}</span></button></li>`).join("")}</ol>
       ${LICOES[cod] ? `<a class="cartao-link" href="${LICOES[cod]}" ${iv()}><span class="ic-a">${ic("play-duotone")}</span><span><b>Lição ilustrada deste módulo</b><small>exercícios com correção na hora, um conceito por vez</small></span>${ic("arrow-right-bold")}</a>` : ""}
       <a class="cartao-link" href="#guia-${m.sigla}" ${iv()}><span class="ic-a">${ic("film-strip-duotone")}</span><span><b>Ver o desenho, o clipe e a caixa interativa</b><small>${esc(m.nome)}: como funciona</small></span>${ic("arrow-right-bold")}</a>
       <p class="passo-sub" ${iv()}>A aula de cada conceito, com exercícios corrigidos, também está no tutor: no Claude Code, digite <code>/aula</code>.</p>`;
@@ -553,7 +736,7 @@
       <div class="fala" ${iv()}>${mascote("pensa")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
     if (p === 4) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
       <div class="fala" ${iv()}>${mascote("pensa", "flutua")}<p class="balao cor texto-grande">${esc(mod.pergunta)}</p></div>
-      <label class="resposta-campo" ${iv()}><span>Escreva a sua resposta antes de ver a nossa</span><textarea id="resp" rows="4"></textarea></label>
+      <label class="resposta-campo" ${iv()}><span>Escreva a sua resposta antes de ver a nossa. Ela fica salva${progresso.respostas[cod] ? ` (última edição em ${progresso.respostas[cod].em.split("-").reverse().join("/")})` : ""}.</span><textarea id="resp" rows="4">${esc((progresso.respostas[cod] || {}).texto || "")}</textarea></label>
       <div class="botoes-j" ${iv()}><button type="button" class="btn btn-3d" data-comparar disabled>${ic("check-bold")}Comparar com a resposta</button><button type="button" class="btn" data-naosei>Ainda não sei</button></div>
       <div data-resposta hidden></div>`;
     const pe = p < 3
@@ -563,10 +746,11 @@
         : seguinte ? `<a class="btn btn-fantasma" href="#estudo-${seguinte}">Pular para o próximo módulo</a>` : "";
     const segs = PASSOS.map(([nome], k) => `<button type="button" class="seg ${k < p ? "feito" : k === p ? "atual" : ""}" data-ir="${k}" aria-label="Passo ${k + 1}: ${nome}${k < p ? ", feito" : k === p ? ", atual" : ""}"${k > p && !estudo.liberado.slice(0, k + 1).every(Boolean) ? " disabled" : ""}></button>`).join("");
     centro().innerHTML = `
-      <div class="licao" style="${coresDe(m.sigla)}">
+      <div class="licao tema-exp" style="${coresExp()}">
         <header class="licao-topo">
           <a class="btn btn-redondo btn-fantasma" href="#trilha-${m.sigla}" aria-label="Sair da lição e voltar para ${esc(m.nome)}">${ic("x-bold")}</a>
           <nav class="segmentos" aria-label="Passos da lição">${segs}</nav>
+          <span class="salvo" aria-live="polite">${textoSalvo()}</span>
           <span class="licao-xp" title="XP ao dominar este módulo">${ic("lightning-duotone")}+${xpDe(cod)}</span>
         </header>
         <main class="licao-palco"><div class="cartao-passo ${estudo.direcao < 0 ? "entra-volta" : "entra"}">${corpo}</div></main>
@@ -581,6 +765,8 @@
     const ir = (k) => {
       estudo.direcao = k >= estudo.passo ? 1 : -1;
       estudo.passo = Math.max(0, Math.min(4, k));
+      estudo.retomado = false;
+      if ((progresso.passos[cod] || 0) < estudo.passo) { progresso.passos[cod] = estudo.passo; salvar(); }
       vistaEstudo(cod);
       window.scrollTo(0, 0);
     };
@@ -593,6 +779,18 @@
     const cont = document.querySelector("[data-continuar]");
     if (cont) cont.addEventListener("click", avancar);
     if (p === 4) montarPergunta(cod, mod, seguinte);
+    if (p === 2) document.querySelectorAll(".c-ok").forEach((b) => b.addEventListener("click", () => {
+      const j = Number(b.dataset.c);
+      const set = new Set(progresso.conceitos[cod] || []);
+      if (set.has(j)) set.delete(j); else set.add(j);
+      progresso.conceitos[cod] = [...set].sort((a, c) => a - c);
+      salvar();
+      const on = set.has(j);
+      b.setAttribute("aria-pressed", String(on));
+      b.querySelector("span").textContent = on ? "entendi" : "marcar";
+      b.closest("li").classList.toggle("entendido", on);
+      document.getElementById("conta-conceitos").textContent = `${set.size} de ${mod.conceitos.length} marcados como entendidos`;
+    }));
     teclas = (e) => {
       if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       if (e.key === "Escape") { location.hash = `#trilha-${m.sigla}`; return; }
@@ -615,7 +813,12 @@
       caixa.querySelector("[data-rever]").addEventListener("click", () => { marcar(cod, "rever"); toast("Marcado para rever. Volte aos conceitos com calma.", "arrow-counter-clockwise-bold"); estudo.direcao = -1; estudo.passo = 2; vistaEstudo(cod); window.scrollTo(0, 0); });
       caixa.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "nearest" });
     };
-    area.addEventListener("input", () => { comparar.disabled = area.value.trim().length < 3; });
+    area.addEventListener("input", () => {
+      comparar.disabled = area.value.trim().length < 3;
+      progresso.respostas[cod] = { texto: area.value, em: hoje() };
+      salvar();
+    });
+    comparar.disabled = area.value.trim().length < 3;
     comparar.addEventListener("click", () => mostrar(true));
     document.querySelector("[data-naosei]").addEventListener("click", () => mostrar(false));
     area.focus({ preventScroll: true });
@@ -633,7 +836,8 @@
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-modal", "true");
     el.setAttribute("aria-label", "Módulo dominado");
-    el.style.cssText = coresDe(m.sigla);
+    el.style.cssText = coresExp();
+    el.classList.add("tema-exp");
     el.innerHTML = `<div class="vitoria-cartao">
       ${mascote(fimMateria ? "uau" : "feliz")}
       <h2>${fimMateria ? "Matéria concluída!" : "Módulo dominado!"}</h2>
