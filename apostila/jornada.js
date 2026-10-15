@@ -119,6 +119,22 @@
     return { v: "mapa" };
   }
 
+  // número que sobe até o valor novo e dá um pulinho no cartão; sem movimento, troca direto
+  function contar(el, para) {
+    const antes = Number(el.dataset.v);
+    el.dataset.v = para;
+    if (!el.dataset.pronto || semMovimento() || antes === para) { el.textContent = para; el.dataset.pronto = "1"; return; }
+    const t0 = performance.now();
+    const passo = (t) => {
+      const f = Math.min(1, (t - t0) / 700);
+      el.textContent = Math.round(antes + (para - antes) * (1 - Math.pow(1 - f, 3)));
+      if (f < 1) requestAnimationFrame(passo);
+    };
+    requestAnimationFrame(passo);
+    const cartao = el.closest(".stat");
+    if (cartao) { cartao.classList.remove("salta"); void cartao.offsetWidth; cartao.classList.add("salta"); }
+  }
+
   // ---------- HUD ----------
   function desenharHud() {
     const r = rota();
@@ -130,8 +146,8 @@
     const xp = xpTotal();
     const nv = nivelDe(xp);
     const of = ofensiva();
-    document.getElementById("hud-xp").textContent = xp;
-    document.getElementById("hud-ofensiva").textContent = of;
+    contar(document.getElementById("hud-xp"), xp);
+    contar(document.getElementById("hud-ofensiva"), of);
     document.querySelector(".stat.ofensiva").classList.toggle("apagada", of === 0);
     document.querySelector(".stat.ofensiva").title = of ? `${of} ${of === 1 ? "dia seguido" : "dias seguidos"} estudando` : "Domine um módulo hoje para acender a ofensiva";
     const anel = document.getElementById("hud-nivel");
@@ -151,6 +167,7 @@
     return d;
   }
   let observador = null;
+  const observadores = [];
   function estrada(raiz, seletor, feitoAte, animar) {
     const svg = raiz.querySelector(":scope > svg.estrada");
     let primeira = animar;
@@ -224,7 +241,7 @@
           </a>
         </div>`;
       }).join("");
-      return `<section class="zona" style="--cr:${cr}" aria-label="Mundo ${wi + 1}: ${esc(w.nome)}">
+      return `<section class="zona" id="mundo-${wi}" style="--cr:${cr}" aria-label="Mundo ${wi + 1}: ${esc(w.nome)}">
         <span class="cenario e" aria-hidden="true">${ic(w.cenario[0])}</span><span class="cenario d" aria-hidden="true">${ic(w.cenario[1])}</span>
         <div class="regiao"><div class="regiao-placa"><span class="chip">${ic(w.icone)}Mundo ${wi + 1}</span><h2>${esc(w.nome)}</h2><p>${esc(w.desc)}</p></div></div>
         ${paradas}
@@ -252,12 +269,38 @@
           <div class="cartao-stat"><span class="ic-grande ic-ouro">${ic("lightning-duotone")}</span><div style="flex:1"><b>Nível ${nv.n}</b><small>${xp} XP · faltam ${100 - nv.resto} para o nível ${nv.n + 1}</small><div class="barrinha" style="--cv:var(--ouro)"><i style="width:${nv.resto}%"></i></div></div></div>
         </div>
       </section>
+      <nav class="mundos-nav" aria-label="Ir para um mundo">${MUNDOS.map((w, wi) => {
+        const ms = w.siglas.map((s) => POR_SIGLA[s]);
+        const dd = ms.reduce((a, mm) => a + dominados(mm), 0), nn = ms.reduce((a, mm) => a + mm.modulos.length, 0);
+        const atual = w.siglas.includes(aqui.sigla);
+        return `<button type="button" class="mundo-chip${atual ? " atual" : ""}${dd === nn ? " feito" : ""}" data-mundo="${wi}" style="--cv:var(--mv-${w.siglas[0]})">${ic(dd === nn ? "check-circle-duotone" : w.icone)}<span><b>${wi + 1}. ${esc(w.nome)}</b><small>${dd}/${nn} módulos</small></span></button>`;
+      }).join("")}</nav>
       <div class="mundo" id="mundo">
         <svg class="estrada" aria-hidden="true"></svg>
         ${zonas}
         <div class="fim-jornada"><span class="trofeu">${ic("trophy-duotone")}</span><b>Fim da jornada</b><small>${TOTAL} módulos, ${ORDEM.filter((c) => MODULO[c].mod.virada).length} pontos de virada</small></div>
       </div>`;
-    estrada(document.getElementById("mundo"), ".no", iAqui, true);
+    const mundoEl = document.getElementById("mundo");
+    estrada(mundoEl, ".no", iAqui, true);
+    // os mundos entram na tela conforme você rola; a barra de mundos acompanha onde você está
+    if ("IntersectionObserver" in window) {
+      if (!semMovimento()) {
+        mundoEl.classList.add("rev");
+        const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" });
+        mundoEl.querySelectorAll(".parada, .regiao, .fim-jornada").forEach((el) => io.observe(el));
+        observadores.push(io);
+      }
+      const chips = [...document.querySelectorAll(".mundo-chip")];
+      const io2 = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        chips.forEach((c) => c.classList.toggle("atual", c.dataset.mundo === e.target.id.replace("mundo-", "")));
+      }), { rootMargin: "-35% 0px -60% 0px" });
+      mundoEl.querySelectorAll(".zona").forEach((z) => io2.observe(z));
+      observadores.push(io2);
+    }
+    document.querySelectorAll(".mundo-chip").forEach((c) => c.addEventListener("click", () => {
+      document.getElementById("mundo-" + c.dataset.mundo).scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "start" });
+    }));
     teclas = (e) => { if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click(); };
   }
 
@@ -318,7 +361,7 @@
       const kk = ONDA_MOD[k % ONDA_MOD.length];
       const miolo = est === "dominado" ? ic("check-bold") : est === "rever" ? ic("arrow-counter-clockwise-bold") : mod === prox ? ic("play-bold") : k + 1;
       const rotulo = est === "dominado" ? "dominado" : est === "rever" ? "rever" : mod === prox ? "próximo" : "";
-      return `<div class="etapa ${classe} ${kk <= 0 ? "lado-esq" : "lado-dir"}${mod.virada ? " virada" : ""}" style="--k:${kk}" data-cod="${mod.codigo}">
+      return `<div class="etapa ${classe} ${kk <= 0 ? "lado-esq" : "lado-dir"}${mod.virada ? " virada" : ""}" style="--k:${kk};--n:${k}" data-cod="${mod.codigo}">
         ${mod === prox && est !== "dominado" ? `<span class="comece-aqui">${d0(m) ? "continue aqui" : "comece aqui"}</span>` : ""}
         <button type="button" class="no-mod" aria-expanded="false" aria-controls="cascata" aria-label="Módulo ${k + 1}: ${esc(mod.nome)}${rotulo ? ", " + rotulo : ""}${mod.virada ? ", ponto de virada" : ""}">${miolo}${mod.virada ? `<span class="raio-virada">${ic("lightning-duotone")}</span>` : ""}</button>
         <span class="etapa-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} conceitos${mod.virada ? " · ponto de virada" : ""}${rotulo ? " · " + rotulo : ""}</small></span>
@@ -532,7 +575,7 @@
       <div class="cuidado" ${iv()}><span class="ic-a">${ic("warning-duotone")}</span><p class="glossavel">${esc(mod.tropeco)}</p></div>
       <div class="fala" ${iv()}>${mascote("pensa")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
     if (p === 4) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
-      <p class="texto-grande" ${iv()}>${esc(mod.pergunta)}</p>
+      <div class="fala" ${iv()}>${mascote("pensa", "flutua")}<p class="balao cor texto-grande">${esc(mod.pergunta)}</p></div>
       <label class="resposta-campo" ${iv()}><span>Escreva a sua resposta antes de ver a nossa</span><textarea id="resp" rows="4"></textarea></label>
       <div class="botoes-j" ${iv()}><button type="button" class="btn btn-3d" data-comparar disabled>${ic("check-bold")}Comparar com a resposta</button><button type="button" class="btn" data-naosei>Ainda não sei</button></div>
       <div data-resposta hidden></div>`;
@@ -585,6 +628,8 @@
     const comparar = document.querySelector("[data-comparar]");
     const caixa = document.querySelector("[data-resposta]");
     const mostrar = (podeAcertar) => {
+      const pf = document.querySelector(".cartao-passo .mascote");
+      if (pf) pf.innerHTML = window.MASCOTE[podeAcertar ? "explica" : "padrao"].replace(/viewboxMask/g, "vmx");
       caixa.hidden = false;
       caixa.innerHTML = `<div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div>
         <div class="botoes-j" style="margin-top:14px">${podeAcertar ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Acertei: dominar módulo</button>` : ""}<button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Ainda não: rever os conceitos</button></div>`;
@@ -613,7 +658,7 @@
     el.setAttribute("aria-label", "Módulo dominado");
     el.style.cssText = coresDe(m.sigla);
     el.innerHTML = `<div class="vitoria-cartao">
-      ${mascote("feliz")}
+      ${mascote(fimMateria ? "uau" : "feliz")}
       <h2>${fimMateria ? "Matéria concluída!" : "Módulo dominado!"}</h2>
       <span class="ganho-xp">${ic("lightning-duotone")}<span>+<span data-xp>0</span> XP</span></span>
       <p>${jaEra ? "Revisão feita. " : ""}Nível ${depois.n} · ${depois.resto} de 100 XP${depois.n > antes ? ". Você subiu de nível!" : ""}</p>
@@ -772,6 +817,7 @@
     const r = rota();
     esconderBalao();
     if (observador) { observador.disconnect(); observador = null; }
+    observadores.splice(0).forEach((o) => o.disconnect());
     clearTimeout(autoAvanco);
     document.querySelectorAll(".vitoria").forEach((v) => v.remove());
     desenharHud();

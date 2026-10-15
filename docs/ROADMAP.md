@@ -190,7 +190,9 @@ A apostila estática (`apostila/`, publicada como artefato) virou um jogo no est
 - **Matéria:** a jornada dos módulos em ziguezague; ao tocar num módulo, ele abre em cascata (o que ensina, conceitos, pré-requisitos, XP) e o resto recua. "Como funciona" virou subtópicos em sanfona, um aberto por vez, com contagem dos já vistos.
 - **Clipes:** 8 vídeos curtos animados com GSAP (frete, variáveis, bits, consulta SQL, pilha e fila, busca binária, média e mediana, sobreajuste), com legenda, barra de tempo e velocidade; com movimento reduzido, viram quadros.
 - **Lição em tela cheia:** 5 passos com barra segmentada, balões do glossário (96 termos), cartão de vitória com confete e avanço automático. XP, nível e ofensiva saem do progresso salvo.
-- Testes: capturas em 1366 e 390 px, claro e escuro, com movimento reduzido; nenhuma tela transborda e nenhum erro de página.
+- **Panda estudante (14/10/2026):** o mascote Dado virou um panda com capelo, óculos e blusão na cor da matéria, neutro de gênero, com cinco expressões (padrão, explica, feliz, uau, pensa). Pisca, balança a borla do capelo, acena quando explica e comenta os clipes ao lado da legenda.
+- **Refino de movimento e organização:** barra de mundos fixa no mapa (pula para o mundo e acompanha a rolagem), mundos e paradas que entram conforme a rolagem, números do topo que sobem, clipes com marcas de capítulo na barra de tempo.
+- Testes: capturas em 1366 e 390 px, claro e escuro, com movimento reduzido; nenhuma tela transborda (inclui os 5 passos da lição) e nenhum erro de página.
 
 ---
 

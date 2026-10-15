@@ -398,16 +398,16 @@
     el.innerHTML = `
       <div class="clipe-tela">
         <svg viewBox="0 0 640 360" role="img" aria-label="${clipe.titulo}">${DEFS}${clipe.svg}</svg>
-        <p class="clipe-legenda" aria-live="polite"></p>
         <button type="button" class="clipe-capa">
           <span class="clipe-play-grande">${ic("play-duotone")}</span>
           <b>${clipe.titulo}</b>
           <small>${mmss(clipe.fim)} · ${quadros ? "quadro a quadro" : "animação com legenda"}</small>
         </button>
       </div>
+      <div class="clipe-fala"><span class="clipe-panda" aria-hidden="true">${window.MASCOTE ? window.MASCOTE.explica : ""}</span><p class="clipe-legenda" aria-live="polite"></p></div>
       <div class="clipe-controles">
         <button type="button" class="clipe-botao" data-tocar aria-label="${quadros ? "Próximo quadro" : "Reproduzir"}">${ic(quadros ? "arrow-right-bold" : "play-bold")}</button>
-        <input type="range" min="0" max="1000" value="0" step="1" aria-label="Posição no clipe" class="clipe-barra">
+        <div class="clipe-trilho"><input type="range" min="0" max="1000" value="0" step="1" aria-label="Posição no clipe" class="clipe-barra">${clipe.legendas.slice(1).map(([t]) => `<i style="left:${(t / clipe.fim) * 100}%"></i>`).join("")}</div>
         <span class="clipe-tempo">0:00 / ${mmss(clipe.fim)}</span>
         <button type="button" class="clipe-botao" data-velocidade aria-label="Velocidade">1x</button>
         <button type="button" class="clipe-botao" data-recomecar aria-label="Recomeçar">${ic("arrow-counter-clockwise-bold")}</button>
