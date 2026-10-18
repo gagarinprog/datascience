@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comece por aqui · A lista de aprovados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+</head>
+<body>
+<div class="casca">
+  <nav class="lateral" aria-label="Conceitos da lição">
+    <div class="marca"><b>Comece por aqui</b><span>Antes do Módulo 1 · A lista de aprovados</span></div>
+    <a href="../index.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar ao mapa</a>
+    <div class="grupo">Conceitos</div>
+    <a href="#c1" data-conceito="c1"><span class="n">01</span>Tabela, linha e coluna</a>
+    <a href="#c2" data-conceito="c2"><span class="n">02</span>Filtrar com uma regra</a>
+    <a href="#c3" data-conceito="c3"><span class="n">03</span>Tipos de variável</a>
+    <a href="#c4" data-conceito="c4"><span class="n">04</span>Ordenar e desempatar</a>
+    <a href="#c5" data-conceito="c5"><span class="n">05</span>Resumir: média e gráfico</a>
+    <a href="#td" data-conceito="td"><span class="n">TD</span>Mini-projeto</a>
+    <div class="grupo">Depois desta lição</div>
+    <a href="LOG.01.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 14 0"/><path d="m12 5 7 7-7 7"/></svg></span>Módulo 1 · Algoritmo</a>
+  </nav>
+
+  <main class="conteudo">
+    <div class="coluna">
+      <header class="bloco">
+        <p class="sobretitulo">Comece por aqui · lição de abertura</p>
+        <h1 class="titulo-pagina">A lista de aprovados</h1>
+        <p class="lede">Você já leu listas de aprovados de concurso. Sem perceber, você já fez o que a ciência de dados faz: olhou uma tabela, procurou seu nome, comparou notas e conferiu a nota de corte. Nesta lição, vamos dar nome a cada um desses gestos, com animações para você ver acontecendo.</p>
+        <p class="simples"><b>Como usar esta página</b>Um conceito por vez. Em cada um: primeiro o desafio (pode errar, faz parte), depois a explicação em palavras simples, a animação, um exemplo resolvido e exercícios. Nas animações, use <b>Tocar</b> ou avance no seu ritmo com <b>Passo</b>.</p>
+        <p class="ficticio">Todos os nomes, cargos e notas desta lição são inventados. A nota de corte, as vagas e o desempate também: são regras fictícias de um edital que não existe.</p>
+        <p class="sobretitulo">5 conceitos e um mini-projeto · um passo por vez: termine os exercícios para avançar</p>
+        <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
+      </header>
+      <nav class="passos-barra passos-licao" id="passos-licao" aria-label="Passos da lição"></nav>
+
+      <!-- 1 -->
+      <section class="secao" id="c1">
+        <p class="rotulo">Conceito 1 de 5</p>
+        <h2>Tabela, linha e coluna</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">Numa tabela com a lista de candidatos, cada linha representa:</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Uma pessoa, com tudo o que sabemos sobre ela</button>
+            <button class="botao" type="button">Uma característica, como a nota da prova</button>
+            <button class="botao" type="button">Um resumo de todos os candidatos</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Cada linha é um caso observado: uma pessoa, com todos os dados dela lado a lado." data-nao-texto="Cada linha é uma pessoa (um caso observado). As características, como a nota, ficam nas colunas. Resumos, como a média, não são linhas da tabela original: são calculados depois."></div>
+        </div>
+
+        <h3>A ideia, em palavras simples</h3>
+        <p class="simples"><b>Em palavras simples</b>Um <b>dado</b> é qualquer informação registrada: um nome, um cargo, uma nota. Sozinho, um dado diz pouco. Organizado numa <b>tabela</b>, ele começa a contar uma história.</p>
+        <div class="prosa">
+          <p>A tabela tem só duas direções. Na horizontal ficam as <strong>linhas</strong>: cada uma é uma <strong>observação</strong>, isto é, uma pessoa (ou coisa, ou acontecimento) que foi observada. Na vertical ficam as <strong>colunas</strong>: cada uma é uma <strong>variável</strong>, isto é, uma característica que anotamos sobre todos.</p>
+          <p>O nome “variável” vem do fato de o valor <em>variar</em> de pessoa para pessoa: a nota da Carla é uma, a do Bruno é outra.</p>
+        </div>
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>A sua planilha de controle de estudos já é uma tabela. Cada linha é um dia de estudo (observação). Cada coluna é algo que você anota: matéria, horas, questões feitas, acertos (variáveis).</p>
+        <figure data-clip="tabela" style="--alt: 340px">
+          <figcaption>Uma lista de candidatos organizada em tabela. Repare nos três nomes importantes: linha, coluna e célula.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: transformar uma frase numa linha da tabela</h3>
+        <p class="prosa" style="font-size:16.5px">A frase: <em>“Carla concorreu a Analista e fez 54 pontos na objetiva e 31 na discursiva.”</em></p>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Achar a observação: de quem estamos falando? De uma pessoa só, a Carla. Ela vai ocupar <strong>uma linha</strong>.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Achar as variáveis: o que se disse sobre ela? O cargo, a nota objetiva e a nota discursiva. Serão <strong>três colunas</strong> (mais a coluna do nome).</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Preencher a linha, na ordem das colunas.</p>
+            <table class="tabela"><thead><tr><th>Nome</th><th>Cargo</th><th>Objetiva</th><th>Discursiva</th></tr></thead><tbody><tr><td>Carla</td><td>Analista</td><td class="m">54</td><td class="m">31</td></tr></tbody></table></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Se agora entrar o candidato Hugo, o que a tabela ganha?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Uma linha nova, com as mesmas colunas</button>
+            <button class="botao" type="button">Uma coluna nova chamada Hugo</button>
+            <button class="botao" type="button">Nada: a tabela só aceita uma pessoa</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Mais uma pessoa observada é mais uma linha. As colunas continuam as mesmas, porque as características anotadas são as mesmas." data-nao-texto="Uma pessoa nova é uma observação nova, então ganha uma linha. As colunas (as características) não mudam só porque entrou mais gente."></div>
+        </div>
+
+        <h3>Pratique: linha ou coluna?</h3>
+        <div class="exercicio" data-classificar>
+          <p class="pergunta">Para cada item, diga se ele é uma observação (aparece como linha) ou uma variável (aparece como coluna).</p>
+          <div>
+            <div class="linha-classifica"><span>Bruno, um dos candidatos</span><select data-resposta="observacao" aria-label="Papel de: Bruno"><option value="">escolha</option><option value="observacao">observação (linha)</option><option value="variavel">variável (coluna)</option></select></div>
+            <div class="linha-classifica"><span>Cargo</span><select data-resposta="variavel" aria-label="Papel de: Cargo"><option value="">escolha</option><option value="observacao">observação (linha)</option><option value="variavel">variável (coluna)</option></select></div>
+            <div class="linha-classifica"><span>Nota da discursiva</span><select data-resposta="variavel" aria-label="Papel de: nota da discursiva"><option value="">escolha</option><option value="observacao">observação (linha)</option><option value="variavel">variável (coluna)</option></select></div>
+            <div class="linha-classifica"><span>Hugo, outro candidato</span><select data-resposta="observacao" aria-label="Papel de: Hugo"><option value="">escolha</option><option value="observacao">observação (linha)</option><option value="variavel">variável (coluna)</option></select></div>
+            <div class="linha-classifica"><span>Nota da objetiva</span><select data-resposta="variavel" aria-label="Papel de: nota da objetiva"><option value="">escolha</option><option value="observacao">observação (linha)</option><option value="variavel">variável (coluna)</option></select></div>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Pessoas são observações (linhas); as coisas que anotamos sobre elas são variáveis (colunas)." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: isso é alguém sobre quem anotamos coisas (linha) ou é uma coisa que anotamos sobre todos (coluna)?"></div>
+        </div>
+        <div class="exercicio" data-escolha>
+          <p class="pergunta">Na tabela da animação, quantas variáveis existem, sem contar o nome?</p>
+          <div class="opcoes"><button class="botao" type="button">2</button><button class="botao" type="button" data-ok>3</button><button class="botao" type="button">8</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso: cargo, objetiva e discursiva. O 8 é o número de observações (candidatos), que são as linhas." data-nao-texto="São 3 variáveis: cargo, objetiva e discursiva. O número 8 conta as linhas, ou seja, as observações (os candidatos)."></div>
+        </div>
+
+        <p class="resumo"><b>Resumo em uma frase</b>Tabela é um quadro em que cada linha é uma observação e cada coluna é uma variável.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, a diferença entre uma linha e uma coluna. Use a sua planilha de estudos como exemplo.</p>
+        <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 2 -->
+      <section class="secao" id="c2">
+        <p class="rotulo">Conceito 2 de 5</p>
+        <h2>Filtrar com uma regra</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Filtrar uma tabela é:</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Manter só as linhas que atendem a uma regra</button>
+            <button class="botao" type="button">Trocar os valores por outros mais bonitos</button>
+            <button class="botao" type="button">Somar todas as linhas</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Filtrar não muda nenhum valor: só escolhe quais linhas ficam à vista." data-nao-texto="Filtrar é manter só as linhas que atendem a uma regra (por exemplo, total ≥ 70). Os valores continuam como estavam; só quem não atende sai da vista."></div>
+        </div>
+
+        <h3>A ideia, em palavras simples</h3>
+        <p class="simples"><b>Em palavras simples</b>Dado é o que foi registrado. <b>Informação</b> é o que você descobre quando faz uma <b>pergunta</b> aos dados. “Quantos passaram?” é uma pergunta; “5” é a informação.</p>
+        <div class="prosa">
+          <p>Para responder “quantos passaram?”, você precisa de uma <strong>regra</strong>: a nota de corte. O edital diz que passa quem tem total maior ou igual a 70. Aplicar essa regra a cada linha, uma por uma, e ficar só com as que respondem “sim” é <strong>filtrar</strong>.</p>
+          <p>Repare que o edital funciona como um <strong>algoritmo</strong>: recebe os dados (entrada), aplica regras (processamento) e entrega uma lista (saída). Você vai estudar exatamente isso no Módulo 1.</p>
+        </div>
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>Quando você pede ao seu caderno de questões “mostre só as que errei em Direito Administrativo”, está filtrando: duas regras (errou = sim, matéria = D. Adm.) aplicadas a cada linha.</p>
+        <figure data-clip="funil" style="--alt: 360px">
+          <figcaption>A nota de corte aplicada aos 8 candidatos. Cada candidato mostra o nome e a nota total.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: quantos passaram da nota de corte (70)?</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Criar o que falta: a nota total. Para cada pessoa, objetiva + discursiva. Ana: 48 + 30 = 78. Ter calculado uma coluna nova a partir de outras é comum em dados; ela se chama <strong>variável derivada</strong>.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Aplicar a regra a cada linha: total ≥ 70? Ana 78 sim; Bruno 67 não; Carla 85 sim; Diego 73 sim; Elisa 66 não; Felipe 84 sim; Gabriela 73 sim; Hugo 58 não.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Contar os “sim”: Ana, Carla, Diego, Felipe e Gabriela. A resposta é <strong>5</strong>.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o Bruno (total 67) ficou de fora?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque 67 é menor que 70, então a resposta da regra foi “não”</button>
+            <button class="botao" type="button">Porque ele é Técnico</button>
+            <button class="botao" type="button">Porque o nome dele vem depois do da Ana</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. A regra olha só a coluna total. O cargo e o nome não entraram nessa decisão." data-nao-texto="A regra do corte olha só para a coluna total. 67 não é maior nem igual a 70, então o Bruno fica de fora. Cargo e nome não entram nessa regra."></div>
+        </div>
+
+        <h3>Pratique: filtre você mesmo</h3>
+        <div class="exercicio" data-preencher>
+          <p class="pergunta">Use esta tabela com as notas totais. Escreva só o número.</p>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>Nome</th><th>Cargo</th><th>Total</th></tr></thead><tbody>
+            <tr><td>Ana</td><td>Analista</td><td class="m">78</td></tr><tr><td>Bruno</td><td>Técnico</td><td class="m">67</td></tr>
+            <tr><td>Carla</td><td>Analista</td><td class="m">85</td></tr><tr><td>Diego</td><td>Técnico</td><td class="m">73</td></tr>
+            <tr><td>Elisa</td><td>Analista</td><td class="m">66</td></tr><tr><td>Felipe</td><td>Técnico</td><td class="m">84</td></tr>
+            <tr><td>Gabriela</td><td>Analista</td><td class="m">73</td></tr><tr><td>Hugo</td><td>Técnico</td><td class="m">58</td></tr>
+          </tbody></table>
+          </div>
+          <div class="linha-classifica"><span>Quantos têm total maior ou igual a 70?</span><input data-resposta="5" inputmode="numeric" aria-label="Quantos passaram do corte"></div>
+          <div class="linha-classifica"><span>Desses, quantos são Técnicos? (duas regras juntas)</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos técnicos passaram"></div>
+          <div class="linha-classifica"><span>Se o corte subisse para 80, quantos passariam?</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos passariam com corte 80"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. 5 passam do corte 70; entre eles, Diego e Felipe são Técnicos; com corte 80 só Carla (85) e Felipe (84) passam." data-nao-texto="Confira os campos em vermelho. Passe a regra linha por linha: total ≥ 70 (Ana, Carla, Diego, Felipe e Gabriela). Depois olhe o cargo de cada um. Para o corte de 80, só valem os totais de 80 para cima."></div>
+        </div>
+
+        <p class="resumo"><b>Resumo em uma frase</b>Filtrar é perguntar “esta linha atende à regra?” para cada linha e ficar só com as que respondem sim.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> qual é a diferença entre dado e informação? Use a nota de corte como exemplo.</p>
+        <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 3 -->
+      <section class="secao" id="c3">
+        <p class="rotulo">Conceito 3 de 5</p>
+        <h2>Tipos de variável</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">A variável Cargo (Analista ou Técnico) é uma variável de:</p>
+          <div class="opcoes"><button class="botao" type="button">Número</button><button class="botao" type="button" data-ok>Categoria</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Cargo é um rótulo que separa as pessoas em grupos; não faz sentido somar cargos." data-nao-texto="Cargo é uma categoria: um rótulo que separa as pessoas em grupos. Não faz sentido somar “Analista” com “Técnico”."></div>
+        </div>
+
+        <h3>A ideia, em palavras simples</h3>
+        <p class="simples"><b>Em palavras simples</b>Nem toda coluna é número. O <b>tipo</b> da variável decide o que você pode fazer com ela: tirar a média de notas faz sentido; tirar a média de cargos, não.</p>
+        <div class="prosa">
+          <p>Há três tipos que você vai ver o tempo todo. <strong>Número</strong>: dá para somar e tirar média (notas, horas, preços). <strong>Categoria</strong>: um rótulo que separa em grupos; dá para contar quantos há de cada (cargo, cidade, aprovado ou reprovado). <strong>Ordem</strong>: o que importa é quem vem primeiro (1º, 2º, 3º lugar).</p>
+          <p>O truque para não errar: faça a pergunta <em>“dá para somar ou tirar a média disso?”</em>. Se sim, é número. Se for um rótulo, é categoria. Se parece número mas somar não faz sentido, é ordem.</p>
+        </div>
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>No seu planner: horas estudadas é número; matéria é categoria; prioridade (1ª, 2ª, 3ª matéria da semana) é ordem.</p>
+        <figure data-clip="caixas" style="--alt: 330px">
+          <figcaption>As seis colunas da tabela de aprovados, separadas pelo tipo. Três delas (total, situação e posição) foram calculadas a partir das outras.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: decidir o tipo da coluna “Situação”</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Olhar os valores que ela assume: “aprovado” e “reprovado”.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Fazer a pergunta: dá para somar ou tirar a média disso? Somar “aprovado” com “reprovado” não faz sentido.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Concluir: é uma <strong>categoria</strong>. O que dá para fazer é contar: 5 aprovados e 3 reprovados.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que a pergunta “dá para somar ou tirar a média?” ajuda?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque o que podemos fazer com uma coluna depende do tipo dela</button>
+            <button class="botao" type="button">Porque toda coluna precisa ser somada</button>
+            <button class="botao" type="button">Porque categorias são sempre números escondidos</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. O tipo decide as contas e os gráficos que fazem sentido. Errar o tipo leva a contas sem sentido." data-nao-texto="O tipo da variável decide o que dá para fazer com ela. Número aceita soma e média; categoria aceita contagem; ordem aceita comparar quem vem antes."></div>
+        </div>
+
+        <h3>Pratique: qual é o tipo?</h3>
+        <div class="exercicio" data-classificar>
+          <p class="pergunta">Escolha o tipo de cada coluna.</p>
+          <div>
+            <div class="linha-classifica"><span>Objetiva (pontos)</span><select data-resposta="numero" aria-label="Tipo de: objetiva"><option value="">escolha</option><option value="numero">número</option><option value="categoria">categoria</option><option value="ordem">ordem</option></select></div>
+            <div class="linha-classifica"><span>Cargo</span><select data-resposta="categoria" aria-label="Tipo de: cargo"><option value="">escolha</option><option value="numero">número</option><option value="categoria">categoria</option><option value="ordem">ordem</option></select></div>
+            <div class="linha-classifica"><span>Situação (aprovado ou reprovado)</span><select data-resposta="categoria" aria-label="Tipo de: situação"><option value="">escolha</option><option value="numero">número</option><option value="categoria">categoria</option><option value="ordem">ordem</option></select></div>
+            <div class="linha-classifica"><span>Posição (1º, 2º, 3º…)</span><select data-resposta="ordem" aria-label="Tipo de: posição"><option value="">escolha</option><option value="numero">número</option><option value="categoria">categoria</option><option value="ordem">ordem</option></select></div>
+            <div class="linha-classifica"><span>Total (objetiva + discursiva)</span><select data-resposta="numero" aria-label="Tipo de: total"><option value="">escolha</option><option value="numero">número</option><option value="categoria">categoria</option><option value="ordem">ordem</option></select></div>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Repare que posição parece número, mas somar posições não diz nada: por isso é ordem." data-nao-texto="Os campos em vermelho estão trocados. Faça a pergunta: dá para somar ou tirar a média? Se sim, é número. Se é só um rótulo, categoria. Se importa quem vem antes, ordem."></div>
+        </div>
+        <div class="exercicio" data-escolha>
+          <p class="pergunta">Qual destas contas faz sentido?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>A média das notas totais</button>
+            <button class="botao" type="button">A média dos cargos</button>
+            <button class="botao" type="button">A soma das posições no ranking</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. Nota total é número, e a média de números faz sentido." data-nao-texto="Só a média das notas totais faz sentido, porque nota é número. Cargo é categoria (só dá para contar) e posição é ordem (somar não diz nada)."></div>
+        </div>
+
+        <p class="resumo"><b>Resumo em uma frase</b>Número aceita conta, categoria aceita contagem e ordem aceita comparação de quem vem antes.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que o tipo da variável importa antes de fazer qualquer conta.</p>
+        <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="secao" id="c4">
+        <p class="rotulo">Conceito 4 de 5</p>
+        <h2>Ordenar e desempatar</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Ordenar a tabela pelas notas muda as notas das pessoas.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Ordenar só muda a ordem das linhas. Os valores continuam iguais." data-nao-texto="O gabarito é Errado. Ordenar só muda a ordem em que as linhas aparecem; nenhum valor é alterado."></div>
+        </div>
+
+        <h3>A ideia, em palavras simples</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Ordenar</b> é colocar as linhas em fila usando uma coluna como critério. <b>Desempatar</b> é ter uma segunda regra para quando duas linhas empatam na primeira.</p>
+        <div class="prosa">
+          <p>Em concurso, ordenar é o que gera a classificação: do maior total para o menor. Mas e se dois candidatos têm o mesmo total? O edital traz um <strong>critério de desempate</strong>. Neste edital fictício: vence quem tiver a maior nota na prova objetiva.</p>
+          <p>Escrito como passos, a regra fica assim:</p>
+          <pre>ordenar por total (maior primeiro)
+se dois candidatos empatam no total então
+  fica na frente quem tem a maior objetiva
+fimse</pre>
+          <p>Isso já é um pseudocódigo, com uma decisão (<code>se ... então</code>) dentro. É o mesmo tipo de raciocínio do Módulo 1.</p>
+        </div>
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>Ao montar o seu cronograma, você ordena as matérias por peso na prova. Se duas têm o mesmo peso, você desempata por onde está mais fraco. Mesma ideia: um critério, e outro para quando empata.</p>
+        <figure data-clip="ranking" style="--alt: 350px">
+          <figcaption>Do cadastro em ordem alfabética até a classificação final. O empate entre Diego e Gabriela é resolvido pela nota objetiva.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: quem fica em 4º, Diego ou Gabriela?</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Comparar pelo critério principal: total. Diego 73 e Gabriela 73. Empate.</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Aplicar o desempate: nota objetiva. Diego 45, Gabriela 44. Diego tem a maior.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Concluir: Diego em 4º, Gabriela em 5ª.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o desempate só foi usado para Diego e Gabriela?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque só os dois tinham o mesmo total; para os outros, o total já bastava</button>
+            <button class="botao" type="button">Porque o desempate vale só para Técnicos</button>
+            <button class="botao" type="button">Porque a objetiva importa mais que o total</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. A segunda regra só entra quando a primeira não resolve." data-nao-texto="O desempate é uma segunda regra: só entra quando o critério principal (o total) deixa duas pessoas empatadas. Só Diego e Gabriela estavam nessa situação."></div>
+        </div>
+
+        <h3>Pratique</h3>
+        <div class="exercicio" data-escolha>
+          <p class="pergunta">Suponha que a Gabriela tivesse 46 na objetiva e 27 na discursiva (o total continuaria 73). Quem ficaria em 4º?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button">Diego, porque ele está antes na lista</button>
+            <button class="botao" type="button" data-ok>Gabriela, porque 46 é maior que 45 na objetiva</button>
+            <button class="botao" type="button">Continuaria empatado, sem solução</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. O total empata de novo (73), e o desempate pela objetiva agora favorece a Gabriela: 46 contra 45." data-nao-texto="Totais iguais, então vale o desempate: maior objetiva. Com 46 contra 45, a Gabriela passa na frente. A posição na lista de inscrição não conta."></div>
+        </div>
+        <div class="exercicio" data-ordenar data-resposta="ler objetiva|ler discursiva|total ← objetiva + discursiva|ordenar por total, maior primeiro">
+          <p class="pergunta">Monte, na ordem certa, os passos para gerar a classificação. Clique nas linhas na ordem em que devem acontecer; clique de novo para devolver.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">ordenar por total, maior primeiro</button>
+            <button class="botao linha" type="button">total ← objetiva + discursiva</button>
+            <button class="botao linha" type="button">ler discursiva</button>
+            <button class="botao linha" type="button">ler objetiva</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. As duas leituras vêm primeiro (a ordem entre elas tanto faz), depois a conta do total, e só então dá para ordenar por ele." data-nao-texto="Ainda não. Pergunte para cada linha: ela usa algo que outra linha prepara? Ordenar por total só dá certo depois que o total existe, e o total precisa das duas notas lidas."></div>
+        </div>
+
+        <p class="resumo"><b>Resumo em uma frase</b>Ordenar põe as linhas em fila por uma coluna; o desempate é a segunda regra para quando a primeira empata.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> o que muda e o que não muda numa tabela quando você a ordena.</p>
+        <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 5 -->
+      <section class="secao" id="c5">
+        <p class="rotulo">Conceito 5 de 5</p>
+        <h2>Resumir: média e gráfico</h2>
+
+        <div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Se a média das notas é 73, então todo candidato tirou perto de 73.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A média é um resumo e pode esconder diferenças: aqui as notas vão de 58 a 85." data-nao-texto="O gabarito é Errado. A média resume, mas esconde a variação. Com média 73, há candidato com 58 e candidato com 85."></div>
+        </div>
+
+        <h3>A ideia, em palavras simples</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Média</b> é o valor que cada um teria se todos tivessem tirado a mesma nota e o total fosse o mesmo: some tudo e divida pela quantidade.</p>
+        <div class="prosa">
+          <p>Resumir é trocar muitas linhas por poucos números que contam o essencial. Os mais usados: a <strong>contagem</strong> (quantos), a <strong>média</strong>, o <strong>máximo</strong> e o <strong>mínimo</strong>. Aqui o máximo é 85, o mínimo é 58 e a média é 73.</p>
+          <p>Já o <strong>gráfico de barras</strong> resume com os olhos: uma barra por observação, e dá para comparar de relance quem está acima e quem está abaixo. Um bom hábito é olhar o gráfico <em>e</em> a média, porque um completa o outro.</p>
+        </div>
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>A média do semestre na faculdade é a mesma conta: soma das notas dividida pela quantidade de provas. E o seu percentual de acertos nos simulados é uma média também.</p>
+        <figure data-clip="barras" style="--alt: 330px">
+          <figcaption>Oito notas totais, a soma, a média e quem está acima ou abaixo dela.</figcaption>
+        </figure>
+
+        <h3>Exemplo resolvido: a média dos Técnicos</h3>
+        <ol class="subobjetivos">
+          <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Filtrar: ficar só com as linhas de cargo Técnico. São Bruno (67), Diego (73), Felipe (84) e Hugo (58).</p></div></li>
+          <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Somar: 67 + 73 + 84 + 58 = 282.</p></div></li>
+          <li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Dividir pela quantidade de linhas filtradas: 282 ÷ 4 = <strong>70,5</strong>.</p></div></li>
+        </ol>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que dividimos por 4, e não por 8?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Porque a conta usa só as 4 linhas que sobraram depois do filtro</button>
+            <button class="botao" type="button">Porque 8 é um número grande demais</button>
+            <button class="botao" type="button">Porque dividimos sempre por 4</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. A divisão é sempre pela quantidade de linhas que entraram na soma." data-nao-texto="Dividimos pela quantidade de linhas que entraram na soma. Depois do filtro por Técnico, restaram 4 linhas, então a divisão é por 4."></div>
+        </div>
+
+        <h3>Pratique</h3>
+        <div class="exercicio" data-preencher>
+          <p class="pergunta">Com a mesma tabela de totais, calcule. Use ponto como separador decimal, como no computador.</p>
+          <div class="linha-classifica"><span>Média dos totais dos Analistas (Ana 78, Carla 85, Elisa 66, Gabriela 73)</span><input data-resposta="75.5" inputmode="decimal" aria-label="Média dos Analistas"></div>
+          <div class="linha-classifica"><span>Maior total menos o menor total (85 e 58)</span><input data-resposta="27" inputmode="numeric" aria-label="Diferença entre maior e menor"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. Analistas: (78 + 85 + 66 + 73) ÷ 4 = 302 ÷ 4 = 75,5. E 85 − 58 = 27, que mostra o quanto as notas se espalham." data-nao-texto="Confira os campos em vermelho. Para a média: some as quatro notas e divida por 4. Para a diferença: maior menos menor, 85 − 58."></div>
+        </div>
+        <div class="exercicio" data-escolha>
+          <p class="pergunta">A média dos Analistas é 75,5 e a dos Técnicos é 70,5. O que podemos dizer?</p>
+          <div class="opcoes coluna-opcoes">
+            <button class="botao" type="button" data-ok>Em média, os Analistas foram melhor, mas há Técnicos que superaram Analistas</button>
+            <button class="botao" type="button">Todo Analista foi melhor que todo Técnico</button>
+            <button class="botao" type="button">Não dá para comparar os cargos</button>
+          </div>
+          <div class="retorno" hidden data-ok-texto="Isso. A média compara os grupos, mas não vale para cada pessoa: o Felipe (Técnico, 84) superou a Ana (Analista, 78)." data-nao-texto="A média compara grupos, não pessoas. Felipe (Técnico, 84) foi melhor que Ana (Analista, 78), então “todo Analista foi melhor” é falso. E comparar grupos por média é justamente possível."></div>
+        </div>
+
+        <p class="resumo"><b>Resumo em uma frase</b>Média, contagem, máximo e mínimo resumem muitas linhas em poucos números; o gráfico resume com os olhos, e os dois se completam.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que a média sozinha pode esconder informação importante.</p>
+        <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- TD -->
+      <section class="secao" id="td">
+        <p class="rotulo">Mini-projeto de fechamento</p>
+        <h2>Seu primeiro projeto de dados</h2>
+        <div class="prosa">
+          <p>Você acaba de usar, sem perceber, as cinco peças de qualquer projeto de dados: tabela, filtro, tipos, ordenação e resumo. A animação abaixo mostra como elas se encaixam em <strong>entrada, processamento e saída</strong>.</p>
+        </div>
+        <figure data-clip="projeto" style="--alt: 250px">
+          <figcaption>As cinco peças que você aprendeu, encaixadas no desenho de qualquer algoritmo.</figcaption>
+        </figure>
+        <div class="prosa">
+          <p><strong>Sem olhar as seções acima</strong>, faça no papel, com a tabela abaixo (nomes e notas inventados):</p>
+          <p><strong>1.</strong> Acrescente a coluna <em>total</em>. <strong>2.</strong> Marque quem tem total ≥ 70. <strong>3.</strong> Escreva a classificação dos aprovados, com o desempate pela objetiva. <strong>4.</strong> Calcule a média geral do total.</p>
+        </div>
+        <div class="rolagem">
+        <table class="tabela"><thead><tr><th>Nome</th><th>Cargo</th><th>Objetiva</th><th>Discursiva</th></tr></thead><tbody>
+          <tr><td>Ana</td><td>Analista</td><td class="m">48</td><td class="m">30</td></tr><tr><td>Bruno</td><td>Técnico</td><td class="m">42</td><td class="m">25</td></tr>
+          <tr><td>Carla</td><td>Analista</td><td class="m">54</td><td class="m">31</td></tr><tr><td>Diego</td><td>Técnico</td><td class="m">45</td><td class="m">28</td></tr>
+          <tr><td>Elisa</td><td>Analista</td><td class="m">39</td><td class="m">27</td></tr><tr><td>Felipe</td><td>Técnico</td><td class="m">51</td><td class="m">33</td></tr>
+          <tr><td>Gabriela</td><td>Analista</td><td class="m">44</td><td class="m">29</td></tr><tr><td>Hugo</td><td>Técnico</td><td class="m">36</td><td class="m">22</td></tr>
+        </tbody></table>
+        </div>
+        <p class="explique">Quando terminar, confira abaixo. Se o seu resultado for diferente, refaça o passo em que as respostas começaram a divergir. É assim que se acha o erro.</p>
+        <details class="cartao">
+          <summary>Ver a resposta (só depois de tentar)</summary>
+          <p><strong>1. Totais:</strong> Ana 78, Bruno 67, Carla 85, Diego 73, Elisa 66, Felipe 84, Gabriela 73, Hugo 58.</p>
+          <p><strong>2. Passaram (≥ 70):</strong> Ana, Carla, Diego, Felipe e Gabriela. Ficaram de fora: Bruno, Elisa e Hugo.</p>
+          <p><strong>3. Classificação:</strong> 1º Carla (85), 2º Felipe (84), 3ª Ana (78), 4º Diego (73, objetiva 45), 5ª Gabriela (73, objetiva 44).</p>
+          <p><strong>4. Média geral:</strong> 584 ÷ 8 = 73.</p>
+        </details>
+        <p class="simples"><b>Próximo passo</b>Você já sabe o que é entrada, processamento e saída, sem ter ouvido a palavra “algoritmo”. O Módulo 1 dá nome a isso e ensina a escrever esses passos com clareza, para qualquer pessoa ou máquina seguir.</p>
+        <div class="opcoes"><button class="botao" type="button" data-marcar="td">Marcar o mini-projeto como feito</button><a class="botao primario" href="LOG.01.html" style="text-decoration:none">Ir para o Módulo 1: Algoritmo</a></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="clip.js" charset="utf-8"></script>
+<script src="clipes-inicio.js" charset="utf-8"></script>
+<script>
+(function(){ window.Clip.iniciar(); })();
+(function () {
+
+  function mostrar(retorno, ok) {
+    retorno.hidden = false;
+    retorno.className = "retorno " + (ok ? "ok" : "nao");
+    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
+  }
+
+  document.querySelectorAll("[data-escolha]").forEach((ex) => {
+    const botoes = ex.querySelectorAll(".opcoes .botao");
+    botoes.forEach((b) => b.addEventListener("click", () => {
+      botoes.forEach((x) => {
+        x.disabled = true;
+        if (x.hasAttribute("data-ok")) x.classList.add("certo");
+      });
+      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
+      b.setAttribute("aria-pressed", "true");
+      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
+    }));
+  });
+
+  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
+
+  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      let tudo = true;
+      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
+        const aceitas = campo.dataset.resposta.split("|");
+        const ok = aceitas.includes(normalizar(campo.value));
+        campo.classList.toggle("ok", ok);
+        campo.classList.toggle("nao", !ok);
+        if (!ok) tudo = false;
+      });
+      mostrar(ex.querySelector(".retorno"), tudo);
+    });
+  });
+
+  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
+    const banco = ex.querySelector("[data-banco]");
+    const montagem = ex.querySelector("[data-montagem]");
+    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
+      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
+    }));
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
+      const certa = ex.dataset.resposta.split("|");
+      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
+      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
+      mostrar(ex.querySelector(".retorno"), ok);
+    });
+  });
+
+  const CHAVE = "dominio:licao:INICIO";
+  let feitos = [];
+  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
+  function pintar() {
+    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
+    document.querySelectorAll("[data-marcar]").forEach((b) => {
+      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
+    });
+  }
+  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
+    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
+    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
+    pintar();
+  }));
+  pintar();
+
+  const links = [...document.querySelectorAll("[data-conceito]")];
+  const obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
+
+  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
+  const secoes = [...document.querySelectorAll(".secao")];
+  const nomes = ["Tabela, linha e coluna", "Filtrar", "Tipos de variável", "Ordenar e desempatar", "Resumir", "Mini-projeto"];
+  const verTudo = document.getElementById("ver-tudo");
+  const barra = document.getElementById("passos-licao");
+  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
+  const feito = (ex) => {
+    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
+    const r = ex.querySelector(".retorno");
+    return !!r && r.classList.contains("ok");
+  };
+  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
+  secoes.forEach((s, i) => {
+    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
+    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
+    const prox = s.querySelector("[data-proximo]");
+    if (prox) prox.addEventListener("click", () => ir(i + 1));
+  });
+  function atualizar() {
+    secoes.forEach((s, i) => {
+      const ok = completo(i);
+      const prox = s.querySelector("[data-proximo]");
+      if (prox) prox.disabled = !ok && !verTudo.checked;
+      const est = s.querySelector(".estado-licao");
+      const total = s.querySelectorAll(".exercicio").length;
+      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
+      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
+      est.classList.toggle("ok", ok && total > 0);
+    });
+    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
+    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
+  }
+  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ir(i) {
+    const fazer = () => {
+      atual = Math.max(0, Math.min(secoes.length - 1, i));
+      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
+      atualizar();
+      secoes[atual].scrollIntoView({ block: "start" });
+    };
+    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
+    else fazer();
+  }
+  let espera = null;
+  document.addEventListener("click", (e) => {
+    const ex = e.target.closest(".exercicio");
+    if (!ex) return;
+    setTimeout(() => {
+      atualizar();
+      const i = secoes.indexOf(ex.closest(".secao"));
+      const certo = ex.querySelector(".retorno.ok");
+      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
+        const est = secoes[i].querySelector(".estado-licao");
+        est.textContent = "Tudo certo. Indo para o próximo conceito...";
+        clearTimeout(espera);
+        espera = setTimeout(() => ir(i + 1), 2200);
+      }
+    }, 0);
+  });
+  window.addEventListener("hashchange", () => {
+    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
+    if (k >= 0) ir(k);
+  });
+  verTudo.addEventListener("change", () => ir(atual));
+  ir(atual);
+})();
+</script>
+</body>
+</html>

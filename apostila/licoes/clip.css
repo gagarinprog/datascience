@@ -1,0 +1,195 @@
+/* Animações passo a passo, caixas de explicação e peças de cada clipe das lições. */
+
+/* ---------- caixas de explicação ---------- */
+.simples, .cotidiano, .resumo { margin: 0; border-radius: 16px; padding: 12px 16px; font-size: 16.5px; line-height: 1.55; max-width: 68ch; }
+.simples { background: color-mix(in srgb, var(--cv, var(--tinta)) 9%, var(--folha)); border: 2px solid color-mix(in srgb, var(--cv, var(--tinta)) 32%, var(--linha)); }
+.cotidiano { background: var(--aviso-suave); border-left: 5px solid var(--ouro); border-radius: 4px 16px 16px 4px; }
+.resumo { background: var(--certo-suave); border: 2px dashed var(--certo); }
+.simples > b:first-child, .cotidiano > b:first-child, .resumo > b:first-child { display: block; font: 700 12.5px/1.2 var(--f-codigo); letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 4px; color: var(--texto-2); }
+.ficticio { font-size: 13.5px; color: var(--texto-2); }
+.ficticio::before { content: "ⓘ "; }
+
+/* ---------- motor ---------- */
+.clip { gap: 12px; }
+.clip-palco { background: var(--folha-2); border: 1px solid var(--linha); border-radius: 16px; padding: 14px; overflow: hidden; min-height: var(--alt, 0); }
+.clip-legenda { margin: 0; font-size: 16.5px; line-height: 1.5; min-height: 4.6em; }
+.clip-legenda.troca { animation: clip-entra 0.35s var(--curva); }
+@keyframes clip-entra { from { opacity: 0; transform: translateY(5px); } }
+.clip-passo { font: 600 12px/1 var(--f-codigo); color: var(--cv, var(--tinta)); background: color-mix(in srgb, var(--cv, var(--tinta)) 14%, var(--folha)); padding: 3px 9px; border-radius: 99px; margin-right: 6px; white-space: nowrap; display: inline-block; vertical-align: 1px; }
+.clip-controles { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.botao.mini { min-height: 40px; padding: 6px 14px; font-size: 14.5px; border-radius: 12px; box-shadow: 0 2px 0 var(--linha-forte); }
+.botao.mini:disabled { opacity: 0.45; }
+.clip-pontos { margin-left: auto; display: flex; gap: 8px; }
+.clip-pontos button { position: relative; width: 14px; height: 14px; min-height: 0; padding: 0; border-radius: 99px; border: 2px solid var(--linha-forte); background: var(--folha); cursor: pointer; transition: transform 160ms var(--curva), background-color 160ms; }
+.clip-pontos button::after { content: ""; position: absolute; inset: -9px; }
+.clip-pontos button.feito { background: color-mix(in srgb, var(--cv, var(--tinta)) 45%, var(--folha)); border-color: var(--cv, var(--tinta)); }
+.clip-pontos button.atual { background: var(--cv, var(--tinta)); border-color: var(--cv, var(--tinta)); transform: scale(1.3); }
+
+/* ---------- peças comuns: chips de candidato ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; min-height: 42px; align-content: flex-start; }
+.chip-c { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 11px; border-radius: 12px; background: var(--folha); border: 2px solid var(--linha-forte); font-size: 14.5px; transition: background-color 0.4s, border-color 0.4s, opacity 0.4s; }
+.chip-c b { font-weight: 700; }
+.chip-c i { font: normal 13px var(--f-codigo); color: var(--texto-2); }
+.chip-c.ok { border-color: var(--certo); background: var(--certo-suave); }
+.chip-c.nao { border-color: var(--erro); background: var(--erro-suave); opacity: 0.8; }
+.chip-c.res { border-color: var(--aviso); background: var(--aviso-suave); }
+.chip-c.num { border-color: var(--tinta); background: var(--tinta-suave); }
+.chip-c.cat { border-color: var(--certo); background: var(--certo-suave); }
+.chip-c.ord { border-color: var(--aviso); background: var(--aviso-suave); }
+
+/* ---------- 1. tabela ---------- */
+.tab-demo { width: 100%; border-collapse: collapse; font-size: 14.5px; background: var(--folha); border-radius: 10px; overflow: hidden; }
+.tab-demo th, .tab-demo td { padding: 6px 10px; border-bottom: 1px solid var(--linha); text-align: left; transition: background-color 0.45s, color 0.45s; }
+.tab-demo th { background: var(--folha-2); color: var(--texto-2); font-size: 13px; font-weight: 600; }
+.tab-demo td.num, .tab-demo th.num { font-family: var(--f-codigo); text-align: right; }
+.tab-demo tbody tr { opacity: 0; transform: translateY(8px); transition: opacity 0.45s var(--curva), transform 0.45s var(--curva); transition-delay: calc(var(--i) * 70ms); }
+.tab-demo.ver tbody tr { opacity: 1; transform: none; }
+.tab-demo.dl tbody tr:nth-child(3) td { background: var(--aviso-suave); }
+.tab-demo.dc th:nth-child(3), .tab-demo.dc td:nth-child(3) { background: var(--tinta-suave); }
+.tab-demo.dx tbody tr:nth-child(3) td { background: var(--aviso-suave); }
+.tab-demo.dx th:nth-child(3), .tab-demo.dx td:nth-child(3) { background: var(--tinta-suave); }
+.tab-demo.dx tbody tr:nth-child(3) td:nth-child(3) { background: var(--ouro); color: #1b1300; font-weight: 700; }
+.tab-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.tab-chip { border: 2px solid var(--linha-forte); border-radius: 99px; padding: 4px 12px; font-size: 13.5px; opacity: 0.35; transition: opacity 0.4s, background-color 0.4s, border-color 0.4s; }
+.tab-chip.on { opacity: 1; background: var(--tinta-suave); border-color: var(--tinta); }
+
+/* ---------- 2. funil ---------- */
+.funil { display: grid; gap: 10px; }
+.f-tit { margin: 0; font: 600 13px var(--f-codigo); color: var(--texto-2); }
+.f-regra { text-align: center; padding: 8px 12px; border: 2px dashed var(--aviso); border-radius: 12px; background: var(--aviso-suave); font-weight: 600; opacity: 0.3; transition: opacity 0.5s, transform 0.5s var(--curva); }
+.f-regra.on { opacity: 1; transform: scale(1.02); }
+.f-zonas { display: grid; grid-template-columns: 1fr 1.7fr; gap: 10px; }
+.f-zona { border: 2px dashed var(--linha-forte); border-radius: 14px; padding: 8px 10px; opacity: 0.45; transition: opacity 0.5s; display: grid; gap: 6px; align-content: start; }
+.f-zonas.on .f-zona { opacity: 1; }
+.f-zona p { margin: 0; font-size: 13px; color: var(--texto-2); font-weight: 600; }
+.f-passou .t-reserva { opacity: 0; transition: opacity 0.4s; }
+.f-passou.sep .t-reserva { opacity: 1; }
+@media (max-width: 520px) { .f-zonas { grid-template-columns: 1fr; } }
+
+/* ---------- 3. caixas (tipos de variável) ---------- */
+.cestas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.cesta { border: 2px dashed var(--linha-forte); border-radius: 14px; padding: 8px; display: grid; gap: 6px; align-content: start; min-height: 120px; transition: border-color 0.4s, background-color 0.4s; }
+.cesta p { margin: 0; font-size: 12.5px; line-height: 1.3; color: var(--texto-2); }
+.cesta p b { color: var(--texto); font-size: 14px; display: block; }
+.cesta.on { border-style: solid; }
+.cesta[data-t="num"].on { border-color: var(--tinta); background: var(--tinta-suave); }
+.cesta[data-t="cat"].on { border-color: var(--certo); background: var(--certo-suave); }
+.cesta[data-t="ord"].on { border-color: var(--aviso); background: var(--aviso-suave); }
+.cesta .chips { gap: 6px; }
+.mesa-pergunta { text-align: center; font-weight: 600; margin: 8px 0 0; opacity: 0; transition: opacity 0.4s; }
+.mesa-pergunta.on { opacity: 1; }
+@media (max-width: 460px) { .cestas { grid-template-columns: 1fr; } .cesta { min-height: 0; } }
+
+/* ---------- 4. ranking ---------- */
+.rank { display: grid; gap: 6px; }
+.linha-r { display: grid; grid-template-columns: 2.4em 5.6em 1fr 2.2em 4.4em; gap: 8px; align-items: center; padding: 4px 6px; border-radius: 10px; background: var(--folha); border: 1px solid var(--linha); font-size: 14.5px; transition: opacity 0.5s, filter 0.5s, background-color 0.4s, border-color 0.4s; }
+.linha-r .pos { font: 700 13px var(--f-codigo); color: var(--cv, var(--tinta)); opacity: 0; transition: opacity 0.4s; }
+.rank.ord .linha-r .pos { opacity: 1; }
+.linha-r b { font-weight: 700; }
+.linha-r .tr { height: 12px; border-radius: 99px; background: var(--linha); overflow: hidden; }
+.linha-r .tr i { display: block; height: 100%; background: var(--tinta); border-radius: 99px; transition: background-color 0.4s; }
+.linha-r .val { font: 700 14px var(--f-codigo); text-align: right; }
+.linha-r .obj { font: 12px var(--f-codigo); color: var(--texto-2); opacity: 0; transition: opacity 0.4s; }
+.rank.obj .linha-r.emp .obj { opacity: 1; }
+.rank.obj .linha-r.emp { border-color: var(--aviso); background: var(--aviso-suave); }
+.rank.obj .linha-r.emp .tr i { background: var(--ouro); }
+.linha-r.fora { opacity: 0.3; filter: grayscale(1); }
+@media (max-width: 440px) { .linha-r { grid-template-columns: 2em 4.6em 1fr 2em 3.6em; gap: 5px; font-size: 13.5px; } }
+
+/* ---------- 5. barras ---------- */
+.b-colunas { position: relative; height: 190px; display: flex; align-items: flex-end; gap: 6px; border-bottom: 2px solid var(--linha-forte); }
+.barra { flex: 1; height: 0; background: var(--tinta); border-radius: 6px 6px 0 0; position: relative; transition: height 0.9s var(--curva), background-color 0.4s; }
+.b-colunas.on .barra { height: var(--h); }
+.barra::before { content: attr(data-v); position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font: 700 12px var(--f-codigo); color: var(--sobre-tinta); opacity: 0; }
+.b-colunas.on .barra::before { opacity: 1; transition: opacity 0.5s 0.6s; }
+.barra.acima { background: var(--certo); }
+.barra.abaixo { background: var(--aviso); }
+.barra.igual { background: var(--texto-2); }
+.b-media { position: absolute; left: 0; right: 0; bottom: 0; border-top: 3px dashed var(--erro); opacity: 0; transition: bottom 1s var(--curva), opacity 0.4s; pointer-events: none; }
+.b-media.on { bottom: 73%; opacity: 1; }
+.b-media span { position: absolute; right: 0; top: -26px; background: var(--erro); color: #fff; font: 700 12px var(--f-codigo); padding: 2px 8px; border-radius: 8px; }
+.b-nomes { display: flex; gap: 6px; margin-top: 4px; }
+.b-nomes span { flex: 1; text-align: center; font-size: 11.5px; color: var(--texto-2); }
+.b-conta { margin: 10px 0 0; text-align: center; font: 600 15px var(--f-codigo); min-height: 1.6em; }
+
+/* ---------- fluxo de caixas (entrada → processamento → saída) ---------- */
+.fluxo { display: flex; align-items: stretch; gap: 6px; }
+.fx-caixa-c { flex: 1; min-width: 0; border: 2px solid var(--linha-forte); border-radius: 16px; background: var(--folha); padding: 10px 12px; opacity: 0.4; transition: opacity 0.5s, border-color 0.5s, box-shadow 0.5s; }
+.fx-caixa-c small { display: block; font: 700 12px var(--f-codigo); letter-spacing: 0.03em; text-transform: uppercase; color: var(--texto-2); }
+.fx-caixa-c b { display: block; font-size: 15px; line-height: 1.3; margin-top: 2px; }
+.fx-caixa-c ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; font: 14px var(--f-codigo); }
+.fx-caixa-c li { opacity: 0; transform: translateY(4px); transition: opacity 0.4s, transform 0.4s var(--curva); }
+.fx-caixa-c li.ver { opacity: 1; transform: none; }
+.fx-caixa-c.on { opacity: 1; border-color: var(--cv, var(--tinta)); }
+.fx-caixa-c.agora { box-shadow: 0 0 0 5px color-mix(in srgb, var(--cv, var(--tinta)) 22%, transparent); }
+.fx-seta { flex: 0 0 24px; align-self: center; height: 0; border-top: 3px solid currentColor; color: var(--linha-forte); position: relative; transition: color 0.5s; }
+.fx-seta::after { content: ""; position: absolute; right: -3px; top: -8px; border-left: 10px solid currentColor; border-top: 6.5px solid transparent; border-bottom: 6.5px solid transparent; }
+.fx-seta.on { color: var(--cv, var(--tinta)); }
+@media (max-width: 600px) {
+  .fluxo { flex-direction: column; }
+  .fx-seta { flex: 0 0 22px; width: 0; height: 22px; border-top: 0; border-left: 3px solid currentColor; }
+  .fx-seta::after { right: auto; left: -8px; top: auto; bottom: -3px; border-left: 6.5px solid transparent; border-right: 6.5px solid transparent; border-top: 10px solid currentColor; border-bottom: 0; }
+}
+
+/* ---------- execução de pseudocódigo ---------- */
+.exec { display: grid; grid-template-columns: 1.25fr 1fr; gap: 12px; }
+.exec-codigo { list-style: none; margin: 0; padding: 8px; background: var(--folha); border: 1px solid var(--linha); border-radius: 12px; font: 13.5px var(--f-codigo); align-self: start; }
+.exec-codigo li { display: flex; gap: 8px; padding: 3px 6px; border-radius: 8px; white-space: pre; transition: background-color 0.3s; }
+.exec-codigo li .n { color: var(--texto-2); width: 1.3em; flex: none; }
+.exec-codigo li.lendo { background: color-mix(in srgb, var(--ouro) 38%, transparent); box-shadow: inset 4px 0 0 var(--ouro); }
+.exec-mem { background: var(--folha); border: 1px solid var(--linha); border-radius: 12px; padding: 10px; display: grid; gap: 8px; align-content: start; }
+.exec-tit { margin: 0; font: 700 12px var(--f-codigo); text-transform: uppercase; letter-spacing: 0.03em; color: var(--texto-2); }
+.exec-vars { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.var, .exec-saida { border: 2px solid var(--linha-forte); border-radius: 10px; padding: 4px 8px; text-align: center; }
+.var small, .exec-saida small { display: block; color: var(--texto-2); font: 12px var(--f-codigo); }
+.var b, .exec-saida b { font: 700 18px var(--f-codigo); }
+.var.muda, .exec-saida.muda { animation: clip-pulso 0.8s; }
+@keyframes clip-pulso { 0% { background: var(--ouro); transform: scale(1.06); } 100% { background: transparent; transform: none; } }
+.exec-teste { grid-column: 1 / -1; }
+.exec-teste .tabela { font-size: 13.5px; }
+.exec-teste tr.novo { animation: clip-entra 0.4s var(--curva); }
+@media (max-width: 600px) { .exec { grid-template-columns: 1fr; } }
+
+/* ---------- vago x exato ---------- */
+.vx { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vx-card { border: 2px solid var(--linha-forte); border-radius: 16px; background: var(--folha); padding: 12px 14px; transition: opacity 0.5s, border-color 0.5s; }
+.vx-card h4 { margin: 0 0 6px; font: 700 13px var(--f-codigo); text-transform: uppercase; letter-spacing: 0.03em; color: var(--texto-2); }
+.vx-card p { margin: 0; font-size: 15px; }
+.vx-vago { opacity: 0.35; }
+.vx-vago.on { opacity: 1; border-color: var(--erro); }
+.vx-vago .duvida { display: grid; gap: 4px; margin-top: 8px; font-size: 14px; color: var(--erro); }
+.vx-vago .duvida span { opacity: 0; transform: translateX(-6px); transition: opacity 0.4s, transform 0.4s var(--curva); }
+.vx-vago.duv .duvida span { opacity: 1; transform: none; }
+.vx-exato { opacity: 0.35; }
+.vx-exato.on { opacity: 1; border-color: var(--certo); }
+.vx-exato ol { margin: 8px 0 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 14.5px; }
+.vx-exato li { opacity: 0; transform: translateX(8px); transition: opacity 0.45s, transform 0.45s var(--curva); }
+.vx-exato li.ver { opacity: 1; transform: none; }
+@media (max-width: 560px) { .vx { grid-template-columns: 1fr; } }
+
+/* ---------- fluxograma com ficha percorrendo ---------- */
+.fl { width: 100%; height: auto; max-height: 470px; display: block; }
+.fl .fl-no { transition: fill 0.4s, stroke 0.4s, stroke-width 0.4s; }
+.fl .fl-no.on { fill: var(--tinta-suave); stroke: var(--tinta); stroke-width: 3; }
+.fl .fl-cam { stroke: var(--linha-forte); stroke-width: 2; fill: none; transition: stroke 0.5s; }
+.fl .fl-cam.on { stroke: var(--tinta); stroke-width: 3; }
+.fl .fl-ficha circle { fill: var(--ouro); stroke: #7a5200; stroke-width: 2; }
+.fl .fl-ficha text { font: 700 12px var(--f-codigo); fill: #1b1300; }
+.fl .fl-bolha { transition: opacity 0.4s; }
+
+/* campos de resposta numérica dentro das linhas de exercício */
+.linha-classifica input { font: inherit; font-family: var(--f-codigo); font-size: 13.5px; width: 100%; min-width: 70px; padding: 4px 8px; border: 2px solid var(--linha-forte); border-radius: 10px; min-height: 40px; background: var(--folha); color: var(--texto); }
+.linha-classifica input.ok { border-color: var(--certo); background: var(--certo-suave); }
+.linha-classifica input.nao { border-color: var(--erro); background: var(--erro-suave); }
+
+/* tabela da animação cabe em 390 px */
+.tab-demo th.num { font-family: inherit; }
+@media (max-width: 480px) { .tab-demo { font-size: 13.5px; } .tab-demo th, .tab-demo td { padding: 6px 5px; } .tab-demo th { font-size: 12px; } }
+.funil.vazia .f-fila, .funil.vazia .f-tit { display: none; }
+
+/* código e teste de mesa mais compactos */
+.exec-codigo code { background: none; border: 0; padding: 0; font-size: inherit; }
+.exec-teste .tabela { font-size: 12.5px; }
+.exec-teste .tabela th, .exec-teste .tabela td { padding: 5px 6px; }
+.exec-teste .tabela td.m { font-size: 12.5px; }
+.vx-vago .duvida span::before { content: "× "; font-weight: 700; }

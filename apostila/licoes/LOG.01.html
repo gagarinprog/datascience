@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../estilo.css">
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
 <style>
   .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
   .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
@@ -50,6 +51,7 @@
   <nav class="lateral" aria-label="Conceitos da lição">
     <div class="marca"><b>Lógica de programação</b><span>Módulo 1 · Algoritmo</span></div>
     <a href="../index.html#trilha-LOG"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
+    <a href="INICIO.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg></span>Comece por aqui</a>
     <div class="grupo">Conceitos</div>
     <a href="#c1" data-conceito="c1"><span class="n">01</span>O que é algoritmo</a>
     <a href="#c2" data-conceito="c2"><span class="n">02</span>Entrada, processamento e saída</a>
@@ -65,6 +67,7 @@
         <p class="sobretitulo">Lógica de programação · Módulo 1 de 10</p>
         <h1 class="titulo-pagina">Algoritmo</h1>
         <p class="lede">Antes de qualquer linguagem de programação, o que importa é saber descrever uma tarefa em passos tão claros que ninguém possa entender de outro jeito. Este módulo não usa computador: só papel, lápis e atenção.</p>
+        <p class="simples"><b>Primeira vez aqui?</b>Comece pela lição <a href="INICIO.html">Comece por aqui: a lista de aprovados</a>. Ela usa a lista de um concurso para mostrar, com animações, o que são dados, tabela, filtro e média. Depois volte: os exemplos deste módulo seguem a mesma linha.</p>
         <p class="sobretitulo">5 conceitos e uma tarefa · um passo por vez: termine os exercícios para avançar</p>
         <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
       </header>
@@ -83,6 +86,7 @@
         </div>
 
         <h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Um algoritmo é um passo a passo tão claro que qualquer pessoa, ou uma máquina, chegaria ao mesmo resultado seguindo-o. Se um passo depende de “achar” alguma coisa, ainda não é um algoritmo.</p>
         <div class="prosa">
           <p>Um <strong>algoritmo</strong> é uma sequência de passos para resolver uma tarefa. A palavra assusta, mas você usa algoritmos todo dia: a receita do vídeo de culinária, a rota que o GPS fala, o passo a passo para fazer um Pix.</p>
           <p>Para um algoritmo servir a uma máquina, ele precisa de três coisas:</p>
@@ -93,6 +97,11 @@
         <figure>
           <div class="rolagem" data-figura="RECEITA"></div>
           <figcaption>A mesma receita escrita para uma pessoa e para uma máquina. As palavras vagas da esquerda viraram quantidades e uma ordem numerada à direita.</figcaption>
+        </figure>
+
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>“Veja como você foi na prova” não é um algoritmo. “Compare cada resposta com o gabarito e conte as que coincidem” é. A diferença: o segundo diz exatamente o que fazer, em que ordem e quando parar.</p>
+        <figure data-clip="vagoexato" style="--alt: 300px">
+          <figcaption>A mesma tarefa, pedida de duas formas. Só a da direita pode ser seguida por uma máquina.</figcaption>
         </figure>
 
         <h3>Exemplo resolvido: transformar “faça um café” num algoritmo</h3>
@@ -128,6 +137,7 @@
           <div class="retorno" hidden data-ok-texto="Isso. Clareza não basta: o algoritmo precisa terminar e entregar um resultado." data-nao-texto="O gabarito é Errado. Clareza não basta: um algoritmo precisa terminar e entregar um resultado. Um passo a passo que nunca acaba não resolve a tarefa."></div>
         </div>
 
+        <p class="resumo"><b>Resumo em uma frase</b>Algoritmo = passos em ordem, sem ambiguidade e com um fim.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que é um algoritmo e o que ele precisa ter para uma máquina conseguir seguir. Escreva no <code>/aula</code> para o tutor corrigir.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
@@ -145,6 +155,7 @@
         </div>
 
         <h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Todo algoritmo recebe algo, faz algo e entrega algo. <b>Entrada</b> é o que chega, <b>processamento</b> é o que se faz com isso e <b>saída</b> é o que sai.</p>
         <div class="prosa">
           <p>Todo algoritmo segue o mesmo desenho, em três partes. A <strong>entrada</strong> são os dados que chegam de fora. O <strong>processamento</strong> é o que se faz com eles: contas, comparações, decisões. A <strong>saída</strong> é o resultado que o algoritmo entrega.</p>
           <p>Diante de qualquer problema, a primeira pergunta é sempre: o que eu recebo, o que eu preciso entregar e que caminho leva de um ao outro?</p>
@@ -161,6 +172,11 @@
             <tr><td>Converter reais em dólares</td><td>valor em reais, cotação</td><td>dividir o valor pela cotação</td><td>valor em dólares</td></tr>
           </tbody>
         </table>
+
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>Na lista de aprovados de um concurso: as notas são a entrada; somar e comparar com a nota de corte é o processamento; “aprovado” ou “reprovado” é a saída. É o que você viu na lição <a href="INICIO.html">Comece por aqui</a>.</p>
+        <figure data-clip="eps" style="--alt: 250px">
+          <figcaption>As três partes de um algoritmo, com as notas de um candidato.</figcaption>
+        </figure>
 
         <h3>Exemplo resolvido: conta de restaurante com 10% de serviço</h3>
         <ol class="subobjetivos">
@@ -193,6 +209,7 @@
           <div class="retorno" hidden data-ok-texto="Tudo certo. Repare que decidir também é processamento: é trabalho feito com os dados, não algo que chega nem algo que sai." data-nao-texto="Os campos em vermelho estão trocados. Pergunte para cada um: chega de fora (entrada), é feito com os dados (processamento) ou é entregue no fim (saída)?"></div>
         </div>
 
+        <p class="resumo"><b>Resumo em uma frase</b>Entrada é o que chega, processamento é o que se faz, saída é o que se entrega.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> escolha uma tarefa do seu trabalho e diga qual é a entrada, o processamento e a saída dela.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
@@ -210,6 +227,7 @@
         </div>
 
         <h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Pseudocódigo é o plano do algoritmo escrito em português organizado, um passo por linha. Ainda não é uma linguagem de programação: é o rascunho dela.</p>
         <div class="prosa">
           <p><strong>Pseudocódigo</strong> é o algoritmo escrito em português, mas com o formato de um programa: um passo por linha e algumas palavras combinadas. Ele fica no meio do caminho entre a receita e o código de verdade, e permite pensar a lógica sem se preocupar com a linguagem.</p>
           <p>As palavras combinadas são poucas: <code>leia</code> (receber uma entrada), <code>escreva</code> (mostrar uma saída), <code>←</code> (guardar um valor), <code>se ... então ... senão ... fimse</code> (decidir).</p>
@@ -230,6 +248,11 @@
             </tbody>
           </table>
           <figcaption>Cada linha faz uma coisa só. O recuo mostra o que pertence a cada caminho da decisão; a conta do total fica fora, porque vale para os dois.</figcaption>
+        </figure>
+
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>É como o esquema que você faz no caderno antes de redigir a discursiva: não vale nota, mas organiza o raciocínio antes de escrever de verdade.</p>
+        <figure data-clip="exec-pseudo" style="--alt: 330px">
+          <figcaption>O computador executa uma linha por vez. Repare no que acontece com as caixas da memória e com o caminho do senão.</figcaption>
         </figure>
 
         <h3>Exemplo resolvido: média de duas notas, com aprovação a partir de 7</h3>
@@ -268,6 +291,7 @@ fimse</pre></div></li>
           <div class="retorno" hidden data-ok-texto="Certo. As entradas vêm antes da conta que usa as duas, e a saída só pode vir depois que dolares existe. A ordem entre as duas leituras tanto faz, mas ler primeiro o valor é o mais natural." data-nao-texto="Ainda não. Pergunte para cada linha: ela usa algo que outra linha prepara? A conta usa reais e cotacao, então vem depois das duas leituras; escrever dolares só dá certo depois da conta."></div>
         </div>
 
+        <p class="resumo"><b>Resumo em uma frase</b>Pseudocódigo é o algoritmo em passos escritos, uma linha por ação, feito para pessoas lerem.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que se usa a seta ← e não o sinal de igual para guardar um valor.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
@@ -285,6 +309,7 @@ fimse</pre></div></li>
         </div>
 
         <h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Fluxograma é o mesmo plano, desenhado: formas com papéis fixos e setas mostrando o caminho.</p>
         <div class="prosa">
           <p>O <strong>fluxograma</strong> é o algoritmo desenhado. Cada forma tem um papel fixo e as setas mostram o caminho. É ótimo para enxergar decisões: os caminhos se separam no losango e você vê, de uma vez, tudo o que pode acontecer.</p>
           <p>As quatro formas que você precisa: <strong>oval</strong> para início e fim, <strong>paralelogramo</strong> para entrada e saída, <strong>retângulo</strong> para processamento e <strong>losango</strong> para decisão.</p>
@@ -292,6 +317,11 @@ fimse</pre></div></li>
         <figure>
           <div class="rolagem" data-figura="LOG"></div>
           <figcaption>O frete grátis em fluxograma. Siga as setas com o dedo: há dois caminhos possíveis, e os dois se juntam de novo na conta do total.</figcaption>
+        </figure>
+
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>É parecido com um mapa mental cheio de setas: você enxerga de uma vez onde o caminho se divide e onde ele se encontra de novo.</p>
+        <figure data-clip="fluxo-nota" style="--alt: 470px">
+          <figcaption>Uma ficha percorre o fluxograma da classificação, duas vezes, com notas diferentes.</figcaption>
         </figure>
 
         <h3>Exemplo resolvido: percorrer o fluxograma com um carrinho de R$ 120</h3>
@@ -325,6 +355,7 @@ fimse</pre></div></li>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Entrada e saída dividem a mesma forma (paralelogramo); a pergunta é sempre losango; a conta, retângulo." data-nao-texto="Os campos em vermelho estão trocados. Lembre: ler e mostrar são paralelogramo; pergunta é losango; conta é retângulo; início e fim são oval."></div>
         </div>
 
+        <p class="resumo"><b>Resumo em uma frase</b>Fluxograma é o algoritmo desenhado: oval começa e termina, paralelogramo entra e sai dado, retângulo calcula, losango decide.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> quando um fluxograma ajuda mais que o pseudocódigo?</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
@@ -342,10 +373,16 @@ fimse</pre></div></li>
         </div>
 
         <h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Teste de mesa é ensaiar o algoritmo no papel, com números de exemplo, fazendo o papel do computador, antes de confiar nele.</p>
         <div class="prosa">
           <p>Antes de confiar num algoritmo, você o executa com valores de exemplo, à mão. Monta uma tabela: <strong>uma coluna para cada variável</strong> e uma para a saída, e <strong>uma linha para cada passo executado</strong>. A cada passo, anota o que mudou.</p>
           <p>É o jeito mais barato de achar erro, e é exatamente o que as provas pedem quando mostram um algoritmo e perguntam “qual é a saída?”.</p>
         </div>
+
+        <p class="cotidiano"><b>No seu dia a dia de estudo</b>É como refazer uma questão de cálculo passo a passo antes de marcar a resposta: se o resultado não bate, você descobre em que passo errou.</p>
+        <figure data-clip="exec-mesa" style="--alt: 430px">
+          <figcaption>A tabela do teste de mesa cresce a cada linha executada. Só entra o que de fato aconteceu.</figcaption>
+        </figure>
 
         <h3>Exemplo resolvido: a média, com n1 = 6 e n2 = 9</h3>
         <pre>1  leia n1
@@ -391,6 +428,7 @@ fimse</pre></div></li>
           <div class="retorno" hidden data-ok-texto="Certo. (5 + 7) / 2 = 6; como 6 ≥ 7 é falso, o caminho é a linha 7: reprovado." data-nao-texto="Confira os campos em vermelho. Primeiro a conta: some antes de dividir. Depois a pergunta: 6 é maior ou igual a 7? A resposta decide se a próxima linha é a 5 ou a 7."></div>
         </div>
 
+        <p class="resumo"><b>Resumo em uma frase</b>Teste de mesa = executar à mão, anotando só o que muda a cada linha.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> para que serve o teste de mesa, e por que ele pega erros que só ler o algoritmo não pega.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
@@ -424,10 +462,13 @@ escreva valor</pre>
 </div>
 
 <script src="../figuras.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="clipes-log.js" charset="utf-8"></script>
 <script>
 (function () {
   document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
   document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
+  window.Clip.iniciar();
 
   function mostrar(retorno, ok) {
     retorno.hidden = false;
