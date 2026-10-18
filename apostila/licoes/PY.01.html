@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Primeiros passos · Python</title>
+<title>Primeiros passos · Lógica de programação</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
@@ -49,8 +49,8 @@
 <body>
 <div class="casca">
   <nav class="lateral" aria-label="Conceitos da lição">
-    <div class="marca"><b>Python</b><span>Módulo 1 · Primeiros passos</span></div>
-    <a href="../index.html#trilha-PY"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
+    <div class="marca"><b>Lógica de programação</b><span>Módulo 2 · Primeiros passos</span></div>
+    <a href="../index.html#trilha-LOG"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
     <a href="INICIO.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg></span>Comece por aqui</a>
     <div class="grupo">Conceitos</div>
     <a href="#c1" data-conceito="c1"><span class="n">01</span>Interpretador e REPL</a>
@@ -65,7 +65,7 @@
   <main class="conteudo">
     <div class="coluna">
       <header class="bloco">
-        <p class="sobretitulo">Python · Módulo 1 de 13</p>
+        <p class="sobretitulo">Lógica de programação · Módulo 2 de 10</p>
         <h1 class="titulo-pagina">Primeiros passos</h1>
         <p class="lede">Agora o computador entra em cena. Neste módulo você escreve as primeiras linhas de Python, vê o resultado aparecer e aprende os hábitos que deixam um código fácil de ler. Tudo parte do que você já sabe de Algoritmo: entrada, processamento e saída.</p>
         <p class="simples"><b>Como ler esta lição</b>Um conceito por vez. Cada um tem um desafio para começar (pode errar), a explicação em palavras simples, uma animação, um exemplo resolvido e exercícios. Os exemplos usam o concurso fictício da lição <a href="INICIO.html">Comece por aqui</a>: todos os nomes e notas são inventados. Para testar de verdade, abra o terminal e digite <code>python</code> (ou <code>python3</code>).</p>
@@ -547,7 +547,7 @@ else:
   };
   const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
   secoes.forEach((s, i) => {
-    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-PY">Voltar para a trilha</a>'}</div>`);
+    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
     s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
     const prox = s.querySelector("[data-proximo]");
     if (prox) prox.addEventListener("click", () => ir(i + 1));

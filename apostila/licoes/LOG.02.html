@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Variáveis e tipos · Lógica de programação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+</head>
+<body>
+<div class="casca">
+  <nav class="lateral" aria-label="Conceitos da lição">
+    <div class="marca"><b>Lógica de programação</b><span>Módulo 3 · Variáveis e tipos</span></div>
+    <a href="../index.html#trilha-LOG"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
+    <a href="INICIO.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg></span>Comece por aqui</a>
+    <div class="grupo">Conceitos</div>
+    <a href="#c1" data-conceito="c1"><span class="n">01</span>Variável como nome para um valor</a>
+    <a href="#c2" data-conceito="c2"><span class="n">02</span>Atribuição</a>
+    <a href="#c3" data-conceito="c3"><span class="n">03</span>Tipos primitivos</a>
+    <a href="#c4" data-conceito="c4"><span class="n">04</span>Conversão de tipo</a>
+    <a href="#c5" data-conceito="c5"><span class="n">05</span>Constantes</a>
+    <a href="#td" data-conceito="td"><span class="n">TD</span>Tarefa de domínio</a>
+  </nav>
+
+  <main class="conteudo">
+    <div class="coluna">
+      <header class="bloco">
+        <p class="sobretitulo">Lógica de programação · Módulo 3 de 10</p>
+        <h1 class="titulo-pagina">Variáveis e tipos</h1>
+        <p class="lede">Todo programa guarda dados: a nota de um candidato, o total da conta, o nome de quem digitou. Este módulo ensina a dar nome a esses dados, a trocar o valor guardado e a respeitar o tipo de cada um. É o chão de toda a programação.</p>
+        <p class="simples"><b>Antes de começar</b>Esta lição usa o que você viu em <a href="PY.01.html">Primeiros passos</a> (REPL, script, print e input). Os exemplos usam o concurso fictício da lição <a href="INICIO.html">Comece por aqui</a>: todos os nomes e notas são inventados. Para testar de verdade, abra o terminal e digite <code>python</code> (ou <code>python3</code>).</p>
+        <p class="sobretitulo">5 conceitos e uma tarefa · um passo por vez: termine os exercícios para avançar</p>
+        <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
+      </header>
+      <nav class="passos-barra passos-licao" id="passos-licao" aria-label="Passos da lição"></nav>
+
+      <!-- 1 -->
+      <section class="secao" id="c1">
+        <p class="rotulo">Conceito 1 de 5</p>
+        <h2>Variável como nome para um valor</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">Depois de <code>x = 5</code> e de <code>x = x + 2</code>, quanto vale <code>x</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>7, e o 5 deixou de estar em x</button><button class="botao" type="button">5, porque a primeira linha vale mais</button><button class="botao" type="button">5 e 7 ao mesmo tempo, guardados juntos</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A variável guarda um valor por vez: o 5 foi trocado pelo 7." data-nao-texto="x vale 7. A variável guarda só o valor mais recente: ao receber o 7, perdeu o 5. A segunda linha primeiro calcula 5 + 2 e só depois guarda."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Uma <b>variável</b> é um <b>nome</b> colado num valor. Onde o programa precisa do valor, ele usa o nome. Se o valor mudar, o nome continua o mesmo e passa a apontar para o novo.</p>
+<div class="prosa">
+          <p>Programas lidam com dados que mudam: a nota de um candidato, o saldo, o total da conta. Para não repetir o valor em todo lugar, damos um <strong>nome</strong> a ele. Esse nome é a <strong>variável</strong>.</p>
+          <p>Pense num contato do celular. O nome “Mãe” aponta para um número. Se ela troca de número, você atualiza o contato e continua ligando para “Mãe”. Na variável é igual: o nome fica, o valor muda.</p>
+          <p>Quem escolhe o nome é você, mas há regras: só letras, números e sublinhado (<code>_</code>); não pode começar com número; não pode ter espaço; maiúscula e minúscula são nomes diferentes; e não vale usar palavras que o Python já reservou, como <code>if</code>.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Nome</th><th>Vale?</th><th>Por quê</th></tr></thead>
+          <tbody>
+            <tr><td class="m">nota1</td><td>sim</td><td>letras e número, e não começa com número</td></tr>
+            <tr><td class="m">nota_final</td><td>sim</td><td>sublinhado no lugar do espaço</td></tr>
+            <tr><td class="m">1nota</td><td>não</td><td>começa com número</td></tr>
+            <tr><td class="m">nota final</td><td>não</td><td>tem espaço</td></tr>
+            <tr><td class="m">if</td><td>não</td><td>palavra reservada do Python</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a etiqueta de uma pasta de estudos: “Nota de corte”. Você pode trocar o papel que está dentro, e a etiqueta continua a mesma. Quem pede a pasta “Nota de corte” recebe o papel que estiver lá agora.</p>
+<figure data-clip="etiqueta" style="--alt: 280px">
+          <figcaption>O nome x passa do valor 5 para o valor 7. O 5 não some do mundo, mas fica sem nome.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: o total de pontos de um candidato</h3>
+<pre>total = 48
+total = total + 30</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Primeira linha: o nome <code>total</code> é colado no valor 48.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Segunda linha: o Python calcula primeiro o lado direito, <code>total + 30</code>, que é 48 + 30 = 78.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Só então cola o nome <code>total</code> no 78. O 48 ficou sem nome. Agora <code>total</code> vale 78.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que <code>total = total + 30</code> não é uma equação sem solução, como seria na matemática?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque em programação o = quer dizer “recebe”: calcula-se o lado direito e guarda-se o resultado no nome da esquerda</button><button class="botao" type="button">Porque o Python ignora o total do lado direito</button><button class="botao" type="button">Porque a matemática e a programação usam números diferentes</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. É uma ordem em duas etapas (calcular, guardar), e não uma afirmação de igualdade." data-nao-texto="O sinal = em programação quer dizer “recebe”. O Python calcula o lado direito com o valor atual (48 + 30) e guarda o resultado em total. Não é uma afirmação de igualdade, é uma ordem."></div>
+        </div>
+<h3>Pratique: quais nomes valem?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Diga se cada nome pode ser usado como nome de variável em Python.</p>
+          <div><div class="linha-classifica"><span><code>nota2</code></span><select data-resposta="vale" aria-label="nota2"><option value="">escolha</option><option value="vale">vale</option><option value="nao">não vale</option></select></div><div class="linha-classifica"><span><code>2nota</code></span><select data-resposta="nao" aria-label="2nota"><option value="">escolha</option><option value="vale">vale</option><option value="nao">não vale</option></select></div><div class="linha-classifica"><span><code>nota_final</code></span><select data-resposta="vale" aria-label="nota_final"><option value="">escolha</option><option value="vale">vale</option><option value="nao">não vale</option></select></div><div class="linha-classifica"><span><code>nota final</code></span><select data-resposta="nao" aria-label="nota final"><option value="">escolha</option><option value="vale">vale</option><option value="nao">não vale</option></select></div><div class="linha-classifica"><span><code>for</code></span><select data-resposta="nao" aria-label="for"><option value="">escolha</option><option value="vale">vale</option><option value="nao">não vale</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Letras, números e sublinhado, sem espaço, sem começar por número e sem palavras reservadas como <code>for</code> e <code>if</code>." data-nao-texto="Os campos em vermelho estão trocados. Confira: começa com número? Tem espaço? É uma palavra reservada do Python, como <code>for</code>?"></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Variável é um nome colado num valor; se o valor muda, o nome fica e passa a apontar para o novo.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que acontece com o 5 quando você escreve <code>x = x + 2</code> e x valia 5.</p>
+        <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 2 -->
+      <section class="secao" id="c2">
+        <p class="rotulo">Conceito 2 de 5</p>
+        <h2>Atribuição</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Em <code>total = total + 30</code>, o computador calcula primeiro o lado direito e só depois guarda o resultado em <code>total</code>.</p>
+          <div class="opcoes"><button class="botao" type="button" data-ok>Certo</button><button class="botao" type="button">Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. É sempre assim: direita primeiro, depois guardar na esquerda." data-nao-texto="O gabarito é Certo. A ordem é sempre a mesma: calcular o lado direito com os valores de agora e só depois guardar o resultado no nome da esquerda."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Atribuir</b> é guardar um valor em um nome, com o sinal <b>=</b>. A regra de ouro: o computador <b>calcula o lado direito primeiro</b> e só depois guarda o resultado no nome da esquerda.</p>
+<div class="prosa">
+          <p>O ato de guardar um valor numa variável chama-se <strong>atribuição</strong>, e o símbolo é o <code>=</code>. Lembra da seta <code>←</code> do pseudocódigo? É a mesma ideia: o valor da direita <strong>vai para</strong> o nome da esquerda.</p>
+          <p>Duas consequências importantes. <strong>1.</strong> Uma variável pode aparecer dos dois lados: <code>total = total + 30</code> usa o valor antigo para calcular o novo. <strong>2.</strong> Atribuir <strong>copia o valor</strong>, não cria uma ligação: depois de <code>b = a</code>, mudar <code>a</code> não muda <code>b</code>.</p>
+          <p>Para prever um programa, faça uma tabela com uma coluna por variável e vá atualizando linha por linha. É o teste de mesa, agora aplicado a variáveis.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É como anotar a sua nota parcial no caderno. Quando você faz outra prova, apaga o número e escreve o novo total. A anotação de uma colega que copiou a sua nota antes não muda sozinha.</p>
+<figure data-clip="atribuicao" style="--alt: 340px">
+          <figcaption>O total de pontos muda a cada atribuição. Repare que o lado direito é calculado com o valor de antes.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: copiar não é ligar</h3>
+<pre>a = 3
+b = a
+a = 10
+print(a, b)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Linha 1: <code>a</code> recebe 3. Linha 2: <code>b</code> recebe o valor que <code>a</code> tem agora, 3. Cada um guarda o seu 3.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Linha 3: <code>a</code> recebe 10. Só <code>a</code> mudou; <code>b</code> continua com o 3 que copiou.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Linha 4: o print escreve <code>10 3</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o print mostra <code>10 3</code>, e não <code>10 10</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque <code>b = a</code> copiou o valor 3; depois, mudar a não altera b</button><button class="botao" type="button">Porque o Python guarda o primeiro valor de cada variável</button><button class="botao" type="button">Porque b e a são o mesmo nome</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Atribuição copia o valor do momento. Não existe ligação entre b e a depois da cópia." data-nao-texto="<code>b = a</code> copia o valor que a tinha naquele momento (3). Depois disso, mudar a não altera b."></div>
+        </div>
+<h3>Pratique: preveja os valores</h3>
+<div class="exercicio" data-preencher>
+          <p class="pergunta">Siga as linhas e diga o valor final de cada variável.</p>
+          <pre>x = 4
+y = x * 2
+x = y + 1
+y = x - 3</pre>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>variável</th><th>valor no fim</th></tr></thead>
+          <tbody>
+            <tr><td class="m">x</td><td><input data-resposta="9" inputmode="numeric" aria-label="Valor final de x"></td></tr>
+            <tr><td class="m">y</td><td><input data-resposta="6" inputmode="numeric" aria-label="Valor final de y"></td></tr>
+          </tbody></table>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. x = 4; y = 4 * 2 = 8; x = 8 + 1 = 9; y = 9 - 3 = 6. Cada linha usa os valores de agora." data-nao-texto="Faça uma tabela e atualize linha por linha. Linha 2: y = 4 * 2 = 8. Linha 3: x = 8 + 1. Linha 4: y usa o novo x. Lembre que cada linha usa os valores do momento."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Atribuição guarda o resultado do lado direito no nome da esquerda; copia o valor, não cria ligação.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> o que significa o sinal = em programação e por que <code>b = a</code> não faz b acompanhar as mudanças de a.</p>
+        <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 3 -->
+      <section class="secao" id="c3">
+        <p class="rotulo">Conceito 3 de 5</p>
+        <h2>Tipos primitivos</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Para o Python, o valor <code>70</code> e o valor <code>"70"</code> (entre aspas) são a mesma coisa.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O primeiro é um número e o segundo é um texto. Com o número dá para fazer conta; com o texto, não." data-nao-texto="O gabarito é Errado. <code>70</code> é um número; <code>&quot;70&quot;</code> é um texto, que só tem a aparência de um número. Com o texto, não dá para fazer conta."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Todo valor tem um <b>tipo</b>, que diz o que dá para fazer com ele. Os quatro tipos básicos: <b>int</b> (inteiro), <b>float</b> (decimal), <b>str</b> (texto) e <b>bool</b> (verdadeiro ou falso).</p>
+<div class="prosa">
+          <p>O tipo decide o que é possível: números se somam, textos se juntam, verdadeiro ou falso respondem perguntas. Os quatro tipos primitivos que você mais vai usar:</p>
+          <p><strong><code>int</code></strong>: números inteiros, como 78 ou 3. <strong><code>float</code></strong>: números com parte decimal, como 7.5, sempre com <strong>ponto</strong>. <strong><code>str</code></strong>: texto, sempre <strong>entre aspas</strong>, como “Ana”. <strong><code>bool</code></strong>: só dois valores, <code>True</code> e <code>False</code>, com a primeira letra maiúscula.</p>
+          <p>Para ver o tipo de um valor, use <code>type</code>: <code>type(7.5)</code> mostra <code>&lt;class 'float'&gt;</code>. Uma curiosidade: a divisão com <code>/</code> sempre dá decimal. <code>8 / 2</code> é <code>4.0</code>, não 4.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Tipo</th><th>Exemplo</th><th>Para que serve</th></tr></thead>
+          <tbody>
+            <tr><td class="m">int</td><td class="m">78</td><td>contagens: vagas, pontos inteiros</td></tr>
+            <tr><td class="m">float</td><td class="m">7.5</td><td>médias, preços, medidas</td></tr>
+            <tr><td class="m">str</td><td class="m">"Ana"</td><td>nomes, mensagens, códigos</td></tr>
+            <tr><td class="m">bool</td><td class="m">True</td><td>respostas de sim ou não: aprovado?</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É o tipo de cada coluna da lista de aprovados: nome é texto, nota é número, e “aprovado” é sim ou não. Numa planilha, você não soma a coluna de nomes, e o Python tem a mesma regra.</p>
+<figure data-clip="tipos" style="--alt: 380px">
+          <figcaption>Seis valores vão para a gaveta do tipo certo. Repare no “70” entre aspas.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: o tipo de cada valor de um candidato</h3>
+<pre>nome = "Ana"
+objetiva = 48
+media = 39.0
+classificada = True</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p><code>"Ana"</code> está entre aspas: é texto, <code>str</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p><code>48</code> é um número sem ponto: <code>int</code>. <code>39.0</code> tem ponto decimal: <code>float</code>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p><code>True</code> é verdadeiro ou falso: <code>bool</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Qual é o tipo do resultado de <code>8 / 2</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button"><code>int</code>, porque 8 e 2 são inteiros</button><button class="botao" type="button" data-ok><code>float</code>, porque a divisão com / sempre dá decimal (4.0)</button><button class="botao" type="button"><code>str</code></button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Em Python, a divisão com / sempre devolve float: 8 / 2 é 4.0." data-nao-texto="A divisão com <code>/</code> sempre devolve <code>float</code>, mesmo quando é exata: <code>8 / 2</code> é <code>4.0</code>."></div>
+        </div>
+<h3>Pratique: qual é o tipo?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Diga o tipo de cada valor.</p>
+          <div><div class="linha-classifica"><span><code>70</code></span><select data-resposta="int" aria-label="70"><option value="">escolha</option><option value="int">int</option><option value="float">float</option><option value="str">str</option><option value="bool">bool</option></select></div><div class="linha-classifica"><span><code>7.5</code></span><select data-resposta="float" aria-label="7.5"><option value="">escolha</option><option value="int">int</option><option value="float">float</option><option value="str">str</option><option value="bool">bool</option></select></div><div class="linha-classifica"><span><code>"aprovado"</code></span><select data-resposta="str" aria-label="aprovado entre aspas"><option value="">escolha</option><option value="int">int</option><option value="float">float</option><option value="str">str</option><option value="bool">bool</option></select></div><div class="linha-classifica"><span><code>True</code></span><select data-resposta="bool" aria-label="True"><option value="">escolha</option><option value="int">int</option><option value="float">float</option><option value="str">str</option><option value="bool">bool</option></select></div><div class="linha-classifica"><span><code>"70"</code></span><select data-resposta="str" aria-label="70 entre aspas"><option value="">escolha</option><option value="int">int</option><option value="float">float</option><option value="str">str</option><option value="bool">bool</option></select></div><div class="linha-classifica"><span><code>70.0</code></span><select data-resposta="float" aria-label="70.0"><option value="">escolha</option><option value="int">int</option><option value="float">float</option><option value="str">str</option><option value="bool">bool</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Aspas indicam <code>str</code>; ponto decimal indica <code>float</code>; True e False são <code>bool</code>." data-nao-texto="Os campos em vermelho estão trocados. Aspas indicam texto (<code>str</code>); número com ponto é <code>float</code>; True e False são <code>bool</code>; número sem ponto é <code>int</code>."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Todo valor tem um tipo (int, float, str ou bool), e o tipo decide o que se pode fazer com ele.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>70</code> e <code>"70"</code> são diferentes para o Python.</p>
+        <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="secao" id="c4">
+        <p class="rotulo">Conceito 4 de 5</p>
+        <h2>Conversão de tipo</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler.</p>
+          <p class="pergunta">O que <code>int(7.9)</code> devolve?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">8, porque arredonda</button><button class="botao" type="button" data-ok>7, porque corta a parte decimal</button><button class="botao" type="button">Dá erro</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O <code>int</code> corta a parte decimal. Ele não arredonda." data-nao-texto="O <code>int</code> corta a parte decimal: <code>int(7.9)</code> é <code>7</code>. Ele não arredonda."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Converter</b> é trocar o tipo de um valor: <b>int()</b>, <b>float()</b> e <b>str()</b>. É preciso converter quando o tipo que você tem não serve para o que quer fazer, como somar um texto com um número.</p>
+<div class="prosa">
+          <p>Os tipos não se misturam à vontade. <code>"8" + 2</code> dá erro, porque o Python não sabe somar um texto com um número. A saída é converter um dos lados: <code>int("8") + 2</code> dá 10.</p>
+          <p>As três conversões: <code>int()</code> faz número inteiro; <code>float()</code> faz decimal; <code>str()</code> faz texto. Elas funcionam quando o valor <em>faz sentido</em> no novo tipo. <code>int("8")</code> funciona; <code>int("oito")</code> e <code>int("7.5")</code> dão erro.</p>
+          <p>Conversão é o que você faz sempre que usa o <code>input</code>, que devolve texto. E também para montar mensagens: <code>"Total: " + str(78)</code> junta o texto com o número, já convertido.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É como digitar o CPF no formulário do concurso: a página recebe tudo como texto e, para conferir os dígitos, o sistema converte o que precisa virar número.</p>
+<figure data-clip="conversao" style="--alt: 330px">
+          <figcaption>Cinco conversões: três funcionam, duas dão erro.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: montar uma mensagem com o total</h3>
+<pre>total = 78
+print("Total: " + total)        # erro
+print("Total: " + str(total))   # Total: 78
+print("Total:", total)          # Total: 78</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Linha 2: junta um texto com um número. O Python para com <code>TypeError</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Linha 3: converte o número em texto com <code>str(total)</code>. Agora são dois textos, e o <code>+</code> junta.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Linha 4: a vírgula do print é outra saída: ele mostra os itens separados por espaço, sem precisar converter.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que a linha <code>print("Total: " + total)</code> dá erro?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque o + não junta um texto com um número; é preciso converter o número com str()</button><button class="botao" type="button">Porque total ainda não existe</button><button class="botao" type="button">Porque print não aceita texto</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Tipos diferentes não se misturam no +. Converter com <code>str(total)</code> resolve." data-nao-texto="O <code>+</code> junta texto com texto ou soma número com número, mas não mistura os dois. Converta o número com <code>str(total)</code>."></div>
+        </div>
+<h3>Pratique: dá certo ou dá erro?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Para cada linha, diga o que o Python faz.</p>
+          <div><div class="linha-classifica"><span><code>int("8") + 2</code></span><select data-resposta="certo" aria-label="int de 8 mais 2"><option value="">escolha</option><option value="certo">dá certo</option><option value="erro">dá erro</option></select></div><div class="linha-classifica"><span><code>"8" + 2</code></span><select data-resposta="erro" aria-label="texto mais número"><option value="">escolha</option><option value="certo">dá certo</option><option value="erro">dá erro</option></select></div><div class="linha-classifica"><span><code>float("7.5")</code></span><select data-resposta="certo" aria-label="float de 7.5"><option value="">escolha</option><option value="certo">dá certo</option><option value="erro">dá erro</option></select></div><div class="linha-classifica"><span><code>int("7.5")</code></span><select data-resposta="erro" aria-label="int de 7.5"><option value="">escolha</option><option value="certo">dá certo</option><option value="erro">dá erro</option></select></div><div class="linha-classifica"><span><code>"Nota: " + str(8)</code></span><select data-resposta="certo" aria-label="texto mais str de 8"><option value="">escolha</option><option value="certo">dá certo</option><option value="erro">dá erro</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Os que dão erro misturam tipos (<code>&quot;8&quot; + 2</code>) ou pedem um inteiro a partir de um texto com ponto decimal (<code>int(&quot;7.5&quot;)</code>)." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: o + está misturando texto com número? O <code>int</code> está recebendo um texto com ponto decimal? Nesses casos há erro."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>int(), float() e str() trocam o tipo de um valor; só funcionam quando o valor faz sentido no novo tipo.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>"8" + 2</code> dá erro e como corrigir.</p>
+        <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 5 -->
+      <section class="secao" id="c5">
+        <p class="rotulo">Conceito 5 de 5</p>
+        <h2>Constantes</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler.</p>
+          <p class="pergunta">Por que é melhor guardar <code>NOTA_DE_CORTE = 70</code> uma vez, no começo, do que escrever 70 solto em vários lugares?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque, se o corte mudar, basta alterar uma linha</button><button class="botao" type="button">Porque o Python executa mais rápido</button><button class="botao" type="button">Porque o 70 deixa de ser um número</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Um valor fixo definido em um lugar só evita que sobre um 70 esquecido em algum canto do programa." data-nao-texto="A vantagem é a manutenção: se o corte mudar, você altera uma linha, e todo o programa acompanha. Com o 70 solto, é fácil esquecer um."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Constante</b> é um valor que não deve mudar durante o programa, como a nota de corte. Por convenção, o nome vai em <b>MAIÚSCULAS</b>, para avisar quem lê: “não mexa aqui”.</p>
+<div class="prosa">
+          <p>Alguns valores valem para o programa inteiro e não são resultado de nenhuma conta: a nota de corte, o número de vagas, o preço do kWh. Em vez de escrever o número solto em cada lugar (os programadores chamam isso de <em>número mágico</em>, porque ninguém sabe de onde veio), guardamos numa <strong>constante</strong>, no começo do programa.</p>
+          <p>O PEP 8 pede nomes de constantes em <strong>MAIÚSCULAS</strong>, com sublinhado: <code>NOTA_DE_CORTE = 70</code>. Atenção: o Python <strong>não impede</strong> que você mude esse valor depois. É uma convenção entre pessoas, e não uma trava da linguagem.</p>
+          <p>Dois ganhos: o valor ganha um <strong>nome que explica</strong> o que ele é, e, se ele mudar, você altera <strong>um lugar só</strong>.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a regra do edital, que vale para todos os candidatos. Se o edital for retificado, muda-se em um ponto, e todo o resultado acompanha. Ninguém corrige a regra candidato por candidato.</p>
+<figure data-clip="constante" style="--alt: 330px">
+          <figcaption>O mesmo programa com o valor solto e com uma constante, quando a regra muda de 70 para 75.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: a classificação com uma constante</h3>
+<pre>NOTA_DE_CORTE = 70
+objetiva = 48
+discursiva = 30
+total = objetiva + discursiva
+print(total &gt;= NOTA_DE_CORTE)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Definir a constante no começo, em maiúsculas: <code>NOTA_DE_CORTE = 70</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Calcular o total com variáveis comuns (minúsculas): 48 + 30 = 78.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Comparar com a constante: 78 &gt;= 70 é verdade, então o print mostra <code>True</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">O Python impede que você escreva <code>NOTA_DE_CORTE = 99</code> mais adiante no programa?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">Sim, dá erro</button><button class="botao" type="button" data-ok>Não: o maiúsculo é uma convenção, e quem muda precisa ter cuidado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A linguagem deixa mudar. O nome em maiúsculas é um aviso entre pessoas." data-nao-texto="O Python deixa. O nome em MAIÚSCULAS é só um aviso para quem lê o código: este valor não deve mudar."></div>
+        </div>
+<h3>Pratique: constante ou variável?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Diga como cada valor deve ser guardado.</p>
+          <div><div class="linha-classifica"><span>a nota de corte do edital</span><select data-resposta="constante" aria-label="nota de corte"><option value="">escolha</option><option value="constante">constante (MAIÚSCULAS)</option><option value="variavel">variável (minúsculas)</option></select></div><div class="linha-classifica"><span>o total de pontos de cada candidato</span><select data-resposta="variavel" aria-label="total de pontos"><option value="">escolha</option><option value="constante">constante (MAIÚSCULAS)</option><option value="variavel">variável (minúsculas)</option></select></div><div class="linha-classifica"><span>o número de vagas do edital</span><select data-resposta="constante" aria-label="vagas"><option value="">escolha</option><option value="constante">constante (MAIÚSCULAS)</option><option value="variavel">variável (minúsculas)</option></select></div><div class="linha-classifica"><span>o nome que a pessoa digitou</span><select data-resposta="variavel" aria-label="nome digitado"><option value="">escolha</option><option value="constante">constante (MAIÚSCULAS)</option><option value="variavel">variável (minúsculas)</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. O que vale para o programa inteiro e vem do edital é constante; o que muda de candidato para candidato é variável." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: o valor muda de pessoa para pessoa ou durante o programa? Então é variável. Vale sempre o mesmo para todos? Então é constante."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Constante é um valor fixo guardado num nome em MAIÚSCULAS, definido num lugar só.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> o que ganhamos ao trocar um número solto por uma constante com nome.</p>
+        <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- TD -->
+      <section class="secao" id="td">
+        <p class="rotulo">Tarefa de domínio do módulo</p>
+        <h2>Prever, depois programar</h2>
+        <div class="prosa">
+          <p><strong>1. Preveja.</strong> Sem rodar, diga o valor de cada variável no fim deste trecho. Faça a tabela linha por linha.</p>
+          <pre>NOTA_DE_CORTE = 70
+objetiva = 40
+discursiva = 24
+total = objetiva + discursiva
+total = total + 6
+aprovado = total &gt;= NOTA_DE_CORTE</pre>
+          <p><strong>2. Programe.</strong> Escreva um script que pede a objetiva e a discursiva (números inteiros) e os pontos de títulos, soma tudo, compara com a constante <code>NOTA_DE_CORTE</code> e escreve a mensagem <code>Total: 70</code> seguida de <code>True</code> ou <code>False</code>. Use as conversões certas e nomes no padrão PEP 8.</p>
+        </div>
+        <p class="explique">Mande a tabela e o script no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
+        <details class="cartao">
+          <summary>Ver uma resposta possível (só depois de tentar)</summary>
+          <p>Previsão: <code>total</code> começa em 64 (40 + 24), vai a 70 (64 + 6) e <code>aprovado</code> é <code>True</code>, porque 70 &gt;= 70.</p>
+          <pre>NOTA_DE_CORTE = 70
+objetiva = int(input("Objetiva: "))
+discursiva = int(input("Discursiva: "))
+titulos = int(input("Pontos de títulos: "))
+total = objetiva + discursiva + titulos
+print("Total: " + str(total))
+print(total &gt;= NOTA_DE_CORTE)</pre>
+          <p>Com 40, 24 e 6: aparece <code>Total: 70</code> e depois <code>True</code>.</p>
+        </details>
+        <button class="botao" type="button" data-marcar="td">Marcar a tarefa como feita</button>
+      </section>
+    </div>
+  </main>
+</div>
+<script src="../figuras.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="clipes-var.js" charset="utf-8"></script>
+<script>
+(function () {
+  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
+  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
+  window.Clip.iniciar();
+
+  function mostrar(retorno, ok) {
+    retorno.hidden = false;
+    retorno.className = "retorno " + (ok ? "ok" : "nao");
+    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
+  }
+
+  document.querySelectorAll("[data-escolha]").forEach((ex) => {
+    const botoes = ex.querySelectorAll(".opcoes .botao");
+    botoes.forEach((b) => b.addEventListener("click", () => {
+      botoes.forEach((x) => {
+        x.disabled = true;
+        if (x.hasAttribute("data-ok")) x.classList.add("certo");
+      });
+      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
+      b.setAttribute("aria-pressed", "true");
+      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
+    }));
+  });
+
+  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
+
+  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      let tudo = true;
+      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
+        const aceitas = campo.dataset.resposta.split("|");
+        const ok = aceitas.includes(normalizar(campo.value));
+        campo.classList.toggle("ok", ok);
+        campo.classList.toggle("nao", !ok);
+        if (!ok) tudo = false;
+      });
+      mostrar(ex.querySelector(".retorno"), tudo);
+    });
+  });
+
+  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
+    const banco = ex.querySelector("[data-banco]");
+    const montagem = ex.querySelector("[data-montagem]");
+    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
+      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
+    }));
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
+      const certa = ex.dataset.resposta.split("|");
+      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
+      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
+      mostrar(ex.querySelector(".retorno"), ok);
+    });
+  });
+
+  const CHAVE = "dominio:licao:LOG.02";
+  let feitos = [];
+  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
+  function pintar() {
+    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
+    document.querySelectorAll("[data-marcar]").forEach((b) => {
+      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
+    });
+  }
+  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
+    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
+    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
+    pintar();
+  }));
+  pintar();
+
+  const links = [...document.querySelectorAll("[data-conceito]")];
+  const obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
+
+  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
+  const secoes = [...document.querySelectorAll(".secao")];
+  const nomes = ["Variável como nome para um valor", "Atribuição", "Tipos primitivos", "Conversão de tipo", "Constantes", "Tarefa de domínio"];
+  const verTudo = document.getElementById("ver-tudo");
+  const barra = document.getElementById("passos-licao");
+  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
+  const feito = (ex) => {
+    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
+    const r = ex.querySelector(".retorno");
+    return !!r && r.classList.contains("ok");
+  };
+  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
+  secoes.forEach((s, i) => {
+    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
+    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
+    const prox = s.querySelector("[data-proximo]");
+    if (prox) prox.addEventListener("click", () => ir(i + 1));
+  });
+  function atualizar() {
+    secoes.forEach((s, i) => {
+      const ok = completo(i);
+      const prox = s.querySelector("[data-proximo]");
+      if (prox) prox.disabled = !ok && !verTudo.checked;
+      const est = s.querySelector(".estado-licao");
+      const total = s.querySelectorAll(".exercicio").length;
+      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
+      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
+      est.classList.toggle("ok", ok && total > 0);
+    });
+    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
+    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
+  }
+  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ir(i) {
+    const fazer = () => {
+      atual = Math.max(0, Math.min(secoes.length - 1, i));
+      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
+      atualizar();
+      secoes[atual].scrollIntoView({ block: "start" });
+    };
+    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
+    else fazer();
+  }
+  let espera = null;
+  document.addEventListener("click", (e) => {
+    const ex = e.target.closest(".exercicio");
+    if (!ex) return;
+    setTimeout(() => {
+      atualizar();
+      const i = secoes.indexOf(ex.closest(".secao"));
+      const certo = ex.querySelector(".retorno.ok");
+      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
+        const est = secoes[i].querySelector(".estado-licao");
+        est.textContent = "Tudo certo. Indo para o próximo conceito...";
+        clearTimeout(espera);
+        espera = setTimeout(() => ir(i + 1), 2200);
+      }
+    }, 0);
+  });
+  window.addEventListener("hashchange", () => {
+    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
+    if (k >= 0) ir(k);
+  });
+  verTudo.addEventListener("change", () => ir(atual));
+  ir(atual);
+})();
+</script>
+</body>
+</html>

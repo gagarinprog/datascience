@@ -232,3 +232,48 @@
 @media (max-width: 520px) { .term-corpo { font-size: 13.5px; min-height: 230px; } .pep-cod { font-size: 13.5px; } }
 .exec > * { min-width: 0; }
 .exec-codigo { overflow-x: auto; }
+
+/* ---- lição LOG.02: etiqueta, tipos, conversão e constante ---- */
+.etq { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 8px; flex-wrap: wrap; }
+.etq-casa { display: grid; justify-items: center; gap: 8px; transition: opacity 0.5s; min-width: 96px; }
+.etq-casa.ausente { opacity: 0; }
+.etq-casa .bolha { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font: 800 28px var(--f-codigo); background: var(--tinta-suave); border: 3px solid var(--tinta); transition: opacity 0.5s, filter 0.5s; }
+.etq-slot { min-height: 34px; }
+.etq-chip { display: inline-block; font: 700 18px var(--f-codigo); padding: 2px 14px; border-radius: 8px; background: var(--ouro); color: #1a1405; box-shadow: 0 2px 0 rgb(0 0 0 / 0.25); }
+.etq-nota { opacity: 0; color: var(--texto-2); font-size: 13px; transition: opacity 0.5s; }
+.etq-casa.sem-nome .bolha { opacity: 0.4; filter: grayscale(0.8); border-style: dashed; }
+.etq-casa.sem-nome .etq-nota { opacity: 1; }
+.etq-sinal { font: 700 15px var(--f-codigo); color: var(--texto-2); opacity: 0; transition: opacity 0.5s; }
+.etq-sinal.on { opacity: 1; }
+.etq-conta { text-align: center; margin: 0; font: 600 15px var(--f-codigo); color: var(--texto); min-height: 1.4em; }
+.tp { display: grid; gap: 12px; }
+.tp-banco { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; padding: 8px; border: 2px dashed var(--linha-forte); border-radius: 12px; justify-content: center; }
+.tp-v { font: 700 16px var(--f-codigo); padding: 4px 12px; border-radius: 99px; background: var(--folha); border: 2px solid var(--linha-forte); }
+.tp-gavetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.tp-g { border: 2px solid var(--linha-forte); border-radius: 12px; padding: 8px 10px; background: var(--folha); transition: border-color 0.4s, background-color 0.4s; min-height: 92px; }
+.tp-g b { font: 800 16px var(--f-codigo); display: block; }
+.tp-g small { display: block; color: var(--texto-2); font-size: 12.5px; margin-bottom: 6px; }
+.tp-g.ativa { border-color: var(--tinta); background: var(--tinta-suave); }
+.tp-itens { display: flex; flex-wrap: wrap; gap: 6px; }
+.tp-itens .tp-v { padding: 2px 10px; font-size: 15px; }
+.conv { width: 100%; border-collapse: collapse; font-size: 14px; }
+.conv th { text-align: left; font: 700 12px var(--f-codigo); text-transform: uppercase; letter-spacing: 0.03em; color: var(--texto-2); padding: 4px 8px; }
+.conv td { padding: 8px; border-top: 1px solid var(--linha); }
+.conv tbody tr { opacity: 0; transform: translateY(6px); transition: opacity 0.4s, transform 0.4s var(--curva), background-color 0.4s; }
+.conv tbody tr.ver { opacity: 1; transform: none; }
+.conv tbody tr.agora { background: color-mix(in srgb, var(--ouro) 22%, transparent); }
+.conv td code { background: none; border: 0; padding: 0; font-size: 14px; }
+.conv tr.ok td:nth-child(2) { color: var(--certo); font-weight: 700; }
+.conv tr.erro td:nth-child(2) { color: var(--erro); font-weight: 700; }
+.cst { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cst-lado { border: 2px solid var(--linha-forte); border-radius: 12px; padding: 10px; background: var(--folha); transition: border-color 0.4s; min-width: 0; }
+.cst-lado h4 { margin: 0 0 6px; font: 700 12px var(--f-codigo); text-transform: uppercase; letter-spacing: 0.03em; color: var(--texto-2); }
+.cst-lado pre { margin: 0; font-size: 12.5px; overflow-x: auto; line-height: 1.7; }
+.cst-l { display: block; }
+.cst-lado mark { background: color-mix(in srgb, var(--ouro) 45%, transparent); color: inherit; border-radius: 3px; }
+.cst-nota { margin: 8px 0 0; font-size: 13.5px; min-height: 2.8em; }
+.cst-lado.erro { border-color: var(--erro); }
+.cst-lado.erro .cst-nota { color: var(--erro); font-weight: 600; }
+.cst-lado.certo { border-color: var(--certo); }
+.cst-lado.certo .cst-nota { color: var(--certo); font-weight: 600; }
+@media (max-width: 520px) { .cst { grid-template-columns: 1fr; } .conv { font-size: 13px; } .conv td { padding: 6px 4px; } }

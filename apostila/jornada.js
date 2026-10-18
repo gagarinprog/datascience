@@ -8,7 +8,7 @@
   const MATERIAS = window.MATERIAS;
   const GUIA = window.GUIA;
   const { F: FONTE, POR_MATERIA, GRUPOS } = window.FONTES;
-  const LICOES = { "LOG.01": "licoes/LOG.01.html", "PY.01": "licoes/PY.01.html" };
+  const LICOES = { "LOG.01": "licoes/LOG.01.html", "PY.01": "licoes/PY.01.html", "LOG.02": "licoes/LOG.02.html" };
   const POR_SIGLA = Object.fromEntries(MATERIAS.map((m) => [m.sigla, m]));
   const MODULO = {};
   MATERIAS.forEach((m) => m.modulos.forEach((mod, i) => { MODULO[mod.codigo] = { mod, materia: m, indice: i }; }));
