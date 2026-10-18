@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Primeiros passos · Python</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<style>
+  .passos-licao { grid-template-columns: repeat(7, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+</head>
+<body>
+<div class="casca">
+  <nav class="lateral" aria-label="Conceitos da lição">
+    <div class="marca"><b>Python</b><span>Módulo 1 · Primeiros passos</span></div>
+    <a href="../index.html#trilha-PY"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
+    <a href="INICIO.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg></span>Comece por aqui</a>
+    <div class="grupo">Conceitos</div>
+    <a href="#c1" data-conceito="c1"><span class="n">01</span>Interpretador e REPL</a>
+    <a href="#c2" data-conceito="c2"><span class="n">02</span>Script</a>
+    <a href="#c3" data-conceito="c3"><span class="n">03</span>print e input</a>
+    <a href="#c4" data-conceito="c4"><span class="n">04</span>Comentários</a>
+    <a href="#c5" data-conceito="c5"><span class="n">05</span>Indentação como bloco</a>
+    <a href="#c6" data-conceito="c6"><span class="n">06</span>PEP 8</a>
+    <a href="#td" data-conceito="td"><span class="n">TD</span>Tarefa de domínio</a>
+  </nav>
+
+  <main class="conteudo">
+    <div class="coluna">
+      <header class="bloco">
+        <p class="sobretitulo">Python · Módulo 1 de 13</p>
+        <h1 class="titulo-pagina">Primeiros passos</h1>
+        <p class="lede">Agora o computador entra em cena. Neste módulo você escreve as primeiras linhas de Python, vê o resultado aparecer e aprende os hábitos que deixam um código fácil de ler. Tudo parte do que você já sabe de Algoritmo: entrada, processamento e saída.</p>
+        <p class="simples"><b>Como ler esta lição</b>Um conceito por vez. Cada um tem um desafio para começar (pode errar), a explicação em palavras simples, uma animação, um exemplo resolvido e exercícios. Os exemplos usam o concurso fictício da lição <a href="INICIO.html">Comece por aqui</a>: todos os nomes e notas são inventados. Para testar de verdade, abra o terminal e digite <code>python</code> (ou <code>python3</code>).</p>
+        <p class="sobretitulo">6 conceitos e uma tarefa · um passo por vez: termine os exercícios para avançar</p>
+        <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
+      </header>
+      <nav class="passos-barra passos-licao" id="passos-licao" aria-label="Passos da lição"></nav>
+
+      <!-- 1 -->
+      <section class="secao" id="c1">
+        <p class="rotulo">Conceito 1 de 6</p>
+        <h2>Interpretador e REPL</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">Você digita <code>nota = 8</code> no REPL e aperta Enter. Aparece <code>8</code> na linha seguinte.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Guardar um valor não escreve nada na tela. Se você digitar só <code>nota</code> e Enter, aí o REPL mostra o 8." data-nao-texto="O gabarito é Errado. O Python guardou o 8 no nome <code>nota</code> e não escreveu nada: guardar não é mostrar. Se você digitar só <code>nota</code>, aí ele mostra o 8."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>O computador não entende Python sozinho. O <b>interpretador</b> é o programa que lê o que você escreveu e executa. O <b>REPL</b> é a conversa com ele: você digita uma linha, ele responde na hora e espera a próxima.</p>
+<div class="prosa">
+          <p>Python é uma <strong>linguagem de programação</strong>: um jeito de escrever instruções que o computador consegue seguir. Mas o computador não lê Python diretamente. Quem faz a ponte é o <strong>interpretador</strong>, um programa que lê as suas instruções e as executa, uma de cada vez.</p>
+          <p>A forma mais rápida de falar com ele é o <strong>REPL</strong>. O nome vem de quatro verbos em inglês: <em>Read</em> (ler), <em>Eval</em> (calcular), <em>Print</em> (mostrar), <em>Loop</em> (repetir). Ou seja: ele lê o que você digitou, calcula, mostra o resultado e volta a esperar.</p>
+          <p>Para abrir, digite <code>python</code> (ou <code>python3</code>) no terminal. Aparece o aviso <code>&gt;&gt;&gt;</code>, que quer dizer “pode digitar”. Para sair, digite <code>exit()</code>.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Você digita</th><th>O que o REPL faz</th><th>O que aparece</th></tr></thead>
+          <tbody>
+            <tr><td class="m">48 + 30</td><td>calcula</td><td class="m">78</td></tr>
+            <tr><td class="m">total = 48 + 30</td><td>guarda 78 no nome total</td><td>nada</td></tr>
+            <tr><td class="m">total</td><td>pede o valor guardado</td><td class="m">78</td></tr>
+            <tr><td class="m">total &gt;= 70</td><td>faz uma pergunta de sim ou não</td><td class="m">True</td></tr>
+            <tr><td class="m">print("aprovado")</td><td>escreve um texto</td><td class="m">aprovado</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É como a calculadora do celular: você digita, aperta igual e vê o resultado na hora. A diferença é que o Python também guarda valores com nomes, como uma célula nomeada de planilha, e responde a perguntas de sim ou não.</p>
+<figure data-clip="repl" style="--alt: 300px">
+          <figcaption>Cinco linhas no REPL, com as notas de um candidato. Repare em qual delas o Python não escreve nada.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: conferir uma média no REPL, com as notas 6 e 9</h3>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Fazer a conta direto. Os parênteses fazem a soma acontecer antes da divisão.</p><pre>&gt;&gt;&gt; (6 + 9) / 2
+7.5</pre></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Guardar o resultado num nome. Nada aparece, e é isso mesmo: guardar não é mostrar.</p><pre>&gt;&gt;&gt; media = (6 + 9) / 2</pre></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Fazer uma pergunta com o nome guardado. O REPL mostra a resposta de toda pergunta.</p><pre>&gt;&gt;&gt; media &gt;= 7
+True</pre></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que a linha <code>media = (6 + 9) / 2</code> não mostra nada, e a linha <code>media &gt;= 7</code> mostra <code>True</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque a primeira só guarda um valor; a segunda é uma pergunta, e o REPL mostra a resposta de toda pergunta</button><button class="botao" type="button">Porque a primeira deu erro</button><button class="botao" type="button">Porque o REPL só mostra respostas verdadeiras</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Atribuir (guardar) é uma ordem sem resposta. Calcular ou perguntar produz um valor, e o REPL mostra esse valor." data-nao-texto="Guardar é uma ordem e não tem resposta para mostrar. Já uma conta ou uma pergunta produz um valor, e o REPL mostra esse valor, seja True ou False."></div>
+        </div>
+<h3>Pratique: aparece alguma coisa?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Suponha que você já digitou <code>x = 5</code>. Para cada linha digitada depois, diga se o REPL escreve algo.</p>
+          <div><div class="linha-classifica"><span><code>x</code></span><select data-resposta="aparece" aria-label="Digitar x"><option value="">escolha</option><option value="aparece">aparece algo</option><option value="nada">não aparece nada</option></select></div><div class="linha-classifica"><span><code>x + 1</code></span><select data-resposta="aparece" aria-label="Digitar x + 1"><option value="">escolha</option><option value="aparece">aparece algo</option><option value="nada">não aparece nada</option></select></div><div class="linha-classifica"><span><code>y = x + 1</code></span><select data-resposta="nada" aria-label="Digitar y = x + 1"><option value="">escolha</option><option value="aparece">aparece algo</option><option value="nada">não aparece nada</option></select></div><div class="linha-classifica"><span><code>x &gt;= 10</code></span><select data-resposta="aparece" aria-label="Digitar x &gt;= 10"><option value="">escolha</option><option value="aparece">aparece algo</option><option value="nada">não aparece nada</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Conta, nome sozinho e pergunta produzem um valor, e o REPL mostra. Só o guardar (o sinal de igual) fica em silêncio." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: a linha tem um sinal de <code>=</code> para guardar? Então nada aparece. Caso contrário, ela produz um valor e o REPL mostra."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>O interpretador executa o Python; o REPL é a conversa em que você digita uma linha e ele responde na hora.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que é o REPL e por que digitar <code>total = 78</code> não mostra nada.</p>
+        <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 2 -->
+      <section class="secao" id="c2">
+        <p class="rotulo">Conceito 2 de 6</p>
+        <h2>Script</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">As linhas que você digita no REPL ficam salvas num arquivo, prontas para rodar de novo depois.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O REPL esquece tudo quando você o fecha. Para guardar um programa, você precisa de um arquivo." data-nao-texto="O gabarito é Errado. O REPL esquece tudo ao ser fechado. Para guardar o programa e rodar de novo, você escreve um arquivo, o script."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Um <b>script</b> é um arquivo de texto, terminado em <b>.py</b>, com as linhas do seu programa já escritas. Você manda o Python rodar o arquivo inteiro, de cima para baixo, quantas vezes quiser.</p>
+<div class="prosa">
+          <p>No REPL, cada linha vive sozinha e some quando você fecha. Para um programa de verdade, você escreve as linhas num arquivo, como <code>media.py</code>, e pede ao Python que o execute. Esse arquivo é o <strong>script</strong>.</p>
+          <p>Para rodar, no terminal: <code>python media.py</code>. O Python lê o arquivo <strong>de cima para baixo, uma linha por vez</strong>, exatamente como você executou o pseudocódigo no módulo Algoritmo.</p>
+          <p>Uma diferença que pega muita gente: no REPL, escrever um nome ou uma conta mostra o resultado sozinho. Num script, <strong>só aparece o que você mandar escrever com <code>print</code></strong>.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th></th><th>REPL</th><th>Script</th></tr></thead>
+          <tbody>
+            <tr><td>Fica salvo?</td><td>não, some ao fechar</td><td>sim, é um arquivo .py</td></tr>
+            <tr><td>Mostra o valor sozinho?</td><td>sim</td><td>não, só com <code>print</code></td></tr>
+            <tr><td>Quando usar</td><td>testar uma ideia rápida</td><td>programa que será usado de novo</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>O REPL é tirar uma dúvida com o professor na hora: a resposta vem, mas some. O script é o resumo que você escreve e guarda para estudar de novo na véspera da prova.</p>
+<figure data-clip="py-script" style="--alt: 330px">
+          <figcaption>Um script de quatro linhas sendo executado. Só a última linha escreve algo na tela.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: um script com o total das notas de um candidato</h3>
+<pre>objetiva = 48
+discursiva = 30
+total = objetiva + discursiva
+print(total)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Guardar os dados de entrada, cada um num nome que diz o que é: <code>objetiva</code> e <code>discursiva</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Processar: somar as duas notas e guardar em <code>total</code>. Nada aparece ainda.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Mostrar a saída com <code>print(total)</code>. Resultado na tela: <code>78</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que a última linha precisa ser <code>print(total)</code>, e não apenas <code>total</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque num script o Python só escreve na tela o que você mandar com print</button><button class="botao" type="button">Porque total sozinho dá erro de sintaxe</button><button class="botao" type="button">Porque o print deixa a conta mais rápida</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. No REPL o nome sozinho mostra o valor; num script, ele seria uma linha sem efeito visível. Quem escreve na tela é o print." data-nao-texto="Escrever só <code>total</code> num script não dá erro, mas também não mostra nada. Quem escreve na tela é o <code>print</code>."></div>
+        </div>
+<h3>Pratique: monte o script na ordem certa</h3>
+<div class="exercicio" data-ordenar data-resposta="objetiva = 48|discursiva = 30|total = objetiva + discursiva|print(total)">
+          <p class="pergunta">Monte o script do total. Clique nas linhas na ordem em que o Python deve executá-las; clique de novo para devolver.</p>
+          <div class="ordenar" data-banco><button class="botao linha" type="button">print(total)</button><button class="botao linha" type="button">total = objetiva + discursiva</button><button class="botao linha" type="button">discursiva = 30</button><button class="botao linha" type="button">objetiva = 48</button></div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. As duas notas vêm antes da soma que as usa, e o print vem por último, porque só pode mostrar o total depois de ele existir. A ordem entre as duas primeiras tanto faz." data-nao-texto="Ainda não. Pergunte para cada linha: ela usa algo que outra linha prepara? A soma usa as duas notas, então vem depois delas; o print usa o total, então vem por último."></div>
+        </div>
+<div class="exercicio" data-escolha>
+          <p class="pergunta">Você rodou um script que tem a linha <code>total = 78</code> e mais nada. O que aparece na tela?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">78</button><button class="botao" type="button" data-ok>Nada</button><button class="botao" type="button">total = 78</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Guardar não escreve nada, e o script não tem nenhum print." data-nao-texto="Nada aparece: a linha só guarda o 78 no nome <code>total</code>, e o script não tem nenhum <code>print</code>."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Script é um arquivo .py com o programa guardado; o Python o executa de cima para baixo e só escreve na tela o que tiver print.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> qual a diferença entre digitar no REPL e escrever um script, e quando você usaria cada um.</p>
+        <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 3 -->
+      <section class="secao" id="c3">
+        <p class="rotulo">Conceito 3 de 6</p>
+        <h2>print e input</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Se a pessoa digitar <code>20</code> num <code>input</code>, o Python guarda o número 20 e já dá para somar 1 a ele.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O input sempre devolve texto, mesmo quando a pessoa digita só números. Antes de somar, é preciso converter." data-nao-texto="O gabarito é Errado. O <code>input</code> sempre devolve <b>texto</b>: o “20” é só os símbolos 2 e 0. Para somar, é preciso converter com <code>int</code> ou <code>float</code>."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>print</b> escreve na tela; é a saída. <b>input</b> pergunta algo à pessoa e espera a resposta; é a entrada. Tudo que chega pelo input vem como <b>texto</b>, e para fazer conta é preciso converter em número.</p>
+<div class="prosa">
+          <p><strong><code>print</code></strong> escreve na tela o que estiver entre os parênteses. Vários itens separados por vírgula saem separados por espaço, e contas são calculadas antes de mostrar. Por isso <code>print("Oi", 2 + 3)</code> escreve <code>Oi 5</code>. Textos vão entre aspas; números e contas, sem aspas.</p>
+          <p><strong><code>input</code></strong> mostra uma pergunta, espera a pessoa digitar e apertar Enter, e <strong>devolve o que ela digitou como texto</strong>. Exemplo: <code>nome = input("Nome: ")</code>.</p>
+          <p>Texto não faz conta. <code>"8" + 2</code> dá erro, porque o Python não sabe somar um texto com um número. A saída é converter: <code>int("8")</code> vira o número inteiro 8, e <code>float("7.5")</code> vira o número decimal 7.5. Repare que o decimal usa <strong>ponto</strong>, e não vírgula.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Valor</th><th>O que é</th><th>Dá para fazer conta?</th></tr></thead>
+          <tbody>
+            <tr><td class="m">"8"</td><td>texto (tem aspas)</td><td>não</td></tr>
+            <tr><td class="m">8</td><td>número inteiro</td><td>sim</td></tr>
+            <tr><td class="m">7.5</td><td>número decimal</td><td>sim</td></tr>
+            <tr><td class="m">input("Nota: ")</td><td>sempre devolve texto</td><td>não, até converter</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É como um formulário de inscrição: tudo que a pessoa digita nos campos chega ao sistema como texto, até a idade e o número do documento. Só depois o sistema converte o que precisa virar número.</p>
+<figure data-clip="py-input" style="--alt: 350px">
+          <figcaption>Duas respostas chegam pelo input. Compare a caixa texto, com aspas, e a caixa nota, sem aspas.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: ler duas notas e mostrar a média</h3>
+<pre>n1 = float(input("Nota 1: "))
+n2 = float(input("Nota 2: "))
+print("Média:", (n1 + n2) / 2)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Ler cada nota e converter na hora: <code>float(input(...))</code>. O input devolve “6”, e o float transforma em 6.0.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Calcular a média dentro do print. Os parênteses fazem a soma acontecer antes da divisão.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Com 6 e 9 digitados, a tela mostra: <code>Média: 7.5</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que cada nota está dentro de <code>float(input(...))</code>, e não apenas de <code>input(...)</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque o input devolve texto, e com texto não dá para somar e dividir</button><button class="botao" type="button">Porque o float deixa a pergunta mais bonita</button><button class="botao" type="button">Porque o input só aceita números decimais</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Sem a conversão, <code>n1 + n2</code> juntaria dois textos, e a divisão por 2 daria erro." data-nao-texto="O input devolve texto, e com texto não dá para fazer conta. O <code>float</code> converte o texto em número decimal antes da soma e da divisão."></div>
+        </div>
+<h3>Pratique</h3>
+<div class="exercicio" data-escolha>
+          <p class="pergunta">O que aparece na tela com <code>print("Oi", 2 + 3)</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">Oi 2 + 3</button><button class="botao" type="button" data-ok>Oi 5</button><button class="botao" type="button">Oi5</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. O Python calcula 2 + 3 antes de mostrar e separa os itens por um espaço: Oi 5." data-nao-texto="A conta é feita antes de mostrar, e a vírgula separa os itens com um espaço. O resultado é <code>Oi 5</code>."></div>
+        </div>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Diga o que cada expressão é, para o Python.</p>
+          <div><div class="linha-classifica"><span><code>input("Nota: ")</code>, o que ele devolve</span><select data-resposta="texto" aria-label="O que o input devolve"><option value="">escolha</option><option value="texto">texto</option><option value="numero">número</option></select></div><div class="linha-classifica"><span><code>"8"</code></span><select data-resposta="texto" aria-label="O valor com aspas"><option value="">escolha</option><option value="texto">texto</option><option value="numero">número</option></select></div><div class="linha-classifica"><span><code>8</code></span><select data-resposta="numero" aria-label="O valor sem aspas"><option value="">escolha</option><option value="texto">texto</option><option value="numero">número</option></select></div><div class="linha-classifica"><span><code>int("8")</code></span><select data-resposta="numero" aria-label="O resultado do int"><option value="">escolha</option><option value="texto">texto</option><option value="numero">número</option></select></div><div class="linha-classifica"><span><code>float("7.5")</code></span><select data-resposta="numero" aria-label="O resultado do float"><option value="">escolha</option><option value="texto">texto</option><option value="numero">número</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Aspas indicam texto; <code>int</code> e <code>float</code> convertem texto em número." data-nao-texto="Os campos em vermelho estão trocados. Lembre: o que vem de <code>input</code> e o que está entre aspas é texto; o resultado de <code>int</code> ou <code>float</code> é número."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>print escreve na tela, input pergunta e devolve texto; int() e float() convertem texto em número.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que a nota lida com <code>input</code> precisa de <code>int</code> ou <code>float</code> antes de entrar numa conta.</p>
+        <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="secao" id="c4">
+        <p class="rotulo">Conceito 4 de 6</p>
+        <h2>Comentários</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">O Python executa o que está escrito depois do <code>#</code> numa linha.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Tudo depois do # até o fim da linha é ignorado pelo Python. Serve só para quem lê." data-nao-texto="O gabarito é Errado. Tudo depois do <code>#</code>, até o fim da linha, é ignorado pelo Python. Serve só para quem lê o código."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Comentário</b> é uma anotação dentro do código, escrita depois de um <b>#</b>. O Python a ignora por completo. Ela existe para explicar, para você e para quem ler depois.</p>
+<div class="prosa">
+          <p>Um comentário começa com <code>#</code> e vai até o fim da linha. Pode ocupar a linha inteira ou ficar no fim de uma linha de código. O Python <strong>pula tudo isso</strong>, como se não existisse.</p>
+          <p>Para que serve: <strong>1.</strong> explicar o <em>porquê</em> de uma escolha; <strong>2.</strong> deixar um lembrete para você mesmo; <strong>3.</strong> desligar uma linha por um tempo, para testar, sem apagá-la.</p>
+          <p>Um bom comentário diz o que o código <em>não</em> diz. Repetir o que a linha já mostra só atrapalha.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Linha</th><th>Avaliação</th></tr></thead>
+          <tbody>
+            <tr><td class="m">idade = 20  # guarda 20 em idade</td><td>ruim: repete o óbvio</td></tr>
+            <tr><td class="m">corte = 70  # nota de corte do edital (fictício)</td><td>bom: explica de onde vem o valor</td></tr>
+            <tr><td class="m"># total = total + 1</td><td>linha desligada para teste</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a anotação a lápis na margem da apostila: não faz parte da matéria, mas lembra por que você marcou aquele trecho. Na hora da revisão, ela economiza tempo.</p>
+<figure data-clip="py-comentario" style="--alt: 320px">
+          <figcaption>As linhas em cinza e itálico são comentários. Repare que o Python nunca para nelas.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: documentar um cálculo</h3>
+<pre># corte do edital (fictício)
+corte = 70
+total = 78  # 48 + 30
+# print(corte)
+print(total &gt;= corte)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Achar os comentários: tudo que vem depois de um <code>#</code>. São as linhas 1 e 4 e o final da linha 3.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Ver o que o Python executa: <code>corte = 70</code>, <code>total = 78</code> e <code>print(total &gt;= corte)</code>. A linha 4 está desligada.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Saída: <code>True</code>, porque 78 ≥ 70.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Qual comentário é mais útil para quem lê <code>corte = 70</code> daqui a seis meses?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button"><code># guarda 70 em corte</code></button><button class="botao" type="button" data-ok><code># nota de corte do edital (fictício)</code></button><button class="botao" type="button"><code># variável</code></button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Diz de onde vem o 70, o que o código sozinho não conta. Os outros só repetem a linha." data-nao-texto="O melhor é o que explica o porquê: de onde vem o 70. Os outros repetem o que a linha já mostra."></div>
+        </div>
+<h3>Pratique: o Python executa ou ignora?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Para cada linha, diga o que o Python faz com ela.</p>
+          <div><div class="linha-classifica"><span><code># print("oi")</code></span><select data-resposta="ignora" aria-label="Linha que começa com #"><option value="">escolha</option><option value="executa">executa a linha</option><option value="ignora">ignora a linha toda</option></select></div><div class="linha-classifica"><span><code>print("oi")</code></span><select data-resposta="executa" aria-label="Linha de print"><option value="">escolha</option><option value="executa">executa a linha</option><option value="ignora">ignora a linha toda</option></select></div><div class="linha-classifica"><span><code>print("oi")  # mostra oi</code></span><select data-resposta="executa" aria-label="Print com comentário no fim"><option value="">escolha</option><option value="executa">executa a linha</option><option value="ignora">ignora a linha toda</option></select></div><div class="linha-classifica"><span><code>print("# oi")</code></span><select data-resposta="executa" aria-label="Print com # dentro das aspas"><option value="">escolha</option><option value="executa">executa a linha</option><option value="ignora">ignora a linha toda</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Comentário no fim da linha não impede a execução do código antes dele, e um # dentro de aspas é só um caractere do texto." data-nao-texto="Os campos em vermelho estão trocados. O # só vira comentário fora de aspas. Se a linha começa com ele, é ignorada; se ele vem depois do código, só o que vem depois é ignorado."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Comentário é uma nota depois do #: o Python ignora, e quem lê entende o porquê.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> o que um bom comentário explica e por que repetir o que a linha já diz não ajuda.</p>
+        <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 5 -->
+      <section class="secao" id="c5">
+        <p class="rotulo">Conceito 5 de 6</p>
+        <h2>Indentação como bloco</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Em Python, o espaço no começo da linha é só estética.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. No Python, o recuo decide o que pertence a cada bloco. Mudar o recuo muda o que o programa faz." data-nao-texto="O gabarito é Errado. No Python, o recuo decide o que pertence a cada bloco: mudar o recuo muda o que o programa faz."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Em Python, uma linha que termina em <b>dois-pontos</b> abre um <b>bloco</b>: as linhas logo abaixo, <b>recuadas</b>, pertencem a ela. Quando o recuo acaba, o bloco acaba.</p>
+<div class="prosa">
+          <p>Lembra do <code>se ... então ... fimse</code> do pseudocódigo? Em Python não existe o <code>fimse</code>. Quem marca onde a decisão termina é o <strong>recuo</strong>: o espaço no começo da linha.</p>
+          <p>A regra: a linha do <code>if</code> termina em <strong>dois-pontos</strong>; as linhas seguintes que pertencem a ela vão <strong>recuadas em 4 espaços</strong>. A primeira linha que volta para a margem já está fora do bloco.</p>
+          <p>Se você esquecer o recuo depois dos dois-pontos, o Python para com <code>IndentationError</code> (erro de indentação). E o erro mais traiçoeiro é o que não dá erro: tirar o recuo de uma linha que devia estar no bloco muda o resultado sem avisar.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Pseudocódigo</th><th>Python</th></tr></thead>
+          <tbody>
+            <tr><td class="m">se media &gt;= 7 então</td><td class="m">if media &gt;= 7:</td></tr>
+            <tr><td class="m">&nbsp;&nbsp;escreva "aprovado"</td><td class="m">&nbsp;&nbsp;&nbsp;&nbsp;print("aprovado")</td></tr>
+            <tr><td class="m">senão</td><td class="m">else:</td></tr>
+            <tr><td class="m">&nbsp;&nbsp;escreva "reprovado"</td><td class="m">&nbsp;&nbsp;&nbsp;&nbsp;print("reprovado")</td></tr>
+            <tr><td class="m">fimse</td><td>(não existe: o recuo acabando marca o fim)</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É como os tópicos e subtópicos do edital: o recuo mostra o que faz parte de quê. Se um subtópico sai da margem, ele passa a ser um tópico novo, e o sentido da lista muda.</p>
+<figure data-clip="py-bloco" style="--alt: 280px">
+          <figcaption>A mesma nota, 62, em dois códigos que só diferem por um recuo. Veja o que muda na saída.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: aprovado ou reprovado pela média</h3>
+<pre>media = (6 + 9) / 2
+if media &gt;= 7:
+    print("aprovado")
+else:
+    print("reprovado")</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Calcular a média fora de qualquer bloco: <code>media = (6 + 9) / 2</code> dá 7.5.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Perguntar: <code>if media &gt;= 7:</code>. Os dois-pontos abrem o bloco do sim. 7.5 ≥ 7 é verdade.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Executar só o bloco do sim, <code>print("aprovado")</code>, e pular o bloco do <code>else:</code>. Saída: <code>aprovado</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o <code>else:</code> está na mesma coluna do <code>if</code>, e não recuado?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque o else pertence ao if, e não ao bloco do if: os dois ficam alinhados e cada um abre o seu bloco recuado</button><button class="botao" type="button">Porque o else é opcional e por isso fica fora</button><button class="botao" type="button">Porque o Python ignora o recuo do else</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O recuo mostra a hierarquia: if e else são irmãos, cada um com seu bloco." data-nao-texto="O recuo mostra a hierarquia. <code>if</code> e <code>else</code> são irmãos: ficam alinhados, e cada um abre o seu próprio bloco, recuado."></div>
+        </div>
+<h3>Pratique</h3>
+<div class="exercicio" data-escolha>
+          <p class="pergunta">O que acontece se a linha logo abaixo de <code>if nota &gt;= 70:</code> não tiver recuo?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">O Python ignora o if</button><button class="botao" type="button" data-ok>O Python para com um erro de indentação</button><button class="botao" type="button">O Python executa a linha só se a nota for maior que 70</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. Depois dos dois-pontos o Python espera um bloco recuado; sem ele, para com <code>IndentationError</code>." data-nao-texto="Depois dos dois-pontos o Python espera um bloco recuado. Sem recuo ele não adivinha: para com <code>IndentationError</code>."></div>
+        </div>
+<div class="exercicio" data-preencher>
+          <p class="pergunta">Leia o código e diga quantas vezes a palavra <b>aprovado</b> aparece na tela em cada caso.</p>
+          <pre>if nota &gt;= 70:
+    print("aprovado")
+print("aprovado")</pre>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>valor de nota</th><th>quantas vezes aparece “aprovado”</th></tr></thead>
+          <tbody>
+            <tr><td class="m">nota = 80</td><td><input data-resposta="2" inputmode="numeric" aria-label="Quantas vezes com nota 80"></td></tr>
+            <tr><td class="m">nota = 50</td><td><input data-resposta="1" inputmode="numeric" aria-label="Quantas vezes com nota 50"></td></tr>
+          </tbody></table>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. O primeiro print está no bloco do if e só roda com nota 70 ou mais; o segundo está fora do bloco e roda sempre. Com 80 aparecem os dois; com 50, só o de fora." data-nao-texto="Confira o recuo de cada print. O primeiro está recuado, então só roda se a pergunta der sim. O segundo voltou para a margem: está fora do bloco e roda sempre."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Dois-pontos abrem um bloco; as linhas recuadas pertencem a ele, e o fim do recuo é o fim do bloco.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que, em Python, mudar o recuo de uma linha pode mudar o resultado do programa sem dar erro.</p>
+        <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 6 -->
+      <section class="secao" id="c6">
+        <p class="rotulo">Conceito 6 de 6</p>
+        <h2>PEP 8</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler.</p>
+          <p class="pergunta">Qual nome de variável segue o guia de estilo do Python (PEP 8)?</p>
+          <div class="opcoes"><button class="botao" type="button"><code>NotaFinal</code></button><button class="botao" type="button" data-ok><code>nota_final</code></button><button class="botao" type="button"><code>notaFinal</code></button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Minúsculas, com sublinhado entre as palavras." data-nao-texto="O PEP 8 pede minúsculas com sublinhado entre as palavras: <code>nota_final</code>. Os outros dois são estilos de outras linguagens."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>O <b>PEP 8</b> é o guia de estilo do Python: regras de como escrever o código para que ele seja fácil de ler. O Python roda mesmo sem seguir, mas quase todo mundo segue, e isso faz o código de uma pessoa ser legível para outra.</p>
+<div class="prosa">
+          <p>O <strong>PEP 8</strong> é o guia oficial de estilo do Python. Ele não muda o que o programa faz, só a aparência. Como você vai ler muito mais código do que escrever, a aparência padronizada compensa.</p>
+          <p>As regras de que você mais vai precisar no começo estão na tabela abaixo. Valores fixos, que nunca mudam (as constantes), ganham nome em MAIÚSCULAS; você vê isso no módulo Variáveis e tipos.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Regra</th><th>Certo</th><th>Evite</th></tr></thead>
+          <tbody>
+            <tr><td>Nomes em minúsculas, com sublinhado</td><td class="m">nota_final</td><td class="m">NotaFinal</td></tr>
+            <tr><td>Nome que diz o que guarda</td><td class="m">nota_de_corte</td><td class="m">x</td></tr>
+            <tr><td>Espaço em volta de = e operadores</td><td class="m">total = a + b</td><td class="m">total=a+b</td></tr>
+            <tr><td>Sem espaço dentro dos parênteses</td><td class="m">print(total)</td><td class="m">print( total )</td></tr>
+            <tr><td>4 espaços por nível de recuo</td><td class="m">    print(x)</td><td class="m">  print(x)</td></tr>
+            <tr><td>Linhas curtas, até 79 caracteres</td><td colspan="2">quebre linhas longas em mais de uma</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a formatação padrão de um trabalho acadêmico: o conteúdo é o mesmo, mas com margens, fonte e títulos no padrão, quem corrige acha o que procura muito mais rápido.</p>
+<figure data-clip="py-pep8" style="--alt: 210px">
+          <figcaption>O mesmo código antes e depois de seguir o PEP 8. O destaque mostra o que mudou.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: arrumar um código bagunçado</h3>
+<pre>N1=6
+Media=(N1+9)/2
+print( Media )</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Renomear: <code>N1</code> vira <code>nota1</code> e <code>Media</code> vira <code>media</code>. Minúsculas e nomes que dizem o que guardam.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Espaçar: espaço em volta do <code>=</code> e dos operadores <code>+</code> e <code>/</code>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Tirar os espaços de dentro dos parênteses do print.</p><pre>nota1 = 6
+media = (nota1 + 9) / 2
+print(media)</pre></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que o código arrumado faz exatamente a mesma coisa que o bagunçado?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque o PEP 8 muda só a aparência, e não o que o Python calcula</button><button class="botao" type="button">Porque o Python ignora espaços e nomes</button><button class="botao" type="button">Porque os dois dão erro</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Os nomes foram trocados em todos os lugares e os espaços não mudam a conta. O resultado é o mesmo." data-nao-texto="O PEP 8 cuida da aparência, não do cálculo. Os nomes foram trocados em todos os lugares onde aparecem, e os espaços extras não mudam a conta."></div>
+        </div>
+<h3>Pratique: segue o PEP 8?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Para cada linha, diga se ela segue as regras de estilo que você viu.</p>
+          <div><div class="linha-classifica"><span><code>nota_final = 7</code></span><select data-resposta="sim" aria-label="nota_final = 7"><option value="">escolha</option><option value="sim">segue</option><option value="nao">não segue</option></select></div><div class="linha-classifica"><span><code>NotaFinal = 7</code></span><select data-resposta="nao" aria-label="NotaFinal = 7"><option value="">escolha</option><option value="sim">segue</option><option value="nao">não segue</option></select></div><div class="linha-classifica"><span><code>total=48+30</code></span><select data-resposta="nao" aria-label="total=48+30"><option value="">escolha</option><option value="sim">segue</option><option value="nao">não segue</option></select></div><div class="linha-classifica"><span><code>total = 48 + 30</code></span><select data-resposta="sim" aria-label="total = 48 + 30"><option value="">escolha</option><option value="sim">segue</option><option value="nao">não segue</option></select></div><div class="linha-classifica"><span><code>print( total )</code></span><select data-resposta="nao" aria-label="print( total )"><option value="">escolha</option><option value="sim">segue</option><option value="nao">não segue</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Nomes em minúsculas com sublinhado, espaço em volta de = e dos operadores, e nada de espaço dentro dos parênteses." data-nao-texto="Os campos em vermelho estão trocados. Confira três coisas: o nome está em minúsculas com sublinhado? Há espaço em volta do = e das contas? Há espaço sobrando dentro dos parênteses?"></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>PEP 8 é o guia de estilo do Python: nomes em minúsculas com sublinhado, espaços em volta dos operadores e recuo de 4 espaços.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que seguir um padrão de estilo ajuda, mesmo que o Python rode o código sem ele.</p>
+        <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- TD -->
+      <section class="secao" id="td">
+        <p class="rotulo">Tarefa de domínio do módulo</p>
+        <h2>A lista de aprovados em Python</h2>
+        <div class="prosa">
+          <p>Sem olhar as seções acima, escreva um script chamado <code>aprovado.py</code> que classifica um candidato do concurso fictício. O programa pergunta o nome, a nota da objetiva e a nota da discursiva (as notas são números inteiros). Depois mostra o nome com o total de pontos e diz se ele foi aprovado ou reprovado. A nota de corte é 70.</p>
+          <p><strong>1.</strong> Escreva o script, com pelo menos um comentário que explique o porquê do 70. <strong>2.</strong> Rode no computador com os dados de Ana (48 e 30) e de Hugo (36 e 22). <strong>3.</strong> Confira se a saída bate com a lista da lição “Comece por aqui”.</p>
+        </div>
+        <p class="explique">Mande o script e as duas saídas no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
+        <details class="cartao">
+          <summary>Ver uma resposta possível (só depois de tentar)</summary>
+          <pre># nota de corte do edital (fictício)
+corte = 70
+nome = input("Nome: ")
+objetiva = int(input("Objetiva: "))
+discursiva = int(input("Discursiva: "))
+total = objetiva + discursiva
+print(nome, "fez", total, "pontos")
+if total &gt;= corte:
+    print("aprovado")
+else:
+    print("reprovado")</pre>
+          <p>Com Ana (48 e 30): <code>Ana fez 78 pontos</code> e <code>aprovado</code>. Com Hugo (36 e 22): <code>Hugo fez 58 pontos</code> e <code>reprovado</code>.</p>
+        </details>
+        <button class="botao" type="button" data-marcar="td">Marcar a tarefa como feita</button>
+      </section>
+    </div>
+  </main>
+</div>
+<script src="../figuras.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="clipes-py.js" charset="utf-8"></script>
+<script>
+(function () {
+  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
+  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
+  window.Clip.iniciar();
+
+  function mostrar(retorno, ok) {
+    retorno.hidden = false;
+    retorno.className = "retorno " + (ok ? "ok" : "nao");
+    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
+  }
+
+  document.querySelectorAll("[data-escolha]").forEach((ex) => {
+    const botoes = ex.querySelectorAll(".opcoes .botao");
+    botoes.forEach((b) => b.addEventListener("click", () => {
+      botoes.forEach((x) => {
+        x.disabled = true;
+        if (x.hasAttribute("data-ok")) x.classList.add("certo");
+      });
+      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
+      b.setAttribute("aria-pressed", "true");
+      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
+    }));
+  });
+
+  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
+
+  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      let tudo = true;
+      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
+        const aceitas = campo.dataset.resposta.split("|");
+        const ok = aceitas.includes(normalizar(campo.value));
+        campo.classList.toggle("ok", ok);
+        campo.classList.toggle("nao", !ok);
+        if (!ok) tudo = false;
+      });
+      mostrar(ex.querySelector(".retorno"), tudo);
+    });
+  });
+
+  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
+    const banco = ex.querySelector("[data-banco]");
+    const montagem = ex.querySelector("[data-montagem]");
+    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
+      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
+    }));
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
+      const certa = ex.dataset.resposta.split("|");
+      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
+      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
+      mostrar(ex.querySelector(".retorno"), ok);
+    });
+  });
+
+  const CHAVE = "dominio:licao:PY.01";
+  let feitos = [];
+  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
+  function pintar() {
+    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
+    document.querySelectorAll("[data-marcar]").forEach((b) => {
+      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
+    });
+  }
+  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
+    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
+    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
+    pintar();
+  }));
+  pintar();
+
+  const links = [...document.querySelectorAll("[data-conceito]")];
+  const obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
+
+  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
+  const secoes = [...document.querySelectorAll(".secao")];
+  const nomes = ["Interpretador e REPL", "Script", "print e input", "Comentários", "Indentação como bloco", "PEP 8", "Tarefa de domínio"];
+  const verTudo = document.getElementById("ver-tudo");
+  const barra = document.getElementById("passos-licao");
+  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
+  const feito = (ex) => {
+    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
+    const r = ex.querySelector(".retorno");
+    return !!r && r.classList.contains("ok");
+  };
+  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
+  secoes.forEach((s, i) => {
+    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-PY">Voltar para a trilha</a>'}</div>`);
+    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
+    const prox = s.querySelector("[data-proximo]");
+    if (prox) prox.addEventListener("click", () => ir(i + 1));
+  });
+  function atualizar() {
+    secoes.forEach((s, i) => {
+      const ok = completo(i);
+      const prox = s.querySelector("[data-proximo]");
+      if (prox) prox.disabled = !ok && !verTudo.checked;
+      const est = s.querySelector(".estado-licao");
+      const total = s.querySelectorAll(".exercicio").length;
+      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
+      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
+      est.classList.toggle("ok", ok && total > 0);
+    });
+    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
+    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
+  }
+  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ir(i) {
+    const fazer = () => {
+      atual = Math.max(0, Math.min(secoes.length - 1, i));
+      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
+      atualizar();
+      secoes[atual].scrollIntoView({ block: "start" });
+    };
+    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
+    else fazer();
+  }
+  let espera = null;
+  document.addEventListener("click", (e) => {
+    const ex = e.target.closest(".exercicio");
+    if (!ex) return;
+    setTimeout(() => {
+      atualizar();
+      const i = secoes.indexOf(ex.closest(".secao"));
+      const certo = ex.querySelector(".retorno.ok");
+      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
+        const est = secoes[i].querySelector(".estado-licao");
+        est.textContent = "Tudo certo. Indo para o próximo conceito...";
+        clearTimeout(espera);
+        espera = setTimeout(() => ir(i + 1), 2200);
+      }
+    }, 0);
+  });
+  window.addEventListener("hashchange", () => {
+    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
+    if (k >= 0) ir(k);
+  });
+  verTudo.addEventListener("change", () => ir(atual));
+  ir(atual);
+})();
+</script>
+</body>
+</html>

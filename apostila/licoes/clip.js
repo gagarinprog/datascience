@@ -115,7 +115,7 @@
       titulo: o.titulo,
       passos,
       html: () => `<div class="exec">
-        <ol class="exec-codigo">${o.codigo.map((c, k) => `<li data-l="${k}"><span class="n">${k + 1}</span><code>${esc(c)}</code></li>`).join("")}</ol>
+        <ol class="exec-codigo">${o.codigo.map((c, k) => `<li data-l="${k}"${/^\s*#/.test(c) ? ' class="coment"' : ""}><span class="n">${k + 1}</span><code>${esc(c)}</code></li>`).join("")}</ol>
         <div class="exec-mem">
           <p class="exec-tit">Memória do computador</p>
           <div class="exec-vars">${o.vars.map((v) => `<div class="var" data-v="${v}"><small>${v}</small><b>—</b></div>`).join("")}</div>
