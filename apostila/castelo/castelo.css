@@ -84,7 +84,6 @@ body { min-height: 100vh; }
 .lab-salas li small { font-size: 12.5px; color: var(--texto-2); white-space: nowrap; }
 .lab-salas li.feita small { color: var(--certo); }
 .lab-salas li.fechada { color: var(--texto-2); }
-.lab-salas li.fechada span { opacity: 0.7; }
 .lab-salas li.lab-nivel-item { background: var(--folha-2); }
 .lab-salas li.lab-nivel-item a, .lab-salas li.lab-nivel-item span { font-size: 14.5px; }
 
@@ -123,7 +122,7 @@ body { min-height: 100vh; }
 .lab-tarefa h3 > span { font-family: var(--f-codigo); font-size: 12.5px; color: var(--texto-2); border: 1px solid var(--linha-forte); border-radius: 6px; min-width: 24px; text-align: center; padding: 0 5px; }
 .lab-tarefa.concluida { border-color: color-mix(in srgb, var(--certo) 40%, var(--linha)); }
 .lab-tarefa.concluida h3 > span { color: var(--certo); border-color: color-mix(in srgb, var(--certo) 50%, var(--linha)); }
-.lab-tarefa.trancada { opacity: 0.6; }
+.lab-tarefa.trancada { border-style: dashed; background: transparent; }
 .lab-check { font-family: var(--f-ui); font-size: 12px; font-weight: 500; color: var(--certo); }
 .lab-enunciado { font-family: var(--f-leitura); font-size: 16px; line-height: 1.55; }
 .lab-tarefa .pergunta { font-family: var(--f-leitura); font-size: 16.5px; line-height: 1.5; }

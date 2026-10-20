@@ -548,7 +548,7 @@
     const desf = palco.querySelector('[data-a="desfazer"]');
     if (desf) desf.addEventListener("click", async () => {
       if (!confirm("Recomeçar esta sala? O que ela criou no banco é apagado e os exercícios voltam a ficar em aberto.")) return;
-      await (await banco()).exec(s.desfazer);
+      await (await banco()).exec(s.desfazer).catch(() => {}); // o banco pode já não ter a tabela
       for (const ant of C.salas.slice(0, i)) await aplicarEstado(ant);
       s.tarefas.forEach((t) => { delete estado.tarefas[`${s.id}.${t.id}`]; delete estado.codigos[`${s.id}.${t.id}`]; });
       salvar(); render();
