@@ -1,0 +1,89 @@
+/* Tema "Impresso": tema alternativo, escolhido pelo estudante (tema.js).
+   Papel claro e frio, duas tintas (azul e laranja), traço de tinta de 1,5 px, cantos de 4 px,
+   sombra chapada deslocada e grão de impressão por cima de tudo. O laranja é só enfeite de forma
+   (sombras, detalhes): nunca cor de texto, porque não passa no contraste.
+   Carregado depois das outras folhas; as regras levam :root[data-tema] para vencer as das páginas. */
+
+:root[data-tema="impresso"] {
+  --papel: #eceef2; --tinta-preta: #1b2131; --tinta-azul: #2f4fa8; --tinta-laranja: #ff7a3d;
+  --fundo: var(--papel); --folha: #f7f8fa; --folha-2: #e6e9ef;
+  --linha: #b8bdc8; --linha-forte: var(--tinta-preta); --linha-hover: var(--tinta-preta);
+  --texto: var(--tinta-preta); --texto-2: #4a5265;
+  --tinta: var(--tinta-azul); --tinta-suave: #dde4f4; --sobre-tinta: #ffffff; --sobre-cor: #ffffff; --tinta-hover: #243f8a;
+  --certo: #1e7a45; --certo-suave: #d9eee0; --erro: #b4233a; --erro-suave: #f6dfe3; --aviso: #8a4f00; --aviso-suave: #f9ead0;
+  --azul-cor: var(--tinta-azul); --azul-cv: var(--tinta-azul); --metal: var(--tinta-azul); --metal-aresta: var(--tinta-preta);
+  --metal-barra: var(--tinta-azul); --metal-suave: var(--folha);
+  --sombra: 4px 4px 0 var(--tinta-laranja);
+  --r1: 3px; --r2: 4px; --r3: 4px;
+  --leito: #d3d8e2; --faixa: #f7f8fa;
+  color-scheme: light;
+}
+
+/* grão de impressão por cima da página inteira */
+:root[data-tema="impresso"] body::after {
+  content: ""; position: fixed; inset: 0; z-index: 2147483000; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px; mix-blend-mode: multiply; opacity: 0.32;
+}
+
+:root[data-tema="impresso"] h1, :root[data-tema="impresso"] h2, :root[data-tema="impresso"] .titulo-pagina { font-weight: 800; letter-spacing: -0.02em; }
+/* sem os títulos com acabamento metálico */
+:root[data-tema="impresso"] .titulo-pagina, :root[data-tema="impresso"] .tema-exp .mat-titulo h1, :root[data-tema="impresso"] .tema-exp .passo-titulo { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--texto); }
+
+/* ---------- botões: tinta azul com sombra laranja; os secundários, papel com traço ---------- */
+:root[data-tema="impresso"] .btn, :root[data-tema="impresso"] .botao, :root[data-tema="impresso"] .c-ok {
+  background: var(--folha); color: var(--texto); border: 1.5px solid var(--tinta-preta); border-radius: 4px;
+  box-shadow: none; text-shadow: none; filter: none; transform: none;
+}
+:root[data-tema="impresso"] .btn:hover:not(:disabled), :root[data-tema="impresso"] .botao:hover:not(:disabled) { background: #ffffff; border-color: var(--tinta-preta); transform: none; }
+:root[data-tema="impresso"] .btn-3d, :root[data-tema="impresso"] .tema-exp .btn-3d, :root[data-tema="impresso"] .botao.primario,
+:root[data-tema="impresso"] .c-ok[aria-pressed="true"], :root[data-tema="impresso"] .prever-ver, :root[data-tema="impresso"] .clipe-botao {
+  background: var(--tinta-azul); background-image: none; color: #ffffff; border: 1.5px solid var(--tinta-preta); border-radius: 4px;
+  box-shadow: 3px 3px 0 var(--tinta-laranja); text-shadow: none; filter: none;
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out, background-color 120ms;
+}
+:root[data-tema="impresso"] .btn-3d:hover:not(:disabled), :root[data-tema="impresso"] .tema-exp .btn-3d:hover:not(:disabled), :root[data-tema="impresso"] .botao.primario:hover:not(:disabled) {
+  background: #2a469a; background-image: none; border-color: var(--tinta-preta); transform: none; filter: none;
+}
+:root[data-tema="impresso"] .btn-3d:active:not(:disabled), :root[data-tema="impresso"] .botao.primario:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--tinta-laranja); }
+:root[data-tema="impresso"] .btn-3d:disabled, :root[data-tema="impresso"] .botao.primario:disabled { background: #c9ced8; color: #4a5265; box-shadow: none; }
+:root[data-tema="impresso"] .botao.certo { background: var(--certo-suave); border-color: var(--certo); box-shadow: none; }
+:root[data-tema="impresso"] .botao.errado { background: var(--erro-suave); border-color: var(--erro); box-shadow: none; }
+:root[data-tema="impresso"] .btn-fantasma { background: transparent; border-color: transparent; }
+
+/* ---------- cartões: traço de tinta; os de exercício ganham a sombra deslocada ---------- */
+:root[data-tema="impresso"] .cartao, :root[data-tema="impresso"] .sub, :root[data-tema="impresso"] .cartao-link, :root[data-tema="impresso"] .painel,
+:root[data-tema="impresso"] .fonte, :root[data-tema="impresso"] .alvo, :root[data-tema="impresso"] .cuidado, :root[data-tema="impresso"] .trilha-cab,
+:root[data-tema="impresso"] .trilha-fim, :root[data-tema="impresso"] .resumo, :root[data-tema="impresso"] .clipe, :root[data-tema="impresso"] .figura-jogo,
+:root[data-tema="impresso"] .lab-cab, :root[data-tema="impresso"] .lab-cartao, :root[data-tema="impresso"] .lab-salas, :root[data-tema="impresso"] .lab-painel,
+:root[data-tema="impresso"] figure, :root[data-tema="impresso"] .explique, :root[data-tema="impresso"] .vitoria-cartao, :root[data-tema="impresso"] .guia-menu {
+  border: 1.5px solid var(--tinta-preta); border-radius: 4px; box-shadow: none;
+}
+:root[data-tema="impresso"] .exercicio, :root[data-tema="impresso"] .lab-tarefa, :root[data-tema="impresso"] .lab-slides {
+  border: 1.5px solid var(--tinta-preta); border-radius: 4px; box-shadow: 4px 4px 0 var(--tinta-laranja); background: var(--folha);
+}
+:root[data-tema="impresso"] .lab-tarefa.trancada { box-shadow: none; border-style: dashed; background: transparent; }
+:root[data-tema="impresso"] .explique { box-shadow: inset 5px 0 0 var(--tinta-azul); }
+:root[data-tema="impresso"] pre, :root[data-tema="impresso"] .lab-codigo, :root[data-tema="impresso"] code { background: #e6e9ef; border-color: var(--linha); }
+:root[data-tema="impresso"] .tabela th, :root[data-tema="impresso"] .tabela td { border-color: var(--linha); }
+:root[data-tema="impresso"] .tabela th { background: #e6e9ef; color: var(--texto-2); }
+
+/* peças que eram metal viram tinta chapada */
+:root[data-tema="impresso"] .tema-exp .mat-icone, :root[data-tema="impresso"] .tema-exp .sub.aberto .medalha, :root[data-tema="impresso"] .tema-exp .sub.feita .medalha,
+:root[data-tema="impresso"] .tema-exp .alvo .ic-a, :root[data-tema="impresso"] .tema-exp .cartao-link .ic-a, :root[data-tema="impresso"] .tema-exp .mod.dominado .mod-marca,
+:root[data-tema="impresso"] .tema-exp .mod.proximo .mod-marca, :root[data-tema="impresso"] .cartao-link .ic-a {
+  background: var(--tinta-azul); color: #ffffff; border: 1.5px solid var(--tinta-preta); box-shadow: 2px 2px 0 var(--tinta-laranja);
+}
+:root[data-tema="impresso"] .barra-fina i, :root[data-tema="impresso"] .seg::before, :root[data-tema="impresso"] .passos-barra button.feito i { background: var(--tinta-azul); animation: none; }
+
+/* o castelo no impresso: desenho em tinta azul, contorno deslocado em laranja */
+:root[data-tema="impresso"] .cst-svg .parte.pronta > :not(title) { fill: var(--tinta-azul); fill-opacity: 0.82; stroke: var(--tinta-preta); }
+:root[data-tema="impresso"] .cst-svg .parte.pronta .cst-det { fill: none; stroke: #eceef2; }
+:root[data-tema="impresso"] .cst-svg .parte.proxima > :not(title) { stroke: var(--tinta-laranja); }
+:root[data-tema="impresso"] .cst-svg .parte > :not(title) { stroke: #8f96a6; }
+:root[data-tema="impresso"] .cst-svg .cst-agua { stroke: var(--tinta-azul); }
+
+/* amostras no menu de tema (valem nos dois temas) */
+.tema-amostra { width: 40px; height: 40px; border-radius: 8px; flex: none; border: 1px solid var(--linha-forte); }
+.tema-amostra-grafite { background: linear-gradient(135deg, #0d1017 0 55%, #2457d4 55% 100%); }
+.tema-amostra-impresso { background: linear-gradient(135deg, #eceef2 0 55%, #2f4fa8 55% 78%, #ff7a3d 78% 100%); border-color: #1b2131; }

@@ -15,6 +15,8 @@
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
 <link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
+<link rel="stylesheet" href="../tema.css">
+<script src="../tema.js"></script>
 </head>
 <body class="tema-exp">
 <a class="lab-pular-conteudo" href="#lab-palco">Pular para o conteúdo</a>
@@ -22,6 +24,7 @@
   <nav class="lab-trilha" aria-label="Navegação">
     <a href="../index.html#mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Mapa de formação</a>
     <a href="#">Castelo</a>
+    <button type="button" class="lab-tema" id="lab-tema" aria-pressed="false">Tema impresso</button>
   </nav>
   <div class="lab-cab">
     <div class="lab-cab-txt">
@@ -39,6 +42,15 @@
 <script src="comparar.js" charset="utf-8"></script>
 <script src="salas.js" charset="utf-8"></script>
 <script src="castelo.js" charset="utf-8"></script>
+<script>
+  // alterna entre o tema padrão (grafite) e o impresso; a escolha vale para toda a apostila
+  (function () {
+    const b = document.getElementById("lab-tema");
+    const pintar = () => { const imp = window.Tema && window.Tema.atual() === "impresso"; b.setAttribute("aria-pressed", String(imp)); };
+    b.addEventListener("click", () => { if (window.Tema) window.Tema.definir(window.Tema.atual() === "impresso" ? "grafite" : "impresso"); pintar(); });
+    pintar();
+  })();
+</script>
 <script>
   // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
   if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {

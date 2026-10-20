@@ -990,11 +990,14 @@
     const atualizar = () => {
       mini.innerHTML = guia().expr.padrao;
       mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
-      menu.innerHTML = `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" role="menuitemradio" aria-checked="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
+      const tema = window.Tema ? window.Tema.atual() : "grafite";
+      menu.innerHTML = `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" role="menuitemradio" aria-checked="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" role="menuitemradio" aria-checked="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
     };
     const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });
     menu.addEventListener("click", (e) => {
+      const t = e.target.closest("[data-tema-opcao]");
+      if (t && window.Tema) { window.Tema.definir(t.dataset.temaOpcao); atualizar(); return; }
       const b = e.target.closest("[data-guia]");
       if (!b) return;
       guiaId = b.dataset.guia;
