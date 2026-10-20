@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Operadores e expressões · Lógica de programação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
+<style>
+  .passos-licao { grid-template-columns: repeat(7, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+</head>
+<body>
+<div class="casca">
+  <nav class="lateral" aria-label="Conceitos da lição">
+    <div class="marca"><b>Lógica de programação</b><span>Módulo 4 · Operadores e expressões</span></div>
+    <a href="../index.html#trilha-LOG"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
+    <a href="INICIO.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg></span>Comece por aqui</a>
+    <div class="grupo">Conceitos</div>
+    <a href="#c1" data-conceito="c1"><span class="n">01</span>Operadores aritméticos</a>
+    <a href="#c2" data-conceito="c2"><span class="n">02</span>Divisão inteira e resto</a>
+    <a href="#c3" data-conceito="c3"><span class="n">03</span>Operadores relacionais</a>
+    <a href="#c4" data-conceito="c4"><span class="n">04</span>Operadores lógicos</a>
+    <a href="#c5" data-conceito="c5"><span class="n">05</span>Precedência</a>
+    <a href="#c6" data-conceito="c6"><span class="n">06</span>Curto-circuito</a>
+    <a href="#td" data-conceito="td"><span class="n">TD</span>Tarefa de domínio</a>
+  </nav>
+
+  <main class="conteudo">
+    <div class="coluna">
+      <header class="bloco">
+        <p class="sobretitulo">Lógica de programação · Módulo 4 de 10</p>
+        <h1 class="titulo-pagina">Operadores e expressões</h1>
+        <p class="lede">Programas passam o tempo todo calculando e decidindo: somar notas, aplicar pesos, comparar com o corte, juntar duas regras. Este módulo ensina os operadores que fazem isso e a ordem exata em que o Python os resolve.</p>
+        <p class="simples"><b>Antes de começar</b>Esta lição usa o que você viu em <a href="LOG.02.html">Variáveis e tipos</a>. Os exemplos usam o concurso fictício da lição <a href="INICIO.html">Comece por aqui</a>: todos os nomes, notas e regras são inventados. Para testar, abra o terminal e digite <code>python</code> (ou <code>python3</code>).</p>
+        <p class="sobretitulo">6 conceitos e uma tarefa · um passo por vez: termine os exercícios para avançar</p>
+        <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
+      </header>
+      <nav class="passos-barra passos-licao" id="passos-licao" aria-label="Passos da lição"></nav>
+
+      <!-- 1 -->
+      <section class="secao" id="c1">
+        <p class="rotulo">Conceito 1 de 6</p>
+        <h2>Operadores aritméticos</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">Quanto dá <code>2 ** 3</code> em Python?</p>
+          <div class="opcoes"><button class="botao" type="button">6</button><button class="botao" type="button" data-ok>8</button><button class="botao" type="button">5</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. <code>**</code> é potência: 2 elevado a 3, ou seja, 2 × 2 × 2 = 8." data-nao-texto="<code>**</code> é potência, e não multiplicação: 2 elevado a 3 é 2 × 2 × 2 = 8."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Os <b>operadores aritméticos</b> fazem contas: <b>+</b> soma, <b>-</b> subtrai, <b>*</b> multiplica, <b>/</b> divide e <b>**</b> eleva a uma potência. Uma <b>expressão</b> é qualquer combinação deles que o Python reduz a um valor.</p>
+<div class="prosa">
+          <p>No teclado não existe o sinal × nem o ÷, então o Python usa <code>*</code> para multiplicar e <code>/</code> para dividir. A potência é <code>**</code>: <code>3 ** 2</code> é 3 ao quadrado.</p>
+          <p>Lembre do módulo anterior: a divisão com <code>/</code> sempre devolve <code>float</code>. <code>10 / 2</code> é <code>5.0</code>, e não 5.</p>
+          <p>Uma <strong>expressão</strong> é tudo o que o Python consegue reduzir a um único valor: <code>48 + 30</code>, <code>total / 5</code>, <code>nota &gt;= 70</code>. Quando você escreve uma expressão, o Python a calcula antes de usar o resultado.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Operador</th><th>Faz</th><th>Exemplo</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td class="m">+</td><td>soma</td><td class="m">48 + 30</td><td class="m">78</td></tr>
+            <tr><td class="m">-</td><td>subtração</td><td class="m">78 - 70</td><td class="m">8</td></tr>
+            <tr><td class="m">*</td><td>multiplicação</td><td class="m">48 * 2</td><td class="m">96</td></tr>
+            <tr><td class="m">/</td><td>divisão (sempre decimal)</td><td class="m">78 / 2</td><td class="m">39.0</td></tr>
+            <tr><td class="m">**</td><td>potência</td><td class="m">3 ** 2</td><td class="m">9</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a nota com pesos do edital: a discursiva costuma valer mais que a objetiva. Para calcular, você multiplica cada nota pelo peso, soma e divide pela soma dos pesos. Cada uma dessas etapas é um operador.</p>
+<figure data-clip="ponderada" style="--alt: 360px">
+          <figcaption>A nota com pesos, linha por linha. As multiplicações acontecem antes da soma.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: a média de três simulados</h3>
+<pre>s1 = 62
+s2 = 70
+s3 = 75
+media = (s1 + s2 + s3) / 3
+print(media)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Somar dentro dos parênteses: 62 + 70 + 75 = 207.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Dividir pela quantidade: 207 / 3 = 69.0. O resultado é decimal, porque a divisão foi com <code>/</code>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>O print mostra <code>69.0</code>. Faltou 1 ponto para a média 70.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que a soma precisa estar entre parênteses?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque sem eles só o s3 seria dividido por 3</button><button class="botao" type="button">Porque o Python exige parênteses em toda conta</button><button class="botao" type="button">Porque o / só funciona com parênteses</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Sem parênteses, a divisão viria antes da soma: <code>s1 + s2 + s3 / 3</code> daria 62 + 70 + 25.0 = 157.0." data-nao-texto="A divisão vem antes da soma. Sem parênteses, só o s3 seria dividido: 62 + 70 + 25.0 = 157.0. Os parênteses fazem a soma acontecer primeiro."></div>
+        </div>
+<h3>Pratique: calcule à mão</h3>
+<div class="exercicio" data-preencher>
+          <p class="pergunta">Escreva o resultado de cada expressão, como o Python mostraria. Use ponto para decimal.</p>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>expressão</th><th>resultado</th></tr></thead>
+          <tbody><tr><td class="m">10 / 4</td><td><input data-resposta="2.5" aria-label="Resultado de 10 / 4"></td></tr><tr><td class="m">3 ** 2</td><td><input data-resposta="9" aria-label="Resultado de 3 ** 2"></td></tr><tr><td class="m">78 - 70</td><td><input data-resposta="8" aria-label="Resultado de 78 - 70"></td></tr><tr><td class="m">10 / 2</td><td><input data-resposta="5.0" aria-label="Resultado de 10 / 2"></td></tr></tbody></table>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. Repare que <code>10 / 2</code> dá <code>5.0</code>: com <code>/</code>, o resultado é sempre decimal." data-nao-texto="Confira os campos em vermelho. <code>**</code> é potência, e a divisão com <code>/</code> sempre mostra a parte decimal, mesmo quando é exata: <code>10 / 2</code> é <code>5.0</code>."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>+ - * / ** fazem as contas; a divisão com / sempre dá decimal.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> como calcular uma nota com pesos usando os operadores do Python.</p>
+        <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 2 -->
+      <section class="secao" id="c2">
+        <p class="rotulo">Conceito 2 de 6</p>
+        <h2>Divisão inteira e resto</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler.</p>
+          <p class="pergunta">Quanto dá <code>7 // 2</code> e <code>7 % 2</code>?</p>
+          <div class="opcoes"><button class="botao" type="button" data-ok>3 e 1</button><button class="botao" type="button">3.5 e 0</button><button class="botao" type="button">4 e 1</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. <code>//</code> é a divisão inteira (3) e <code>%</code> é o resto (1)." data-nao-texto="<code>//</code> é a divisão inteira: quantas vezes o 2 cabe inteiro no 7 (3 vezes). <code>%</code> é o que sobra: 7 - 6 = 1."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>//</b> é a <b>divisão inteira</b>: quantos grupos completos cabem. <b>%</b> é o <b>resto</b>: o que sobra depois de formar os grupos. Juntos, respondem perguntas do tipo “quantas salas ficam cheias e quantos candidatos sobram?”.</p>
+<div class="prosa">
+          <p>A divisão comum, <code>/</code>, dá o valor exato com casas decimais. Muitas vezes, porém, só interessa a parte inteira: quantas salas, quantas horas, quantas caixas. Para isso existe <code>//</code>.</p>
+          <p>O <code>%</code> (lê-se “módulo” ou “resto”) devolve o que sobrou. Dois usos clássicos: <code>n % 2 == 0</code> diz se um número é par, e <code>minutos % 60</code> separa os minutos que sobram depois das horas cheias.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Pergunta</th><th>Expressão</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>130 minutos são quantas horas cheias?</td><td class="m">130 // 60</td><td class="m">2</td></tr>
+            <tr><td>E quantos minutos sobram?</td><td class="m">130 % 60</td><td class="m">10</td></tr>
+            <tr><td>O número 14 é par?</td><td class="m">14 % 2 == 0</td><td class="m">True</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É dividir a conta do bar pelo Pix: <code>total // pessoas</code> dá o valor inteiro de cada um, e <code>total % pessoas</code> é o troco que alguém completa. No estudo, é saber quantos blocos de 25 minutos cabem nas suas 2 horas livres.</p>
+<figure data-clip="divresto" style="--alt: 300px">
+          <figcaption>Candidatos entram em salas de 10 lugares. Duas salas enchem e 3 pessoas sobram.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: blocos de estudo de 25 minutos</h3>
+<pre>livre = 130
+blocos = livre // 25
+sobra = livre % 25
+print(blocos, sobra)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Quantos blocos de 25 cabem em 130? 25 × 5 = 125, e 25 × 6 = 150 já passa. Então <code>130 // 25</code> é 5.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Quanto sobra? 130 - 125 = 5. Então <code>130 % 25</code> é 5.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>O print mostra <code>5 5</code>: cinco blocos completos e cinco minutos livres.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Por que <code>130 // 25</code> dá 5, e não 5.2?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque // descarta a parte decimal e conta só os grupos completos</button><button class="botao" type="button">Porque o Python arredonda 5.2 para baixo em toda divisão</button><button class="botao" type="button">Porque 25 não divide 130</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A divisão inteira conta grupos completos; o que não completa um grupo vai para o resto." data-nao-texto="O <code>//</code> conta só os grupos completos: 5 blocos de 25. O pedaço que não completa um bloco (5 minutos) é o resto, que o <code>%</code> devolve."></div>
+        </div>
+<h3>Pratique</h3>
+<div class="exercicio" data-preencher>
+          <p class="pergunta">Escreva o resultado de cada expressão.</p>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>expressão</th><th>resultado</th></tr></thead>
+          <tbody><tr><td class="m">17 // 5</td><td><input data-resposta="3" aria-label="Resultado de 17 // 5"></td></tr><tr><td class="m">17 % 5</td><td><input data-resposta="2" aria-label="Resultado de 17 % 5"></td></tr><tr><td class="m">130 // 60</td><td><input data-resposta="2" aria-label="Resultado de 130 // 60"></td></tr><tr><td class="m">130 % 60</td><td><input data-resposta="10" aria-label="Resultado de 130 % 60"></td></tr></tbody></table>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. 17 = 5 × 3 + 2 e 130 = 60 × 2 + 10: o // é quantas vezes cabe, o % é o que sobra." data-nao-texto="Confira os campos em vermelho. Pergunte: quantas vezes o divisor cabe inteiro (isso é o <code>//</code>)? E quanto falta para chegar ao número original (isso é o <code>%</code>)?"></div>
+        </div>
+<div class="exercicio" data-escolha>
+          <p class="pergunta">Qual expressão diz se o número <code>n</code> é par?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button"><code>n / 2 == 0</code></button><button class="botao" type="button" data-ok><code>n % 2 == 0</code></button><button class="botao" type="button"><code>n // 2 == 0</code></button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. Número par dividido por 2 não deixa resto." data-nao-texto="Par é o número que, dividido por 2, deixa resto zero: <code>n % 2 == 0</code>."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>// conta os grupos completos e % devolve o que sobra.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> como você usaria // e % para transformar 200 minutos em horas e minutos.</p>
+        <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 3 -->
+      <section class="secao" id="c3">
+        <p class="rotulo">Conceito 3 de 6</p>
+        <h2>Operadores relacionais</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">A linha <code>nota = 70</code> compara a nota com 70.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Com um sinal só, a linha guarda 70 em nota. Para comparar, são dois sinais: <code>nota == 70</code>." data-nao-texto="O gabarito é Errado. Um sinal de igual guarda o valor (atribuição). Para perguntar se é igual, são dois: <code>nota == 70</code>."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Os <b>operadores relacionais</b> fazem perguntas de comparação, e a resposta é sempre <b>True</b> ou <b>False</b>: igual (<b>==</b>), diferente (<b>!=</b>), maior (<b>&gt;</b>), menor (<b>&lt;</b>), maior ou igual (<b>&gt;=</b>) e menor ou igual (<b>&lt;=</b>).</p>
+<div class="prosa">
+          <p>Comparar é perguntar. <code>nota &gt;= 70</code> pergunta “a nota alcança o corte?”, e o Python responde com um <code>bool</code>: <code>True</code> ou <code>False</code>. Esse valor pode ser guardado numa variável, como <code>aprovado = nota &gt;= 70</code>.</p>
+          <p>O erro mais comum de quem começa: confundir <code>=</code> (guardar) com <code>==</code> (comparar). Outro: comparar número com texto. <code>70 == "70"</code> é <code>False</code>, porque são tipos diferentes.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a correção do gabarito: para cada questão, a pergunta “a sua resposta é igual à do gabarito?” só tem duas respostas, sim ou não. A nota sai de contar quantos “sim” apareceram.</p>
+<figure data-clip="comparar" style="--alt: 330px">
+          <figcaption>Cinco perguntas sobre a mesma nota, 70. Repare na última.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: o candidato alcançou o corte?</h3>
+<pre>total = 70
+corte = 70
+aprovado = total &gt;= corte
+empatou = total == corte
+print(aprovado, empatou)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Linha 3: a pergunta <code>70 &gt;= 70</code> é verdadeira, porque o “ou igual” inclui o empate. <code>aprovado</code> recebe <code>True</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Linha 4: <code>70 == 70</code> também é <code>True</code>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>O print mostra <code>True True</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Se a regra fosse <code>total &gt; corte</code>, quem tirou exatamente 70 passaria?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">Sim, porque 70 é igual ao corte</button><button class="botao" type="button" data-ok>Não, porque &gt; não inclui o igual</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. <code>&gt;</code> é estrito; só <code>&gt;=</code> inclui o empate. Em edital, essa diferença decide quem passa." data-nao-texto="<code>&gt;</code> é estrito: 70 &gt; 70 é False. Para incluir o empate, a regra precisa de <code>&gt;=</code>."></div>
+        </div>
+<h3>Pratique: True ou False?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Considere <code>total = 78</code>. Diga a resposta de cada comparação.</p>
+          <div><div class="linha-classifica"><span><code>total &gt; 78</code></span><select data-resposta="false" aria-label="total maior que 78"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div><div class="linha-classifica"><span><code>total &gt;= 78</code></span><select data-resposta="true" aria-label="total maior ou igual a 78"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div><div class="linha-classifica"><span><code>total != 70</code></span><select data-resposta="true" aria-label="total diferente de 70"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div><div class="linha-classifica"><span><code>total == "78"</code></span><select data-resposta="false" aria-label="total igual ao texto 78"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Estrito (&gt;) não inclui o igual, e um número nunca é igual a um texto." data-nao-texto="Os campos em vermelho estão trocados. Lembre: &gt; não inclui o igual, != pergunta se é diferente, e um número nunca é igual a um texto entre aspas."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>Comparações (== != &gt; &lt; &gt;= &lt;=) respondem True ou False; = guarda e == compara.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> a diferença entre <code>=</code> e <code>==</code>, com um exemplo seu.</p>
+        <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="secao" id="c4">
+        <p class="rotulo">Conceito 4 de 6</p>
+        <h2>Operadores lógicos (e, ou, não)</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler.</p>
+          <p class="pergunta">Regra: passa quem tem <code>total &gt;= 70 and discursiva &gt;= 30</code>. Um candidato com total 73 e discursiva 28 passa?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">Sim, o total já basta</button><button class="botao" type="button" data-ok>Não: com and, as duas condições precisam ser verdadeiras</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. 73 &gt;= 70 é True, mas 28 &gt;= 30 é False. Com <code>and</code>, um False derruba o resultado." data-nao-texto="Com <code>and</code>, as duas condições precisam ser True. 28 &gt;= 30 é False, então o candidato não passa."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b>Os <b>operadores lógicos</b> juntam perguntas. <b>and</b> (e) só é True quando as duas são True. <b>or</b> (ou) é True quando pelo menos uma é True. <b>not</b> (não) inverte: not True é False.</p>
+<div class="prosa">
+          <p>Regras reais quase sempre têm mais de uma condição: total mínimo <em>e</em> nota mínima na discursiva; desconto na inscrição para quem é estudante <em>ou</em> fez o simulado (regra inventada). Os operadores lógicos montam essas regras.</p>
+          <p>Em Python eles são palavras, em minúsculas: <code>and</code>, <code>or</code> e <code>not</code>. A tabela abaixo é a mesma da lógica proposicional que cai em prova de raciocínio lógico.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>A</th><th>B</th><th>A and B</th><th>A or B</th><th>not A</th></tr></thead>
+          <tbody>
+            <tr><td class="m">True</td><td class="m">True</td><td class="m">True</td><td class="m">True</td><td class="m">False</td></tr>
+            <tr><td class="m">True</td><td class="m">False</td><td class="m">False</td><td class="m">True</td><td class="m">False</td></tr>
+            <tr><td class="m">False</td><td class="m">True</td><td class="m">False</td><td class="m">True</td><td class="m">True</td></tr>
+            <tr><td class="m">False</td><td class="m">False</td><td class="m">False</td><td class="m">False</td><td class="m">True</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a tabela-verdade das questões de raciocínio lógico da Cebraspe e da FGV: “e” só é verdadeiro com as duas partes verdadeiras; “ou” basta uma. Aqui você vê a mesma regra funcionando dentro de um programa.</p>
+<figure data-clip="logicos" style="--alt: 300px">
+          <figcaption>A mesma regra aplicada a três candidatos fictícios, e o que muda trocando and por or.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: desconto na inscrição</h3>
+<pre>estudante = False
+fez_simulado = True
+desconto = estudante or fez_simulado
+print(desconto, not desconto)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Regra fictícia: tem desconto quem é estudante <em>ou</em> fez o simulado. Por isso o operador é <code>or</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p><code>False or True</code> é <code>True</code>: basta uma condição.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p><code>not desconto</code> inverte: <code>False</code>. O print mostra <code>True False</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Se a linha fosse <code>desconto = estudante and fez_simulado</code>, o resultado seria:</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button">True, porque fez_simulado é True</button><button class="botao" type="button" data-ok>False, porque and exige as duas verdadeiras</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. <code>False and True</code> é False. Trocar or por and muda a regra inteira." data-nao-texto="Com <code>and</code>, as duas precisam ser True. Como estudante é False, o resultado é False."></div>
+        </div>
+<h3>Pratique: True ou False?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Considere <code>idade = 20</code> e <code>tem_titulo = False</code>.</p>
+          <div><div class="linha-classifica"><span><code>idade &gt;= 18 and tem_titulo</code></span><select data-resposta="false" aria-label="idade maior ou igual a 18 e tem título"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div><div class="linha-classifica"><span><code>idade &gt;= 18 or tem_titulo</code></span><select data-resposta="true" aria-label="idade maior ou igual a 18 ou tem título"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div><div class="linha-classifica"><span><code>not tem_titulo</code></span><select data-resposta="true" aria-label="não tem título"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div><div class="linha-classifica"><span><code>idade &lt; 18 or idade &gt; 60</code></span><select data-resposta="false" aria-label="idade menor que 18 ou maior que 60"><option value="">escolha</option><option value="true">True</option><option value="false">False</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. and exige as duas; or se contenta com uma; not inverte." data-nao-texto="Os campos em vermelho estão trocados. Avalie cada parte primeiro (idade &gt;= 18 é True; tem_titulo é False) e depois aplique a tabela do and, do or e do not."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>and exige as duas condições, or se contenta com uma, not inverte.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> uma regra de edital que precise de <code>and</code> e outra que precise de <code>or</code>.</p>
+        <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 5 -->
+      <section class="secao" id="c5">
+        <p class="rotulo">Conceito 5 de 6</p>
+        <h2>Precedência</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler.</p>
+          <p class="pergunta">Quanto dá <code>2 + 3 * 4</code>?</p>
+          <div class="opcoes"><button class="botao" type="button">20</button><button class="botao" type="button" data-ok>14</button><button class="botao" type="button">24</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A multiplicação vem antes da soma: 3 * 4 = 12, e 2 + 12 = 14." data-nao-texto="A multiplicação vem antes da soma, como na matemática: 3 * 4 = 12, e 2 + 12 = 14. Para dar 20, seria preciso escrever <code>(2 + 3) * 4</code>."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Precedência</b> é a ordem em que o Python resolve as partes de uma expressão: primeiro parênteses, depois potência, depois multiplicação e divisão, depois soma e subtração, depois comparações e, por fim, not, and e or.</p>
+<div class="prosa">
+          <p>O Python não lê a expressão da esquerda para a direita. Ele segue uma ordem fixa, igual à da matemática para as contas e com mais alguns degraus para comparações e lógica:</p>
+          <p><strong>1.</strong> parênteses; <strong>2.</strong> <code>**</code>; <strong>3.</strong> <code>* / // %</code>; <strong>4.</strong> <code>+ -</code>; <strong>5.</strong> comparações (<code>== != &lt; &gt; &lt;= &gt;=</code>); <strong>6.</strong> <code>not</code>; <strong>7.</strong> <code>and</code>; <strong>8.</strong> <code>or</code>.</p>
+          <p>Operadores do mesmo degrau são resolvidos da esquerda para a direita (a potência é a exceção). E a regra de ouro: na dúvida, ponha parênteses. Eles deixam a intenção clara e não custam nada.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a ordem de correção de uma prova: primeiro se corrige cada questão, depois se aplica o peso, depois se soma, e só no fim se compara com o corte. Fazer fora de ordem dá outra nota.</p>
+<figure data-clip="precedencia" style="--alt: 300px">
+          <figcaption>Uma expressão encolhe uma operação por vez, na ordem de precedência.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: <code>10 - 4 / 2 &gt; 7 or False</code></h3>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Divisão primeiro: <code>4 / 2</code> é <code>2.0</code>. Fica <code>10 - 2.0 &gt; 7 or False</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Subtração: <code>10 - 2.0</code> é <code>8.0</code>. Depois a comparação: <code>8.0 &gt; 7</code> é <code>True</code>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Por último o or: <code>True or False</code> é <code>True</code>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Qual expressão calcula a média de <code>n1</code> e <code>n2</code>?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button"><code>n1 + n2 / 2</code></button><button class="botao" type="button" data-ok><code>(n1 + n2) / 2</code></button><button class="botao" type="button"><code>n1 + (n2 / 2)</code></button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Os parênteses fazem a soma acontecer antes da divisão." data-nao-texto="Sem parênteses em volta da soma, a divisão vem antes e só o n2 é dividido. O certo é <code>(n1 + n2) / 2</code>."></div>
+        </div>
+<h3>Pratique: calcule na ordem certa</h3>
+<div class="exercicio" data-preencher>
+          <p class="pergunta">Escreva o resultado de cada expressão, como o Python mostraria.</p>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>expressão</th><th>resultado</th></tr></thead>
+          <tbody><tr><td class="m">2 + 3 * 4</td><td><input data-resposta="14" aria-label="Resultado de 2 + 3 * 4"></td></tr><tr><td class="m">(2 + 3) * 4</td><td><input data-resposta="20" aria-label="Resultado de (2 + 3) * 4"></td></tr><tr><td class="m">10 - 4 / 2</td><td><input data-resposta="8.0" aria-label="Resultado de 10 - 4 / 2"></td></tr><tr><td class="m">2 ** 3 * 2</td><td><input data-resposta="16" aria-label="Resultado de 2 ** 3 * 2"></td></tr></tbody></table>
+          </div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. Potência antes de multiplicação, multiplicação e divisão antes de soma e subtração, e os parênteses passando na frente de tudo." data-nao-texto="Confira os campos em vermelho e refaça na ordem: parênteses, depois **, depois * e /, depois + e -. Lembre que a divisão com / mostra a parte decimal."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>O Python resolve na ordem: parênteses, **, * / // %, + -, comparações, not, and, or.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>2 + 3 * 4</code> dá 14 e como fazer dar 20.</p>
+        <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 6 -->
+      <section class="secao" id="c6">
+        <p class="rotulo">Conceito 6 de 6</p>
+        <h2>Curto-circuito</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio</p>
+          <p class="pergunta">Em <code>False and x</code>, o Python precisa olhar o valor de x para dar a resposta.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Com and, um False à esquerda já decide: o resultado é False, seja qual for o x." data-nao-texto="O gabarito é Errado. Com <code>and</code>, se o lado esquerdo é False, o resultado já é False. O Python nem olha o lado direito."></div>
+        </div>
+<h3>A ideia</h3>
+        <p class="simples"><b>Em palavras simples</b><b>Curto-circuito</b> é o Python parar de avaliar assim que a resposta está decidida. Em <b>and</b>, para no primeiro False; em <b>or</b>, para no primeiro True. O lado direito nem é calculado.</p>
+<div class="prosa">
+          <p>O <code>and</code> e o <code>or</code> são avaliados da esquerda para a direita. Se o lado esquerdo já define o resultado, o direito é pulado: <code>False and ...</code> é sempre False, e <code>True or ...</code> é sempre True.</p>
+          <p>Isso é útil para <strong>proteger</strong> uma conta perigosa. Em <code>vagas != 0 and inscritos / vagas &gt; 10</code>, se vagas for 0, a divisão nem acontece. Na ordem inversa, o programa para com <code>ZeroDivisionError</code>.</p>
+        </div>
+<table class="tabela">
+          <thead><tr><th>Expressão</th><th>O lado direito é avaliado?</th></tr></thead>
+          <tbody>
+            <tr><td class="m">False and x</td><td>não: o resultado já é False</td></tr>
+            <tr><td class="m">True and x</td><td>sim: depende de x</td></tr>
+            <tr><td class="m">True or x</td><td>não: o resultado já é True</td></tr>
+            <tr><td class="m">False or x</td><td>sim: depende de x</td></tr>
+          </tbody>
+        </table>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É a eliminação na primeira fase: se o candidato não alcançou o corte da objetiva, a banca nem corrige a discursiva dele. A primeira condição falsa encerra a avaliação.</p>
+<figure data-clip="curto" style="--alt: 250px">
+          <figcaption>A mesma conta em duas ordens. Na primeira, o curto-circuito impede a divisão por zero.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: relação candidato por vaga sem quebrar</h3>
+<pre>inscritos = 1250
+vagas = 0
+alta = vagas &gt; 0 and inscritos / vagas &gt; 100
+print(alta)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>O Python avalia <code>vagas &gt; 0</code>: 0 &gt; 0 é <code>False</code>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Como é um <code>and</code> e o lado esquerdo é False, ele para ali. A divisão por zero nunca é calculada.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>O print mostra <code>False</code>, e o programa segue sem erro.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p>
+          <p class="pergunta">Com <code>vagas = 0</code>, qual linha roda sem erro?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok><code>vagas != 0 and inscritos / vagas &gt; 10</code></button><button class="botao" type="button"><code>inscritos / vagas &gt; 10 and vagas != 0</code></button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A proteção vem primeiro e, sendo False, impede a divisão." data-nao-texto="Na segunda linha a divisão vem primeiro e acontece antes de qualquer proteção: <code>ZeroDivisionError</code>. A condição que protege precisa vir à esquerda."></div>
+        </div>
+<h3>Pratique: o lado direito é avaliado?</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Para cada expressão, diga se o Python chega a avaliar o x.</p>
+          <div><div class="linha-classifica"><span><code>False and x</code></span><select data-resposta="nao" aria-label="False and x"><option value="">escolha</option><option value="sim">avalia o x</option><option value="nao">não avalia o x</option></select></div><div class="linha-classifica"><span><code>True and x</code></span><select data-resposta="sim" aria-label="True and x"><option value="">escolha</option><option value="sim">avalia o x</option><option value="nao">não avalia o x</option></select></div><div class="linha-classifica"><span><code>True or x</code></span><select data-resposta="nao" aria-label="True or x"><option value="">escolha</option><option value="sim">avalia o x</option><option value="nao">não avalia o x</option></select></div><div class="linha-classifica"><span><code>False or x</code></span><select data-resposta="sim" aria-label="False or x"><option value="">escolha</option><option value="sim">avalia o x</option><option value="nao">não avalia o x</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. and para no primeiro False; or para no primeiro True." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: o lado esquerdo já decide o resultado? False decide o and; True decide o or. Se já decidiu, o x é pulado."></div>
+        </div>
+        <p class="resumo"><b>Resumo em uma frase</b>and para no primeiro False e or no primeiro True; o resto nem é avaliado.</p>
+        <p class="explique"><strong>Explique em 3 linhas:</strong> como o curto-circuito ajuda a evitar uma divisão por zero.</p>
+        <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- TD -->
+      <section class="secao" id="td">
+        <p class="rotulo">Tarefa de domínio do módulo</p>
+        <h2>Avaliar à mão, depois programar</h2>
+        <div class="prosa">
+          <p><strong>1. Avalie sem rodar</strong> cada expressão, escrevendo os passos na ordem de precedência.</p>
+          <pre>7 // 2 + 7 % 2
+2 + 3 * 4 ** 2
+(48 + 30) &gt;= 70 and 30 &gt;= 30
+not 10 &gt; 5 or 2 == 2.0</pre>
+          <p><strong>2. Programe.</strong> Escreva um script que pede o número de inscritos e de vagas de um cargo, mostra quantos candidatos há por vaga (parte inteira) e quantos sobram, e diz se a concorrência é alta (mais de 100 por vaga). Ele não pode quebrar quando as vagas forem 0.</p>
+        </div>
+        <p class="explique">Mande os passos e o script no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
+        <details class="cartao">
+          <summary>Ver uma resposta possível (só depois de tentar)</summary>
+          <p><code>7 // 2 + 7 % 2</code> = 3 + 1 = <code>4</code>. <code>2 + 3 * 4 ** 2</code> = 2 + 3 * 16 = 2 + 48 = <code>50</code>. <code>(48 + 30) &gt;= 70 and 30 &gt;= 30</code> = True and True = <code>True</code>. <code>not 10 &gt; 5 or 2 == 2.0</code>: primeiro as comparações (True e True), depois not True = False, e False or True = <code>True</code>.</p>
+          <pre>inscritos = int(input("Inscritos: "))
+vagas = int(input("Vagas: "))
+if vagas &gt; 0:
+    print("Candidatos por vaga:", inscritos // vagas, "e sobram", inscritos % vagas)
+print("Concorrência alta:", vagas &gt; 0 and inscritos / vagas &gt; 100)</pre>
+          <p>Com 1250 inscritos e 3 vagas: <code>Candidatos por vaga: 416 e sobram 2</code> e <code>Concorrência alta: True</code>. Com 0 vagas, só aparece <code>Concorrência alta: False</code>, sem erro.</p>
+        </details>
+        <button class="botao" type="button" data-marcar="td">Marcar a tarefa como feita</button>
+      </section>
+    </div>
+  </main>
+</div>
+<script src="../figuras.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="clipes-ops.js" charset="utf-8"></script>
+<script>
+(function () {
+  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
+  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
+  window.Clip.iniciar();
+
+  function mostrar(retorno, ok) {
+    retorno.hidden = false;
+    retorno.className = "retorno " + (ok ? "ok" : "nao");
+    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
+  }
+
+  document.querySelectorAll("[data-escolha]").forEach((ex) => {
+    const botoes = ex.querySelectorAll(".opcoes .botao");
+    botoes.forEach((b) => b.addEventListener("click", () => {
+      botoes.forEach((x) => {
+        x.disabled = true;
+        if (x.hasAttribute("data-ok")) x.classList.add("certo");
+      });
+      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
+      b.setAttribute("aria-pressed", "true");
+      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
+    }));
+  });
+
+  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
+
+  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      let tudo = true;
+      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
+        const aceitas = campo.dataset.resposta.split("|");
+        const ok = aceitas.includes(normalizar(campo.value));
+        campo.classList.toggle("ok", ok);
+        campo.classList.toggle("nao", !ok);
+        if (!ok) tudo = false;
+      });
+      mostrar(ex.querySelector(".retorno"), tudo);
+    });
+  });
+
+  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
+    const banco = ex.querySelector("[data-banco]");
+    const montagem = ex.querySelector("[data-montagem]");
+    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
+      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
+    }));
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
+      const certa = ex.dataset.resposta.split("|");
+      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
+      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
+      mostrar(ex.querySelector(".retorno"), ok);
+    });
+  });
+
+  const CHAVE = "dominio:licao:LOG.03";
+  let feitos = [];
+  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
+  function pintar() {
+    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
+    document.querySelectorAll("[data-marcar]").forEach((b) => {
+      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
+    });
+  }
+  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
+    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
+    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
+    pintar();
+  }));
+  pintar();
+
+  const links = [...document.querySelectorAll("[data-conceito]")];
+  const obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
+
+  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
+  const secoes = [...document.querySelectorAll(".secao")];
+  const nomes = ["Operadores aritméticos", "Divisão inteira e resto", "Operadores relacionais", "Operadores lógicos", "Precedência", "Curto-circuito", "Tarefa de domínio"];
+  const verTudo = document.getElementById("ver-tudo");
+  const barra = document.getElementById("passos-licao");
+  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
+  const feito = (ex) => {
+    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
+    const r = ex.querySelector(".retorno");
+    return !!r && r.classList.contains("ok");
+  };
+  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
+  secoes.forEach((s, i) => {
+    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
+    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
+    const prox = s.querySelector("[data-proximo]");
+    if (prox) prox.addEventListener("click", () => ir(i + 1));
+  });
+  function atualizar() {
+    secoes.forEach((s, i) => {
+      const ok = completo(i);
+      const prox = s.querySelector("[data-proximo]");
+      if (prox) prox.disabled = !ok && !verTudo.checked;
+      const est = s.querySelector(".estado-licao");
+      const total = s.querySelectorAll(".exercicio").length;
+      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
+      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
+      est.classList.toggle("ok", ok && total > 0);
+    });
+    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
+    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
+  }
+  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ir(i) {
+    const fazer = () => {
+      atual = Math.max(0, Math.min(secoes.length - 1, i));
+      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
+      atualizar();
+      secoes[atual].scrollIntoView({ block: "start" });
+    };
+    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
+    else fazer();
+  }
+  let espera = null;
+  document.addEventListener("click", (e) => {
+    const ex = e.target.closest(".exercicio");
+    if (!ex) return;
+    setTimeout(() => {
+      atualizar();
+      const i = secoes.indexOf(ex.closest(".secao"));
+      const certo = ex.querySelector(".retorno.ok");
+      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
+        const est = secoes[i].querySelector(".estado-licao");
+        est.textContent = "Tudo certo. Indo para o próximo conceito...";
+        clearTimeout(espera);
+        espera = setTimeout(() => ir(i + 1), 2200);
+      }
+    }, 0);
+  });
+  window.addEventListener("hashchange", () => {
+    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
+    if (k >= 0) ir(k);
+  });
+  verTudo.addEventListener("change", () => ir(atual));
+  ir(atual);
+})();
+</script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>

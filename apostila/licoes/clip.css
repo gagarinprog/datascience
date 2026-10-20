@@ -277,3 +277,48 @@
 .cst-lado.certo { border-color: var(--certo); }
 .cst-lado.certo .cst-nota { color: var(--certo); font-weight: 600; }
 @media (max-width: 520px) { .cst { grid-template-columns: 1fr; } .conv { font-size: 13px; } .conv td { padding: 6px 4px; } }
+
+/* ---- lição LOG.03: salas, precedência e curto-circuito ---- */
+.dr { display: grid; gap: 12px; }
+.dr-fila { display: flex; flex-wrap: wrap; gap: 6px; min-height: 30px; padding: 8px; border: 2px dashed var(--linha-forte); border-radius: 12px; }
+.dr-p { width: 18px; height: 18px; border-radius: 50%; background: var(--tinta); display: inline-block; transition: background-color 0.4s, box-shadow 0.4s; }
+.dr-p.sobra { background: var(--ouro); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ouro) 35%, transparent); }
+.dr-salas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dr-sala { border: 2px solid var(--linha-forte); border-radius: 12px; padding: 8px; min-height: 76px; transition: border-color 0.4s, background-color 0.4s; }
+.dr-sala small { display: block; font: 700 12px var(--f-codigo); color: var(--texto-2); text-transform: uppercase; margin-bottom: 6px; }
+.dr-sala.cheia { border-color: var(--tinta); background: var(--tinta-suave); }
+.dr-lugares { display: flex; flex-wrap: wrap; gap: 6px; }
+.dr-conta { margin: 0; display: flex; gap: 10px; flex-wrap: wrap; opacity: 0; transition: opacity 0.4s; }
+.dr-conta.on { opacity: 1; }
+.dr-conta code { font-size: 16px; font-weight: 700; padding: 4px 10px; }
+.conv.lg td:first-child { white-space: nowrap; }
+.pr { display: grid; gap: 14px; }
+.pr-exp { margin: 0; padding: 14px; border: 2px solid var(--linha-forte); border-radius: 12px; background: var(--folha); text-align: center; overflow-x: auto; }
+.pr-exp code { background: none; border: 0; padding: 0; font-size: 17px; white-space: nowrap; }
+.pr-exp code.troca { animation: clip-entra 0.45s var(--curva); }
+.pr-exp mark { background: color-mix(in srgb, var(--ouro) 45%, transparent); color: inherit; border-radius: 4px; padding: 0 3px; }
+.pr-ordem { margin: 0; padding-left: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px 16px; font: 13.5px var(--f-codigo); }
+.pr-ordem li { color: var(--texto-2); transition: color 0.3s; }
+.pr-ordem li.feito { color: var(--certo); }
+.pr-ordem li.agora { color: var(--texto); font-weight: 700; }
+.cc { display: grid; gap: 12px; }
+.cc-linha { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; padding: 12px; border: 2px solid var(--linha-forte); border-radius: 12px; background: var(--folha); transition: border-color 0.4s, opacity 0.4s; }
+.cc-linha[data-l="b"] { opacity: 0.35; }
+.cc-linha[data-l="b"].on { opacity: 1; }
+.cc-linha small { font: 700 13px var(--f-codigo); color: var(--texto-2); }
+.cc-linha code { background: none; border: 0; padding: 0; font-size: 14.5px; overflow-x: auto; white-space: nowrap; }
+.cc-linha span { border-radius: 4px; padding: 0 3px; transition: background-color 0.3s, opacity 0.3s; }
+.cc-linha .lido { background: color-mix(in srgb, var(--ouro) 40%, transparent); }
+.cc-linha .pulado { opacity: 0.35; text-decoration: line-through; }
+.cc-linha .quebra { background: color-mix(in srgb, var(--erro) 25%, transparent); }
+.cc-res { grid-column: 2; font: 700 15px var(--f-codigo); min-height: 1.2em; }
+.cc-linha.ok { border-color: var(--certo); }
+.cc-linha.ok .cc-res { color: var(--certo); }
+.cc-linha.erro { border-color: var(--erro); }
+.cc-linha.erro .cc-res { color: var(--erro); }
+.conv td:first-child code { white-space: nowrap; }
+@media (max-width: 520px) {
+  .exec-codigo { font-size: 12.5px; }
+  .pr-exp code { white-space: normal; font-size: 15px; line-height: 1.6; }
+  .cc-linha code { white-space: normal; font-size: 13.5px; line-height: 1.6; }
+}
