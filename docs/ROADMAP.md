@@ -92,6 +92,8 @@ Adiantado (11/10/2026), para o tutor `/aula`: `data/apostila-viva/schema.sql`, `
 
 Adiantado (20/10/2026), na apostila: o Laboratório Castelo de Dados (`apostila/castelo/`) já usa o PGlite, o corretor por resultado (`comparar.js`, com ordem e tolerância), o detector das aspas, os erros do PostgreSQL reescritos para iniciante e o "ver passo a passo" do GROUP BY. A decisão sql.js × PGlite fica tomada a favor do PGlite; o app Next.js pode reaproveitar `comparar.js` e o roteiro das salas.
 
+Adiantado (20/10/2026, à noite), na apostila: o laboratório virou o Centro de Dados (mapa com zonas e tráfego, painel com o ciclo entender, ver o passo a passo, fazer, explicar), com 12 passo a passo animados (Anime.js) feitos com linhas reais do banco de estudo, módulos em cascata e a dica dos exercícios de código como comentário no editor. As lições ganharam a mesma cascata por conceito.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

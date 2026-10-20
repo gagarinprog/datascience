@@ -56,6 +56,7 @@ const ARQUIVOS = [
   "./castelo/relogio.py",
   "./castelo/passos.js",
   "./passo/passo.js",
+  "./passo/cascata.js",
   "./passo/passo.css",
 ];
 const CDN = [

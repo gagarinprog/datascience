@@ -5,7 +5,8 @@
 //   - cartões para arrastar em grupos, Parsons com linha falsa e recuo, "ache o erro";
 //   - explicar em 3 linhas dentro da lição;
 //   - revisão espaçada: o que você errou volta em 1, 3, 7, 14 e 30 dias (doc 04, seção 6);
-//   - o passo a passo da lição (um conceito por vez, avanço depois dos exercícios).
+//   - o passo a passo da lição (um conceito por vez, avanço depois dos exercícios);
+//   - a cascata de cada conceito: desafio, leitura, animação, cada exercício e o fechamento abrem um de cada vez.
 // Tipos de exercício (atributo na div .exercicio):
 //   data-escolha      botões em .opcoes; o certo tem data-ok. Com só "Certo" e "Errado", vira item C/E.
 //   data-classificar  linhas .linha-classifica com <select data-resposta>; vira cartões para arrastar.
@@ -413,6 +414,90 @@
     else if (tipo === "codigo" && window.Laboratorio) window.Laboratorio.exercicio(ex, ctx, { mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, resolver, pista });
   }
 
+  // ---------- cascata do conceito: cada ambiente abre no lugar, um de cada vez ----------
+  // Divide a seção em etapas: o desafio, cada bloco de leitura (pelos títulos h3), cada animação passo a passo,
+  // cada exercício e o fechamento (resumo e explicar). Os elementos são só movidos para dentro da cascata
+  // (../passo/cascata.js); nada do conteúdo muda. Sem a cascata carregada, a lição continua como antes.
+  const curto = (t, n) => { t = String(t || "").replace(/\s+/g, " ").trim(); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "") + "..." : t; };
+  const RESULTADO = { primeira: "certo de primeira", segunda: "certo na segunda tentativa", revelada: "com o gabarito", errada: "errado" };
+  function cascataSecao(sec) {
+    // só nos conceitos no formato padrão (que começam pelo desafio); a tarefa de domínio fica inteira, numa tela
+    if (!window.Cascata || sec.querySelector(":scope > .cx") || !sec.querySelector(".exercicio.desafio")) return null;
+    const h2 = sec.querySelector(":scope > h2");
+    const filhos = [...sec.children], ini = h2 ? filhos.indexOf(h2) + 1 : 0;
+    const grupos = [];
+    let atual = null, pratica = null;
+    const novo = (g) => { atual = Object.assign({ nos: [] }, g); grupos.push(atual); return atual; };
+    filhos.slice(ini).forEach((el) => {
+      if (el.tagName === "H3") { pratica = null; novo({ tipo: "leitura", rotulo: "Leitura", titulo: el.textContent, vazio: el }); return; }
+      if (el.matches(".exercicio")) {
+        const pergunta = el.querySelector(".pergunta"), rot = el.querySelector(":scope > .rotulo");
+        if (el.classList.contains("desafio")) { novo({ tipo: "exercicio", rotulo: "Desafio", titulo: "Responda antes de ler: errar aqui faz parte", ex: el }); atual.nos.push(el); return; }
+        if (atual && atual.tipo === "leitura" && !atual.nos.length) { pratica = atual.titulo; grupos.pop(); if (atual.vazio) atual.vazio.remove(); }
+        novo({ tipo: "exercicio", rotulo: pratica || (rot ? curto(rot.textContent, 40) : "Exercício"), titulo: curto(pergunta ? pergunta.textContent : el.textContent, 90), ex: el, pratica });
+        atual.nos.push(el); return;
+      }
+      if (el.matches("figure[data-clip]")) {
+        const cap = el.querySelector("figcaption");
+        novo({ tipo: "animacao", rotulo: "Ver o passo a passo", titulo: curto(cap ? cap.textContent : "A animação", 90) }); atual.nos.push(el); atual = null; return;
+      }
+      if (el.matches(".resumo, .explique, .explicar, [data-marcar]")) {
+        if (!atual || atual.tipo !== "fecho") novo({ tipo: "fecho", rotulo: "Fechar o conceito", titulo: "Resumo e explicação com as suas palavras" });
+        atual.nos.push(el); return;
+      }
+      if (!atual || atual.tipo !== "leitura") novo({ tipo: "leitura", rotulo: "Leitura", titulo: "Continuação" });
+      atual.nos.push(el);
+    });
+    // grupos de prática numerados: "Pratique · 1 de 2"
+    const porPratica = {};
+    grupos.forEach((g) => { if (g.pratica) (porPratica[g.pratica] = porPratica[g.pratica] || []).push(g); });
+    Object.values(porPratica).forEach((gs) => { if (gs.length > 1) gs.forEach((g, k) => { g.rotulo = `${g.pratica} · ${k + 1} de ${gs.length}`; }); });
+    const usados = grupos.filter((g) => g.nos.length);
+    if (usados.length < 2) return null;
+    grupos.forEach((g) => { if (g.vazio) g.vazio.remove(); });
+    const raiz = document.createElement("div");
+    raiz.className = "cx";
+    raiz.setAttribute("aria-label", "Etapas do conceito");
+    if (h2) h2.after(raiz); else sec.prepend(raiz);
+    const cx = window.Cascata(raiz, { prefixo: sec.id + "-" });
+    const porEx = new Map();
+    usados.forEach((g, k) => {
+      const it = cx.add({ id: "e" + k, rotulo: g.rotulo, titulo: g.titulo, nos: g.nos, classe: "cx-" + g.tipo });
+      it.tipo = g.tipo; it.grupo = g;
+      if (g.ex) porEx.set(g.ex, it);
+    });
+    // o botão de seguir vem depois de todas as etapas existirem, para saber o nome da próxima
+    cx.itens.forEach((it) => {
+      const g = it.grupo;
+      if (!g.ex) cx.seguir(it, g.tipo === "fecho" ? "Fechei este conceito" : null, () => cx.marcar(it, { feito: true, resumo: g.tipo === "animacao" ? "vista" : g.tipo === "fecho" ? "fechado" : "lido" }));
+    });
+    cx.porEx = porEx;
+    cx.abrir(cx.itens[0], false);
+    return cx;
+  }
+  function marcarNaCascata(ex, resultado) {
+    const sec = ex.closest(".secao"), cx = sec && sec._cx;
+    const it = cx && cx.porEx.get(ex);
+    if (!it) return;
+    cx.marcar(it, { feito: true, resumo: RESULTADO[resultado] || "feito" });
+    cx.seguir(it);
+  }
+  // a dica de um exercício de código vai para dentro do editor, como comentário abaixo do código da pessoa
+  // (o mesmo comportamento do Centro de Dados; para os exercícios data-codigo das lições)
+  function dicaNoEditor(ta, pistaTexto, lingua) {
+    const d = document.createElement("div"); d.innerHTML = pistaTexto || "";
+    const texto = d.textContent.replace(/\s+/g, " ").trim();
+    if (!texto || /^\s*(--|#) Dica:/m.test(ta.value)) return false;
+    const marca = /python/i.test(lingua) ? "#" : "--", linhas = [];
+    let l = "Dica:";
+    texto.split(" ").forEach((p) => { if ((l + " " + p).length > 44) { linhas.push(l); l = "  " + p; } else l += " " + p; });
+    linhas.push(l);
+    ta.value = ta.value.replace(/\s+$/, "") + "\n\n" + linhas.map((x) => `${marca} ${x}`).join("\n") + "\n";
+    ta.dispatchEvent(new Event("input"));
+    ta.scrollLeft = 0;
+    return true;
+  }
+
   const resumoDe = (sec) => { const r = sec && sec.querySelector(".resumo"); return r ? r.textContent.replace(/^Resumo em uma frase/i, "").trim() : ""; };
 
   // ---------- a lição: passo a passo, marcar estudado, revisão ----------
@@ -428,9 +513,10 @@
     const secoes = [...document.querySelectorAll(".secao")];
     const nomes = cfg.nomes;
     secoes.forEach((sec, i) => {
-      const ctx = { licao: licaoId, titulo, url, sec: sec.id, conceito: nomes[i] || sec.id, resumo: resumoDe(sec), aoResolver: (ex, r) => { Revisao.daLicao(ctx, ex, r); depois(ex, r); } };
+      const ctx = { licao: licaoId, titulo, url, sec: sec.id, conceito: nomes[i] || sec.id, resumo: resumoDe(sec), aoResolver: (ex, r) => { Revisao.daLicao(ctx, ex, r); marcarNaCascata(ex, r); depois(ex, r); } };
       sec.querySelectorAll(".exercicio").forEach((ex) => montarExercicio(ex, ctx));
       explicar(sec, ctx);
+      sec._cx = cascataSecao(sec);
     });
 
     // marcar como estudado
@@ -478,7 +564,7 @@
         est.classList.toggle("ok", ok && exs.length > 0);
       });
       if (!barra) return;
-      barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${esc(n)}</span></button>`).join("");
+      barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" aria-label="Conceito ${i + 1}: ${esc(n)}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${esc(n)}</span></button>`).join("");
       barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
     }
     function ir(i) {
@@ -497,6 +583,8 @@
       setTimeout(() => {
         atualizar();
         const i = secoes.indexOf(ex.closest(".secao"));
+        const cx = secoes[i] && secoes[i]._cx, fecho = cx && cx.itens.find((x) => x.tipo === "fecho" && !x.feito);
+        if (fecho && i === atual && completo(i)) { const est = secoes[i].querySelector(".estado-licao"); est.textContent = "Exercícios concluídos. Falta fechar o conceito, na última etapa."; est.dataset.fixo = "1"; return; }
         if (!verTudo.checked && i === atual && completo(i) && resultado !== "revelada" && i < secoes.length - 1) {
           const est = secoes[i].querySelector(".estado-licao");
           est.textContent = "Tudo certo. Indo para o próximo conceito...";
@@ -511,5 +599,5 @@
     ir(atual);
   }
 
-  window.Motor = { licao, montarExercicio, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso };
+  window.Motor = { licao, montarExercicio, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao };
 })();

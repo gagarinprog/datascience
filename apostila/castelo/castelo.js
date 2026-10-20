@@ -564,61 +564,8 @@
   function irPara(hash) { if (location.hash === hash) render(); else location.hash = hash; }
   const rolarPara = (el) => { if (el) el.scrollIntoView({ block: "start", behavior: reduz() ? "auto" : "smooth" }); };
 
-  // ---------- cascata: cada etapa do módulo abre no lugar, uma de cada vez ----------
-  // O que já foi feito fecha numa linha de resumo; o que ainda não pode ser feito fica trancado. Os corpos são
-  // montados na primeira vez que abrem e nunca são refeitos: o retorno, o gráfico e o código continuam lá.
-  const ICONE = {
-    feito: CHECK,
-    trancado: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
-    seta: '<svg class="cx-seta" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
-  };
-  function cascata(raiz) {
-    const itens = [];
-    const c = {
-      itens,
-      add(o) {
-        const it = Object.assign({ feito: false, trancado: false, aberto: false, montado: false }, o);
-        const el = document.createElement("section");
-        el.className = "cx-item" + (o.largo ? " cx-largo" : "");
-        el.innerHTML = `<h3 class="cx-h"><button type="button" class="cx-cab" id="cxb-${o.id}" aria-expanded="false" aria-controls="cx-${o.id}"><span class="cx-marca"></span><span class="cx-tit"><small>${esc(o.rotulo)}</small><span>${esc(o.titulo)}</span></span><span class="cx-resumo"></span>${ICONE.seta}</button></h3><div class="cx-corpo" id="cx-${o.id}" role="region" aria-labelledby="cxb-${o.id}" hidden></div>`;
-        raiz.appendChild(el);
-        it.el = el; it.cab = el.querySelector(".cx-cab"); it.corpo = el.querySelector(".cx-corpo"); it.n = itens.length + 1;
-        it.cab.addEventListener("click", () => { if (it.aberto) c.fechar(it); else if (!it.trancado) c.abrir(it, false); });
-        itens.push(it);
-        c.marcar(it, {});
-        return it;
-      },
-      abrir(it, rolar) {
-        if (!it || it.trancado) return;
-        itens.forEach((x) => { if (x !== it && x.aberto) c.fechar(x); });
-        it.aberto = true; it.corpo.hidden = false; it.el.classList.add("aberto"); it.cab.setAttribute("aria-expanded", "true");
-        if (!it.montado) { it.montado = true; it.montar(it); }
-        if (rolar) rolarPara(it.el);
-        if (!reduz() && A()) A().animate(it.corpo, { opacity: [0, 1], y: [-6, 0], duration: 320, ease: "outQuad" });
-      },
-      fechar(it) { it.aberto = false; it.corpo.hidden = true; it.el.classList.remove("aberto"); it.cab.setAttribute("aria-expanded", "false"); },
-      marcar(it, m) {
-        Object.assign(it, m);
-        it.el.classList.toggle("feito", it.feito); it.el.classList.toggle("trancado", it.trancado);
-        it.cab.setAttribute("aria-disabled", String(it.trancado));
-        it.el.querySelector(".cx-marca").innerHTML = it.feito ? ICONE.feito : it.trancado ? ICONE.trancado : String(it.n);
-        it.el.querySelector(".cx-resumo").textContent = it.trancado ? "abre depois da anterior" : it.resumo || "";
-      },
-      proximaAberta(depois) { const i = itens.indexOf(depois); return itens.slice(i + 1).find((x) => !x.feito && !x.trancado) || itens.slice(i + 1).find((x) => !x.trancado); },
-      // um botão no fim de um corpo que leva à próxima etapa
-      seguir(it, texto) {
-        if (it.corpo.querySelector(".cx-seguir")) return;
-        const prox = c.proximaAberta(it);
-        if (!prox) return;
-        const b = document.createElement("button");
-        b.type = "button"; b.className = "botao primario cx-seguir";
-        b.innerHTML = `${esc(texto || `Seguir: ${prox.titulo}`)}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
-        b.addEventListener("click", () => { const p = c.proximaAberta(it); if (p) c.abrir(p, true); });
-        it.corpo.appendChild(b);
-      },
-    };
-    return c;
-  }
+  // ---------- cascata: cada etapa do módulo abre no lugar, uma de cada vez (../passo/cascata.js) ----------
+  const cascata = (raiz) => window.Cascata(raiz);
   const RESUMO = { primeira: "certa de primeira", segunda: "certa na segunda tentativa", revelada: "feita com a solução", errada: "errada" };
 
   function telaInicio() {
@@ -708,7 +655,7 @@
     // 1. Entender: a apresentação curta
     // (Entender e o passo a passo não trancam as tarefas: quem já sabe pode ir direto a elas)
     if (s.slides && s.slides.length) cx.add({ id: "entender", rotulo: "Entender", titulo: "Para que serve", resumo: `${s.slides.length} telas`, feito: dom || !!estado.slides[s.id],
-      montar: (it) => it.corpo.appendChild(slides(s, () => { cx.marcar(it, { feito: true, resumo: "visto" }); pintarPainel(); const p = cx.proximaAberta(it); if (p) cx.abrir(p, true); })) });
+      montar: (it) => it.corpo.appendChild(slides(s, () => { cx.marcar(it, { feito: true, resumo: "visto" }); pintarPainel(); const p = cx.proxima(it); if (p) cx.abrir(p, true); })) });
 
     // 2. Ver o passo a passo, com as linhas do banco de estudo
     if (def) cx.add({ id: "passo", rotulo: "Ver o passo a passo", titulo: def.titulo, resumo: `${def.passos.length} etapas`, feito: dom || !!estado.passos[s.id], largo: true,
