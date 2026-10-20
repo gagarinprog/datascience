@@ -272,6 +272,8 @@
       const dd = ms.reduce((a, mm) => a + dominados(mm), 0), nn = ms.reduce((a, mm) => a + mm.modulos.length, 0);
       return `<button type="button" class="linha-chip" data-linha="${wi}" aria-pressed="false" style="--cv:var(--mv-${w.siglas[0]})"><i aria-hidden="true"></i><span><b>${esc(w.nome)}</b><small>${dd}/${nn} módulos</small></span></button>`;
     }).join("");
+    const revisaoHoje = () => { try { const c = JSON.parse(localStorage.getItem("dominio:revisao:v1") || "{}"); const d = new Date(), h = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; return Object.values(c).filter((x) => x.proxima <= h).length; } catch (e) { return 0; } };
+    const nRevisao = revisaoHoje();
     const inicioFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:licao:INICIO") || "null"); return !!v && Object.keys(v).length > 0; } catch (e) { return false; } };
     const fala = total ? `Você domina ${total} de ${TOTAL} módulos. A próxima estação é ${prox.nome}.` : `Vamos começar por ${prox.nome}. São cinco passos curtos.`;
     centro().innerHTML = `
@@ -282,6 +284,7 @@
           <p class="mapa-sub">${MATERIAS.length} matérias e ${TOTAL} módulos, em sequência. Cada estação só pede o que as anteriores ensinaram.</p>
           <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
           <a class="cartao-link cartao-inicio" href="licoes/INICIO.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("sparkle-duotone")}</span><span><b>Comece por aqui: a lista de aprovados${inicioFeito() ? " · concluída" : ""}</b><small>5 passos curtos com animações · dados de um concurso fictício</small></span>${ic("arrow-right-bold")}</a>
+          ${nRevisao ? `<a class="cartao-link cartao-inicio" href="licoes/REVISAR.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("brain-duotone")}</span><span><b>Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}</b><small>o que você errou volta em 1, 3, 7, 14 e 30 dias</small></span>${ic("arrow-right-bold")}</a>` : ""}
         </div>
         <figure class="mentor" style="${coresDe(aqui.sigla)}">
           <div class="mascote retrato">${g.expr[total ? "feliz" : "padrao"]}</div>

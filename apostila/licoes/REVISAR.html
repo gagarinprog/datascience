@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Revisão de hoje · Domínio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+<style>
+  .revisao { max-width: 720px; margin: 0 auto; padding: 20px 16px 64px; display: grid; gap: 18px; }
+  .r-voltar { font-weight: 600; color: var(--tinta); min-height: 44px; display: inline-flex; align-items: center; }
+  .r-barra { height: 8px; border-radius: 99px; background: var(--linha); overflow: hidden; }
+  .r-barra i { display: block; height: 100%; width: 0; background: var(--metal-barra, var(--tinta)); transition: width 0.4s var(--curva); }
+  .r-origem { margin: 0; font-size: 13px; color: var(--texto-2); }
+  .r-origem a { color: var(--tinta); }
+  .r-acoes { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .r-vazio, .r-fim { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px; display: grid; gap: 10px; }
+  .r-fim ul { margin: 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<main class="revisao">
+  <a class="r-voltar" href="../index.html">Voltar ao mapa</a>
+  <header>
+    <p class="sobretitulo">Revisão espaçada</p>
+    <h1 class="titulo-pagina">Revisão de hoje</h1>
+    <p class="lede">Os exercícios que você errou, acertou na segunda tentativa ou respondeu no chute voltam aqui. Acertou de primeira, o próximo encontro fica mais longe: 1, 3, 7, 14 e 30 dias. Errou, ele volta amanhã.</p>
+  </header>
+  <div class="r-barra" aria-hidden="true"><i id="r-barra"></i></div>
+  <p class="r-origem" id="r-contagem" aria-live="polite"></p>
+  <section id="r-palco" aria-live="polite"></section>
+</main>
+<script src="../mascote.js" charset="utf-8"></script>
+<script src="../personagens.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
+<script src="reacao.js" charset="utf-8"></script>
+<script src="revisar.js" charset="utf-8"></script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>

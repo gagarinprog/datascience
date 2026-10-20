@@ -37,6 +37,30 @@
          <button type="button" class="botao mini" data-a="prox">Passo</button>
          <span class="clip-pontos">${def.passos.map((_, k) => `<button type="button" data-p="${k}" aria-label="Ir ao passo ${k + 1} de ${n}"></button>`).join("")}</span>
        </div>`);
+    // "preveja antes de ver": data-preveja="Pergunta|opção|*opção certa|opção" trava a animação até a aposta
+    const prev = fig.dataset.preveja ? fig.dataset.preveja.split("|") : null;
+    let aposta = null, julgado = false;
+    if (prev) {
+      const ops = prev.slice(1).map((o) => ({ t: o.replace(/^\*/, ""), ok: o.startsWith("*") }));
+      fig.insertAdjacentHTML("afterbegin", `<div class="preveja"><p>Antes de ver: ${esc(prev[0])}</p><div class="opcoes">${ops.map((o, i) => `<button type="button" class="botao" data-aposta="${i}">${esc(o.t)}</button>`).join("")}</div><p class="preveja-veredito" aria-live="polite"></p></div>`);
+      fig.querySelectorAll("[data-aposta]").forEach((b) => b.addEventListener("click", () => {
+        if (aposta !== null) return;
+        aposta = ops[Number(b.dataset.aposta)];
+        fig.querySelectorAll("[data-aposta]").forEach((x) => { x.disabled = true; x.setAttribute("aria-pressed", String(x === b)); });
+        fig.querySelector(".preveja-veredito").textContent = `Sua aposta: ${aposta.t}. Agora veja a animação até o fim.`;
+        fig.querySelectorAll(".clip-controles button").forEach((x) => { x.disabled = false; });
+        ir(0); tocar();
+      }));
+    }
+    function julgar() {
+      if (!prev || aposta === null || julgado) return;
+      julgado = true;
+      const certa = prev.slice(1).find((o) => o.startsWith("*")).slice(1);
+      const v = fig.querySelector(".preveja-veredito");
+      v.className = "preveja-veredito " + (aposta.ok ? "ok" : "nao");
+      v.textContent = aposta.ok ? `Você previu certo: ${certa}.` : `A resposta era: ${certa}. Compare com a sua aposta e veja na animação onde ela muda.`;
+      fig.querySelectorAll("[data-aposta]").forEach((x) => { if (x.textContent === certa) x.classList.add("certo"); else if (x.getAttribute("aria-pressed") === "true") x.classList.add("errado"); });
+    }
     const palco = fig.querySelector(".clip-palco");
     const leg = fig.querySelector(".clip-legenda");
     const bTocar = fig.querySelector('[data-a="tocar"]');
@@ -56,7 +80,9 @@
       bAnt.disabled = k === 0;
       bProx.disabled = k === n - 1;
       if (k >= n - 1 && tocando) { clearTimeout(t); tocando = false; }
+      if (k >= n - 1) julgar();
       rotulo();
+      if (prev && aposta === null) fig.querySelectorAll(".clip-controles button").forEach((x) => { x.disabled = true; });
     }
     function tocar() {
       clearTimeout(t); tocando = true;
@@ -80,7 +106,7 @@
     if ("IntersectionObserver" in window) {
       let jaTocou = false;
       new IntersectionObserver((es) => es.forEach((e) => {
-        if (e.isIntersecting && !jaTocou && !reduz() && fig.offsetParent !== null) { jaTocou = true; setTimeout(() => { if (i === 0 && !tocando) tocar(); }, 500); }
+        if (e.isIntersecting && !jaTocou && !reduz() && fig.offsetParent !== null && !(prev && aposta === null)) { jaTocou = true; setTimeout(() => { if (i === 0 && !tocando) tocar(); }, 500); }
         if (!e.isIntersecting && tocando) parar();
       }), { threshold: 0.55 }).observe(fig);
     }

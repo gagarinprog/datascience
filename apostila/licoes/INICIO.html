@@ -171,7 +171,7 @@
           <p>Repare que o edital funciona como um <strong>algoritmo</strong>: recebe os dados (entrada), aplica regras (processamento) e entrega uma lista (saída). Você vai estudar exatamente isso no Módulo 1.</p>
         </div>
         <p class="cotidiano"><b>No seu dia a dia de estudo</b>Quando você pede ao seu caderno de questões “mostre só as que errei em Direito Administrativo”, está filtrando: duas regras (errou = sim, matéria = D. Adm.) aplicadas a cada linha.</p>
-        <figure data-clip="funil" style="--alt: 360px">
+        <figure data-clip="funil" data-preveja="Dos 8 candidatos, quantos alcançam o corte de 70?|3|*5|8" style="--alt: 360px">
           <figcaption>A nota de corte aplicada aos 8 candidatos. Cada candidato mostra o nome e a nota total.</figcaption>
         </figure>
 
@@ -338,7 +338,7 @@ fimse</pre>
           </div>
           <div class="retorno" hidden data-ok-texto="Isso. O total empata de novo (73), e o desempate pela objetiva agora favorece a Gabriela: 46 contra 45." data-nao-texto="Totais iguais, então vale o desempate: maior objetiva. Com 46 contra 45, a Gabriela passa na frente. A posição na lista de inscrição não conta."></div>
         </div>
-        <div class="exercicio" data-ordenar data-resposta="ler objetiva|ler discursiva|total ← objetiva + discursiva|ordenar por total, maior primeiro">
+        <div class="exercicio" data-ordenar data-resposta="ler objetiva|ler discursiva|total ← objetiva + discursiva|ordenar por total, maior primeiro" data-alternativas="ler discursiva|ler objetiva|total ← objetiva + discursiva|ordenar por total, maior primeiro">
           <p class="pergunta">Monte, na ordem certa, os passos para gerar a classificação. Clique nas linhas na ordem em que devem acontecer; clique de novo para devolver.</p>
           <div class="ordenar" data-banco>
             <button class="botao linha" type="button">ordenar por total, maior primeiro</button>
@@ -461,148 +461,9 @@ fimse</pre>
 <script src="clip.js" charset="utf-8"></script>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-inicio.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
 <script>
-(function(){ window.Clip.iniciar(); })();
-(function () {
-
-  function mostrar(retorno, ok) {
-    retorno.hidden = false;
-    retorno.className = "retorno " + (ok ? "ok" : "nao");
-    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
-  }
-
-  document.querySelectorAll("[data-escolha]").forEach((ex) => {
-    const botoes = ex.querySelectorAll(".opcoes .botao");
-    botoes.forEach((b) => b.addEventListener("click", () => {
-      botoes.forEach((x) => {
-        x.disabled = true;
-        if (x.hasAttribute("data-ok")) x.classList.add("certo");
-      });
-      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
-      b.setAttribute("aria-pressed", "true");
-      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
-    }));
-  });
-
-  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
-
-  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      let tudo = true;
-      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
-        const aceitas = campo.dataset.resposta.split("|");
-        const ok = aceitas.includes(normalizar(campo.value));
-        campo.classList.toggle("ok", ok);
-        campo.classList.toggle("nao", !ok);
-        if (!ok) tudo = false;
-      });
-      mostrar(ex.querySelector(".retorno"), tudo);
-    });
-  });
-
-  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
-    const banco = ex.querySelector("[data-banco]");
-    const montagem = ex.querySelector("[data-montagem]");
-    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
-      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
-    }));
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
-      const certa = ex.dataset.resposta.split("|");
-      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
-      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
-      mostrar(ex.querySelector(".retorno"), ok);
-    });
-  });
-
-  const CHAVE = "dominio:licao:INICIO";
-  let feitos = [];
-  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
-  function pintar() {
-    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
-    document.querySelectorAll("[data-marcar]").forEach((b) => {
-      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
-    });
-  }
-  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
-    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
-    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
-    pintar();
-  }));
-  pintar();
-
-  const links = [...document.querySelectorAll("[data-conceito]")];
-  const obs = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
-  }), { rootMargin: "-20% 0px -70% 0px" });
-  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
-
-  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
-  const secoes = [...document.querySelectorAll(".secao")];
-  const nomes = ["Tabela, linha e coluna", "Filtrar", "Tipos de variável", "Ordenar e desempatar", "Resumir", "Mini-projeto"];
-  const verTudo = document.getElementById("ver-tudo");
-  const barra = document.getElementById("passos-licao");
-  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
-  const feito = (ex) => {
-    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
-    const r = ex.querySelector(".retorno");
-    return !!r && r.classList.contains("ok");
-  };
-  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
-  secoes.forEach((s, i) => {
-    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
-    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
-    const prox = s.querySelector("[data-proximo]");
-    if (prox) prox.addEventListener("click", () => ir(i + 1));
-  });
-  function atualizar() {
-    secoes.forEach((s, i) => {
-      const ok = completo(i);
-      const prox = s.querySelector("[data-proximo]");
-      if (prox) prox.disabled = !ok && !verTudo.checked;
-      const est = s.querySelector(".estado-licao");
-      const total = s.querySelectorAll(".exercicio").length;
-      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
-      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
-      est.classList.toggle("ok", ok && total > 0);
-    });
-    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
-    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
-  }
-  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function ir(i) {
-    const fazer = () => {
-      atual = Math.max(0, Math.min(secoes.length - 1, i));
-      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-      atualizar();
-      secoes[atual].scrollIntoView({ block: "start" });
-    };
-    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
-    else fazer();
-  }
-  let espera = null;
-  document.addEventListener("click", (e) => {
-    const ex = e.target.closest(".exercicio");
-    if (!ex) return;
-    setTimeout(() => {
-      atualizar();
-      const i = secoes.indexOf(ex.closest(".secao"));
-      const certo = ex.querySelector(".retorno.ok");
-      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
-        const est = secoes[i].querySelector(".estado-licao");
-        est.textContent = "Tudo certo. Indo para o próximo conceito...";
-        clearTimeout(espera);
-        espera = setTimeout(() => ir(i + 1), 2200);
-      }
-    }, 0);
-  });
-  window.addEventListener("hashchange", () => {
-    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
-    if (k >= 0) ir(k);
-  });
-  verTudo.addEventListener("change", () => ir(atual));
-  ir(atual);
-})();
+  Motor.licao({ chave: "dominio:licao:INICIO", trilha: "LOG", nomes: ["Tabela, linha e coluna", "Filtrar", "Tipos de variável", "Ordenar e desempatar", "Resumir", "Mini-projeto"] });
 </script>
 <script>
   // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.

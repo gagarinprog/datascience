@@ -237,7 +237,7 @@ MODULOS = {
                "Porque milhões de pessoas mexem ao mesmo tempo; o banco de dados garante regras, controla o acesso e não deixa nada se perder nem duplicar.",
                "Achar que banco de dados é só uma planilha grande.",
                "Seu histórico de pedidos, suas conversas e seu extrato vivem em bancos de dados."),
-    "BD.02": M(["BD.01"], "No banco da Apostila Viva, como a tabela respostas sabe de qual usuário é cada resposta?",
+    "BD.02": M(["BD.01"], "No banco de estudo, como a tabela respostas sabe de qual usuário é cada resposta?",
                "Pela chave estrangeira usuario_id, que aponta para usuarios.id.",
                "Repetir o nome do usuário em cada resposta, em vez de guardar só o id dele.",
                "Seu CPF identifica você em qualquer sistema: ninguém copia seu nome inteiro, só o número."),

@@ -1,7 +1,7 @@
 // @vitest-environment node
 /**
  * A apostila publicada no GitHub Pages funciona offline pelo service worker (apostila/sw.js).
- * Todo arquivo da pasta precisa estar na lista ARQUIVOS, senão some no modo offline.
+ * Todo arquivo da pasta precisa estar na lista ARQUIVOS, senão some no modo offline (scripts .py ficam de fora: não rodam no navegador).
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
@@ -20,7 +20,7 @@ function listar(pasta: string): string[] {
 
 const arquivos = listar(PASTA)
   .map((caminho) => relative(PASTA, caminho).split(sep).join("/"))
-  .filter((nome) => !FORA.has(nome));
+  .filter((nome) => !FORA.has(nome) && !nome.endsWith(".py"));
 
 const sw = readFileSync(join(PASTA, "sw.js"), "utf-8");
 const bloco = sw.match(/const ARQUIVOS = \[([\s\S]*?)\];/)?.[1] ?? "";

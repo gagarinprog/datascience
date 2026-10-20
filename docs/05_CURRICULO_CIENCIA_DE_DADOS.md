@@ -219,30 +219,30 @@ Siglas de exercício (detalhes na seção 5): **CE** Certo/Errado · **ME** múl
 
 ### 4.6 BD — Bancos de dados relacionais e SQL
 
-**Por que importa:** quase todo dado de empresa mora num banco relacional; SQL é a habilidade mais pedida em vagas de dados e a mais cobrada em concursos de TI. **Pré-requisitos:** LOG.03–LOG.04. **Roda em:** banco da Apostila Viva no navegador, correção pelo conjunto de linhas. **UFMS:** Banco de Dados. **Concurso:** Banco de dados (sempre presente).
+**Por que importa:** quase todo dado de empresa mora num banco relacional; SQL é a habilidade mais pedida em vagas de dados e a mais cobrada em concursos de TI. **Pré-requisitos:** LOG.03–LOG.04. **Roda em:** banco de estudo no navegador, correção pelo conjunto de linhas. **UFMS:** Banco de Dados. **Concurso:** Banco de dados (sempre presente).
 
 | Módulo | Conceitos | Exercícios | Tarefa de domínio |
 |---|---|---|---|
 | BD.01 Por que bancos | dado, informação e SGBD; problemas de planilhas e arquivos soltos; independência de dados; arquitetura de três esquemas | CE, ME | Explicar o que um SGBD resolve que uma planilha não resolve |
-| BD.02 Modelo relacional | relação, tupla e atributo; domínio; esquema e instância; chave candidata, primária e estrangeira; integridade de entidade e referencial | CE, MD, AE | Identificar as chaves e as ligações do esquema da Apostila Viva |
+| BD.02 Modelo relacional | relação, tupla e atributo; domínio; esquema e instância; chave candidata, primária e estrangeira; integridade de entidade e referencial | CE, MD, AE | Identificar as chaves e as ligações do esquema do banco de estudo |
 | BD.03 Primeira consulta | `SELECT` e `FROM`; colunas e `*`; apelido com `AS`; expressões; `DISTINCT` | SQ, PS | Responder perguntas simples numa tabela |
 | BD.04 Filtrar | `WHERE`; comparação; `AND`, `OR`, `NOT` e precedência; `IN`; `BETWEEN`; `LIKE`; aspas simples para texto | SQ, AE, CE | Escrever filtros compostos sem erro de aspas nem de precedência |
 | BD.05 NULL | o que é NULL; lógica de três valores; `IS NULL`; NULL em comparações e contas; `COALESCE` | PS, AE, CE | Prever o resultado de filtros com NULL |
 | BD.06 Ordenar e limitar | `ORDER BY` com várias colunas; `ASC` e `DESC`; `LIMIT` e `OFFSET`; onde ficam os NULL | SQ, PS | Montar rankings e páginas de resultado |
 | BD.07 Agregação | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`; `COUNT(*)` e `COUNT(coluna)`; `GROUP BY`; `HAVING`; ordem lógica de execução | SQ, PS, AE | Resumir dados por grupo e filtrar grupos |
-| BD.08 Junções | produto cartesiano; `INNER JOIN`; `LEFT JOIN`; `RIGHT` e `FULL JOIN`; autojunção; junção com várias tabelas; linhas duplicadas por junção | SQ, PS, AE, SI | Cruzar as quatro tabelas da Apostila Viva sem perder nem duplicar linhas |
+| BD.08 Junções | produto cartesiano; `INNER JOIN`; `LEFT JOIN`; `RIGHT` e `FULL JOIN`; autojunção; junção com várias tabelas; linhas duplicadas por junção | SQ, PS, AE, SI | Cruzar as quatro tabelas do banco de estudo sem perder nem duplicar linhas |
 | BD.09 Subconsultas | subconsulta escalar; em `WHERE` com `IN` e `EXISTS`; correlacionada; em `FROM` | SQ, PS | Resolver a mesma pergunta com junção e com subconsulta |
 | BD.10 Operações de conjunto | `UNION` e `UNION ALL`; `INTERSECT`; `EXCEPT`; compatibilidade de colunas | SQ, CE | Comparar dois conjuntos de alunos ou questões |
 | BD.11 Funções úteis | texto (`UPPER`, `SUBSTR`, `TRIM`, concatenação); datas; `CASE WHEN`; conversão de tipo | SQ, CP | Criar faixas e rótulos dentro da consulta |
 | BD.12 Modelagem conceitual | entidade, atributo, relacionamento; cardinalidade (1:1, 1:N, N:M); entidade fraca; diagrama ER; passar do ER para tabelas | MD, CE | Modelar um caso pequeno do zero e gerar as tabelas |
 | BD.13 Normalização | dependência funcional; anomalias de inserção, atualização e remoção; 1FN, 2FN, 3FN e FNBC; quando desnormalizar | MD, CE, EX | Levar uma tabela "planilhão" até a 3FN |
-| BD.14 Criar e alterar | `CREATE TABLE`; tipos de dados; restrições (`PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`); `INSERT`, `UPDATE`, `DELETE`; `ALTER TABLE` | SQ, AE | Criar o esquema da Apostila Viva com todas as restrições |
+| BD.14 Criar e alterar | `CREATE TABLE`; tipos de dados; restrições (`PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`); `INSERT`, `UPDATE`, `DELETE`; `ALTER TABLE` | SQ, AE | Criar o esquema do banco de estudo com todas as restrições |
 | BD.15 SQL analítico | CTE com `WITH`; CTE recursiva; funções de janela (`ROW_NUMBER`, `RANK`, `LAG`, `LEAD`, somas acumuladas, `PARTITION BY`) | SQ, PS | Calcular ranking por disciplina e evolução das respostas no tempo |
 | BD.16 Transações | ACID; `BEGIN`, `COMMIT`, `ROLLBACK`; concorrência; níveis de isolamento e anomalias (leitura suja, não repetível, fantasma) | CE, ME, EX | Explicar o que acontece com duas transferências simultâneas |
 | BD.17 Desempenho | índice e árvore B; quando o índice ajuda e quando atrapalha; plano de execução (`EXPLAIN`); seletividade | IN, CE | Ler um plano de execução e propor um índice |
 | BD.18 Álgebra relacional | seleção, projeção, junção, união, diferença, renomeação; equivalência com SQL | CE, CP | Traduzir consultas entre álgebra relacional e SQL (cai em concurso) |
 | BD.19 Visões, permissões e rotinas | `VIEW`; `GRANT` e `REVOKE`; procedimentos e gatilhos (conceito) | CE, SQ | Criar uma visão para um relatório recorrente |
-| BD.20 Analítico e transacional | OLTP e OLAP; data warehouse; modelo estrela e floco de neve; fato e dimensão; ETL e ELT | MD, CE | Desenhar um modelo estrela para as respostas da Apostila Viva |
+| BD.20 Analítico e transacional | OLTP e OLAP; data warehouse; modelo estrela e floco de neve; fato e dimensão; ETL e ELT | MD, CE | Desenhar um modelo estrela para as respostas do banco de estudo |
 
 ### 4.7 NSQ — Dados além do relacional
 
@@ -251,7 +251,7 @@ Siglas de exercício (detalhes na seção 5): **CE** Certo/Errado · **ME** múl
 | Módulo | Conceitos | Exercícios | Tarefa de domínio |
 |---|---|---|---|
 | NSQ.01 Por que NoSQL | limites do relacional; esquema flexível; escala horizontal; teorema CAP; consistência eventual; BASE e ACID | CE, ME | Escolher o tipo de banco para cinco cenários e justificar |
-| NSQ.02 Documentos | documento JSON; coleção; consulta e agregação no MongoDB; embutir ou referenciar | PS, CE, MD | Modelar a Apostila Viva como documentos e consultar |
+| NSQ.02 Documentos | documento JSON; coleção; consulta e agregação no MongoDB; embutir ou referenciar | PS, CE, MD | Modelar o banco de estudo como documentos e consultar |
 | NSQ.03 Colunar e análise | armazenamento por linha e por coluna; compressão; Parquet; DuckDB consultando arquivo direto | SQ, IN | Consultar um Parquet grande com DuckDB e explicar a velocidade |
 | NSQ.04 Chave-valor e cache | Redis; expiração; contadores; quando usar cache | CE | Desenhar um cache para uma consulta cara |
 | NSQ.05 Coluna larga e grafo | Cassandra (conceito); Neo4j e consultas de caminho (conceito) | CE, ME | Reconhecer problemas que pedem grafo |
@@ -441,7 +441,7 @@ Regras que valem para todos:
 - Toda trilha tem itens Certo/Errado no estilo Cebraspe, porque prova de concurso é assim.
 - Cada conceito tem **pelo menos um item de transferência**: o mesmo conceito num contexto diferente do da lição.
 - Os distratores vêm de erros reais (catálogo do doc 04, que cresce com os seus erros registrados).
-- Os exemplos de SQL, pandas e estatística usam o banco da Apostila Viva (regra 3 do CLAUDE.md). A partir da etapa 3 entram também dados públicos brasileiros (seção 6).
+- Os exemplos de SQL, pandas e estatística usam o banco de estudo (regra 3 do CLAUDE.md). A partir da etapa 3 entram também dados públicos brasileiros (seção 6).
 
 ---
 
@@ -451,11 +451,11 @@ Um projeto fecha cada etapa. Cada projeto é feito em partes dentro do app, com 
 
 | Etapa | Projeto | O que junta | Dados |
 |---|---|---|---|
-| 1 | **Raio-X da Apostila Viva**: 15 perguntas de negócio respondidas em SQL | BD.01–BD.07, EST.02 | Banco da Apostila Viva |
-| 2 | **Corretor de questões em linha de comando**: lê respostas em CSV, corrige, gera relatório; com classes, testes e Git | PY, POO, ED, ENG.01–ENG.03 | Respostas da Apostila Viva exportadas |
+| 1 | **Raio-X do banco de estudo**: 15 perguntas de negócio respondidas em SQL | BD.01–BD.07, EST.02 | Banco de estudo |
+| 2 | **Corretor de questões em linha de comando**: lê respostas em CSV, corrige, gera relatório; com classes, testes e Git | PY, POO, ED, ENG.01–ENG.03 | Respostas do banco de estudo exportadas |
 | 3 | **Inflação e juros**: baixa IPCA e Selic da API do Banco Central, junta, analisa e publica um relatório com gráficos explicativos | FMT.07, FMT.09, AD, VIS, EST.10 | Séries do SGS do Banco Central |
 | 3 | **Microdados grandes**: análise de um ano de microdados do INEP com Parquet e DuckDB | FMT.05, NSQ.03, AD.10, BD.15 | Microdados do INEP |
-| 4 | **Modelo de previsão**: prever acerto de questões (ou outro alvo à sua escolha) com validação honesta e explicação para um gestor | ML, EST.11, VIS.05 | Apostila Viva ou base pública |
+| 4 | **Modelo de previsão**: prever acerto de questões (ou outro alvo à sua escolha) com validação honesta e explicação para um gestor | ML, EST.11, VIS.05 | Banco de estudo ou base pública |
 | 5 | **Pipeline em produção**: coleta diária de uma API, carga num PostgreSQL, transformações em SQL versionado, validação de qualidade e painel | ENG.06–ENG.09, BD.14–BD.20, ETI.05 | API pública à sua escolha |
 
 ---
@@ -482,7 +482,7 @@ Com milhares de itens, o conteúdo precisa de uma linha de produção com verifi
 1. **Fonte primeiro.** Cada lição cita o material-base (seção 10) e, para conteúdo do curso, o slide ou unidade do `01_MAPA`.
 2. **Escrita em JSON validado.** Cada lição é um arquivo em `content/<trilha>/<modulo>/`, validado pelo esquema Zod no build. Um erro de esquema quebra o build.
 3. **Gabarito executável.**
-   - Em todo item SQ, a consulta oficial roda contra o banco da Apostila Viva no CI. Se o resultado mudar, o build quebra.
+   - Em todo item SQ, a consulta oficial roda contra o banco de estudo no CI. Se o resultado mudar, o build quebra.
    - Em todo item CD, a solução oficial passa nos testes no CI, e uma solução errada conhecida falha neles. Assim fica provado que os testes pegam erro.
    - Em todo item PS e RT, a saída esperada é gerada rodando o código, nunca digitada à mão.
 4. **Certo/Errado sempre com justificativa,** e com a fonte quando a afirmação vier de norma ou documentação.

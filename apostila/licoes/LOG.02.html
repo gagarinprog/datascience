@@ -104,7 +104,7 @@
           </tbody>
         </table>
 <p class="cotidiano"><b>No seu dia a dia de estudo</b>É a etiqueta de uma pasta de estudos: “Nota de corte”. Você pode trocar o papel que está dentro, e a etiqueta continua a mesma. Quem pede a pasta “Nota de corte” recebe o papel que estiver lá agora.</p>
-<figure data-clip="etiqueta" style="--alt: 280px">
+<figure data-clip="etiqueta" data-preveja="Depois de x = 5 e x = x + 2, o que acontece com o 5?|*fica sem nome, e x passa a valer 7|x guarda o 5 e o 7 juntos|o 5 vira 7 dentro de x" style="--alt: 280px">
           <figcaption>O nome x passa do valor 5 para o valor 7. O 5 não some do mundo, mas fica sem nome.</figcaption>
         </figure>
 <h3>Exemplo resolvido: o total de pontos de um candidato</h3>
@@ -278,6 +278,13 @@ print("Total:", total)          # Total: 78</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Os que dão erro misturam tipos (<code>&quot;8&quot; + 2</code>) ou pedem um inteiro a partir de um texto com ponto decimal (<code>int(&quot;7.5&quot;)</code>)." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: o + está misturando texto com número? O <code>int</code> está recebendo um texto com ponto decimal? Nesses casos há erro."></div>
         </div>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Ache o erro</p>
+          <p class="pergunta">Este programa para com TypeError. Toque na linha com o erro.</p>
+          <ol class="ache-codigo"><li>objetiva = int("48")</li><li>discursiva = int("30")</li><li>total = objetiva + discursiva</li><li data-erro>print("Total: " + total)</li></ol>
+          <div class="retorno" hidden data-ok-texto="Isso. A linha 4 tenta juntar texto com número no +. Use &quot;Total: &quot; + str(total) ou print(&quot;Total:&quot;, total)." data-nao-texto="O erro está na linha 4: &quot;Total: &quot; + total mistura texto com número. As conversões das linhas 1 e 2 estão certas. Use str(total) ou a vírgula do print." data-pista="procure a linha em que o + junta dois tipos diferentes."></div>
+        </div>
+
         <p class="resumo"><b>Resumo em uma frase</b>int(), float() e str() trocam o tipo de um valor; só funcionam quando o valor faz sentido no novo tipo.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>"8" + 2</code> dá erro e como corrigir.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
@@ -367,150 +374,9 @@ print(total &gt;= NOTA_DE_CORTE)</pre>
 <script src="clip.js" charset="utf-8"></script>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-var.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
 <script>
-(function () {
-  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
-  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
-  window.Clip.iniciar();
-
-  function mostrar(retorno, ok) {
-    retorno.hidden = false;
-    retorno.className = "retorno " + (ok ? "ok" : "nao");
-    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
-  }
-
-  document.querySelectorAll("[data-escolha]").forEach((ex) => {
-    const botoes = ex.querySelectorAll(".opcoes .botao");
-    botoes.forEach((b) => b.addEventListener("click", () => {
-      botoes.forEach((x) => {
-        x.disabled = true;
-        if (x.hasAttribute("data-ok")) x.classList.add("certo");
-      });
-      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
-      b.setAttribute("aria-pressed", "true");
-      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
-    }));
-  });
-
-  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
-
-  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      let tudo = true;
-      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
-        const aceitas = campo.dataset.resposta.split("|");
-        const ok = aceitas.includes(normalizar(campo.value));
-        campo.classList.toggle("ok", ok);
-        campo.classList.toggle("nao", !ok);
-        if (!ok) tudo = false;
-      });
-      mostrar(ex.querySelector(".retorno"), tudo);
-    });
-  });
-
-  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
-    const banco = ex.querySelector("[data-banco]");
-    const montagem = ex.querySelector("[data-montagem]");
-    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
-      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
-    }));
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
-      const certa = ex.dataset.resposta.split("|");
-      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
-      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
-      mostrar(ex.querySelector(".retorno"), ok);
-    });
-  });
-
-  const CHAVE = "dominio:licao:LOG.02";
-  let feitos = [];
-  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
-  function pintar() {
-    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
-    document.querySelectorAll("[data-marcar]").forEach((b) => {
-      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
-    });
-  }
-  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
-    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
-    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
-    pintar();
-  }));
-  pintar();
-
-  const links = [...document.querySelectorAll("[data-conceito]")];
-  const obs = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
-  }), { rootMargin: "-20% 0px -70% 0px" });
-  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
-
-  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
-  const secoes = [...document.querySelectorAll(".secao")];
-  const nomes = ["Variável como nome para um valor", "Atribuição", "Tipos primitivos", "Conversão de tipo", "Constantes", "Tarefa de domínio"];
-  const verTudo = document.getElementById("ver-tudo");
-  const barra = document.getElementById("passos-licao");
-  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
-  const feito = (ex) => {
-    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
-    const r = ex.querySelector(".retorno");
-    return !!r && r.classList.contains("ok");
-  };
-  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
-  secoes.forEach((s, i) => {
-    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
-    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
-    const prox = s.querySelector("[data-proximo]");
-    if (prox) prox.addEventListener("click", () => ir(i + 1));
-  });
-  function atualizar() {
-    secoes.forEach((s, i) => {
-      const ok = completo(i);
-      const prox = s.querySelector("[data-proximo]");
-      if (prox) prox.disabled = !ok && !verTudo.checked;
-      const est = s.querySelector(".estado-licao");
-      const total = s.querySelectorAll(".exercicio").length;
-      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
-      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
-      est.classList.toggle("ok", ok && total > 0);
-    });
-    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
-    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
-  }
-  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function ir(i) {
-    const fazer = () => {
-      atual = Math.max(0, Math.min(secoes.length - 1, i));
-      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-      atualizar();
-      secoes[atual].scrollIntoView({ block: "start" });
-    };
-    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
-    else fazer();
-  }
-  let espera = null;
-  document.addEventListener("click", (e) => {
-    const ex = e.target.closest(".exercicio");
-    if (!ex) return;
-    setTimeout(() => {
-      atualizar();
-      const i = secoes.indexOf(ex.closest(".secao"));
-      const certo = ex.querySelector(".retorno.ok");
-      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
-        const est = secoes[i].querySelector(".estado-licao");
-        est.textContent = "Tudo certo. Indo para o próximo conceito...";
-        clearTimeout(espera);
-        espera = setTimeout(() => ir(i + 1), 2200);
-      }
-    }, 0);
-  });
-  window.addEventListener("hashchange", () => {
-    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
-    if (k >= 0) ir(k);
-  });
-  verTudo.addEventListener("change", () => ir(atual));
-  ir(atual);
-})();
+  Motor.licao({ chave: "dominio:licao:LOG.02", trilha: "LOG", nomes: ["Variável como nome para um valor", "Atribuição", "Tipos primitivos", "Conversão de tipo", "Constantes", "Tarefa de domínio"] });
 </script>
 <script>
   // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.

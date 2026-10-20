@@ -2,7 +2,7 @@
 // Arquivos do próprio site: rede primeiro (pega a versão nova quando há internet) e cópia guardada quando não há.
 // Fontes e bibliotecas de CDN: cópia guardada primeiro, porque não mudam.
 // Toda lição ou arquivo novo em apostila/ entra em ARQUIVOS; o teste tests/apostila-pwa.test.ts confere.
-const CACHE = "dominio-v3";
+const CACHE = "dominio-v4";
 const ARQUIVOS = [
   "./",
   "./index.html",
@@ -32,6 +32,7 @@ const ARQUIVOS = [
   "./licoes/LOG.02.html",
   "./licoes/LOG.03.html",
   "./licoes/GALERIA.html",
+  "./licoes/REVISAR.html",
   "./licoes/clip.css",
   "./licoes/clip.js",
   "./licoes/clipes-inicio.js",
@@ -41,6 +42,9 @@ const ARQUIVOS = [
   "./licoes/clipes-ops.js",
   "./licoes/clipes-galeria.js",
   "./licoes/reacao.js",
+  "./licoes/motor.js",
+  "./licoes/revisar.js",
+  "./licoes/dados/estudo.sql",
 ];
 const CDN = [
   "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap",

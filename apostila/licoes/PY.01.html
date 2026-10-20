@@ -172,7 +172,7 @@ print(total)</pre>
           <div class="retorno" hidden data-ok-texto="Isso. No REPL o nome sozinho mostra o valor; num script, ele seria uma linha sem efeito visível. Quem escreve na tela é o print." data-nao-texto="Escrever só <code>total</code> num script não dá erro, mas também não mostra nada. Quem escreve na tela é o <code>print</code>."></div>
         </div>
 <h3>Pratique: monte o script na ordem certa</h3>
-<div class="exercicio" data-ordenar data-resposta="objetiva = 48|discursiva = 30|total = objetiva + discursiva|print(total)">
+<div class="exercicio" data-ordenar data-resposta="objetiva = 48|discursiva = 30|total = objetiva + discursiva|print(total)" data-alternativas="discursiva = 30|objetiva = 48|total = objetiva + discursiva|print(total)">
           <p class="pergunta">Monte o script do total. Clique nas linhas na ordem em que o Python deve executá-las; clique de novo para devolver.</p>
           <div class="ordenar" data-banco><button class="botao linha" type="button">print(total)</button><button class="botao linha" type="button">total = objetiva + discursiva</button><button class="botao linha" type="button">discursiva = 30</button><button class="botao linha" type="button">objetiva = 48</button></div>
           <div class="montagem" data-montagem aria-label="Sua ordem"></div>
@@ -242,6 +242,13 @@ print("Média:", (n1 + n2) / 2)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Aspas indicam texto; <code>int</code> e <code>float</code> convertem texto em número." data-nao-texto="Os campos em vermelho estão trocados. Lembre: o que vem de <code>input</code> e o que está entre aspas é texto; o resultado de <code>int</code> ou <code>float</code> é número."></div>
         </div>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Ache o erro</p>
+          <p class="pergunta">O programa para com erro na última linha. Toque na linha que <b>causa</b> o erro.</p>
+          <ol class="ache-codigo"><li>nome = input("Nome: ")</li><li data-erro>nota = input("Nota: ")</li><li>print(nome, "precisa de", 70 - nota, "pontos")</li></ol>
+          <div class="retorno" hidden data-ok-texto="Isso. O erro aparece na linha 3, mas a causa é a linha 2: o input devolve texto, e texto não entra numa subtração. O certo é nota = int(input(&quot;Nota: &quot;))." data-nao-texto="A causa está na linha 2: o input devolve texto, e 70 - &quot;62&quot; não existe. A linha 3 só mostra o problema. O certo é nota = int(input(&quot;Nota: &quot;))." data-pista="o erro aparece na linha 3, mas a causa vem antes. Que tipo de valor o input devolve?"></div>
+        </div>
+
         <p class="resumo"><b>Resumo em uma frase</b>print escreve na tela, input pergunta e devolve texto; int() e float() convertem texto em número.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que a nota lida com <code>input</code> precisa de <code>int</code> ou <code>float</code> antes de entrar numa conta.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
@@ -329,7 +336,7 @@ print(total &gt;= corte)</pre>
           </tbody>
         </table>
 <p class="cotidiano"><b>No seu dia a dia de estudo</b>É como os tópicos e subtópicos do edital: o recuo mostra o que faz parte de quê. Se um subtópico sai da margem, ele passa a ser um tópico novo, e o sentido da lista muda.</p>
-<figure data-clip="py-bloco" style="--alt: 280px">
+<figure data-clip="py-bloco" data-preveja="No fim da animação, o print(&quot;aprovado&quot;) perde o recuo. Com nota = 62, o que aparece na tela?|só “fim da lista”|*“aprovado” e “fim da lista”|nada" style="--alt: 280px">
           <figcaption>A mesma nota, 62, em dois códigos que só diferem por um recuo. Veja o que muda na saída.</figcaption>
         </figure>
 <h3>Exemplo resolvido: aprovado ou reprovado pela média</h3>
@@ -366,6 +373,15 @@ print("aprovado")</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Certo. O primeiro print está no bloco do if e só roda com nota 70 ou mais; o segundo está fora do bloco e roda sempre. Com 80 aparecem os dois; com 50, só o de fora." data-nao-texto="Confira o recuo de cada print. O primeiro está recuado, então só roda se a pergunta der sim. O segundo voltou para a margem: está fora do bloco e roda sempre."></div>
         </div>
+        <div class="exercicio" data-ordenar data-recuo data-resposta="nota = 75|if nota &gt;= 70:|    print(&quot;aprovado&quot;)|else:|    print(&quot;reprovado&quot;)">
+          <p class="rotulo">Monte o programa</p>
+          <p class="pergunta">Monte o programa que escreve “aprovado” ou “reprovado” conforme a nota. Uma das linhas é falsa e não entra. Depois de colocar cada linha, use ← e → para acertar o recuo.</p>
+          <div class="ordenar" data-banco><button class="botao linha" type="button">print("reprovado")</button><button class="botao linha" type="button" data-falsa>if nota &gt;= 70</button><button class="botao linha" type="button">else:</button><button class="botao linha" type="button">print("aprovado")</button><button class="botao linha" type="button">if nota &gt;= 70:</button><button class="botao linha" type="button">nota = 75</button></div>
+          <div class="montagem" data-montagem aria-label="Seu programa"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. A linha do if termina em dois-pontos, cada print fica recuado dentro do seu bloco, e o else volta para a margem, alinhado com o if." data-nao-texto="Confira: a linha falsa é a do if sem dois-pontos; os prints vão recuados um nível; o else fica na margem." data-pista="olhe o final da linha do if: o que abre um bloco em Python? E o else, fica dentro ou fora do bloco do if?"></div>
+        </div>
+
         <p class="resumo"><b>Resumo em uma frase</b>Dois-pontos abrem um bloco; as linhas recuadas pertencem a ele, e o fim do recuo é o fim do bloco.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que, em Python, mudar o recuo de uma linha pode mudar o resultado do programa sem dar erro.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
@@ -462,150 +478,9 @@ else:
 <script src="clip.js" charset="utf-8"></script>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-py.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
 <script>
-(function () {
-  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
-  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
-  window.Clip.iniciar();
-
-  function mostrar(retorno, ok) {
-    retorno.hidden = false;
-    retorno.className = "retorno " + (ok ? "ok" : "nao");
-    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
-  }
-
-  document.querySelectorAll("[data-escolha]").forEach((ex) => {
-    const botoes = ex.querySelectorAll(".opcoes .botao");
-    botoes.forEach((b) => b.addEventListener("click", () => {
-      botoes.forEach((x) => {
-        x.disabled = true;
-        if (x.hasAttribute("data-ok")) x.classList.add("certo");
-      });
-      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
-      b.setAttribute("aria-pressed", "true");
-      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
-    }));
-  });
-
-  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
-
-  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      let tudo = true;
-      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
-        const aceitas = campo.dataset.resposta.split("|");
-        const ok = aceitas.includes(normalizar(campo.value));
-        campo.classList.toggle("ok", ok);
-        campo.classList.toggle("nao", !ok);
-        if (!ok) tudo = false;
-      });
-      mostrar(ex.querySelector(".retorno"), tudo);
-    });
-  });
-
-  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
-    const banco = ex.querySelector("[data-banco]");
-    const montagem = ex.querySelector("[data-montagem]");
-    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
-      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
-    }));
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
-      const certa = ex.dataset.resposta.split("|");
-      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
-      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
-      mostrar(ex.querySelector(".retorno"), ok);
-    });
-  });
-
-  const CHAVE = "dominio:licao:PY.01";
-  let feitos = [];
-  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
-  function pintar() {
-    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
-    document.querySelectorAll("[data-marcar]").forEach((b) => {
-      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
-    });
-  }
-  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
-    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
-    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
-    pintar();
-  }));
-  pintar();
-
-  const links = [...document.querySelectorAll("[data-conceito]")];
-  const obs = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
-  }), { rootMargin: "-20% 0px -70% 0px" });
-  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
-
-  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
-  const secoes = [...document.querySelectorAll(".secao")];
-  const nomes = ["Interpretador e REPL", "Script", "print e input", "Comentários", "Indentação como bloco", "PEP 8", "Tarefa de domínio"];
-  const verTudo = document.getElementById("ver-tudo");
-  const barra = document.getElementById("passos-licao");
-  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
-  const feito = (ex) => {
-    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
-    const r = ex.querySelector(".retorno");
-    return !!r && r.classList.contains("ok");
-  };
-  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
-  secoes.forEach((s, i) => {
-    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
-    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
-    const prox = s.querySelector("[data-proximo]");
-    if (prox) prox.addEventListener("click", () => ir(i + 1));
-  });
-  function atualizar() {
-    secoes.forEach((s, i) => {
-      const ok = completo(i);
-      const prox = s.querySelector("[data-proximo]");
-      if (prox) prox.disabled = !ok && !verTudo.checked;
-      const est = s.querySelector(".estado-licao");
-      const total = s.querySelectorAll(".exercicio").length;
-      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
-      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
-      est.classList.toggle("ok", ok && total > 0);
-    });
-    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
-    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
-  }
-  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function ir(i) {
-    const fazer = () => {
-      atual = Math.max(0, Math.min(secoes.length - 1, i));
-      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-      atualizar();
-      secoes[atual].scrollIntoView({ block: "start" });
-    };
-    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
-    else fazer();
-  }
-  let espera = null;
-  document.addEventListener("click", (e) => {
-    const ex = e.target.closest(".exercicio");
-    if (!ex) return;
-    setTimeout(() => {
-      atualizar();
-      const i = secoes.indexOf(ex.closest(".secao"));
-      const certo = ex.querySelector(".retorno.ok");
-      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
-        const est = secoes[i].querySelector(".estado-licao");
-        est.textContent = "Tudo certo. Indo para o próximo conceito...";
-        clearTimeout(espera);
-        espera = setTimeout(() => ir(i + 1), 2200);
-      }
-    }, 0);
-  });
-  window.addEventListener("hashchange", () => {
-    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
-    if (k >= 0) ir(k);
-  });
-  verTudo.addEventListener("change", () => ir(atual));
-  ir(atual);
-})();
+  Motor.licao({ chave: "dominio:licao:PY.01", trilha: "LOG", nomes: ["Interpretador e REPL", "Script", "print e input", "Comentários", "Indentação como bloco", "PEP 8", "Tarefa de domínio"] });
 </script>
 <script>
   // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.

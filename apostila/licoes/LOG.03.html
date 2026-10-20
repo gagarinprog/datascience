@@ -236,6 +236,13 @@ print(aprovado, empatou)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Estrito (&gt;) não inclui o igual, e um número nunca é igual a um texto." data-nao-texto="Os campos em vermelho estão trocados. Lembre: &gt; não inclui o igual, != pergunta se é diferente, e um número nunca é igual a um texto entre aspas."></div>
         </div>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Ache o erro</p>
+          <p class="pergunta">O Python recusa este programa antes de rodar. Toque na linha com o erro.</p>
+          <ol class="ache-codigo"><li>nota = 70</li><li data-erro>if nota = 70:</li><li>    print("exatamente no corte")</li></ol>
+          <div class="retorno" hidden data-ok-texto="Isso. Na linha 2, um sinal só tenta guardar; para comparar são dois: if nota == 70:. O Python acusa SyntaxError." data-nao-texto="O erro está na linha 2: um sinal de igual guarda, dois comparam. O certo é if nota == 70:. A linha 1 está certa, porque ali a intenção é guardar." data-pista="uma das linhas tenta guardar um valor no lugar em que deveria fazer uma pergunta."></div>
+        </div>
+
         <p class="resumo"><b>Resumo em uma frase</b>Comparações (== != &gt; &lt; &gt;= &lt;=) respondem True ou False; = guarda e == compara.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> a diferença entre <code>=</code> e <code>==</code>, com um exemplo seu.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
@@ -312,7 +319,7 @@ print(desconto, not desconto)</pre>
           <p>Operadores do mesmo degrau são resolvidos da esquerda para a direita (a potência é a exceção). E a regra de ouro: na dúvida, ponha parênteses. Eles deixam a intenção clara e não custam nada.</p>
         </div>
 <p class="cotidiano"><b>No seu dia a dia de estudo</b>É a ordem de correção de uma prova: primeiro se corrige cada questão, depois se aplica o peso, depois se soma, e só no fim se compara com o corte. Fazer fora de ordem dá outra nota.</p>
-<figure data-clip="precedencia" style="--alt: 300px">
+<figure data-clip="precedencia" data-preveja="Quanto vale 10 + 4 * 3 ** 2 &gt;= 40 and not False?|*True|False|dá erro" style="--alt: 300px">
           <figcaption>Uma expressão encolhe uma operação por vez, na ordem de precedência.</figcaption>
         </figure>
 <h3>Exemplo resolvido: <code>10 - 4 / 2 &gt; 7 or False</code></h3>
@@ -386,6 +393,15 @@ print(alta)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. and para no primeiro False; or para no primeiro True." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: o lado esquerdo já decide o resultado? False decide o and; True decide o or. Se já decidiu, o x é pulado."></div>
         </div>
+        <div class="exercicio" data-ordenar data-recuo data-resposta="vagas = 0|inscritos = 1250|if vagas != 0 and inscritos / vagas &gt; 10:|    print(&quot;concorrida&quot;)" data-alternativas="inscritos = 1250|vagas = 0|if vagas != 0 and inscritos / vagas &gt; 10:|    print(&quot;concorrida&quot;)">
+          <p class="rotulo">Monte o programa</p>
+          <p class="pergunta">Monte o programa que avisa quando há mais de 10 inscritos por vaga, sem quebrar com vagas = 0. Uma das linhas é falsa e não entra. Depois de colocar cada linha, use ← e → para acertar o recuo.</p>
+          <div class="ordenar" data-banco><button class="botao linha" type="button">print("concorrida")</button><button class="botao linha" type="button" data-falsa>if inscritos / vagas &gt; 10 and vagas != 0:</button><button class="botao linha" type="button">if vagas != 0 and inscritos / vagas &gt; 10:</button><button class="botao linha" type="button">inscritos = 1250</button><button class="botao linha" type="button">vagas = 0</button></div>
+          <div class="montagem" data-montagem aria-label="Seu programa"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. A proteção vagas != 0 vem primeiro: com vagas = 0, o and para ali e a divisão nunca acontece. O print fica dentro do bloco do if." data-nao-texto="A linha falsa é a que divide antes de proteger: com vagas = 0, ela quebra com ZeroDivisionError. O print vai recuado dentro do if." data-pista="qual das duas versões do if testa a proteção antes de dividir?"></div>
+        </div>
+
         <p class="resumo"><b>Resumo em uma frase</b>and para no primeiro False e or no primeiro True; o resto nem é avaliado.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> como o curto-circuito ajuda a evitar uma divisão por zero.</p>
         <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
@@ -425,150 +441,9 @@ print("Concorrência alta:", vagas &gt; 0 and inscritos / vagas &gt; 100)</pre>
 <script src="clip.js" charset="utf-8"></script>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-ops.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
 <script>
-(function () {
-  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
-  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
-  window.Clip.iniciar();
-
-  function mostrar(retorno, ok) {
-    retorno.hidden = false;
-    retorno.className = "retorno " + (ok ? "ok" : "nao");
-    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
-  }
-
-  document.querySelectorAll("[data-escolha]").forEach((ex) => {
-    const botoes = ex.querySelectorAll(".opcoes .botao");
-    botoes.forEach((b) => b.addEventListener("click", () => {
-      botoes.forEach((x) => {
-        x.disabled = true;
-        if (x.hasAttribute("data-ok")) x.classList.add("certo");
-      });
-      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
-      b.setAttribute("aria-pressed", "true");
-      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
-    }));
-  });
-
-  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
-
-  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      let tudo = true;
-      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
-        const aceitas = campo.dataset.resposta.split("|");
-        const ok = aceitas.includes(normalizar(campo.value));
-        campo.classList.toggle("ok", ok);
-        campo.classList.toggle("nao", !ok);
-        if (!ok) tudo = false;
-      });
-      mostrar(ex.querySelector(".retorno"), tudo);
-    });
-  });
-
-  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
-    const banco = ex.querySelector("[data-banco]");
-    const montagem = ex.querySelector("[data-montagem]");
-    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
-      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
-    }));
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
-      const certa = ex.dataset.resposta.split("|");
-      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
-      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
-      mostrar(ex.querySelector(".retorno"), ok);
-    });
-  });
-
-  const CHAVE = "dominio:licao:LOG.03";
-  let feitos = [];
-  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
-  function pintar() {
-    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
-    document.querySelectorAll("[data-marcar]").forEach((b) => {
-      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
-    });
-  }
-  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
-    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
-    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
-    pintar();
-  }));
-  pintar();
-
-  const links = [...document.querySelectorAll("[data-conceito]")];
-  const obs = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
-  }), { rootMargin: "-20% 0px -70% 0px" });
-  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
-
-  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
-  const secoes = [...document.querySelectorAll(".secao")];
-  const nomes = ["Operadores aritméticos", "Divisão inteira e resto", "Operadores relacionais", "Operadores lógicos", "Precedência", "Curto-circuito", "Tarefa de domínio"];
-  const verTudo = document.getElementById("ver-tudo");
-  const barra = document.getElementById("passos-licao");
-  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
-  const feito = (ex) => {
-    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
-    const r = ex.querySelector(".retorno");
-    return !!r && r.classList.contains("ok");
-  };
-  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
-  secoes.forEach((s, i) => {
-    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
-    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
-    const prox = s.querySelector("[data-proximo]");
-    if (prox) prox.addEventListener("click", () => ir(i + 1));
-  });
-  function atualizar() {
-    secoes.forEach((s, i) => {
-      const ok = completo(i);
-      const prox = s.querySelector("[data-proximo]");
-      if (prox) prox.disabled = !ok && !verTudo.checked;
-      const est = s.querySelector(".estado-licao");
-      const total = s.querySelectorAll(".exercicio").length;
-      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
-      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
-      est.classList.toggle("ok", ok && total > 0);
-    });
-    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
-    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
-  }
-  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function ir(i) {
-    const fazer = () => {
-      atual = Math.max(0, Math.min(secoes.length - 1, i));
-      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-      atualizar();
-      secoes[atual].scrollIntoView({ block: "start" });
-    };
-    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
-    else fazer();
-  }
-  let espera = null;
-  document.addEventListener("click", (e) => {
-    const ex = e.target.closest(".exercicio");
-    if (!ex) return;
-    setTimeout(() => {
-      atualizar();
-      const i = secoes.indexOf(ex.closest(".secao"));
-      const certo = ex.querySelector(".retorno.ok");
-      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
-        const est = secoes[i].querySelector(".estado-licao");
-        est.textContent = "Tudo certo. Indo para o próximo conceito...";
-        clearTimeout(espera);
-        espera = setTimeout(() => ir(i + 1), 2200);
-      }
-    }, 0);
-  });
-  window.addEventListener("hashchange", () => {
-    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
-    if (k >= 0) ir(k);
-  });
-  verTudo.addEventListener("change", () => ir(atual));
-  ir(atual);
-})();
+  Motor.licao({ chave: "dominio:licao:LOG.03", trilha: "LOG", nomes: ["Operadores aritméticos", "Divisão inteira e resto", "Operadores relacionais", "Operadores lógicos", "Precedência", "Curto-circuito", "Tarefa de domínio"] });
 </script>
 <script>
   // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.

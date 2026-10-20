@@ -653,7 +653,7 @@ window.MATERIAS = [
      "chave candidata, primária e estrangeira",
      "integridade de entidade e referencial"
     ],
-    "dominio": "Identificar as chaves e as ligações do esquema da Apostila Viva",
+    "dominio": "Identificar as chaves e as ligações do esquema do banco de estudo",
     "antes": [
      {
       "codigo": "BD.01",
@@ -661,7 +661,7 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "No banco da Apostila Viva, como a tabela respostas sabe de qual usuário é cada resposta?",
+    "pergunta": "No banco de estudo, como a tabela respostas sabe de qual usuário é cada resposta?",
     "resposta": "Pela chave estrangeira usuario_id, que aponta para usuarios.id.",
     "tropeco": "Repetir o nome do usuário em cada resposta, em vez de guardar só o id dele.",
     "dia": "Seu CPF identifica você em qualquer sistema: ninguém copia seu nome inteiro, só o número.",
@@ -840,7 +840,7 @@ window.MATERIAS = [
      "linhas duplicadas por junção",
      "autojunção"
     ],
-    "dominio": "Cruzar as quatro tabelas da Apostila Viva sem perder nem duplicar linhas",
+    "dominio": "Cruzar as quatro tabelas do banco de estudo sem perder nem duplicar linhas",
     "antes": [
      {
       "codigo": "BD.02",
@@ -994,7 +994,7 @@ window.MATERIAS = [
      "INSERT, UPDATE, DELETE",
      "ALTER TABLE"
     ],
-    "dominio": "Criar o esquema da Apostila Viva com todas as restrições",
+    "dominio": "Criar o esquema do banco de estudo com todas as restrições",
     "antes": [
      {
       "codigo": "BD.13",
@@ -1118,7 +1118,7 @@ window.MATERIAS = [
      "fato e dimensão",
      "ETL e ELT"
     ],
-    "dominio": "Desenhar um modelo estrela para as respostas da Apostila Viva",
+    "dominio": "Desenhar um modelo estrela para as respostas do banco de estudo",
     "antes": [
      {
       "codigo": "BD.13",
@@ -4342,7 +4342,7 @@ window.MATERIAS = [
      "consulta e agregação no MongoDB",
      "embutir ou referenciar"
     ],
-    "dominio": "Modelar a Apostila Viva como documentos e consultar",
+    "dominio": "Modelar o banco de estudo como documentos e consultar",
     "antes": [
      {
       "codigo": "NSQ.01",

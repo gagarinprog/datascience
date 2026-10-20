@@ -254,7 +254,7 @@
         </figure>
 
         <p class="cotidiano"><b>No seu dia a dia de estudo</b>É como o esquema que você faz no caderno antes de redigir a discursiva: não vale nota, mas organiza o raciocínio antes de escrever de verdade.</p>
-        <figure data-clip="exec-pseudo" style="--alt: 330px">
+        <figure data-clip="exec-pseudo" data-preveja="Com total = 78, o que o programa escreve no fim?|*aprovado|reprovado|as duas palavras" style="--alt: 330px">
           <figcaption>O computador executa uma linha por vez. Repare no que acontece com as caixas da memória e com o caminho do senão.</figcaption>
         </figure>
 
@@ -281,7 +281,7 @@ fimse</pre></div></li>
         </div>
 
         <h3>Pratique: monte o pseudocódigo na ordem certa</h3>
-        <div class="exercicio" data-ordenar data-resposta="leia reais|leia cotacao|dolares ← reais / cotacao|escreva dolares">
+        <div class="exercicio" data-ordenar data-resposta="leia reais|leia cotacao|dolares ← reais / cotacao|escreva dolares" data-alternativas="leia cotacao|leia reais|dolares ← reais / cotacao|escreva dolares">
           <p class="pergunta">Converter um valor em reais para dólares. Clique nas linhas na ordem em que devem acontecer; clique de novo para devolver.</p>
           <div class="ordenar" data-banco>
             <button class="botao linha" type="button">escreva dolares</button>
@@ -292,6 +292,13 @@ fimse</pre></div></li>
           <div class="montagem" data-montagem aria-label="Sua ordem"></div>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Certo. As entradas vêm antes da conta que usa as duas, e a saída só pode vir depois que dolares existe. A ordem entre as duas leituras tanto faz, mas ler primeiro o valor é o mais natural." data-nao-texto="Ainda não. Pergunte para cada linha: ela usa algo que outra linha prepara? A conta usa reais e cotacao, então vem depois das duas leituras; escrever dolares só dá certo depois da conta."></div>
+        </div>
+
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Ache o erro</p>
+          <p class="pergunta">Este pseudocódigo deveria calcular a média de duas notas. Toque na linha com o erro.</p>
+          <ol class="ache-codigo"><li>leia n1</li><li>leia n2</li><li data-erro>media ← n1 + n2 / 2</li><li>escreva media</li></ol>
+          <div class="retorno" hidden data-ok-texto="Isso. Sem parênteses, a divisão vem antes da soma e só o n2 é dividido. O certo é media ← (n1 + n2) / 2." data-nao-texto="O erro está na linha 3: sem parênteses, só o n2 é dividido por 2. Com 6 e 8, daria 6 + 4 = 10. O certo é media ← (n1 + n2) / 2." data-pista="pense na ordem das contas: numa expressão sem parênteses, o que acontece primeiro, a soma ou a divisão?"></div>
         </div>
 
         <p class="resumo"><b>Resumo em uma frase</b>Pseudocódigo é o algoritmo em passos escritos, uma linha por ação, feito para pessoas lerem.</p>
@@ -470,150 +477,9 @@ escreva valor</pre>
 <script src="clip.js" charset="utf-8"></script>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-log.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
 <script>
-(function () {
-  document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
-  document.querySelectorAll("[data-figura]").forEach((el) => { el.innerHTML = window.FIG[el.dataset.figura](); });
-  window.Clip.iniciar();
-
-  function mostrar(retorno, ok) {
-    retorno.hidden = false;
-    retorno.className = "retorno " + (ok ? "ok" : "nao");
-    retorno.innerHTML = '<span class="cab">' + (ok ? "Certo." : "Ainda não.") + "</span><span>" + (ok ? retorno.dataset.okTexto : retorno.dataset.naoTexto) + "</span>";
-  }
-
-  document.querySelectorAll("[data-escolha]").forEach((ex) => {
-    const botoes = ex.querySelectorAll(".opcoes .botao");
-    botoes.forEach((b) => b.addEventListener("click", () => {
-      botoes.forEach((x) => {
-        x.disabled = true;
-        if (x.hasAttribute("data-ok")) x.classList.add("certo");
-      });
-      if (!b.hasAttribute("data-ok")) b.classList.add("errado");
-      b.setAttribute("aria-pressed", "true");
-      mostrar(ex.querySelector(".retorno"), b.hasAttribute("data-ok"));
-    }));
-  });
-
-  const normalizar = (v) => v.trim().toLowerCase().replace(/["“”']/g, "").replace(",", ".").replace("não", "nao");
-
-  document.querySelectorAll("[data-classificar], [data-preencher]").forEach((ex) => {
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      let tudo = true;
-      ex.querySelectorAll("[data-resposta]").forEach((campo) => {
-        const aceitas = campo.dataset.resposta.split("|");
-        const ok = aceitas.includes(normalizar(campo.value));
-        campo.classList.toggle("ok", ok);
-        campo.classList.toggle("nao", !ok);
-        if (!ok) tudo = false;
-      });
-      mostrar(ex.querySelector(".retorno"), tudo);
-    });
-  });
-
-  document.querySelectorAll("[data-ordenar]").forEach((ex) => {
-    const banco = ex.querySelector("[data-banco]");
-    const montagem = ex.querySelector("[data-montagem]");
-    ex.querySelectorAll(".linha").forEach((linha) => linha.addEventListener("click", () => {
-      (linha.parentElement === banco ? montagem : banco).appendChild(linha);
-    }));
-    ex.querySelector("[data-verificar]").addEventListener("click", () => {
-      const ordem = [...montagem.querySelectorAll(".linha")].map((l) => l.textContent.trim());
-      const certa = ex.dataset.resposta.split("|");
-      const alternativa = [certa[1], certa[0], ...certa.slice(2)];
-      const ok = ordem.length === certa.length && (ordem.join("|") === certa.join("|") || ordem.join("|") === alternativa.join("|"));
-      mostrar(ex.querySelector(".retorno"), ok);
-    });
-  });
-
-  const CHAVE = "dominio:licao:LOG.01";
-  let feitos = [];
-  try { feitos = JSON.parse(localStorage.getItem(CHAVE) || "[]"); } catch (e) { feitos = []; }
-  function pintar() {
-    document.querySelectorAll("[data-conceito]").forEach((a) => a.classList.toggle("feito", feitos.includes(a.dataset.conceito)));
-    document.querySelectorAll("[data-marcar]").forEach((b) => {
-      if (feitos.includes(b.dataset.marcar)) { b.textContent = "Estudado"; b.classList.add("certo"); }
-    });
-  }
-  document.querySelectorAll("[data-marcar]").forEach((b) => b.addEventListener("click", () => {
-    if (!feitos.includes(b.dataset.marcar)) feitos.push(b.dataset.marcar);
-    try { localStorage.setItem(CHAVE, JSON.stringify(feitos)); } catch (e) { /* sem armazenamento: só nesta visita */ }
-    pintar();
-  }));
-  pintar();
-
-  const links = [...document.querySelectorAll("[data-conceito]")];
-  const obs = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
-  }), { rootMargin: "-20% 0px -70% 0px" });
-  document.querySelectorAll(".secao").forEach((s) => obs.observe(s));
-
-  // ---- passo a passo: um conceito por vez; avança com botão ou sozinho depois dos acertos ----
-  const secoes = [...document.querySelectorAll(".secao")];
-  const nomes = ["O que é algoritmo", "Entrada, processamento e saída", "Pseudocódigo", "Fluxograma", "Teste de mesa", "Tarefa de domínio"];
-  const verTudo = document.getElementById("ver-tudo");
-  const barra = document.getElementById("passos-licao");
-  let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
-  const feito = (ex) => {
-    if (ex.hasAttribute("data-escolha")) return !!ex.querySelector('[aria-pressed="true"]');
-    const r = ex.querySelector(".retorno");
-    return !!r && r.classList.contains("ok");
-  };
-  const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
-  secoes.forEach((s, i) => {
-    s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + nomes[i + 1] + "</button>" : '<a class="botao primario" href="../index.html#trilha-LOG">Voltar para a trilha</a>'}</div>`);
-    s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
-    const prox = s.querySelector("[data-proximo]");
-    if (prox) prox.addEventListener("click", () => ir(i + 1));
-  });
-  function atualizar() {
-    secoes.forEach((s, i) => {
-      const ok = completo(i);
-      const prox = s.querySelector("[data-proximo]");
-      if (prox) prox.disabled = !ok && !verTudo.checked;
-      const est = s.querySelector(".estado-licao");
-      const total = s.querySelectorAll(".exercicio").length;
-      const prontos = [...s.querySelectorAll(".exercicio")].filter(feito).length;
-      est.textContent = total ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${total}`) : "";
-      est.classList.toggle("ok", ok && total > 0);
-    });
-    barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${n}</span></button>`).join("");
-    barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
-  }
-  const semMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function ir(i) {
-    const fazer = () => {
-      atual = Math.max(0, Math.min(secoes.length - 1, i));
-      secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-      atualizar();
-      secoes[atual].scrollIntoView({ block: "start" });
-    };
-    if (document.startViewTransition && !semMovimento && !verTudo.checked) document.startViewTransition(fazer);
-    else fazer();
-  }
-  let espera = null;
-  document.addEventListener("click", (e) => {
-    const ex = e.target.closest(".exercicio");
-    if (!ex) return;
-    setTimeout(() => {
-      atualizar();
-      const i = secoes.indexOf(ex.closest(".secao"));
-      const certo = ex.querySelector(".retorno.ok");
-      if (!verTudo.checked && i === atual && completo(i) && certo && i < secoes.length - 1) {
-        const est = secoes[i].querySelector(".estado-licao");
-        est.textContent = "Tudo certo. Indo para o próximo conceito...";
-        clearTimeout(espera);
-        espera = setTimeout(() => ir(i + 1), 2200);
-      }
-    }, 0);
-  });
-  window.addEventListener("hashchange", () => {
-    const k = secoes.findIndex((s) => "#" + s.id === location.hash);
-    if (k >= 0) ir(k);
-  });
-  verTudo.addEventListener("change", () => ir(atual));
-  ir(atual);
-})();
+  Motor.licao({ chave: "dominio:licao:LOG.01", trilha: "LOG", nomes: ["O que é algoritmo", "Entrada, processamento e saída", "Pseudocódigo", "Fluxograma", "Teste de mesa", "Tarefa de domínio"] });
 </script>
 <script>
   // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.

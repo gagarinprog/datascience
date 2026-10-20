@@ -176,7 +176,7 @@ BD-002 BD.01.02 problemas de planilhas e arquivos soltos
 BD-003 BD.01.03 independência de dados
 BD-004 BD.01.04 arquitetura de três esquemas
 BD-005 BD.01.TD tarefa de domínio
-M BD.02 Modelo relacional | CE, MD, AE | Identificar as chaves e as ligações do esquema da Apostila Viva | antes: BD.01 Por que bancos | pronto: No banco da Apostila Viva, como a tabela respostas sabe de qual usuário é cada resposta?
+M BD.02 Modelo relacional | CE, MD, AE | Identificar as chaves e as ligações do esquema do banco de estudo | antes: BD.01 Por que bancos | pronto: No banco de estudo, como a tabela respostas sabe de qual usuário é cada resposta?
 BD-006 BD.02.01 relação, tupla e atributo
 BD-007 BD.02.02 domínio
 BD-008 BD.02.03 esquema e instância
@@ -225,7 +225,7 @@ BD-044 BD.07.03 `GROUP BY`
 BD-045 BD.07.04 `HAVING`
 BD-046 BD.07.05 ordem lógica de execução
 BD-047 BD.07.TD tarefa de domínio
-M BD.08 Junções | SQ, PS, AE, SI | Cruzar as quatro tabelas da Apostila Viva sem perder nem duplicar linhas | antes: BD.02 Modelo relacional; BD.07 Agregação | pronto: Que junção mostra também os usuários que nunca responderam nada?
+M BD.08 Junções | SQ, PS, AE, SI | Cruzar as quatro tabelas do banco de estudo sem perder nem duplicar linhas | antes: BD.02 Modelo relacional; BD.07 Agregação | pronto: Que junção mostra também os usuários que nunca responderam nada?
 BD-048 BD.08.01 produto cartesiano
 BD-049 BD.08.02 `INNER JOIN`
 BD-050 BD.08.03 `LEFT JOIN`
@@ -263,7 +263,7 @@ BD-076 BD.13.02 anomalias de inserção, atualização e remoção
 BD-077 BD.13.03 1FN, 2FN, 3FN e FNBC
 BD-078 BD.13.04 quando desnormalizar
 BD-079 BD.13.TD tarefa de domínio
-M BD.14 Criar e alterar | SQ, AE | Criar o esquema da Apostila Viva com todas as restrições | antes: BD.13 Normalização | pronto: Que restrição impede cadastrar dois usuários com o mesmo e-mail?
+M BD.14 Criar e alterar | SQ, AE | Criar o esquema do banco de estudo com todas as restrições | antes: BD.13 Normalização | pronto: Que restrição impede cadastrar dois usuários com o mesmo e-mail?
 BD-080 BD.14.01 `CREATE TABLE`
 BD-081 BD.14.02 tipos de dados
 BD-082 BD.14.03 restrições (`PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`)
@@ -292,7 +292,7 @@ BD-100 BD.19.01 `VIEW`
 BD-101 BD.19.02 `GRANT` e `REVOKE`
 BD-102 BD.19.03 procedimentos e gatilhos (conceito)
 BD-103 BD.19.TD tarefa de domínio
-M BD.20 Analítico e transacional | MD, CE | Desenhar um modelo estrela para as respostas da Apostila Viva | antes: BD.13 Normalização; BD.15 SQL analítico | pronto: Por que o banco que registra cada compra não é o mesmo que gera o relatório anual?
+M BD.20 Analítico e transacional | MD, CE | Desenhar um modelo estrela para as respostas do banco de estudo | antes: BD.13 Normalização; BD.15 SQL analítico | pronto: Por que o banco que registra cada compra não é o mesmo que gera o relatório anual?
 BD-104 BD.20.01 OLTP e OLAP
 BD-105 BD.20.02 data warehouse
 BD-106 BD.20.03 modelo estrela e floco de neve
@@ -1049,7 +1049,7 @@ NSQ-004 NSQ.01.04 teorema CAP
 NSQ-005 NSQ.01.05 consistência eventual
 NSQ-006 NSQ.01.06 BASE e ACID
 NSQ-007 NSQ.01.TD tarefa de domínio
-M NSQ.02 Documentos | PS, CE, MD | Modelar a Apostila Viva como documentos e consultar | antes: NSQ.01 Por que NoSQL; FMT.02 JSON | pronto: Quando vale embutir os itens dentro do documento do pedido?
+M NSQ.02 Documentos | PS, CE, MD | Modelar o banco de estudo como documentos e consultar | antes: NSQ.01 Por que NoSQL; FMT.02 JSON | pronto: Quando vale embutir os itens dentro do documento do pedido?
 NSQ-008 NSQ.02.01 documento JSON
 NSQ-009 NSQ.02.02 coleção
 NSQ-010 NSQ.02.03 consulta e agregação no MongoDB
