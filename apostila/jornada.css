@@ -881,3 +881,8 @@ pre code { display: block; background: none; border: 0; padding: 0; border-radiu
 
 /* cartão "Comece por aqui" na tela inicial */
 .cartao-inicio { margin-top: 12px; max-width: 520px; }
+
+/* seletor de guia com o elenco ampliado: rola dentro do menu */
+.guia-menu { max-height: min(72vh, 560px); overflow-y: auto; overscroll-behavior: contain; }
+.guia-galeria { display: flex; align-items: center; min-height: 44px; margin-top: 4px; padding: 6px 8px; border-top: 1px solid var(--linha); color: var(--tinta); font-weight: 600; font-size: 14px; text-decoration: none; }
+.guia-galeria:hover { text-decoration: underline; }

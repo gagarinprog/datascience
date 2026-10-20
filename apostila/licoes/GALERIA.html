@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galeria de guias e animações · Domínio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+<style>
+  .galeria { max-width: 920px; margin: 0 auto; padding: 20px 16px 64px; display: grid; gap: 28px; }
+  .galeria h2 { font-family: var(--f-titulo); font-weight: 700; margin: 0 0 6px; }
+  .g-voltar { font-weight: 600; color: var(--tinta); min-height: 44px; display: inline-flex; align-items: center; }
+  .g-guias { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; margin-top: 12px; }
+  .g-guia { min-width: 0; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 12px; display: grid; gap: 10px; }
+  .g-guia.escolhido { border-color: var(--tinta); box-shadow: inset 0 0 0 1px var(--tinta); }
+  .g-cab { display: flex; gap: 12px; align-items: center; }
+  .g-cab b { display: block; font-size: 16px; }
+  .g-cab small { color: var(--texto-2); }
+  .g-foto, .g-mini { display: block; border-radius: 8px; overflow: hidden; background: color-mix(in srgb, var(--tinta) 13%, var(--folha-2)); }
+  .g-foto { width: 64px; height: 74px; flex: none; }
+  .g-mini { width: 100%; aspect-ratio: 200 / 230; }
+  .g-foto svg, .g-mini svg { width: 100%; height: 100%; display: block; }
+  .g-foto:not(.retrato) svg, .g-mini:not(.retrato) svg { transform: scale(1.1); }
+  .g-expr { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .g-e { min-width: 0; text-align: center; }
+  .g-e small { display: block; font-size: 11px; color: var(--texto-2); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .g-guia .botao { width: 100%; }
+  .g-molde { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--linha); margin-top: 16px; }
+  .g-molde h3 { margin: 0; }
+  .g-molde p { margin: 0; color: var(--texto-2); }
+  .g-molde pre { white-space: pre-wrap; font-size: 13px; }
+</style>
+</head>
+<body>
+<main class="galeria">
+  <a class="g-voltar" href="../index.html">Voltar ao mapa</a>
+  <header>
+    <p class="sobretitulo">Domínio · galeria</p>
+    <h1 class="titulo-pagina">Guias e animações</h1>
+    <p class="lede">Escolha quem acompanha você nas lições e veja os moldes de animação que podem ser aplicados a qualquer conteúdo novo. Todos os desenhos são originais do Domínio.</p>
+  </header>
+
+  <section aria-labelledby="t-guias">
+    <h2 id="t-guias">Guias</h2>
+    <p>O guia escolhido aparece no mapa e reage nos exercícios: fica feliz no acerto e pensativo no erro. A escolha fica salva neste aparelho.</p>
+    <div class="g-guias" id="g-guias"></div>
+  </section>
+
+  <section aria-labelledby="t-moldes">
+    <h2 id="t-moldes">Moldes de animação</h2>
+    <p>Sete moldes prontos. Cada um é uma função do passo: dá para tocar, pausar, voltar e avançar, e tudo para com “reduzir movimento”.</p>
+    
+      <section class="g-molde" id="molde-fluxo">
+        <h3><code>Clip.fluxo</code></h3>
+        <p>Três caixas que acendem na ordem: entrada, processamento e saída. Para qualquer “de onde vem e para onde vai”.</p>
+        <figure data-clip="g-fluxo" style="--alt: 300px"><figcaption>Demonstração do molde fluxo.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.fluxo({ titulo, caixas: [{ papel, titulo, linhas: [[texto, passo]] }], passos: [[legenda, caixa, ms]] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.fluxo(...))</code>.</p></details>
+      </section>
+      <section class="g-molde" id="molde-execucao">
+        <h3><code>Clip.execucao</code></h3>
+        <p>Código lido linha por linha, com as caixas da memória e a saída. Para variáveis, decisões e teste de mesa.</p>
+        <figure data-clip="g-execucao" style="--alt: 360px"><figcaption>Demonstração do molde execucao.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.execucao({ titulo, codigo: [linhas], vars: [nomes], teste?, passos: [{ l, linha, mem, saida? }] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.execucao(...))</code>.</p></details>
+      </section>
+      <section class="g-molde" id="molde-tabela">
+        <h3><code>Clip.tabela</code></h3>
+        <p>Uma linha aparece por passo, verde quando dá certo e vermelha quando dá errado. Para comparar casos.</p>
+        <figure data-clip="g-tabela" style="--alt: 230px"><figcaption>Demonstração do molde tabela.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.tabela({ titulo, colunas, linhas: [{ celulas, tom }], passos: [[legenda, ms]] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.tabela(...))</code>.</p></details>
+      </section>
+      <section class="g-molde" id="molde-reducao">
+        <h3><code>Clip.reducao</code></h3>
+        <p>Uma expressão encolhe uma operação por vez, com a ordem ao lado. Para precedência, fórmulas e SQL na ordem lógica.</p>
+        <figure data-clip="g-reducao" style="--alt: 210px"><figcaption>Demonstração do molde reducao.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.reducao({ titulo, ordem?, etapas: [{ exp, foco, l }] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.reducao(...))</code>.</p></details>
+      </section>
+      <section class="g-molde" id="molde-antesDepois">
+        <h3><code>Clip.antesDepois</code></h3>
+        <p>O mesmo trecho em versões, com o que mudou marcado. Para refatorar, corrigir erros e boas práticas.</p>
+        <figure data-clip="g-antes-depois" style="--alt: 200px"><figcaption>Demonstração do molde antesDepois.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.antesDepois({ titulo, rotulos, versoes: [html], passos: [[legenda, versao, ms]] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.antesDepois(...))</code>.</p></details>
+      </section>
+      <section class="g-molde" id="molde-gavetas">
+        <h3><code>Clip.gavetas</code></h3>
+        <p>Itens soltos vão, um grupo por vez, para a gaveta certa. Para tipos, categorias e classificação.</p>
+        <figure data-clip="g-gavetas" style="--alt: 250px"><figcaption>Demonstração do molde gavetas.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.gavetas({ titulo, gavetas: [{ id, nome, desc }], itens: [{ t, g }], passos: [[legenda, ms]] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.gavetas(...))</code>.</p></details>
+      </section>
+      <section class="g-molde" id="molde-barras">
+        <h3><code>Clip.barras</code></h3>
+        <p>Barras crescem, ganham destaque e recebem a linha da média. Para estatística descritiva e comparação de valores.</p>
+        <figure data-clip="g-barras" style="--alt: 300px"><figcaption>Demonstração do molde barras.</figcaption></figure>
+        <details class="cartao"><summary>Como aplicar numa lição</summary><pre>Clip.barras({ titulo, dados: [{ rotulo, valor }], unidade?, passos: [{ l, ver, destaque?, media? }] })</pre><p>No HTML da lição: <code>&lt;figure data-clip="meu-id"&gt;&lt;/figure&gt;</code>, e no arquivo de clipes: <code>Clip.registrar("meu-id", Clip.barras(...))</code>.</p></details>
+      </section>
+  </section>
+</main>
+<script src="../mascote.js" charset="utf-8"></script>
+<script src="../personagens.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="clipes-galeria.js" charset="utf-8"></script>
+<script>
+(function () {
+  const G = window.GUIAS, CHAVE = "dominio:guia:v1";
+  const ordem = ["rin", "takumi", "mei", "bia", "davi", "lia", "kenji", "sol", "rafa", "panda"].filter((id) => G[id]);
+  const EXPR = [["padrao", "neutro"], ["explica", "explica"], ["feliz", "acertou"], ["uau", "surpresa"], ["pensa", "pensando"]];
+  let atual = "rin";
+  try { const s = localStorage.getItem(CHAVE); if (s && G[s]) atual = s; } catch (e) { /* sem armazenamento */ }
+  const caixa = document.getElementById("g-guias");
+  function pintar() {
+    caixa.innerHTML = ordem.map((id) => {
+      const g = G[id], ret = id === "panda" ? "" : " retrato";
+      return `<article class="g-guia${id === atual ? " escolhido" : ""}"><div class="g-cab"><span class="g-foto${ret}">${g.expr.padrao}</span><div><b>${g.nome}</b><small>${g.funcao}</small></div></div>
+        <div class="g-expr">${EXPR.map(([e, n]) => `<div class="g-e"><span class="g-mini${ret}">${g.expr[e]}</span><small>${n}</small></div>`).join("")}</div>
+        <button type="button" class="botao${id === atual ? " certo" : " primario"}" data-usar="${id}" aria-pressed="${id === atual}">${id === atual ? "Guia atual" : "Usar " + g.nome}</button></article>`;
+    }).join("");
+  }
+  caixa.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-usar]");
+    if (!b) return;
+    atual = b.dataset.usar;
+    try { localStorage.setItem(CHAVE, atual); } catch (err) { /* sem armazenamento */ }
+    pintar();
+  });
+  pintar();
+  window.Clip.iniciar();
+})();
+</script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>

@@ -149,5 +149,93 @@
     };
   }
 
-  window.Clip = { registrar, iniciar, flip, fluxo, execucao, esc, reduz };
+  // ---------- molde: tabela que revela uma linha por passo ----------
+  // o: { titulo, colunas:[html], linhas:[{ celulas:[html], tom?: "ok" | "erro" }], passos:[[legenda, ms]] }
+  // o passo k mostra as linhas 1..k (o passo 0 apresenta a tabela vazia); as células aceitam <code>.
+  function tabela(o) {
+    return {
+      titulo: o.titulo,
+      passos: o.passos,
+      html: () => `<table class="conv"><thead><tr>${o.colunas.map((c) => `<th>${c}</th>`).join("")}</tr></thead><tbody>${o.linhas.map((l, i) => `<tr data-q="${i + 1}" class="${l.tom || ""}">${l.celulas.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`,
+      aplicar(p, k) {
+        p.querySelectorAll("tr[data-q]").forEach((tr) => { const q = Number(tr.dataset.q); tr.classList.toggle("ver", q <= k); tr.classList.toggle("agora", q === k); });
+      },
+    };
+  }
+
+  // ---------- molde: expressão que encolhe uma operação por vez ----------
+  // o: { titulo, etapas:[{ exp, foco, l, ms? }], ordem?: [rótulos] } — foco = trecho destacado (o próximo a ser resolvido)
+  function reducao(o) {
+    return {
+      titulo: o.titulo,
+      passos: o.etapas.map((e) => [e.l, e.ms || 4200]),
+      html: () => `<div class="pr"><p class="pr-exp"><code></code></p>${o.ordem ? `<ol class="pr-ordem">${o.ordem.map((r) => `<li>${esc(r)}</li>`).join("")}</ol>` : ""}</div>`,
+      aplicar(p, k) {
+        const e = o.etapas[k], code = p.querySelector(".pr-exp code");
+        const html = e.foco ? esc(e.exp).replace(esc(e.foco), `<mark>${esc(e.foco)}</mark>`) : `<b>${esc(e.exp)}</b>`;
+        if (code.innerHTML !== html) { code.innerHTML = html; code.classList.remove("troca"); void code.offsetWidth; code.classList.add("troca"); }
+        p.querySelectorAll(".pr-ordem li").forEach((li, j) => { li.classList.toggle("feito", j < k); li.classList.toggle("agora", j === k); });
+      },
+    };
+  }
+
+  // ---------- molde: antes e depois (o mesmo trecho em versões) ----------
+  // o: { titulo, rotulos:[antes, depois], versoes:[html com <mark> no que mudou], passos:[[legenda, versao, ms]] }
+  function antesDepois(o) {
+    const ult = o.versoes.length - 1;
+    return {
+      titulo: o.titulo,
+      passos: o.passos.map((s) => [s[0], s[2]]),
+      html: () => `<div class="pep"><div class="pep-rotulo" aria-hidden="true"><span class="p-ant">${esc(o.rotulos[0])}</span><span class="p-dep">${esc(o.rotulos[1])}</span></div><pre class="pep-cod"><code></code></pre></div>`,
+      aplicar(p, k) {
+        const v = o.passos[k][1], code = p.querySelector(".pep-cod code");
+        if (code.dataset.v !== String(v)) { code.dataset.v = String(v); code.innerHTML = o.versoes[v]; code.classList.remove("troca"); void code.offsetWidth; code.classList.add("troca"); }
+        p.querySelector(".p-ant").classList.toggle("on", v === 0);
+        p.querySelector(".p-dep").classList.toggle("on", v === ult);
+        p.querySelector(".pep").classList.toggle("pronto", v === ult);
+      },
+    };
+  }
+
+  // ---------- molde: itens que vão para gavetas (classificar) ----------
+  // o: { titulo, gavetas:[{ id, nome, desc }], itens:[{ t, g }], passos:[[legenda, ms]] } — o passo k guarda os itens das k primeiras gavetas
+  function gavetas(o) {
+    return {
+      titulo: o.titulo,
+      passos: o.passos,
+      html: () => `<div class="tp"><div class="tp-banco">${o.itens.map((it, i) => `<span class="tp-v" data-i="${i}" data-t="${esc(it.g)}">${esc(it.t)}</span>`).join("")}</div>
+        <div class="tp-gavetas">${o.gavetas.map((g) => `<div class="tp-g" data-t="${esc(g.id)}"><b>${esc(g.nome)}</b><small>${esc(g.desc || "")}</small><div class="tp-itens"></div></div>`).join("")}</div></div>`,
+      aplicar(p, k) {
+        const ordem = o.gavetas.map((g) => g.id), vs = [...p.querySelectorAll(".tp-v")];
+        flip(vs, () => vs.forEach((v) => {
+          const dentro = ordem.indexOf(v.dataset.t) < k;
+          const alvo = dentro ? [...p.querySelectorAll(".tp-g")].find((g) => g.dataset.t === v.dataset.t).querySelector(".tp-itens") : p.querySelector(".tp-banco");
+          if (v.parentElement !== alvo) alvo.appendChild(v);
+        }));
+        p.querySelectorAll(".tp-g").forEach((g) => g.classList.toggle("ativa", ordem.indexOf(g.dataset.t) === k - 1));
+      },
+    };
+  }
+
+  // ---------- molde: barras que crescem, com destaque e linha da média ----------
+  // o: { titulo, dados:[{ rotulo, valor }], unidade?, passos:[{ l, ver, destaque?:[índices], media?:bool, ms? }] }
+  function barras(o) {
+    const max = Math.max(...o.dados.map((d) => d.valor)) * 1.1;
+    const media = o.dados.reduce((a, d) => a + d.valor, 0) / o.dados.length;
+    const fmt = (n) => (Math.round(n * 10) / 10).toString().replace(".", ",");
+    return {
+      titulo: o.titulo,
+      passos: o.passos.map((s) => [s.l, s.ms || 4000]),
+      html: () => `<div class="mb"><div class="mb-area">${o.dados.map((d, i) => `<div class="mb-col" data-i="${i}"><span class="mb-val">${fmt(d.valor)}${o.unidade || ""}</span><span class="mb-barra" style="--h:${(d.valor / max) * 100}%"></span><small>${esc(d.rotulo)}</small></div>`).join("")}
+        <div class="mb-media" style="bottom:${(media / max) * 194}px"></div></div><p class="mb-leg">Linha tracejada: média de ${fmt(media)}${o.unidade || ""}</p></div>`,
+      aplicar(p, k) {
+        const s = o.passos[k];
+        p.querySelectorAll(".mb-col").forEach((c, i) => { c.classList.toggle("ver", i < s.ver); c.classList.toggle("destaque", !!(s.destaque && s.destaque.includes(i))); });
+        p.querySelector(".mb-media").classList.toggle("ver", !!s.media);
+        p.querySelector(".mb-leg").classList.toggle("ver", !!s.media);
+      },
+    };
+  }
+
+  window.Clip = { registrar, iniciar, flip, fluxo, execucao, tabela, reducao, antesDepois, gavetas, barras, esc, reduz };
 })();

@@ -981,11 +981,11 @@
   // seletor de guia no topo
   function montarSeletorGuia() {
     const btn = document.getElementById("guia-btn"), menu = document.getElementById("guia-menu"), mini = document.getElementById("guia-mini");
-    const ordem = ["rin", "takumi", "mei", "panda"].filter((id) => window.GUIAS[id]);
+    const ordem = ["rin", "takumi", "mei", "bia", "davi", "lia", "kenji", "sol", "rafa", "panda"].filter((id) => window.GUIAS[id]);
     const atualizar = () => {
       mini.innerHTML = guia().expr.padrao;
       mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
-      menu.innerHTML = `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" role="menuitemradio" aria-checked="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("");
+      menu.innerHTML = `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" role="menuitemradio" aria-checked="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
     };
     const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });
