@@ -1,0 +1,40 @@
+# Publica a apostila (pasta apostila/) no GitHub Pages a cada envio para a main.
+# Endereço: https://gagarinprog.github.io/datascience/ — app instalável no celular e com uso offline.
+name: Publicar a apostila
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apostila/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    name: Publicar no GitHub Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apostila
+
+      - id: deploy
+        uses: actions/deploy-pages@v5

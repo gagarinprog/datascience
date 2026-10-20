@@ -1,6 +1,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mapa · Domínio</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
@@ -68,3 +71,9 @@
   })();
 </script>
 <script src="jornada.js" charset="utf-8"></script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+</script>

@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="clip.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
 <style>
   .passos-licao { grid-template-columns: repeat(7, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
   .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
@@ -600,6 +603,12 @@ else:
   verTudo.addEventListener("change", () => ir(atual));
   ir(atual);
 })();
+</script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  }
 </script>
 </body>
 </html>
