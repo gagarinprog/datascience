@@ -3,14 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Castelo de Dados · Laboratório</title>
-<meta name="description" content="Laboratório do Domínio: construa um banco PostgreSQL de verdade, sala por sala, e termine com uma análise.">
+<title>Centro de Dados · Laboratório</title>
+<meta name="description" content="Laboratório do Domínio: monte um centro de dados com um banco PostgreSQL de verdade, módulo por módulo, e termine com uma análise.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
 <link rel="stylesheet" href="../estilo.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="../licoes/clip.css">
+<link rel="stylesheet" href="../passo/passo.css">
 <link rel="stylesheet" href="castelo.css">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
@@ -23,22 +24,32 @@
 <header class="lab-topo">
   <nav class="lab-trilha" aria-label="Navegação">
     <a href="../index.html#mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Mapa de formação</a>
-    <a href="#">Castelo</a>
+    <a href="#">Centro de Dados</a>
     <button type="button" class="lab-tema" id="lab-tema" aria-pressed="false">Tema impresso</button>
   </nav>
   <div class="lab-cab">
     <div class="lab-cab-txt">
       <p class="sobretitulo">Laboratório · uma sala à parte do mapa</p>
-      <h1 class="lab-titulo">Castelo de Dados</h1>
-      <p class="lab-sub">Doze salas, quatro fases. Em cada uma você constrói uma parte de um banco PostgreSQL de verdade, com os dados de um concurso fictício, e termina com uma análise escrita por você. O banco roda e fica salvo no seu aparelho.</p>
+      <h1 class="lab-titulo">Centro de Dados</h1>
+      <p class="lab-sub">Doze módulos em quatro zonas. Cada módulo liga um equipamento: você entende a ideia, vê o passo a passo com as linhas do banco, faz as tarefas num PostgreSQL de verdade e explica com as suas palavras. O banco roda e fica salvo no seu aparelho.</p>
     </div>
-    <div class="lab-castelo" aria-live="polite"></div>
+  </div>
+  <div class="cd-centro">
+    <section class="cd-mapa-cartao" aria-label="Mapa do centro de dados">
+      <div class="cd-mapa-cab"><span>Planta do salão</span><span id="cd-total"></span></div>
+      <div id="cd-mapa"></div>
+      <div class="cd-legenda" aria-hidden="true"><span><i class="lg-ligado"></i>ligado</span><span><i class="lg-atual"></i>em andamento</span><span><i class="lg-falta"></i>a montar</span></div>
+    </section>
+    <section class="cd-painel" id="cd-painel" aria-label="Seu progresso"></section>
   </div>
 </header>
 <main id="lab-palco" class="lab-palco" tabindex="-1">
   <noscript><p>O laboratório precisa de JavaScript ligado.</p></noscript>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/animejs@4.4.1/dist/bundles/anime.umd.min.js"></script>
 <script src="../licoes/clip.js" charset="utf-8"></script>
+<script src="../passo/passo.js" charset="utf-8"></script>
+<script src="passos.js" charset="utf-8"></script>
 <script src="comparar.js" charset="utf-8"></script>
 <script src="salas.js" charset="utf-8"></script>
 <script src="castelo.js" charset="utf-8"></script>

@@ -59,7 +59,7 @@
 :root[data-tema="impresso"] figure, :root[data-tema="impresso"] .explique, :root[data-tema="impresso"] .vitoria-cartao, :root[data-tema="impresso"] .guia-menu {
   border: 1.5px solid var(--tinta-preta); border-radius: 4px; box-shadow: none;
 }
-:root[data-tema="impresso"] .exercicio, :root[data-tema="impresso"] .lab-tarefa, :root[data-tema="impresso"] .lab-slides {
+:root[data-tema="impresso"] .exercicio, :root[data-tema="impresso"] .lab-tarefa {
   border: 1.5px solid var(--tinta-preta); border-radius: 4px; box-shadow: 4px 4px 0 var(--tinta-laranja); background: var(--folha);
 }
 :root[data-tema="impresso"] .lab-tarefa.trancada { box-shadow: none; border-style: dashed; background: transparent; }
@@ -76,12 +76,15 @@
 }
 :root[data-tema="impresso"] .barra-fina i, :root[data-tema="impresso"] .seg::before, :root[data-tema="impresso"] .passos-barra button.feito i { background: var(--tinta-azul); animation: none; }
 
-/* o castelo no impresso: desenho em tinta azul, contorno deslocado em laranja */
-:root[data-tema="impresso"] .cst-svg .parte.pronta > :not(title) { fill: var(--tinta-azul); fill-opacity: 0.82; stroke: var(--tinta-preta); }
-:root[data-tema="impresso"] .cst-svg .parte.pronta .cst-det { fill: none; stroke: #eceef2; }
-:root[data-tema="impresso"] .cst-svg .parte.proxima > :not(title) { stroke: var(--tinta-laranja); }
-:root[data-tema="impresso"] .cst-svg .parte > :not(title) { stroke: #8f96a6; }
-:root[data-tema="impresso"] .cst-svg .cst-agua { stroke: var(--tinta-azul); }
+/* o centro de dados no impresso: cartões com traço de tinta; a etapa aberta ganha a sombra laranja */
+:root[data-tema="impresso"] .cd-mapa-cartao, :root[data-tema="impresso"] .cd-painel, :root[data-tema="impresso"] .cx-item { border: 1.5px solid var(--tinta-preta); border-radius: 4px; }
+:root[data-tema="impresso"] .cx-item.aberto { box-shadow: 4px 4px 0 var(--tinta-laranja); background: var(--folha); }
+:root[data-tema="impresso"] .cx-item.trancado { border-style: dashed; box-shadow: none; }
+:root[data-tema="impresso"] .cx-cab { border-radius: 4px; }
+:root[data-tema="impresso"] #cd-mapa .zona { stroke: var(--tinta-preta); }
+:root[data-tema="impresso"] #cd-mapa .disp.atual .corpo { stroke: var(--tinta-azul); }
+:root[data-tema="impresso"] .cd-numeros { border-radius: 4px; }
+:root[data-tema="impresso"] .lab-salas li.lab-nivel-item { background: var(--folha); }
 
 /* amostras no menu de tema (valem nos dois temas) */
 .tema-amostra { width: 40px; height: 40px; border-radius: 8px; flex: none; border: 1px solid var(--linha-forte); }

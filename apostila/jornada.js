@@ -274,7 +274,7 @@
     }).join("");
     const revisaoHoje = () => { try { const c = JSON.parse(localStorage.getItem("dominio:revisao:v1") || "{}"); const d = new Date(), h = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; return Object.values(c).filter((x) => x.proxima <= h).length; } catch (e) { return 0; } };
     const nRevisao = revisaoHoje();
-    const casteloFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:castelo:v1") || "null"); return v && v.feitas ? ` · ${v.feitas} de 12 salas` : ""; } catch (e) { return ""; } };
+    const casteloFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:castelo:v1") || "null"); return v && v.feitas ? ` · ${v.feitas} de 12 módulos` : ""; } catch (e) { return ""; } };
     const inicioFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:licao:INICIO") || "null"); return !!v && Object.keys(v).length > 0; } catch (e) { return false; } };
     const fala = total ? `Você domina ${total} de ${TOTAL} módulos. A próxima estação é ${prox.nome}.` : `Vamos começar por ${prox.nome}. São cinco passos curtos.`;
     centro().innerHTML = `
@@ -285,7 +285,7 @@
           <p class="mapa-sub">${MATERIAS.length} matérias e ${TOTAL} módulos, em sequência. Cada estação só pede o que as anteriores ensinaram.</p>
           <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
           <a class="cartao-link cartao-inicio" href="licoes/INICIO.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("sparkle-duotone")}</span><span><b>Comece por aqui: a lista de aprovados${inicioFeito() ? " · concluída" : ""}</b><small>5 passos curtos com animações · dados de um concurso fictício</small></span>${ic("arrow-right-bold")}</a>
-          <a class="cartao-link cartao-inicio" href="castelo/index.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("database-duotone")}</span><span><b>Laboratório: Castelo de Dados${casteloFeito()}</b><small>construa um banco PostgreSQL de verdade, sala por sala, e termine com uma análise</small></span>${ic("arrow-right-bold")}</a>
+          <a class="cartao-link cartao-inicio" href="castelo/index.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("database-duotone")}</span><span><b>Laboratório: Centro de Dados${casteloFeito()}</b><small>monte um banco PostgreSQL de verdade, módulo por módulo, vendo cada passo acontecer</small></span>${ic("arrow-right-bold")}</a>
           ${nRevisao ? `<a class="cartao-link cartao-inicio" href="licoes/REVISAR.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("brain-duotone")}</span><span><b>Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}</b><small>o que você errou volta em 1, 3, 7, 14 e 30 dias</small></span>${ic("arrow-right-bold")}</a>` : ""}
         </div>
         <figure class="mentor" style="${coresDe(aqui.sigla)}">
