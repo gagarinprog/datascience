@@ -36,6 +36,27 @@ ALUNOS = [
     "Gabriela Reis", "Hugo Barros", "Joana D'Ávila", "Kleber Santos", "Larissa Melo", "Marcos Teles",
 ]
 
+# Assunto de cada questão, como aparece nos editais. São só títulos: nenhum texto de lei é copiado aqui.
+ASSUNTOS = {
+    1: ["Crase antes de palavra masculina", "Concordância do verbo haver", "Regência do verbo assistir", "Colocação do pronome oblíquo",
+        "Uso da vírgula antes do e", "Sentido de conjunções adversativas", "Voz passiva sintética", "Acentuação de paroxítonas",
+        "Coesão por pronomes", "Interpretação de tirinha"],
+    2: ["Negação de proposição composta", "Tabela-verdade do condicional", "Equivalência da contrapositiva", "Silogismo com todos e alguns",
+        "Princípio da casa dos pombos", "Permutação com repetição", "Probabilidade de eventos independentes", "Sequência lógica de números",
+        "Diagrama de Venn com três conjuntos", "Porcentagem sobre porcentagem"],
+    3: ["Princípio da impessoalidade", "Ato administrativo vinculado", "Revogação e anulação", "Poder de polícia",
+        "Licitação dispensável", "Agente público e cargo em comissão", "Responsabilidade civil do Estado", "Autarquia e fundação",
+        "Improbidade administrativa", "Controle pelo Tribunal de Contas"],
+    4: ["Atalhos do editor de texto", "Fórmula PROCV na planilha", "Phishing e engenharia social", "Backup incremental",
+        "Protocolos HTTP e HTTPS", "Armazenamento em nuvem", "Extensões de arquivo", "Firewall e antivírus",
+        "Correio eletrônico: CC e CCO", "Navegação anônima"],
+    5: ["Média, mediana e moda", "Desvio padrão", "Probabilidade condicional", "Distribuição normal",
+        "Amostragem estratificada", "Correlação não é causalidade", "Intervalo de confiança", "Teste de hipóteses",
+        "Quartis e boxplot", "Regressão linear simples"],
+    6: ["Chave primária e chave estrangeira", "Primeira forma normal", "JOIN entre duas tabelas", "GROUP BY com HAVING",
+        "Índices e desempenho", "Transação e atomicidade", "Diferença entre DELETE e TRUNCATE", "Modelo entidade-relacionamento",
+        "Valor NULL em comparações", "Visões (views)"],
+}
 QUESTOES_POR_MATERIA = 10
 INICIO = datetime(2026, 8, 1, 7, 0, 0)  # primeira data possível de resposta
 
@@ -77,7 +98,7 @@ def gerar():
     for materia_id, nome, banca in MATERIAS:
         for n in range(1, QUESTOES_POR_MATERIA + 1):
             qid = len(questoes) + 1
-            enunciado = f"Questão {n} de {nome}"
+            enunciado = ASSUNTOS[materia_id][n - 1]
             questoes.append((qid, materia_id, enunciado, gabarito_da_banca(banca), random.randint(1, 5)))
 
     # 5. Respostas: cada aluno responde um conjunto sorteado de questões.

@@ -90,6 +90,8 @@ Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seção 5):
 
 Adiantado (11/10/2026), para o tutor `/aula`: `data/apostila-viva/schema.sql`, `seed.sql` e o gerador `gerar.py` (30 usuários, 6 disciplinas, 120 questões, 1.500 respostas, semente fixa, com NULL e apóstrofo de propósito). O corretor por resultado em linha de comando está em `tutor/sql.py`, com aspas duplas como texto desligadas, como no PostgreSQL.
 
+Adiantado (20/10/2026), na apostila: o Laboratório Castelo de Dados (`apostila/castelo/`) já usa o PGlite, o corretor por resultado (`comparar.js`, com ordem e tolerância), o detector das aspas, os erros do PostgreSQL reescritos para iniciante e o "ver passo a passo" do GROUP BY. A decisão sql.js × PGlite fica tomada a favor do PGlite; o app Next.js pode reaproveitar `comparar.js` e o roteiro das salas.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

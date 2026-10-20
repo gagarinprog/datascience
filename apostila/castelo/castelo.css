@@ -1,0 +1,176 @@
+/* Castelo de Dados: o laboratório do Domínio.
+   Mesmo visual sóbrio da apostila: fundo grafite, linhas finas, cantos de 6 a 12 px, botões planos,
+   azul de explicação. Movimento só onde explica (o castelo ganha a parte construída) e desligado com
+   prefers-reduced-motion. Mobile primeiro (390 px). */
+
+body { min-height: 100vh; }
+.lab-pular-conteudo { position: absolute; left: 12px; top: -60px; background: var(--folha); border: 1px solid var(--linha-forte); border-radius: 6px; padding: 10px 14px; z-index: 10; }
+.lab-pular-conteudo:focus { top: 12px; }
+
+.lab-topo, .lab-palco { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+.lab-topo { padding-top: 14px; display: grid; gap: 14px; }
+.lab-trilha { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.lab-trilha a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--texto-2); text-decoration: none; padding: 0 4px; }
+.lab-trilha a + a::before { content: "/"; color: var(--linha-hover); margin-right: 6px; }
+.lab-trilha a:hover { color: var(--texto); }
+.lab-trilha svg { width: 16px; height: 16px; }
+
+.lab-cab { display: grid; gap: 16px; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px 16px; }
+.lab-cab-txt { display: grid; gap: 8px; }
+.lab-titulo { font-size: clamp(30px, 7vw, 44px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
+.lab-sub { font-family: var(--f-leitura); font-size: 16px; line-height: 1.55; color: var(--texto-2); max-width: 60ch; }
+
+/* ---------- o castelo ---------- */
+.lab-castelo { display: grid; gap: 6px; justify-items: center; }
+.cst-svg { width: 100%; max-width: 420px; height: auto; overflow: visible; }
+.cst-svg .cst-chao { stroke: var(--linha-forte); stroke-width: 1.5; fill: none; }
+.cst-svg .cst-agua { stroke: color-mix(in srgb, var(--azul-cv) 40%, var(--linha)); stroke-width: 3; stroke-dasharray: 10 8; fill: none; stroke-linecap: round; }
+.cst-svg .parte > :not(title) { fill: transparent; stroke: var(--linha-forte); stroke-width: 1.2; stroke-dasharray: 3 3; stroke-linejoin: round; transition: fill 500ms var(--curva), stroke 500ms var(--curva); }
+.cst-svg .parte .cst-det { fill: none; }
+.cst-svg .parte.pronta > :not(title) { fill: color-mix(in srgb, var(--azul-cv) 26%, var(--folha)); stroke: var(--azul-cor); stroke-dasharray: none; stroke-width: 1.4; }
+.cst-svg .parte.pronta .cst-det { fill: none; stroke: color-mix(in srgb, var(--azul-cor) 70%, var(--texto)); }
+.cst-svg .parte[data-parte="bandeira"].pronta path:last-child { fill: var(--ouro); stroke: var(--ouro-texto); }
+.cst-svg .parte.proxima > :not(title) { stroke: var(--aviso); stroke-width: 1.6; stroke-dasharray: 4 3; }
+.cst-svg .parte { transform-box: fill-box; transform-origin: 50% 100%; }
+@media (prefers-reduced-motion: no-preference) {
+  .cst-svg .parte.proxima > :not(title) { animation: cst-tracejado 1.6s linear infinite; }
+}
+@keyframes cst-tracejado { to { stroke-dashoffset: -14; } }
+#lab-progresso { font-size: 13px; color: var(--texto-2); }
+
+/* dentro de uma sala o cabeçalho encolhe: o castelo fica pequeno ao lado do título, e a sala sobe */
+.em-sala .lab-cab { grid-template-columns: minmax(0, 1fr) 132px; align-items: center; padding: 12px 14px; gap: 10px; }
+.em-sala .lab-sub, .em-sala .lab-cab .sobretitulo { display: none; }
+.em-sala .lab-titulo { font-size: 22px; }
+.em-sala .cst-svg { max-width: 132px; }
+.em-sala #lab-progresso { font-size: 11.5px; text-align: center; }
+
+/* ---------- palco ---------- */
+.lab-palco { padding-top: 18px; padding-bottom: 64px; display: grid; gap: 18px; }
+.lab-palco:focus { outline: none; }
+.lab-nota { font-size: 13.5px; color: var(--texto-2); line-height: 1.5; }
+.lab-ok { color: var(--certo); font-size: 14px; }
+.lab-erro { border: 1px solid color-mix(in srgb, var(--erro) 45%, var(--linha)); background: var(--erro-suave); border-radius: 8px; padding: 10px 12px; font-size: 14.5px; line-height: 1.5; display: grid; gap: 6px; }
+.lab-erro details { font-size: 12.5px; color: var(--texto-2); }
+.lab-erro details code { display: block; margin-top: 4px; white-space: pre-wrap; }
+.lab-erro summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; }
+
+.lab-palco .botao { min-height: 44px; border-radius: 8px; padding: 10px 16px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+.lab-palco .botao.primario { font-weight: 700; }
+.lab-palco .botao.primario:hover:not(:disabled) { filter: brightness(1.08); }
+.lab-palco .botao:disabled { opacity: 0.55; }
+.lab-link { font: inherit; font-size: 14px; background: none; border: 0; color: var(--tinta); text-decoration: underline; text-underline-offset: 3px; min-height: 44px; padding: 0 6px; cursor: pointer; }
+.lab-acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lab-continuar { justify-self: start; font-size: 16px; }
+
+.lab-cartao { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px 16px; display: grid; gap: 10px; }
+.lab-cartao h2 { font-size: 24px; letter-spacing: -0.02em; }
+.lab-cartao h3 { font-size: 17px; }
+.lab-cartao p { font-family: var(--f-leitura); font-size: 16px; line-height: 1.55; }
+.lab-fase-intro { border-left: 3px solid var(--azul-cv); }
+.lab-assunto { color: var(--texto-2); }
+.lab-aprovado { border-color: color-mix(in srgb, var(--certo) 50%, var(--linha)); }
+
+/* ---------- tela inicial: as fases ---------- */
+.lab-bloco-lista { display: grid; gap: 18px; }
+.lab-fase { display: grid; gap: 8px; }
+.lab-fase h2 { font-size: 20px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.lab-fase h2 span { font-family: var(--f-ui); font-size: 12.5px; font-weight: 500; color: var(--texto-2); border: 1px solid var(--linha-forte); border-radius: 6px; padding: 1px 8px; }
+.lab-salas { list-style: none; margin: 0; padding: 0; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); overflow: hidden; }
+.lab-salas li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 14px; min-height: 52px; border-top: 1px solid var(--linha); }
+.lab-salas li:first-child { border-top: 0; }
+.lab-salas li a { color: var(--texto); text-decoration: none; font-weight: 500; flex: 1; min-height: 44px; display: flex; align-items: center; }
+.lab-salas li a:hover { color: var(--tinta); }
+.lab-salas li small { font-size: 12.5px; color: var(--texto-2); white-space: nowrap; }
+.lab-salas li.feita small { color: var(--certo); }
+.lab-salas li.fechada { color: var(--texto-2); }
+.lab-salas li.fechada span { opacity: 0.7; }
+.lab-salas li.lab-nivel-item { background: var(--folha-2); }
+.lab-salas li.lab-nivel-item a, .lab-salas li.lab-nivel-item span { font-size: 14.5px; }
+
+/* ---------- painel do banco ---------- */
+.lab-painel { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); }
+.lab-painel summary { cursor: pointer; min-height: 48px; padding: 0 16px; display: flex; align-items: center; font-weight: 500; }
+.lab-painel-corpo { padding: 0 16px 16px; display: grid; gap: 12px; }
+.lab-esquema { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14px; }
+.lab-esquema code { white-space: normal; word-break: break-word; }
+
+/* ---------- sala ---------- */
+.lab-sala { display: grid; gap: 14px; }
+.lab-sala > h2 { font-size: clamp(26px, 6vw, 34px); letter-spacing: -0.025em; line-height: 1.08; }
+.lab-ferramenta { font-size: 14px; color: var(--texto-2); line-height: 1.5; }
+.lab-aviso-banco { border: 1px solid color-mix(in srgb, var(--aviso) 45%, var(--linha)); background: var(--aviso-suave); border-radius: 8px; padding: 10px 12px; font-size: 14.5px; display: grid; gap: 8px; justify-items: start; }
+.lab-rodape { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-top: 1px solid var(--linha); padding-top: 14px; }
+
+/* apresentação curta */
+.lab-slides { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px 16px 10px; display: grid; gap: 12px; }
+.lab-slide-n { font-size: 12.5px; color: var(--texto-2); }
+.lab-slides h3 { font-size: 21px; letter-spacing: -0.015em; }
+.lab-slides h3:focus { outline: none; }
+.lab-slides p { font-family: var(--f-leitura); font-size: 16.5px; line-height: 1.6; }
+.lab-slide-cod { white-space: pre; }
+.lab-slide-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lab-pontos { display: flex; gap: 6px; }
+.lab-pontos i { width: 18px; height: 4px; border-radius: 2px; background: var(--linha-forte); }
+.lab-pontos i.feito { background: color-mix(in srgb, var(--azul-cv) 55%, var(--linha)); }
+.lab-pontos i.atual { background: var(--azul-cv); }
+.lab-pular { justify-self: start; font: inherit; font-size: 13.5px; color: var(--texto-2); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; cursor: pointer; padding: 0; }
+
+/* tarefas */
+.lab-tarefas { display: grid; gap: 14px; }
+.lab-tarefa { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.lab-tarefa h3 { font-size: 17px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.lab-tarefa h3 > span { font-family: var(--f-codigo); font-size: 12.5px; color: var(--texto-2); border: 1px solid var(--linha-forte); border-radius: 6px; min-width: 24px; text-align: center; padding: 0 5px; }
+.lab-tarefa.concluida { border-color: color-mix(in srgb, var(--certo) 40%, var(--linha)); }
+.lab-tarefa.concluida h3 > span { color: var(--certo); border-color: color-mix(in srgb, var(--certo) 50%, var(--linha)); }
+.lab-tarefa.trancada { opacity: 0.6; }
+.lab-check { font-family: var(--f-ui); font-size: 12px; font-weight: 500; color: var(--certo); }
+.lab-enunciado { font-family: var(--f-leitura); font-size: 16px; line-height: 1.55; }
+.lab-tarefa .pergunta { font-family: var(--f-leitura); font-size: 16.5px; line-height: 1.5; }
+.lab-tarefa .opcoes .botao { justify-content: flex-start; text-align: left; }
+
+.lab-editor { display: grid; }
+.lab-codigo, .lab-texto { width: 100%; font-family: var(--f-codigo); font-size: 14.5px; line-height: 1.6; color: var(--texto); background: var(--folha-2); border: 1px solid var(--linha-forte); border-radius: 8px; padding: 12px; resize: vertical; tab-size: 4; font-variant-ligatures: none; }
+.lab-codigo { white-space: pre; overflow-x: auto; overflow-wrap: normal; }
+.lab-texto { font-family: var(--f-leitura); font-size: 16px; }
+.lab-codigo:focus, .lab-texto:focus { border-color: var(--azul-cv); outline: 2px solid color-mix(in srgb, var(--azul-cv) 45%, transparent); outline-offset: 0; }
+.lab-saida { display: grid; gap: 8px; min-width: 0; }
+.lab-saida:empty { display: none; }
+.lab-res td, .lab-res th { white-space: nowrap; }
+.lab-res .nulo { color: var(--texto-2); font-style: italic; font-family: var(--f-codigo); font-size: 12.5px; }
+.lab-print { white-space: pre-wrap; }
+.lab-testes summary { cursor: pointer; font-size: 14px; color: var(--texto-2); min-height: 40px; display: flex; align-items: center; }
+
+/* passo a passo do GROUP BY */
+.lab-etapas { display: flex; flex-wrap: wrap; gap: 8px; }
+.lab-etapas .botao.atual { border-color: var(--azul-cv); box-shadow: inset 0 0 0 1px var(--azul-cv); }
+
+/* FSRS */
+.lab-fsrs { display: grid; gap: 10px; }
+.lab-carta { border: 1px solid var(--linha); border-radius: 10px; padding: 12px; display: grid; gap: 10px; }
+.lab-carta small { color: var(--texto-2); font-weight: 400; }
+.lab-notas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.lab-notas .botao { flex-direction: column; gap: 2px; padding: 8px; }
+.lab-notas .botao small { font-size: 12px; }
+@media (min-width: 560px) { .lab-notas { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* gráfico da análise */
+.lab-grafico:empty { display: none; }
+.lab-barras { margin: 0; border: 1px solid var(--linha); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+.lab-barras figcaption { font-weight: 500; font-size: 14.5px; }
+.lab-barras-area { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; align-items: end; height: 210px; }
+.lab-barra { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 4px; }
+.lab-barra .v { font-family: var(--f-codigo); font-size: 12.5px; }
+.lab-barra i { width: 70%; max-width: 46px; height: calc(var(--h) * 0.75); background: var(--azul-cv); border-radius: 4px 4px 0 0; transform-origin: bottom; }
+.lab-barra small { font-size: 12px; color: var(--texto-2); border-top: 1px solid var(--linha-forte); width: 100%; text-align: center; padding-top: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .lab-barra i { transform: scaleY(0); transition: transform 700ms var(--curva); }
+  .lab-barras.ver .lab-barra i { transform: scaleY(1); }
+}
+
+.lab-frase { margin: 0; border-left: 3px solid var(--azul-cv); padding: 6px 0 6px 14px; font-family: var(--f-leitura); font-size: 17px; line-height: 1.55; }
+
+@media (min-width: 760px) {
+  .lab-cab { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; padding: 22px 24px; }
+  .lab-cartao, .lab-tarefa, .lab-slides { padding: 20px 22px; }
+}

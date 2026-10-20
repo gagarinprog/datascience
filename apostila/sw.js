@@ -1,8 +1,9 @@
 // Service worker do Domínio: guarda os arquivos no aparelho para o app abrir sem internet.
 // Arquivos do próprio site: rede primeiro (pega a versão nova quando há internet) e cópia guardada quando não há.
-// Fontes e bibliotecas de CDN: cópia guardada primeiro, porque não mudam.
+// Fontes e bibliotecas de CDN: cópia guardada primeiro, porque não mudam. As grandes (o PostgreSQL e o Python
+// do laboratório) não entram na instalação: ficam guardadas no primeiro uso, e daí em diante abrem sem internet.
 // Toda lição ou arquivo novo em apostila/ entra em ARQUIVOS; o teste tests/apostila-pwa.test.ts confere.
-const CACHE = "dominio-v4";
+const CACHE = "dominio-v5";
 const ARQUIVOS = [
   "./",
   "./index.html",
@@ -45,6 +46,12 @@ const ARQUIVOS = [
   "./licoes/motor.js",
   "./licoes/revisar.js",
   "./licoes/dados/estudo.sql",
+  "./castelo/index.html",
+  "./castelo/castelo.css",
+  "./castelo/castelo.js",
+  "./castelo/salas.js",
+  "./castelo/comparar.js",
+  "./castelo/relogio.py",
 ];
 const CDN = [
   "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap",
