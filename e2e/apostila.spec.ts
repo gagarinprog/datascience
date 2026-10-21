@@ -8,7 +8,7 @@ import { RESOLVER } from "./apostila-resolver";
  * sobe junto com o do app (playwright.config.ts). Roda no celular (390 px) e no computador (1280 px).
  */
 const BASE = "http://127.0.0.1:3200/apostila/";
-const LICOES = ["INICIO", "LOG.01", "LOG.02", "LOG.03", "PY.01"];
+const LICOES = ["INICIO", "LOG.01", "LOG.02", "LOG.03", "PY.01", "ED.01"];
 
 type Resultado = { tipo: string; estado: string; retorno: string; log: string[] };
 
@@ -273,6 +273,59 @@ test.describe("apostila", () => {
     }
     await expect(page.locator("[data-tentativas]")).toHaveText("3 de 3 tentativas");
     await expect(page.locator("#rl-conta")).toHaveText("2 de 8 concluídos");
+    expect(erros).toEqual([]);
+  });
+
+  test("as bancadas de estruturas de dados respondem a arrastar, tocar e reduzir movimento", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const abrir = async (sec: string, tipo: string) => {
+      await page.goto(BASE + `licoes/ED.01.html#${sec}`);
+      await page.evaluate(
+        ([s, t]) => {
+          const cx = (
+            document.getElementById(s!) as unknown as {
+              _cx: { itens: { el: Element }[]; abrir: (i: unknown, r: boolean) => void };
+            }
+          )._cx;
+          cx.abrir(
+            cx.itens.find((i) => i.el.querySelector(`[data-bancada="${t}"]`)),
+            false,
+          );
+        },
+        [sec, tipo],
+      );
+      const b = page.locator(`[data-bancada="${tipo}"]`);
+      await expect(b).toBeVisible();
+      return b;
+    };
+    // tabela hash: errar a gaveta avisa a conta; arrastar para a certa guarda
+    const hash = await abrir("c4", "hash");
+    await hash.locator('.ed-chip[data-k="1050"]').click();
+    await hash.locator('.ed-gav[data-i="5"]').click();
+    await expect(hash.locator(".ed-placar")).toContainText("1050 % 50 = 0");
+    await hash.locator('.ed-chip[data-k="1050"]').dragTo(hash.locator('.ed-gav[data-i="0"]'));
+    await expect(hash.locator('.ed-gav[data-i="0"]')).toHaveClass(/ocupada/);
+    await hash.locator("[data-todas]").click();
+    await expect(hash.locator(".ed-placar")).toContainText("7 na gaveta mais cheia");
+    await hash.locator('.ed-m[data-m="53"]').click();
+    await hash.locator("[data-todas]").click();
+    await expect(hash.locator(".ed-placar")).toContainText("7 gavetas ocupadas");
+    // árvore: com chaves em ordem, a ABB degenera e a AVL fica com altura 2
+    const arv = await abrir("c5", "arvore");
+    await arv.locator("[data-todas]").click();
+    await expect(arv.locator(".ed-placar")).toContainText("6 de altura");
+    await arv.locator('.ed-m[data-m="avl"]').click();
+    await arv.locator("[data-todas]").click();
+    await expect(arv.locator(".ed-placar")).toContainText("2 de altura", { timeout: 20_000 });
+    // pilha: o último que entra sai primeiro
+    const pf = await abrir("c3", "pilha-fila");
+    for (let i = 0; i < 3; i++) await pf.locator('[data-b="pilha"] .ed-chip').click();
+    await pf.locator('[data-area="pilha"] .ed-item').first().click();
+    await pf.locator('[data-tirar="pilha"]').click();
+    await expect(pf.locator('[data-v="pilha"]')).toContainText("Acertou");
     expect(erros).toEqual([]);
   });
 

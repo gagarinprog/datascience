@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="../icones/icone-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estruturas de dados: o mapa · Estruturas de dados e algoritmos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="exercicios.css">
+<link rel="stylesheet" href="laboratorio.css">
+<link rel="stylesheet" href="estruturas.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+<link rel="stylesheet" href="../passo/passo.css">
+<link rel="stylesheet" href="../guia-mov.css">
+<link rel="stylesheet" href="../botoes.css">
+<link rel="stylesheet" href="../tema.css">
+<script src="../tema.js"></script>
+</head>
+<body>
+<div class="casca">
+  <nav class="lateral" aria-label="Conceitos da lição">
+    <div class="marca"><b>Estruturas de dados e algoritmos</b><span>Módulo 2 · Estruturas de dados: o mapa</span></div>
+    <a href="../index.html#trilha-ED"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>Voltar à trilha</a>
+    <a href="INICIO.html"><span class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg></span>Comece por aqui</a>
+    <div class="grupo">Conceitos</div>
+    <a href="#c1" data-conceito="c1"><span class="n">01</span>Organizar muda o custo</a>
+    <a href="#c2" data-conceito="c2"><span class="n">02</span>Vetor e lista ligada</a>
+    <a href="#c3" data-conceito="c3"><span class="n">03</span>Pilha e fila</a>
+    <a href="#c4" data-conceito="c4"><span class="n">04</span>Tabela hash</a>
+    <a href="#c5" data-conceito="c5"><span class="n">05</span>Árvores: ABB e AVL</a>
+    <a href="#td" data-conceito="td"><span class="n">TD</span>Tarefa de domínio</a>
+  </nav>
+
+  <main class="conteudo">
+    <div class="coluna">
+      <header class="bloco">
+        <p class="sobretitulo">Estruturas de dados e algoritmos · Módulo 2 de 22</p>
+        <h1 class="titulo-pagina">Estruturas de dados: o mapa</h1>
+        <p class="lede">Os mesmos dados, organizados de jeitos diferentes, deixam umas operações rápidas e outras lentas. Este módulo mostra, mexendo nelas, as estruturas que você vai usar o tempo todo: vetor, lista ligada, pilha, fila, tabela hash e árvore.</p>
+        <p class="simples"><b>Antes de começar</b>Cada conceito tem uma bancada para mexer: arrastar, tocar, ver contar os passos. Os números das chaves (1000, 1050, 1100...) vêm do caso de um pipeline de telemetria, que fecha o módulo. Listas e dicionários do Python aparecem em dois exercícios; o resto é visual.</p>
+        <p class="sobretitulo">5 conceitos e uma tarefa · um passo por vez: termine os exercícios para avançar</p>
+        <label class="campo marcar"><input type="checkbox" id="ver-tudo"> <span>Ver todos os conceitos de uma vez</span></label>
+      </header>
+      <nav class="passos-barra passos-licao" id="passos-licao" aria-label="Passos da lição"></nav>
+
+      <!-- 1 -->
+      <section class="secao" id="c1">
+        <p class="rotulo">Conceito 1 de 5</p>
+        <h2>Organizar muda o custo</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p><p class="pergunta">O cadastro tem 1 milhão de alunos numa lista sem ordem. Para achar um aluno pela matrícula, no pior caso, quantos o computador precisa conferir?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>1 milhão: sem ordem, ele olha um por um</button><button class="botao" type="button">Cerca de 20: ele corta pela metade a cada passo</button><button class="botao" type="button">1: ele vai direto ao aluno</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Sem nenhuma organização, o único jeito é conferir um por um, e o procurado pode ser o último." data-nao-texto="No pior caso, 1 milhão. Cortar pela metade exige os dados em ordem (árvore ou busca binária); ir direto exige um dicionário. Numa lista sem ordem, só resta olhar um por um."></div>
+        </div>
+<h3>A ideia</h3>
+<p class="simples"><b>Em palavras simples</b><b>Estrutura de dados</b> é o jeito de organizar os dados na memória. Os mesmos dados, organizados de outro jeito, deixam umas operações rápidas e outras lentas. Escolher a estrutura é escolher o que precisa ser rápido.</p>
+<div class="prosa">
+          <p>Pense no app do banco: achar uma transação pelo código, mostrar o extrato em ordem de data, desfazer a última ação. Cada pedido é uma <strong>operação</strong>, e cada estrutura é boa em algumas e ruim em outras.</p>
+          <p>Por isso uma estrutura se descreve pelo que ela faz e por quanto custa cada operação: é o <strong>tipo abstrato de dados</strong>. Como ela guarda tudo por dentro é a <strong>implementação</strong>, que pode mudar sem mudar a ideia.</p>
+          <p>O custo se mede em <strong>passos</strong>, conforme o número de itens (n) cresce: olhar um por um custa n, escrito <code>O(n)</code>; cortar pela metade a cada passo custa cerca de log₂ n, <code>O(log n)</code>; ir direto custa 1, <code>O(1)</code>. Com 1 milhão de itens: 1 milhão, 20 e 1.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>Achar uma questão num caderno sem índice: você folheia página por página. Com o índice remissivo, vai direto à página. O conteúdo é o mesmo; o que mudou foi a organização.</p>
+<h3>Mexa você mesmo: a corrida</h3>
+<div data-bancada="corrida"></div>
+<figure data-clip="ed-custo" data-preveja="Numa lista sem ordem com 8 matrículas, para achar a última, quantas o computador confere?|*as 8|só 1|4, a metade" style="--alt: 300px">
+          <figcaption>A mesma busca numa lista e num dicionário. Repare no contador de passos.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: conferir se um CPF já se inscreveu</h3>
+<pre>inscritos_lista = [...]     # 100 mil CPFs
+inscritos_set = set(inscritos_lista)
+
+"123" in inscritos_lista    # confere um por um
+"123" in inscritos_set     # calcula a posição e vai direto</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Ache a operação: é <b>conferir se um valor está</b> na coleção, a pergunta que o <code>in</code> faz.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Na lista, o <code>in</code> confere CPF por CPF. Se o procurado não está, olha os 100 mil: custo <code>O(n)</code>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>No <code>set</code>, o próprio CPF dá a posição em que ele estaria (é uma tabela hash). Uma conta e uma conferência: custo <code>O(1)</code> em média.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p><p class="pergunta">Por que o <code>set</code> acha o CPF sem olhar os outros?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque calcula, a partir do próprio CPF, a posição em que ele estaria guardado</button><button class="botao" type="button">Porque guarda os CPFs em ordem crescente</button><button class="botao" type="button">Porque o computador procura mais rápido em sets</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. É a ideia da tabela hash, que você vai mexer no conceito 4: a chave diz onde ela mora." data-nao-texto="O set é uma tabela hash: do próprio valor sai a posição. Ele não guarda ordem nenhuma, e o computador é o mesmo; muda a organização."></div>
+        </div>
+<h3>Pratique: o custo de cada operação</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Arraste cada operação para o custo dela no pior caso (ou toque no cartão e depois no grupo).</p>
+          <div><div class="linha-classifica"><span>Achar um nome numa lista sem ordem</span><select data-resposta="n" aria-label="Achar um nome numa lista sem ordem"><option value="">escolha</option><option value="1">O(1): direto</option><option value="log">O(log n): corta pela metade</option><option value="n">O(n): um por um</option></select></div><div class="linha-classifica"><span>Pegar o 5º item de uma lista pela posição</span><select data-resposta="1" aria-label="Pegar o 5º item de uma lista pela posição"><option value="">escolha</option><option value="1">O(1): direto</option><option value="log">O(log n): corta pela metade</option><option value="n">O(n): um por um</option></select></div><div class="linha-classifica"><span>Achar uma chave num dicionário</span><select data-resposta="1" aria-label="Achar uma chave num dicionário"><option value="">escolha</option><option value="1">O(1): direto</option><option value="log">O(log n): corta pela metade</option><option value="n">O(n): um por um</option></select></div><div class="linha-classifica"><span>Achar um valor numa lista ordenada, com busca binária</span><select data-resposta="log" aria-label="Achar um valor numa lista ordenada, com busca binária"><option value="">escolha</option><option value="1">O(1): direto</option><option value="log">O(log n): corta pela metade</option><option value="n">O(n): um por um</option></select></div><div class="linha-classifica"><span>Conferir se um e-mail já está num <code>set</code></span><select data-resposta="1" aria-label="Conferir se um e-mail já está num set"><option value="">escolha</option><option value="1">O(1): direto</option><option value="log">O(log n): corta pela metade</option><option value="n">O(n): um por um</option></select></div><div class="linha-classifica"><span>Contar quantas notas passam de 70 numa lista</span><select data-resposta="n" aria-label="Contar quantas notas passam de 70 numa lista"><option value="">escolha</option><option value="1">O(1): direto</option><option value="log">O(log n): corta pela metade</option><option value="n">O(n): um por um</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Pela posição ou pela chave, vai direto; com ordem, corta pela metade; sem ordem, ou quando é preciso olhar todos (como contar), é um por um." data-nao-texto="Os cartões em vermelho estão no grupo errado. Pergunte: dá para ir direto (posição ou chave)? Dá para descartar metade (os dados estão em ordem)? Ou é preciso olhar todos?"></div>
+        </div>
+<h3>Faça no Python: a mesma busca, duas organizações</h3>
+        <div class="exercicio py" data-codigo data-vars="lista_ms conjunto_ms">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Complete o código: crie <code>conjunto</code> com os mesmos alunos e meça a mesma busca. Compare os tempos na tabela de baixo.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O <code>set</code> guarda os mesmos valores numa tabela hash. A pergunta <code>in</code> é igual; o custo, não.</p><pre>conjunto = set(alunos)</pre></div>
+          <template data-inicial>
+import time
+alunos = list(range(200_000))
+procura = 199_999
+
+t = time.perf_counter()
+achou = procura in alunos
+lista_ms = (time.perf_counter() - t) * 1000
+
+conjunto = 
+t = time.perf_counter()
+achou = procura in conjunto
+conjunto_ms = (time.perf_counter() - t) * 1000
+          </template>
+          <template data-solucao>
+import time
+alunos = list(range(200_000))
+procura = 199_999
+
+t = time.perf_counter()
+achou = procura in alunos
+lista_ms = (time.perf_counter() - t) * 1000
+
+conjunto = set(alunos)
+t = time.perf_counter()
+achou = procura in conjunto
+conjunto_ms = (time.perf_counter() - t) * 1000
+          </template>
+          <template data-testes>
+assert isinstance(conjunto, set) and len(conjunto) == len(alunos), "conjunto deveria ser set(alunos), com os mesmos 200 mil números."
+assert conjunto_ms &lt; lista_ms, "A busca no conjunto deveria ser mais rápida que na lista."
+          </template>
+          <template data-dica>
+conjunto = set(alunos) cria o conjunto com os mesmos números.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. A mesma pergunta, in: na lista, o Python conferiu até 200 mil números; no conjunto, calculou a posição e foi direto. Compare lista_ms com conjunto_ms."></div>
+        </div>
+
+<h3>Para fechar</h3>
+<div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: como se mede o custo.</p>
+          <p class="lacunas-texto">O custo de uma operação se mede em <span data-lacuna="passos"></span>, conforme o número de itens cresce. Olhar um por um custa <span data-lacuna="n"></span>; ir direto pela posição ou pela chave custa <span data-lacuna="1"></span>.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">passos</button><button class="botao chip-l" type="button">n</button><button class="botao chip-l" type="button">1</button><button class="botao chip-l" type="button">segundos</button><button class="botao chip-l" type="button">n²</button><button class="botao chip-l" type="button">metade</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Segundos dependem do computador; passos dependem da estrutura. Por isso a notação O conta passos em função de n." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Estrutura de dados é o jeito de organizar os dados; ela decide quais operações ficam rápidas, e o custo se mede em passos conforme n cresce.</p>
+<p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> O que é uma estrutura de dados e por que a mesma busca pode custar 1 ou 1 milhão de passos. Fica salvo neste aparelho.</p>
+<button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 2 -->
+      <section class="secao" id="c2">
+        <p class="rotulo">Conceito 2 de 5</p>
+        <h2>Vetor e lista ligada</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">Inserir um aluno no começo de uma lista do Python, com <code>insert(0, x)</code>, custa o mesmo que pôr no fim, com <code>append</code>.</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. No começo, todos os outros andam uma casa para abrir espaço; no fim, ninguém anda." data-nao-texto="O gabarito é Errado. A lista do Python é um vetor: para pôr alguém no começo, todos os outros andam uma casa (O(n)). No fim, ninguém anda (O(1))."></div>
+        </div>
+<h3>A ideia</h3>
+<p class="simples"><b>Em palavras simples</b>O <b>vetor</b> guarda os itens lado a lado, numerados: pegar a posição 4 é imediato, mas inserir no começo empurra todos. A <b>lista ligada</b> guarda cada item com uma seta para o próximo: inserir é trocar setas, mas achar a posição 4 exige seguir as setas desde o começo.</p>
+<div class="prosa">
+          <p>A <code>list</code> do Python é um <strong>vetor</strong>: os itens ficam juntos na memória, e o endereço de cada um sai de uma conta (início + posição). Por isso <code>lista[1000]</code> custa o mesmo que <code>lista[0]</code>: <code>O(1)</code>.</p>
+          <p>O preço aparece ao inserir ou remover no meio: para abrir ou fechar um buraco, os itens seguintes andam uma casa, <code>O(n)</code>. No fim, nada anda, e o <code>append</code> é rápido.</p>
+          <p>Na <strong>lista ligada</strong>, cada item (o <strong>nó</strong>) guarda o valor e a seta para o próximo. Se você já está no lugar, inserir é mudar duas setas, <code>O(1)</code>. Mas não há conta de endereço: para chegar ao 1000º, anda-se de nó em nó, <code>O(n)</code>. É uma troca: um ganha no acesso, o outro na inserção.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>O vetor é a fileira de cadeiras numeradas da sala de prova: você acha a cadeira 30 direto, mas para sentar alguém na primeira, todos levantam e andam uma. A lista ligada é a caça ao tesouro: cada pista diz onde está a próxima.</p>
+<h3>Mexa você mesmo: inserir e pegar</h3>
+<div data-bancada="vetor-lista"></div>
+<figure data-clip="ed-inserir" data-preveja="Para pôr o Zé no começo de um vetor com 4 alunos, quantos alunos andam uma casa?|*os 4|nenhum|só 1" style="--alt: 260px">
+          <figcaption>A mesma inserção nas duas estruturas: no vetor todos andam; na lista, duas setas mudam.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: o Zé entra na posição 2</h3>
+<pre>vetor: [Ana, Bia, Caio, Davi, Eva]
+lista: início → Ana → Bia → Caio → Davi → Eva</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>No vetor, a posição 2 é a do Caio. Para abrir o lugar, Eva, Davi e Caio andam uma casa, de trás para a frente: <b>3 deslocamentos</b>. O Zé entra na posição 2.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Na lista, anda-se do início até a Bia (2 nós). Depois, o Zé aponta para o Caio e a Bia passa a apontar para o Zé: <b>2 setas</b>, ninguém anda.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Agora, pegar o 4º aluno: o vetor faz a conta e vai direto, <b>1 passo</b>; a lista segue as setas desde o início, <b>4 passos</b>.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p><p class="pergunta">Por que no vetor três alunos andaram e na lista ligada nenhum?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque no vetor a ordem é a posição na memória, e abrir espaço exige deslocar; na lista, a ordem vem das setas</button><button class="botao" type="button">Porque a lista ligada tem menos alunos</button><button class="botao" type="button">Porque o vetor guarda os alunos em ordem alfabética</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. No vetor, estar na posição 2 é estar fisicamente no lugar 2. Na lista, “depois da Bia” é só uma seta, que se troca." data-nao-texto="As duas têm os mesmos alunos. No vetor, a ordem é física (posição na memória); na lista, a ordem é dada pelas setas, e trocar setas não move ninguém."></div>
+        </div>
+<h3>Pratique: inserir numa lista ligada</h3>
+<div class="exercicio ex-texto" data-ordenar data-resposta="Começar pelo início da lista|Seguir as setas até a Bia|Fazer o Zé apontar para o Caio, o próximo da Bia|Fazer a Bia apontar para o Zé">
+          <p class="pergunta">O Zé vai entrar depois da Bia, numa lista ligada. Toque nos passos na ordem certa; toque de novo para devolver.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">Seguir as setas até a Bia</button>
+            <button class="botao linha" type="button">Fazer o Zé apontar para o Caio, o próximo da Bia</button>
+            <button class="botao linha" type="button">Fazer a Bia apontar para o Zé</button>
+            <button class="botao linha" type="button">Começar pelo início da lista</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. A ordem das duas últimas importa: se a Bia apontasse para o Zé antes, a seta para o Caio se perderia, e o resto da lista sumiria junto." data-pista="pergunte de cada passo: ele precisa de algo que outro passo prepara?"></div>
+        </div>
+<h3>Para fechar</h3>
+<div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Uma destas frases sobre vetor e lista ligada está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>No vetor, pegar a posição 1000 custa o mesmo que pegar a posição 0.</li><li>Na lista ligada, inserir depois de um nó em que você já está custa poucos passos: troca duas setas.</li><li data-erro>Na lista ligada, pegar o 1000º item é tão rápido quanto no vetor.</li><li>No vetor, inserir no começo desloca todos os itens.</li></ol>
+          <div class="retorno" hidden data-ok-texto="Na lista ligada não há conta de endereço: para chegar ao 1000º, segue-se seta por seta, O(n). Acesso por posição é o forte do vetor." data-nao-texto="O trecho errado é o 3. Na lista ligada não há conta de endereço: para chegar ao 1000º, segue-se seta por seta, O(n). Acesso por posição é o forte do vetor." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>O vetor acessa qualquer posição em um passo, mas inserir no meio desloca os outros; a lista ligada insere trocando setas, mas para chegar a uma posição anda nó por nó.</p>
+<p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Quando você usaria um vetor e quando uma lista ligada. Fica salvo neste aparelho.</p>
+<button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 3 -->
+      <section class="secao" id="c3">
+        <p class="rotulo">Conceito 3 de 5</p>
+        <h2>Pilha e fila</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p><p class="pergunta">O Ctrl+Z desfaz a sua última ação; apertando de novo, desfaz a anterior. Que estrutura guarda essas ações?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Uma pilha: a última ação feita é a primeira a ser desfeita</button><button class="botao" type="button">Uma fila: a primeira ação feita é a primeira a ser desfeita</button><button class="botao" type="button">Um dicionário: cada ação tem uma chave</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Desfazer pega sempre a mais recente: o último que entrou é o primeiro que sai." data-nao-texto="É uma pilha. Desfazer começa pela ação mais recente, a última que entrou. Uma fila desfaria primeiro a ação mais antiga."></div>
+        </div>
+<h3>A ideia</h3>
+<p class="simples"><b>Em palavras simples</b>Na <b>pilha</b>, o último que entra é o primeiro que sai (LIFO), como numa pilha de pratos. Na <b>fila</b>, o primeiro que entra é o primeiro que sai (FIFO), como na fila do caixa. As duas só deixam mexer nas pontas, e por isso são rápidas.</p>
+<div class="prosa">
+          <p>Na pilha, as operações são <strong>empilhar</strong> (push) e <strong>desempilhar</strong> (pop), sempre no topo. Aparece no desfazer, no botão voltar do navegador e na pilha de chamadas das funções.</p>
+          <p>Na fila, entra-se no <strong>fim</strong> e sai-se pelo <strong>começo</strong>. Aparece na fila de impressão, nos pedidos do delivery e nas mensagens que um sistema processa por ordem de chegada.</p>
+          <p>Em Python, a <code>list</code> serve de pilha: <code>append</code> e <code>pop()</code> mexem no fim, <code>O(1)</code>. Para fila, use <code>collections.deque</code>: o <code>popleft()</code> tira o da frente em <code>O(1)</code>. Com <code>list.pop(0)</code>, todos os outros andam uma casa.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>Pilha: as apostilas empilhadas na mesa; você pega a de cima, a última que pôs. Fila: a fila da inscrição do concurso, atendida por ordem de chegada.</p>
+<h3>Mexa você mesmo: entrar, apostar e sair</h3>
+<div data-bancada="pilha-fila"></div>
+<figure data-clip="ed-pilha-fila" data-preveja="Numa pilha, entram A, B e C, nessa ordem. Quem sai primeiro?|*C|A|B" style="--alt: 250px">
+          <figcaption>As mesmas entradas numa pilha e numa fila. Quem sai primeiro muda tudo.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: o botão voltar do navegador</h3>
+<pre>visitou: início → busca → produto
+pilha do histórico (topo à direita): [início, busca, produto]</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Cada página nova é <b>empilhada</b>: início, depois busca, depois produto. A página atual, produto, está no topo.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Ao tocar em voltar, o navegador <b>desempilha</b> o produto e mostra o novo topo: a busca.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Tocar em voltar de novo desempilha a busca e mostra o início. Sempre a mais recente primeiro: é LIFO.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p><p class="pergunta">Por que uma fila não serviria para o botão voltar?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque a fila devolveria a página mais antiga (o início), e não a anterior à atual</button><button class="botao" type="button">Porque a fila não guarda páginas de internet</button><button class="botao" type="button">Porque a fila só aceita números</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Voltar quer a página mais recente antes da atual; a fila sempre entrega a mais antiga." data-nao-texto="A fila entrega primeiro quem entrou primeiro: voltaria direto ao início. O voltar precisa da mais recente, e isso é pilha."></div>
+        </div>
+<h3>Pratique: a ordem de saída</h3>
+<div class="exercicio ex-texto" data-ordenar data-resposta="C|D|B|A">
+          <p class="pergunta">Numa pilha vazia: empilhe A, B e C; desempilhe uma vez; empilhe D; depois desempilhe tudo. Ponha na ordem em que eles saem.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">A</button>
+            <button class="botao linha" type="button">C</button>
+            <button class="botao linha" type="button">B</button>
+            <button class="botao linha" type="button">D</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. O C sai primeiro (último a entrar até ali). O D entra no topo e sai em seguida; depois B e, por fim, A, o primeiro a entrar." data-pista="pergunte de cada passo: ele precisa de algo que outro passo prepara?"></div>
+        </div>
+<h3>Faça no Python: pilha e fila</h3>
+        <div class="exercicio py" data-codigo data-vars="pratos topo fila atendido" data-rastro>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Complete: tire o prato de cima da pilha e atenda o primeiro pedido da fila.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Na pilha (uma <code>list</code>), <code>pop()</code> tira o de cima. Na fila (um <code>deque</code>), <code>popleft()</code> tira o da frente.</p><pre>topo = pratos.pop()
+atendido = fila.popleft()</pre></div>
+          <template data-inicial>
+from collections import deque
+pratos = ["azul", "verde"]
+pratos.append("amarelo")
+topo = 
+
+fila = deque(["#101", "#102"])
+fila.append("#103")
+atendido = 
+          </template>
+          <template data-solucao>
+from collections import deque
+pratos = ["azul", "verde"]
+pratos.append("amarelo")
+topo = pratos.pop()
+
+fila = deque(["#101", "#102"])
+fila.append("#103")
+atendido = fila.popleft()
+          </template>
+          <template data-testes>
+assert topo == "amarelo" and pratos == ["azul", "verde"], "topo deveria ser pratos.pop(): sai o amarelo, o último que entrou."
+assert atendido == "#101" and list(fila) == ["#102", "#103"], "atendido deveria ser fila.popleft(): sai o #101, o primeiro que entrou."
+          </template>
+          <template data-dica>
+topo = pratos.pop() tira o de cima (o último que entrou).
+          </template>
+          <template data-dica>
+atendido = fila.popleft() tira o da frente (o primeiro que entrou).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. A pilha devolveu o amarelo, o último a entrar; a fila atendeu o #101, o primeiro. O teste de mesa mostra cada estrutura mudando."></div>
+        </div>
+
+<h3>Para fechar</h3>
+<div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: pilha e fila em Python.</p>
+          <p class="lacunas-texto">Para a fila do delivery, use <span data-lacuna="deque"></span>: o popleft() tira o da frente sem mover ninguém. Com list.pop(0), todos os outros <span data-lacuna="andam"></span> uma casa. Já a pilha funciona bem com uma lista comum, porque append e pop mexem só no <span data-lacuna="fim"></span>.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">deque</button><button class="botao chip-l" type="button">andam</button><button class="botao chip-l" type="button">fim</button><button class="botao chip-l" type="button">set</button><button class="botao chip-l" type="button">ficam</button><button class="botao chip-l" type="button">começo</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Fila tira pelo começo: o deque foi feito para isso. Pilha mexe só no fim, que é o lado rápido da lista." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Na pilha sai primeiro o último que entrou (LIFO); na fila, o primeiro que entrou (FIFO); as duas só mexem nas pontas e por isso são rápidas.</p>
+<p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Um exemplo de pilha e um de fila no seu dia a dia, e por que cada um é o que é. Fica salvo neste aparelho.</p>
+<button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 4 -->
+      <section class="secao" id="c4">
+        <p class="rotulo">Conceito 4 de 5</p>
+        <h2>Tabela hash</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p><p class="pergunta">As chaves 1000, 1050, 1100, 1150 e 1200 vão para uma tabela com M = 50 gavetas, e a gaveta é a chave % 50. Quantas gavetas ficam ocupadas?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Só 1: todas vão para a gaveta 0</button><button class="botao" type="button">5, uma para cada chave</button><button class="botao" type="button">50, todas as gavetas</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Todas são múltiplas de 50, então o resto da divisão por 50 é sempre 0. Todas colidem na mesma gaveta." data-nao-texto="Só 1. Todas as chaves são múltiplas de 50: 1000 % 50 = 0, 1050 % 50 = 0, e assim por diante. Todas caem na gaveta 0."></div>
+        </div>
+<h3>A ideia</h3>
+<p class="simples"><b>Em palavras simples</b>A <b>tabela hash</b> calcula, a partir da própria chave, o número da gaveta onde guardá-la. Para achar, faz a mesma conta e vai direto. Quando duas chaves caem na mesma gaveta, há <b>colisão</b>, e a gaveta vira uma pequena fila.</p>
+<div class="prosa">
+          <p>A conta é a <strong>função de dispersão</strong>. A mais comum é o resto da divisão: <code>h(k) = k % M</code>, em que M é o número de gavetas. Uma boa função é rápida e <strong>espalha</strong> as chaves por igual.</p>
+          <p>Quando as chaves têm um padrão (todas pares, todas múltiplas de 50) e M divide esse padrão, tudo se amontoa. Por isso M costuma ser <strong>primo</strong>. As colisões que sobram são tratadas por <strong>encadeamento</strong> (uma lista em cada gaveta) ou por <strong>endereçamento aberto</strong> (procura a próxima gaveta livre). Quando a tabela enche (o <strong>fator de carga</strong> sobe), ela cresce e recalcula as gavetas.</p>
+          <p>Com tudo espalhado, guardar e achar custam <code>O(1)</code> em média: é o <code>dict</code> e o <code>set</code> do Python. O defeito: a tabela hash não guarda ordem. Para “do menor ao maior” ou “de 1050 a 1250”, ela precisa olhar tudo.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É o arquivo de pastas por final de matrícula: quem termina em 7 vai para a pasta 7. Se metade da turma tem matrícula terminada em 0, a pasta 0 lota e as outras ficam vazias.</p>
+<h3>Mexa você mesmo: cada chave na sua gaveta</h3>
+<div data-bancada="hash"></div>
+<figure data-clip="ed-hash" data-preveja="Com M = 50, em que gaveta cai a chave 1100?|*na gaveta 0, junto com 1000 e 1050|na gaveta 22|na gaveta 50" style="--alt: 280px">
+          <figcaption>As mesmas chaves com M = 50 e com M = 53. Repare onde cada uma cai.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: guardar e achar a chave 1150 com M = 53</h3>
+<pre>1150 ÷ 53 = 21, e sobra 37      (53 × 21 = 1113; 1150 − 1113 = 37)
+h(1150) = 1150 % 53 = 37</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Calcule a gaveta: o resto de 1150 por 53 é <b>37</b>.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Guarde a chave 1150 na gaveta 37. Se já houvesse outra chave ali, ela entraria na fila dessa gaveta (encadeamento).</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Para achar 1150 depois, faça a mesma conta, vá direto à gaveta 37 e confira: 1 conta e 1 conferência, com 10 ou com 1 milhão de chaves.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p><p class="pergunta">Por que M = 53 espalhou as chaves da telemetria e M = 50 não?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque todas as chaves são múltiplas de 50, então o resto por 50 é sempre 0; o 53 é primo e não divide 50, e os restos variam</button><button class="botao" type="button">Porque 53 é maior que 50 e cabe mais chaves</button><button class="botao" type="button">Porque com M = 53 a tabela passa a guardar as chaves em ordem</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. O problema não era o tamanho, era o divisor comum entre M e o padrão das chaves." data-nao-texto="Não é o tamanho (são só 3 gavetas a mais). É que 50 divide todas as chaves (resto 0 sempre), e 53, primo, não tem divisor em comum com elas."></div>
+        </div>
+<h3>Pratique: calcule as gavetas</h3>
+<div class="exercicio" data-lacunas>
+          <p class="rotulo">Pratique: complete as contas</p>
+          <p class="pergunta">Complete as contas.</p>
+          <p class="lacunas-texto">Com M = 53: 1000 % 53 = <span data-lacuna="46"></span>, porque 53 × 18 = 954 e sobram 46. E 1050 % 53 = <span data-lacuna="43"></span>, porque 53 × 19 = 1007. Já com M = 50, as duas vão para a gaveta <span data-lacuna="0"></span>.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">46</button><button class="botao chip-l" type="button">43</button><button class="botao chip-l" type="button">0</button><button class="botao chip-l" type="button">18</button><button class="botao chip-l" type="button">50</button><button class="botao chip-l" type="button">19</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="O resto é o que sobra depois de tirar o maior múltiplo de M. Com M = 50, múltiplos de 50 sempre sobram 0." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+<h3>Para fechar</h3>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p><p class="pergunta">Por que o tamanho M da tabela hash costuma ser um número primo?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok data-porque="Isso. Com M primo, padrões nas chaves não viram padrões nas gavetas.">Porque um primo não tem divisores em comum com padrões das chaves, como serem todas pares ou múltiplas de 50, e os restos se espalham</button><button class="botao" type="button" data-porque="Primo ou não, a memória depende de quantas gavetas há, não do tipo de número.">Porque números primos ocupam menos memória</button><button class="botao" type="button" data-porque="O resto funciona com qualquer M; o problema é que, com divisores em comum, as chaves se amontoam.">Porque a conta k % M só funciona quando M é primo</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Com M primo, padrões nas chaves não viram padrões nas gavetas." data-nao-texto="A certa é: um primo não tem divisores em comum com padrões das chaves, e os restos se espalham."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>A tabela hash calcula a gaveta a partir da chave e vai direto, O(1) em média; colisões a deixam lenta, M primo ajuda a espalhar, e ela não guarda ordem.</p>
+<p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> O que é colisão e o que faz uma tabela hash ficar lenta. Fica salvo neste aparelho.</p>
+<button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- 5 -->
+      <section class="secao" id="c5">
+        <p class="rotulo">Conceito 5 de 5</p>
+        <h2>Árvores: ABB e AVL</h2>
+<div class="exercicio desafio" data-escolha>
+          <p class="rotulo">Desafio: responda antes de ler. Errar aqui faz parte.</p>
+          <p class="pergunta">Numa árvore binária de busca comum, inserir as chaves já em ordem (1000, 1050, 1100...) mantém a busca rápida, em O(log n).</p>
+          <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. Com as chaves em ordem, cada nova vai sempre para a direita, e a árvore vira uma fila torta: O(n)." data-nao-texto="O gabarito é Errado. Em ordem, cada chave nova é a maior e vai sempre para a direita: a árvore degenera numa fila, e a busca vira O(n)."></div>
+        </div>
+<h3>A ideia</h3>
+<p class="simples"><b>Em palavras simples</b>Na <b>árvore binária de busca</b> (ABB), o menor vai para a esquerda e o maior para a direita. Equilibrada, cada comparação descarta metade: O(log n). Com chaves em ordem, ela degenera numa fila: O(n). A <b>AVL</b> confere o equilíbrio a cada inserção e <b>gira</b> os nós quando um lado fica dois níveis mais alto.</p>
+<div class="prosa">
+          <p>A regra da ABB é <strong>esquerda &lt; nó &lt; direita</strong>. Para buscar, compara-se com a raiz e desce-se para um lado. Percorrida em ordem (esquerda, nó, direita), ela devolve as chaves ordenadas. Por isso a árvore faz o que a tabela hash não faz: listar em ordem e buscar um <strong>intervalo</strong> (de 1050 a 1250) em <code>O(log n + k)</code>, em que k é quantas chaves caem no intervalo.</p>
+          <p>O <strong>fator de balanceamento</strong> de um nó é a altura da esquerda menos a altura da direita. Na AVL, ele só pode valer −1, 0 ou +1. Quando vira −2 ou +2, a árvore faz uma <strong>rotação</strong>: simples, se o nó e o filho do lado pesado têm o mesmo sinal; dupla, se têm sinais diferentes.</p>
+          <p>Com a altura sempre perto de log₂ n, buscar, inserir e remover ficam em <code>O(log n)</code> até no pior caso. Os índices dos bancos de dados usam a árvore B, parente da AVL.</p>
+        </div>
+<p class="cotidiano"><b>No seu dia a dia de estudo</b>É o jogo de adivinhar um número de 1 a 100 com “é maior ou menor?”: cada resposta corta metade, e em 7 perguntas você acerta. Chutar 1, 2, 3... em ordem seria a árvore degenerada: até 100 perguntas.</p>
+<h3>Mexa você mesmo: a árvore que gira</h3>
+<div data-bancada="arvore"></div>
+<figure data-clip="ed-avl" data-preveja="Depois de inserir 1000, 1050 e 1100 numa AVL, quem fica na raiz?|*1050|1000|1100" style="--alt: 300px">
+          <figcaption>As mesmas chaves em ordem: a ABB comum degenera, e a AVL gira para se equilibrar.</figcaption>
+        </figure>
+<h3>Exemplo resolvido: 1000, 1050 e 1100 numa AVL</h3>
+<pre>insere 1000, 1050, 1100 (em ordem)
+fb = altura(esquerda) − altura(direita)</pre>
+<ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Insira 1000 (raiz) e 1050 (maior, vai para a direita). O fator do 1000 fica −1: ainda aceito.</p></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Insira 1100: maior que os dois, vai para a direita do 1050. O fator do 1000 vira <b>−2</b> e o do filho do lado pesado, 1050, é <b>−1</b>.</p></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Mesmo sinal (−2 e −1): <b>rotação simples à esquerda</b> no 1000. O 1050 sobe para a raiz, com 1000 à esquerda e 1100 à direita. Altura 1, todos os fatores 0.</p></div></li></ol>
+<div class="exercicio" data-escolha>
+          <p class="rotulo">Por que o exemplo funciona?</p><p class="pergunta">Por que foi uma rotação simples, e não dupla?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Porque o nó desequilibrado (−2) e o filho do lado pesado (−1) têm o mesmo sinal</button><button class="botao" type="button">Porque só havia três nós na árvore</button><button class="botao" type="button">Porque a chave nova era a maior de todas</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. É a regra dos sinais: mesmo sinal, rotação simples; sinais diferentes, rotação dupla." data-nao-texto="A decisão vem dos sinais: o nó com −2 e o filho do lado pesado com −1 têm o mesmo sinal, e isso pede a rotação simples. Sinais diferentes pediriam a dupla."></div>
+        </div>
+<h3>Pratique: a regra dos sinais</h3>
+<div class="exercicio" data-classificar>
+          <p class="pergunta">Arraste cada caso para a rotação que a AVL faz (ou toque no cartão e depois no grupo).</p>
+          <div><div class="linha-classifica"><span>Nó com −2; filho da direita com −1</span><select data-resposta="RE" aria-label="Nó com −2; filho da direita com −1"><option value="">escolha</option><option value="RE">Simples à esquerda (RE)</option><option value="RD">Simples à direita (RD)</option><option value="RED">Dupla esquerda-direita (RED)</option><option value="RDE">Dupla direita-esquerda (RDE)</option></select></div><div class="linha-classifica"><span>Nó com +2; filho da esquerda com +1</span><select data-resposta="RD" aria-label="Nó com +2; filho da esquerda com +1"><option value="">escolha</option><option value="RE">Simples à esquerda (RE)</option><option value="RD">Simples à direita (RD)</option><option value="RED">Dupla esquerda-direita (RED)</option><option value="RDE">Dupla direita-esquerda (RDE)</option></select></div><div class="linha-classifica"><span>Nó com +2; filho da esquerda com −1</span><select data-resposta="RED" aria-label="Nó com +2; filho da esquerda com −1"><option value="">escolha</option><option value="RE">Simples à esquerda (RE)</option><option value="RD">Simples à direita (RD)</option><option value="RED">Dupla esquerda-direita (RED)</option><option value="RDE">Dupla direita-esquerda (RDE)</option></select></div><div class="linha-classifica"><span>Nó com −2; filho da direita com +1</span><select data-resposta="RDE" aria-label="Nó com −2; filho da direita com +1"><option value="">escolha</option><option value="RE">Simples à esquerda (RE)</option><option value="RD">Simples à direita (RD)</option><option value="RED">Dupla esquerda-direita (RED)</option><option value="RDE">Dupla direita-esquerda (RDE)</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Mesmo sinal: rotação simples para o lado leve. Sinais diferentes: primeiro gira o filho, depois o nó (dupla)." data-nao-texto="Os cartões em vermelho estão trocados. Compare os sinais do nó e do filho do lado pesado: iguais pedem rotação simples; diferentes, dupla. −2 pesa à direita (gira à esquerda); +2 pesa à esquerda (gira à direita)."></div>
+        </div>
+<h3>Para fechar</h3>
+<div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: o equilíbrio da AVL.</p>
+          <p class="lacunas-texto">O fator de balanceamento é a altura da <span data-lacuna="esquerda"></span> menos a altura da direita. Na AVL, ele só pode valer −1, 0 ou <span data-lacuna="+1"></span>. Quando o nó e o filho do lado pesado têm o mesmo sinal, a rotação é <span data-lacuna="simples"></span>.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">esquerda</button><button class="botao chip-l" type="button">+1</button><button class="botao chip-l" type="button">simples</button><button class="botao chip-l" type="button">raiz</button><button class="botao chip-l" type="button">+2</button><button class="botao chip-l" type="button">dupla</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Esquerda menos direita; −1, 0 ou +1; mesmo sinal, rotação simples. Com isso a altura fica perto de log₂ n." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>A ABB guarda em ordem (esquerda menor, direita maior) e busca em O(log n) se estiver equilibrada; a AVL gira os nós para garantir esse equilíbrio, mesmo com chaves em ordem.</p>
+<p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que a ABB comum fica lenta com chaves em ordem e o que a AVL faz para evitar isso. Fica salvo neste aparelho.</p>
+<button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
+      </section>
+
+      <!-- tarefa -->
+      <section class="secao" id="td">
+        <p class="rotulo">Tarefa de domínio do módulo</p>
+        <h2>Escolher a estrutura certa</h2>
+        <div class="prosa">
+          <p>No trabalho, a pergunta quase nunca é “como implemento uma AVL?”, e sim “qual estrutura deixa rápida a operação que eu mais faço?”. Comece pela operação: pegar por posição, pegar o mais recente, atender por ordem de chegada, achar por chave, ou percorrer em ordem e por intervalo.</p>
+        </div>
+        <div class="exercicio" data-classificar>
+          <p class="pergunta">Arraste cada situação para a estrutura certa (ou toque no cartão e depois no grupo).</p>
+          <div><div class="linha-classifica"><span>Desfazer as últimas edições de um texto</span><select data-resposta="pilha" aria-label="Desfazer as últimas edições de um texto"><option value="">escolha</option><option value="vetor">Vetor (lista do Python)</option><option value="pilha">Pilha</option><option value="fila">Fila</option><option value="hash">Dicionário (hash)</option><option value="arvore">Árvore equilibrada</option></select></div><div class="linha-classifica"><span>Atender os pedidos do delivery por ordem de chegada</span><select data-resposta="fila" aria-label="Atender os pedidos do delivery por ordem de chegada"><option value="">escolha</option><option value="vetor">Vetor (lista do Python)</option><option value="pilha">Pilha</option><option value="fila">Fila</option><option value="hash">Dicionário (hash)</option><option value="arvore">Árvore equilibrada</option></select></div><div class="linha-classifica"><span>Conferir na hora se um CPF já se inscreveu</span><select data-resposta="hash" aria-label="Conferir na hora se um CPF já se inscreveu"><option value="">escolha</option><option value="vetor">Vetor (lista do Python)</option><option value="pilha">Pilha</option><option value="fila">Fila</option><option value="hash">Dicionário (hash)</option><option value="arvore">Árvore equilibrada</option></select></div><div class="linha-classifica"><span>Pegar as leituras do sensor entre 1050 e 1250 ms</span><select data-resposta="arvore" aria-label="Pegar as leituras do sensor entre 1050 e 1250 ms"><option value="">escolha</option><option value="vetor">Vetor (lista do Python)</option><option value="pilha">Pilha</option><option value="fila">Fila</option><option value="hash">Dicionário (hash)</option><option value="arvore">Árvore equilibrada</option></select></div><div class="linha-classifica"><span>Ler as notas da turma pela posição na chamada</span><select data-resposta="vetor" aria-label="Ler as notas da turma pela posição na chamada"><option value="">escolha</option><option value="vetor">Vetor (lista do Python)</option><option value="pilha">Pilha</option><option value="fila">Fila</option><option value="hash">Dicionário (hash)</option><option value="arvore">Árvore equilibrada</option></select></div><div class="linha-classifica"><span>Contar quantas vezes cada palavra aparece num texto</span><select data-resposta="hash" aria-label="Contar quantas vezes cada palavra aparece num texto"><option value="">escolha</option><option value="vetor">Vetor (lista do Python)</option><option value="pilha">Pilha</option><option value="fila">Fila</option><option value="hash">Dicionário (hash)</option><option value="arvore">Árvore equilibrada</option></select></div></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. Mais recente: pilha. Ordem de chegada: fila. Achar por chave ou contar por chave: dicionário. Intervalo em ordem: árvore. Por posição: vetor." data-nao-texto="Os cartões em vermelho estão no grupo errado. Para cada um, diga qual operação ele mais faz: pegar o mais recente, o mais antigo, achar por chave, percorrer um intervalo em ordem ou pegar por posição."></div>
+        </div>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">O caso da telemetria</p><p class="pergunta">O caso da telemetria: as leituras chegam com chaves em ordem (1000, 1050, 1100...) e o sistema pede, o tempo todo, a média móvel de uma janela de tempo, como de 1050 a 1250. Qual estrutura escolher?</p>
+          <div class="opcoes coluna-opcoes"><button class="botao" type="button" data-ok>Uma árvore AVL: mantém a ordem, busca em O(log n) mesmo com chaves em ordem e percorre o intervalo em O(log n + k)</button><button class="botao" type="button" data-porque="Com M = 50 todas as chaves colidem na gaveta 0; e, mesmo com M primo, a hash não guarda ordem: para achar o intervalo, olharia todas as chaves.">Uma tabela hash com M = 50: busca em O(1)</button><button class="botao" type="button" data-porque="Mantém a ordem, mas com chaves chegando em ordem ela degenera numa fila, e tudo vira O(n).">Uma ABB comum: já mantém a ordem</button></div>
+          <div class="retorno" hidden data-ok-texto="Isso. A AVL junta o que o problema pede: ordem para o intervalo e equilíbrio garantido, mesmo com as chaves chegando em ordem." data-nao-texto="A certa é a AVL. A hash não guarda ordem (e com M = 50 colide tudo); a ABB comum degenera com chaves em ordem."></div>
+        </div>
+        <details class="gabarito-td"><summary>Comentário: por que a AVL ganha no caso da telemetria</summary>
+          <div class="prosa">
+          <p>A janela de tempo é uma <strong>busca por intervalo</strong>: achar o começo (1050) e andar em ordem até o fim (1250). Na AVL, achar o começo custa O(log n) e andar custa k passos, um por leitura da janela.</p>
+          <p>A tabela hash brilha na busca exata por chave, O(1) em média, mas não sabe quem vem depois de quem. Para o intervalo, teria de conferir todas as chaves. E com M = 50, múltiplo do padrão das chaves, ainda colidiria tudo.</p>
+          <p>A ABB comum teria a ordem, mas as chaves chegam crescentes: ela vira uma fila de altura n. A AVL gira a cada desequilíbrio e mantém a altura perto de log₂ n.</p>
+        </div>
+        </details>
+        <button class="botao" type="button" data-marcar="td">Marcar a tarefa como feita</button>
+      </section>
+    </div>
+  </main>
+</div>
+<script src="../figuras.js" charset="utf-8"></script>
+<script src="../mascote.js" charset="utf-8"></script>
+<script src="../personagens.js" charset="utf-8"></script>
+<script src="../avatares.js" charset="utf-8"></script>
+<script src="../avatares-manga.js" charset="utf-8"></script>
+<script src="../tracos.js" charset="utf-8"></script>
+<script src="../guia-mov.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="reacao.js" charset="utf-8"></script>
+<script src="estruturas.js" charset="utf-8"></script>
+<script src="clipes-ed.js" charset="utf-8"></script>
+<script src="../passo/cascata.js" charset="utf-8"></script>
+<script src="laboratorio.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
+<script>
+  Motor.licao({ chave: "dominio:licao:ED.01", trilha: "ED", nomes: ["Organizar muda o custo", "Vetor e lista ligada", "Pilha e fila", "Tabela hash", "Árvores: ABB e AVL", "Tarefa de domínio"] });
+</script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>
