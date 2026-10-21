@@ -274,7 +274,7 @@
     }).join("");
     const revisaoHoje = () => { try { const c = JSON.parse(localStorage.getItem("dominio:revisao:v1") || "{}"); const d = new Date(), h = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; return Object.values(c).filter((x) => x.proxima <= h).length; } catch (e) { return 0; } };
     const nRevisao = revisaoHoje();
-    const casteloFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:castelo:v1") || "null"); return v && v.feitas ? ` · ${v.feitas} de 12 módulos` : ""; } catch (e) { return ""; } };
+    const casteloFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:castelo:v1") || "null"); return v && v.feitas ? ` · ${v.feitas} de 17 módulos` : ""; } catch (e) { return ""; } };
     const inicioFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:licao:INICIO") || "null"); return !!v && Object.keys(v).length > 0; } catch (e) { return false; } };
     const fala = total ? `Você domina ${total} de ${TOTAL} módulos. A próxima estação é ${prox.nome}.` : `Vamos começar por ${prox.nome}. São cinco passos curtos.`;
     centro().innerHTML = `

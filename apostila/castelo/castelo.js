@@ -35,7 +35,8 @@
     if (i === 0) return true;
     const ant = C.salas[i - 1];
     if (!salaCompleta(ant)) return false;
-    if (primeiraDoBloco(s)) { const b = blocoAnterior(s.bloco); return !b || !!(estado.niveis[b.id] && estado.niveis[b.id].aprovado); }
+    // a primeira sala de uma zona abre com o nivelamento da zona anterior (quando a zona anterior tem um)
+    if (primeiraDoBloco(s)) { const b = blocoAnterior(s.bloco); return !b || !nivelDe(b.id) || !!(estado.niveis[b.id] && estado.niveis[b.id].aprovado); }
     return true;
   }
   const proxima = () => C.salas.find((s) => !salaCompleta(s));
@@ -62,6 +63,7 @@
       const c = sql[i], d = sql[i + 1];
       if (c === "-" && d === "-") { const f = sql.indexOf("\n", i); const fim = f < 0 ? sql.length : f; atual += sql.slice(i, fim); i = fim; continue; }
       if (c === "/" && d === "*") { const f = sql.indexOf("*/", i + 2); const fim = f < 0 ? sql.length : f + 2; atual += sql.slice(i, fim); i = fim; continue; }
+      if (c === "$" && d === "$") { const f = sql.indexOf("$$", i + 2); const fim = f < 0 ? sql.length : f + 2; atual += sql.slice(i, fim); i = fim; continue; }
       if (c === "'" || c === '"') { let j = i + 1; while (j < sql.length) { if (sql[j] === c) { if (sql[j + 1] === c) { j += 2; continue; } break; } j++; } atual += sql.slice(i, j + 1); i = j + 1; continue; }
       if (c === ";") { if (atual.trim()) out.push(atual.trim()); atual = ""; i++; continue; }
       atual += c; i++;
@@ -70,12 +72,22 @@
     return out.filter((x) => x.replace(/--[^\n]*/g, "").replace(/\/\*[\s\S]*?\*\//g, "").trim());
   }
   // executa comando por comando; para no primeiro erro; devolve o último resultado com colunas
+  // Se um comando falha dentro de uma transação, o laboratório faz o ROLLBACK (como um programa de verdade faria)
+  // e avisa na mensagem; e, no fim de cada execução, volta sempre ao usuário dono do banco (RESET ROLE).
   async function executar(sql) {
     const db = await banco();
     let ultimo = null, afetadas = 0;
-    for (const cmd of dividir(sql)) {
-      const r = await db.query(cmd, [], { rowMode: "array" });
-      if (r.fields && r.fields.length) ultimo = r; else afetadas += r.affectedRows || 0;
+    try {
+      for (const cmd of dividir(sql)) {
+        const r = await db.query(cmd, [], { rowMode: "array" });
+        if (r.fields && r.fields.length) ultimo = r; else afetadas += r.affectedRows || 0;
+      }
+    } catch (e) {
+      await db.query("ROLLBACK").catch(() => {});
+      if (/\b(BEGIN|START\s+TRANSACTION)\b/i.test(sql)) e.desfeita = true;
+      throw e;
+    } finally {
+      await db.query("RESET ROLE").catch(() => {});
     }
     return { ultimo, afetadas };
   }
@@ -94,7 +106,7 @@
   }
   async function reconstruir(ate) {
     const db = await banco();
-    await db.exec("DROP TABLE IF EXISTS revisoes, respostas, alunos, questoes, materias CASCADE;");
+    await db.exec(window.Backup.LIMPAR);
     for (const s of C.salas) { if (indice(s) > ate) break; await aplicarEstado(s); }
   }
   async function tabelas() {
@@ -153,14 +165,14 @@
   let selecionado = null, animacoes = [];
   const estadoMod = (s) => (salaCompleta(s) ? "ligado" : s === proxima() ? "atual" : "falta");
   function geometria(estreito) {
-    if (!estreito) return { vb: [760, 284],
-      zonas: [{ x: 14, y: 30, w: 252, h: 236 }, { x: 286, y: 30, w: 190, h: 236 }, { x: 496, y: 30, w: 250, h: 108 }, { x: 496, y: 158, w: 250, h: 108 }],
-      disp: (zi, k) => (zi === 0 ? { x: 32 + k * 46, y: 80, w: 36, h: 150 } : zi === 1 ? { x: 306 + k * 54, y: 80, w: 42, h: 150 } : { x: 514 + k * 116, y: zi === 2 ? 76 : 204, w: 100, h: 46 }),
-      cabos: [["A", "M266 155 H286"], ["B", "M476 104 H486 V84 H496"], ["B", "M476 210 H486 V212 H496"], ["C", "M621 138 V158"]] };
-    return { vb: [360, 612],
-      zonas: [{ x: 10, y: 20, w: 340, h: 170 }, { x: 10, y: 206, w: 340, h: 170 }, { x: 10, y: 392, w: 340, h: 96 }, { x: 10, y: 504, w: 340, h: 96 }],
-      disp: (zi, k) => (zi === 0 ? { x: 28 + k * 64, y: 60, w: 48, h: 96 } : zi === 1 ? { x: 40 + k * 102, y: 246, w: 72, h: 96 } : { x: 26 + k * 162, y: zi === 2 ? 432 : 544, w: 146, h: 44 }),
-      cabos: [["A", "M180 190 V206"], ["B", "M180 376 V392"], ["C", "M180 488 V504"]] };
+    if (!estreito) return { vb: [760, 410],
+      zonas: [{ x: 14, y: 30, w: 252, h: 236 }, { x: 286, y: 30, w: 190, h: 236 }, { x: 496, y: 30, w: 250, h: 108 }, { x: 496, y: 158, w: 250, h: 108 }, { x: 14, y: 290, w: 732, h: 104 }],
+      disp: (zi, k) => (zi === 0 ? { x: 32 + k * 46, y: 80, w: 36, h: 150 } : zi === 1 ? { x: 306 + k * 54, y: 80, w: 42, h: 150 } : zi === 4 ? { x: 32 + k * 143, y: 334, w: 128, h: 46 } : { x: 514 + k * 116, y: zi === 2 ? 76 : 204, w: 100, h: 46 }),
+      cabos: [["A", "M266 155 H286"], ["B", "M476 104 H486 V84 H496"], ["B", "M476 210 H486 V212 H496"], ["C", "M621 138 V158"], ["D", "M621 266 V290"]] };
+    return { vb: [360, 836],
+      zonas: [{ x: 10, y: 20, w: 340, h: 170 }, { x: 10, y: 206, w: 340, h: 170 }, { x: 10, y: 392, w: 340, h: 96 }, { x: 10, y: 504, w: 340, h: 96 }, { x: 10, y: 616, w: 340, h: 208 }],
+      disp: (zi, k) => (zi === 0 ? { x: 28 + k * 64, y: 60, w: 48, h: 96 } : zi === 1 ? { x: 40 + k * 102, y: 246, w: 72, h: 96 } : zi === 4 ? { x: 26 + (k % 2) * 162, y: 656 + Math.floor(k / 2) * 56, w: 146, h: 44 } : { x: 26 + k * 162, y: zi === 2 ? 432 : 544, w: 146, h: 44 }),
+      cabos: [["A", "M180 190 V206"], ["B", "M180 376 V392"], ["C", "M180 488 V504"], ["D", "M180 600 V616"]] };
   }
   function equipamento(s, d, rack, novo) {
     const st = estadoMod(s), i = indice(s), n = String(i + 1).padStart(2, "0");
@@ -344,7 +356,7 @@
         saida.innerHTML = r.ultimo ? tabelaHTML(r.ultimo) : `<p class="lab-ok">Comando executado${r.afetadas ? `: ${r.afetadas} ${r.afetadas === 1 ? "linha afetada" : "linhas afetadas"}` : ""}.</p>`;
         return { ok: true, r };
       } catch (e) {
-        saida.innerHTML = `<div class="lab-erro"><b>O banco recusou.</b> ${esc(Cmp.traduzirErro(e, ta.value))}<details><summary>Mensagem original do PostgreSQL</summary><code>${esc(e.message)}</code></details></div>`;
+        saida.innerHTML = `<div class="lab-erro"><b>O banco recusou.</b> ${esc(Cmp.traduzirErro(e, ta.value))}${e.desfeita ? "<br><b>A transação foi desfeita:</b> o comando falhou depois do BEGIN, e o banco fez o ROLLBACK. Nada desde o BEGIN ficou gravado." : ""}<details><summary>Mensagem original do PostgreSQL</summary><code>${esc(e.message)}</code></details></div>`;
         return { ok: false, e };
       }
     }
@@ -465,21 +477,73 @@
     }));
   }
 
+  // ---------- ações: o laboratório faz algo pelo aluno e depois confere o banco ----------
+  const CHAVE_BACKUP = "dominio:castelo:backup";
+  let backupMemoria = null;
+  const contagensSQL = "SELECT (SELECT COUNT(*) FROM materias) AS materias, (SELECT COUNT(*) FROM alunos) AS alunos, (SELECT COUNT(*) FROM questoes) AS questoes, (SELECT COUNT(*) FROM respostas) AS respostas";
+  const pct = (v) => String(Number(v).toFixed(1)).replace(".", ",") + "%";
+  const ACOES = {
+    async carga() { await carga(); const r = await executar(contagensSQL); return tabelaHTML(r.ultimo); },
+    async historico() {
+      await (await banco()).exec(C.sqlHistorico);
+      const r = await executar("SELECT COUNT(*) AS linhas, MIN(respondida_em) AS primeira, MAX(respondida_em) AS ultima FROM historico");
+      return tabelaHTML(r.ultimo) + '<p class="lab-nota">Uma tabela de teste, só para medir. No fim do módulo você apaga.</p>';
+    },
+    async backup() {
+      const b = await window.Backup.gerar(consultar, `-- Backup do banco do Centro de Dados do Domínio, ${new Date().toLocaleString("pt-BR")}.`);
+      backupMemoria = b.sql;
+      let salvo = true;
+      try { localStorage.setItem(CHAVE_BACKUP, b.sql); } catch (e) { salvo = false; }
+      return `<div class="lab-backup"><p><b>Backup feito:</b> ${(b.sql.length / 1024).toFixed(0)} KB de SQL, ${b.tabelas.length} tabelas, ${b.indices} ${b.indices === 1 ? "índice" : "índices"}, ${b.visoes} ${b.visoes === 1 ? "visão" : "visões"}${b.papeis.length ? ` e o usuário ${esc(b.papeis.join(", "))}` : ""}.</p>
+        <ul class="lab-esquema">${b.tabelas.map((t) => `<li><b>${esc(t)}</b> <code>${b.contagens[t]} ${b.contagens[t] === 1 ? "linha" : "linhas"}</code></li>`).join("")}</ul>
+        <p class="lab-nota">${salvo ? "Guardado neste aparelho." : "Guardado só enquanto esta aba estiver aberta: o navegador não deixou salvar no aparelho."} Para ter uma cópia fora daqui, baixe o arquivo.</p>
+        <div class="lab-acoes"><button type="button" class="botao" data-a="baixar-backup">Baixar o backup (.sql)</button></div></div>`;
+    },
+    async restaurar() {
+      let sql = backupMemoria;
+      try { sql = sql || localStorage.getItem(CHAVE_BACKUP); } catch (e) { /* sem armazenamento */ }
+      if (!sql) throw new Error("Não há backup guardado. Volte à tarefa 1 deste módulo e faça o backup antes.");
+      const db = await banco();
+      await db.exec(window.Backup.LIMPAR);
+      await db.exec(sql);
+      const r = await executar(contagensSQL);
+      return tabelaHTML(r.ultimo) + '<p class="lab-nota">Restaurado a partir do backup: tabelas, regras, dados, índice, visão e permissões.</p>';
+    },
+    async painel() {
+      const capa = (await consultar("SELECT (SELECT COUNT(*) FROM alunos), COUNT(*), ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1) FROM respostas WHERE resposta IS NOT NULL"))[0];
+      const mats = await consultar("SELECT materia, taxa FROM painel_materias ORDER BY taxa").catch(() => consultar("SELECT m.nome, ROUND(AVG(CASE WHEN r.acertou THEN 100.0 ELSE 0 END), 1) FROM respostas r JOIN questoes q ON q.id = r.questao_id JOIN materias m ON m.id = q.materia_id WHERE r.resposta IS NOT NULL GROUP BY m.nome ORDER BY 2"));
+      const meses = await consultar("SELECT to_char(respondida_em, 'YYYY-MM'), COUNT(*), ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1) FROM respostas WHERE resposta IS NOT NULL GROUP BY 1 ORDER BY 1");
+      const rev = (await consultar("SELECT COUNT(*), MIN(proxima)::text FROM revisoes").catch(() => [[0, null]]))[0];
+      const frase = estado.textos["s11.t4"] || "";
+      const max = Math.max(...mats.map((m) => Number(m[1])), 1);
+      const nomeMes = (m) => { const [a, n] = m.split("-"); return ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"][Number(n) - 1] + "/" + a.slice(2); };
+      return `<section class="lab-dash" aria-label="Painel de resultados">
+        <header><p class="sobretitulo">Painel de resultados · banco de estudo</p><h3>Como está o desempenho nas questões</h3></header>
+        <div class="dash-capa"><div><b>${capa[0]}</b><span>alunos</span></div><div><b>${capa[1]}</b><span>respostas analisadas</span></div><div><b>${pct(capa[2])}</b><span>taxa geral de acerto</span></div><div><b>${rev[0]}</b><span>revisões agendadas${rev[1] ? `, a primeira em ${rev[1].split("-").reverse().join("/")}` : ""}</span></div></div>
+        <div class="dash-graficos">
+          <figure><figcaption>Taxa de acerto por matéria</figcaption><ol class="dash-barras">${mats.map((m, k) => `<li class="${k === 0 ? "pior" : ""}"><span>${esc(m[0])}</span><i style="--w:${(Number(m[1]) / max) * 100}%"></i><b>${pct(m[1])}</b></li>`).join("")}</ol></figure>
+          <figure><figcaption>Taxa de acerto por mês</figcaption><ol class="dash-meses">${meses.map((m) => `<li><b>${pct(m[2])}</b><i style="--h:${Number(m[2])}%"></i><span>${nomeMes(m[0])}</span><small>${m[1]} resp.</small></li>`).join("")}</ol></figure>
+        </div>
+        <p class="dash-achado"><b>Achado:</b> ${esc(mats[0] ? mats[0][0] : "")} é a matéria mais fraca, com ${mats[0] ? pct(mats[0][1]) : ""}.${frase ? ` <b>A sua análise:</b> ${esc(frase)}` : ""}</p>
+      </section>`;
+    },
+  };
   function tarefaAcao(el, t, chave, aoConcluir) {
     el.insertAdjacentHTML("beforeend", `<div class="lab-acoes"><button type="button" class="botao primario" data-a="acao">${esc(t.botao)}</button></div><div class="lab-saida" aria-live="polite"></div><div class="retorno" hidden></div>`);
     const saida = el.querySelector(".lab-saida"), ret = el.querySelector(".retorno");
+    saida.addEventListener("click", (e) => { if (e.target.closest('[data-a="baixar-backup"]')) baixar(); });
     el.querySelector('[data-a="acao"]').addEventListener("click", async () => {
-      if (el.dataset.feita) return;
-      saida.innerHTML = '<p class="lab-nota">Carregando...</p>';
-      try { if (t.executar === "carga") await carga(); } catch (e) { saida.innerHTML = `<div class="lab-erro"><b>A carga parou.</b> ${esc(Cmp.traduzirErro(e, ""))}</div>`; return; }
-      const r = await executar("SELECT (SELECT COUNT(*) FROM materias) AS materias, (SELECT COUNT(*) FROM alunos) AS alunos, (SELECT COUNT(*) FROM questoes) AS questoes, (SELECT COUNT(*) FROM respostas) AS respostas").catch(() => null);
-      saida.innerHTML = r && r.ultimo ? tabelaHTML(r.ultimo) : "";
+      saida.innerHTML = '<p class="lab-nota">Trabalhando no seu banco...</p>';
+      try { saida.innerHTML = await ACOES[t.executar || "carga"](); }
+      catch (e) { saida.innerHTML = `<div class="lab-erro"><b>Não deu certo.</b> ${esc(e.desfeita !== undefined || e.code ? Cmp.traduzirErro(e, "") : e.message)}</div>`; return; }
       for (const v of t.verificar || []) { const c = Cmp.comparar(await consultar(v.consulta).catch(() => []), v.esperado, { ordem: true }); if (!c.ok) { retorno(ret, "nao", "Ainda não.", `<span>${esc(v.msg)}</span>`); return; } }
+      if (el.dataset.feita) return;
       el.dataset.feita = "1";
       retorno(ret, "ok", "Certo.", `<span>${t.ok}</span>`);
       aoConcluir("primeira");
     });
   }
+
 
   function tarefaRelogio(el, t, chave, aoConcluir) {
     el.insertAdjacentHTML("beforeend", `<pre class="lab-slide-cod"><code>${esc(t.codigo)}</code></pre><div class="lab-acoes"><button type="button" class="botao primario" data-a="relogio">Rodar com o rastreador</button></div><div class="lab-saida" aria-live="polite"></div><div class="retorno" hidden></div>`);
@@ -560,6 +624,18 @@
     ({ sql: tarefaSQL, python: tarefaPython, escolha: tarefaEscolha, acao: tarefaAcao, relogio: tarefaRelogio, fsrs: tarefaFSRS, texto: tarefaTexto })[t.tipo](el, t, chave, aoConcluir, modo, sala);
   }
 
+  // ---------- o guia: o mesmo escolhido no mapa, dizendo para que serve cada módulo no trabalho ----------
+  function guiaLab() {
+    let id = "rin";
+    try { id = localStorage.getItem("dominio:guia:v1") || "rin"; } catch (e) { /* fica a Rin */ }
+    const G = window.GUIAS || {};
+    return G[id] || G.rin || null;
+  }
+  function falaGuia(expr, html) {
+    const g = guiaLab();
+    return `<figure class="lab-tutor">${g ? `<div class="lab-tutor-rosto${g.id === "panda" ? "" : " retrato"}" aria-hidden="true">${g.expr[expr] || g.expr.padrao}</div>` : ""}<figcaption>${g ? `<b>${esc(g.nome)}</b>` : ""}${html}</figcaption></figure>`;
+  }
+
   // ---------- telas ----------
   function irPara(hash) { if (location.hash === hash) render(); else location.hash = hash; }
   const rolarPara = (el) => { if (el) el.scrollIntoView({ block: "start", behavior: reduz() ? "auto" : "smooth" }); };
@@ -610,24 +686,13 @@
     } catch (e) { caixa.innerHTML = `<p class="lab-erro">Não consegui abrir o banco: ${esc(e.message)}</p>`; }
   }
   async function baixar() {
-    const db = await banco();
-    const ordem = ["materias", "alunos", "questoes", "respostas", "revisoes"];
-    const existentes = (await consultar("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")).map((r) => r[0]);
-    let sql = `-- Banco construído no Centro de Dados do Domínio em ${new Date().toLocaleDateString("pt-BR")}.\n-- Dados fictícios. Roda no PostgreSQL.\n\n`;
-    const lit = (v) => v === null ? "NULL" : typeof v === "number" || typeof v === "boolean" ? String(v) : v instanceof Date ? `'${Cmp.normalizar(v)}'` : `'${String(v).replace(/'/g, "''")}'`;
-    for (const t of ordem.filter((x) => existentes.includes(x)).concat(existentes.filter((x) => !ordem.includes(x)))) {
-      const cols = await consultar(`SELECT column_name, data_type, is_nullable, column_default FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '${t}' ORDER BY ordinal_position`);
-      const regras = await consultar(`SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid = '${t}'::regclass AND contype IN ('p', 'f', 'c', 'u') ORDER BY contype DESC`);
-      sql += `CREATE TABLE ${t} (\n${cols.map(([n, tipo, nulo, padrao]) => `  ${n} ${tipo.toUpperCase()}${nulo === "NO" ? " NOT NULL" : ""}${padrao ? ` DEFAULT ${padrao}` : ""}`).concat(regras.map(([r]) => `  ${r}`)).join(",\n")}\n);\n`;
-      const linhas = (await db.query(`SELECT * FROM ${t}`, [], { rowMode: "array" })).rows;
-      for (const l of linhas) sql += `INSERT INTO ${t} VALUES (${l.map(lit).join(", ")});\n`;
-      sql += "\n";
-    }
+    const b = await window.Backup.gerar(consultar, `-- Banco construído no Centro de Dados do Domínio em ${new Date().toLocaleDateString("pt-BR")}.`);
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([sql], { type: "application/sql" }));
+    a.href = URL.createObjectURL(new Blob([b.sql], { type: "application/sql" }));
     a.download = "meu-centro-de-dados.sql";
     document.body.appendChild(a); a.click(); a.remove();
   }
+
 
   async function telaSala(s) {
     if (!liberada(s) && !salaCompleta(s)) { palco.innerHTML = `<div class="lab-cartao"><h2>O módulo ${esc(s.nome)} ainda não abriu.</h2><p>Termine o módulo anterior${primeiraDoBloco(s) ? " e o nivelamento da zona" : ""} para abrir este.</p><p><a class="botao primario" href="#">Voltar ao centro de dados</a></p></div>`; return; }
@@ -636,7 +701,7 @@
     if (primeiraDoBloco(s) && !estado.intros[b.id] && !salaCompleta(s)) {
       const nivel = C.niveis.find((n) => n.id === b.id);
       palco.innerHTML = `<div class="lab-cartao lab-fase-intro"><p class="sobretitulo">Nova zona do centro de dados</p><h2>Zona ${b.id}: ${esc(b.zona)}</h2><p class="lab-assunto">${esc(b.nome)}: ${esc(b.assunto.toLowerCase())}</p>
-        <h3>Por que estudar isso</h3><p>${esc(b.porque)}</p>
+        <h3>Por que estudar isso</h3>${falaGuia("feliz", `<p>${esc(b.porque)}</p>`)}
         <div class="lab-acoes"><button type="button" class="botao primario" data-a="comecar">Começar a zona</button>${nivel ? `<a class="botao" href="#nivel-${b.id}">Já sei isso: fazer o nivelamento</a>` : ""}</div>
         ${nivel ? `<p class="lab-nota">O nivelamento é uma prova prática de ${nivel.itens.length} itens. Quem acerta ${nivel.minimo} pula os módulos desta zona; o banco é construído com as soluções oficiais.</p>` : ""}</div>`;
       palco.querySelector('[data-a="comecar"]').addEventListener("click", () => { estado.intros[b.id] = true; salvar(); render(); });
@@ -645,6 +710,7 @@
     const def = window.PASSOS_LAB && window.PASSOS_LAB[s.id];
     palco.innerHTML = `<article class="lab-sala"><p class="sobretitulo">Zona ${b.id} · ${esc(b.zona)} · módulo ${i + 1} de ${C.salas.length}</p><h2>${esc(s.nome)}</h2>
       <p class="lab-conceito">${esc(s.conceito)}</p>
+      ${s.trabalho ? falaGuia("explica", `<p><span class="lab-tutor-rot">No trabalho do cientista de dados</span>${esc(s.trabalho)}</p>`) : ""}
       <p class="lab-ferramenta">Ferramenta: <a href="${s.ferramenta.url}" target="_blank" rel="noopener">${esc(s.ferramenta.nome)}</a> (licença ${esc(s.ferramenta.licenca)}): ${esc(s.ferramenta.papel)}.</p>
       <div class="lab-aviso-banco" hidden></div><div class="cx" aria-label="Etapas do módulo"></div><div class="lab-fim-lugar"></div>
       <div class="lab-rodape"><a class="botao" href="#">Voltar ao centro de dados</a>${!salaCompleta(s) && s.desfazer ? '<button type="button" class="lab-link" data-a="desfazer">Recomeçar este módulo</button>' : ""}</div></article>${painelBanco()}`;

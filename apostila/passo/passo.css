@@ -52,7 +52,9 @@
 .pp-seta.ruim::after { border-left-color: var(--erro); }
 .pp-peca.aviso { border-color: var(--aviso); background: var(--aviso-suave); }
 .pp-peca.foco { border-color: var(--tinta); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tinta) 25%, transparent); }
-.pp-peca.apagado { opacity: 0.45 !important; }
+/* apagado: fora da conta, mas ainda legível (contraste AA); a borda tracejada e o fundo vazio dizem que saiu */
+.pp-peca.apagado { border-style: dashed; background: transparent; box-shadow: none; }
+.pp-peca.apagado, .pp-peca.apagado * { color: var(--texto-2) !important; }
 .pp-peca.cortado { border-style: dashed; }
 :root[data-tema="impresso"] .pp-ficha, :root[data-tema="impresso"] .pp-caixa { border-color: #1b2131; border-radius: 4px; }
 :root[data-tema="impresso"] .pp-chip { border-radius: 4px; box-shadow: 3px 3px 0 #ff7a3d; }

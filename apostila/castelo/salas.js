@@ -1,11 +1,13 @@
 // Roteiro do Centro de Dados: cada módulo liga um equipamento e ensina construindo uma parte de um banco PostgreSQL de verdade.
-// (O objeto global continua CASTELO e as salas continuam s1 a s12, para o progresso já salvo não se perder.)
+// (O objeto global continua CASTELO e as salas continuam s1, s2..., para o progresso já salvo não se perder.)
+// Cada sala tem "trabalho": em que momento do trabalho do cientista de dados aquilo acontece; o guia diz isso na abertura.
 // Os dados vêm do banco de estudo fictício (../licoes/dados/estudo.sql): alunos, matérias, questões e respostas.
 // Tipos de tarefa:
 //   sql      o aluno escreve SQL. "verificar" confere o efeito no banco (consulta + linhas esperadas);
 //            "gabarito" compara o resultado da última consulta do aluno com o da consulta oficial.
 //   escolha  pergunta de múltipla escolha (certa = índice da opção certa).
-//   acao     um botão que faz algo pelo aluno (a carga de dados) e depois confere o banco.
+//   acao     um botão que faz algo pelo aluno e depois confere o banco; "executar": carga (padrão), historico,
+//            backup, restaurar ou painel.
 //   python   o aluno escreve Python; "dados" vira variável Python a partir de uma consulta; "testes" são asserts.
 //   relogio  mostra uma função Python executando linha a linha (sys.settrace).
 //   fsrs     agenda revisões com o algoritmo FSRS (biblioteca ts-fsrs) e grava no banco.
@@ -33,7 +35,11 @@
             acertos = acertos + 1
     return round(acertos / len(lista) * 100, 1)`;
 
+  // o histórico de teste do módulo Acelerador: 100 mil respostas fictícias, para medir o efeito do índice
+  const SQL_HISTORICO = "DROP TABLE IF EXISTS historico; CREATE TABLE historico AS SELECT g AS id, (g % 12) + 1 AS aluno_id, (g % 60) + 1 AS questao_id, (g % 3 = 0) AS acertou, TIMESTAMP '2026-01-01' + (g || ' minutes')::interval AS respondida_em FROM generate_series(1, 100000) AS g; ALTER TABLE historico ADD PRIMARY KEY (id); ANALYZE historico;";
+
   raiz.CASTELO = {
+    sqlHistorico: SQL_HISTORICO,
     versao: 1,
     blocos: [
       { id: "A", zona: "Armazenamento", nome: "Fundação", assunto: "Criar e povoar o banco",
@@ -44,11 +50,14 @@
         porque: "O SQL responde perguntas; o Python faz o que vem depois: calcular, testar, gerar relatório, treinar modelo. Quase toda vaga de dados pede os dois juntos." },
       { id: "D", zona: "Observação", nome: "Análise", assunto: "Transformar dados em decisão",
         porque: "Análise é transformar uma pilha de linhas numa frase que muda a sua rotina, como “Direito Administrativo derruba a nota; dedique mais tempo a ela”. É o que se espera de quem trabalha com dados." },
+      { id: "E", zona: "Operação", nome: "Administração e entrega", assunto: "Cuidar do banco e apresentar os resultados",
+        porque: "Um banco não termina quando a última tabela é criada. Ele precisa responder rápido, não ficar pela metade quando uma carga falha, mostrar a cada pessoa só o que ela pode ver, voltar depois de um desastre e, no fim, virar um resultado que alguém usa para decidir. É o que separa o exercício do trabalho." },
     ],
 
     salas: [
       // =============================== BLOCO A: FUNDAÇÃO ===============================
       { id: "s1", conceito: "CREATE TABLE e chave primária", bloco: "A", nome: "Rack de tabelas", parte: "fundacao",
+        trabalho: "Todo projeto começa aqui: antes de guardar qualquer dado, alguém decide que tabelas existem e que regras elas seguem. Num time de dados, essa modelagem é discutida e revisada, porque refazer depois custa caro.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "um PostgreSQL inteiro rodando dentro do navegador, salvo no seu aparelho" },
         slides: [
           { titulo: "Por que começar pela tabela", texto: "Todo centro de dados começa pelo rack onde os dados ficam. Num banco, esse lugar é a <b>tabela</b>: ela diz que dados existem e que regras eles seguem. Uma tabela mal pensada custa caro depois, como um rack montado torto." },
@@ -76,6 +85,7 @@
         estado: T_MATERIAS, desfazer: "DROP TABLE IF EXISTS materias CASCADE;" },
 
       { id: "s2", conceito: "INSERT e SELECT", bloco: "A", nome: "Primeiros registros", parte: "paredes",
+        trabalho: "Cadastrar e consultar é o básico do dia: conferir se os dados chegaram, olhar algumas linhas antes de analisar, responder uma pergunta rápida da sua chefia.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "executa o INSERT e o SELECT de verdade, no seu aparelho" },
         slides: [
           { titulo: "Por que INSERT e SELECT", texto: "Uma tabela vazia é um rack ligado sem nenhum dado dentro. <b>INSERT</b> põe dados; <b>SELECT</b> pergunta. São os dois comandos que você mais vai escrever na vida, em qualquer emprego que use dados." },
@@ -110,6 +120,7 @@
         desfazer: "DELETE FROM materias WHERE id IN (1, 2, 3) AND NOT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'questoes');" },
 
       { id: "s3", conceito: "chave estrangeira e CHECK", bloco: "A", nome: "Integridade", parte: "muralha",
+        trabalho: "Dado órfão gera relatório errado: uma venda de um produto que não existe some dos totais. As travas do banco impedem esse problema antes que ele chegue no painel da diretoria.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "aplica as regras de integridade do PostgreSQL, igual a um servidor" },
         slides: [
           { titulo: "Por que chaves estrangeiras", texto: "Sem regra, dá para cadastrar uma questão de uma matéria que não existe. É o tipo de bagunça que gera relatório errado em órgão público. A <b>chave estrangeira</b> é a trava que impede dado órfão." },
@@ -145,6 +156,7 @@
         desfazer: "DROP TABLE IF EXISTS questoes CASCADE;" },
 
       { id: "s4", conceito: "aspas, apóstrofo e NULL", bloco: "A", nome: "Porta de entrada", parte: "portao",
+        trabalho: "Nomes com apóstrofo, campos vazios e e-mails em branco aparecem em toda base real. Tratar aspas e NULL direito evita a carga que quebra no cadastro da “Joana D'Ávila”.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "mostra a mensagem de erro real do PostgreSQL, que o Domínio traduz para você" },
         slides: [
           { titulo: "Por que uma porta só para aspas", texto: "O erro mais comum de quem começa em SQL é com aspas. Em concurso aparece como pegadinha; no trabalho, trava o sistema na hora de cadastrar uma “Joana D'Ávila”. Esta porta de entrada só deixa passar dado escrito do jeito certo." },
@@ -182,6 +194,7 @@
         desfazer: "DROP TABLE IF EXISTS alunos CASCADE;" },
 
       { id: "s5", conceito: "carga de 382 respostas", bloco: "A", nome: "Carga em lote", parte: "celeiro",
+        trabalho: "Dados chegam em lote: a exportação do sistema, a planilha do financeiro, a resposta de uma API. Carregar na ordem certa e conferir as contagens é o primeiro passo de qualquer projeto.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "recebe a carga de centenas de linhas de uma vez, respeitando as chaves" },
         slides: [
           { titulo: "Por que aprender a carregar dados", texto: "Ninguém digita 382 respostas à mão. Dados chegam em <b>carga</b>: um arquivo exportado, uma planilha, uma API. Carregar respeitando as regras é o dia a dia de quem trabalha com dados." },
@@ -217,6 +230,7 @@
 
       // =============================== BLOCO B: CONSULTAS ===============================
       { id: "s6", conceito: "WHERE, ORDER BY e LIMIT", bloco: "B", nome: "Filtro", parte: "torre",
+        trabalho: "“Me mostra as 5 questões mais difíceis de Português” é o tipo de pedido que chega por mensagem. Filtrar, ordenar e cortar resolve boa parte das perguntas do dia.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "responde às consultas com filtro, ordem e limite em milissegundos" },
         slides: [
           { titulo: "Por que filtrar e ordenar", texto: "Um centro de dados recebe tudo, mas o filtro só deixa passar o que importa. Filtrar e ordenar é isso: das 382 respostas, achar as de um aluno, de um mês, das questões mais difíceis." },
@@ -247,6 +261,7 @@
         estado: "", desfazer: "" },
 
       { id: "s7", conceito: "GROUP BY e HAVING", bloco: "B", nome: "Agregador", parte: "salao",
+        trabalho: "Indicadores são grupos: taxa por aluno, venda por região, cancelamento por mês. O GROUP BY é a consulta que mais aparece nos painéis de uma empresa.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "roda cada etapa da consulta separada, para você ver a tabela do meio" },
         slides: [
           { titulo: "Por que agrupar", texto: "Ninguém decide nada olhando 382 linhas. A decisão vem do resumo: quantas respostas por aluno, qual a taxa de acerto de cada um. <b>GROUP BY</b> transforma linhas em grupos, e cada grupo vira uma linha do resumo." },
@@ -286,6 +301,7 @@
         estado: "", desfazer: "" },
 
       { id: "s8", conceito: "JOIN e LEFT JOIN", bloco: "B", nome: "Junção", parte: "ponte",
+        trabalho: "A informação nunca está numa tabela só: o pedido tem o id do cliente, o cliente tem a cidade. Juntar tabelas é o que transforma ids soltos em resposta.",
         ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "cruza as quatro tabelas do banco numa consulta só" },
         slides: [
           { titulo: "Por que juntar tabelas", texto: "A resposta sabe o id da questão; a questão sabe o id da matéria; a matéria sabe o nome. Para responder “qual matéria eu mais erro?”, é preciso ligar o cabo entre as tabelas. Isso é o <b>JOIN</b>." },
@@ -320,6 +336,7 @@
 
       // =============================== BLOCO C: PYTHON ===============================
       { id: "s9", conceito: "listas, dicionários e funções", bloco: "C", nome: "Nó Python", parte: "oficina",
+        trabalho: "Quando a conta fica complicada demais para SQL ou precisa virar rotina, ela vai para Python. Funções testadas são o começo de qualquer automação.",
         ferramenta: { nome: "Pyodide", url: "https://github.com/pyodide/pyodide", licenca: "MPL 2.0", papel: "o Python de verdade rodando no navegador, lendo as linhas do seu banco" },
         slides: [
           { titulo: "Por que Python depois do SQL", texto: "O SQL entrega os dados; o Python faz o resto: calcula, testa, automatiza, desenha gráfico. Neste nó, as respostas do seu banco viram uma <b>lista de dicionários</b> do Python, e você escreve as funções que analisam." },
@@ -348,6 +365,7 @@
         estado: "", desfazer: "" },
 
       { id: "s10", conceito: "a execução linha a linha", bloco: "C", nome: "Rastreador", parte: "relogio",
+        trabalho: "Código que dá resultado errado sem erro nenhum é o pior caso. Seguir a execução linha a linha é como se acha o defeito, dentro do notebook ou no depurador do editor.",
         ferramenta: { nome: "Pyodide", url: "https://github.com/pyodide/pyodide", licenca: "MPL 2.0", papel: "roda a função com um rastreador (sys.settrace) que anota cada linha e cada variável" },
         slides: [
           { titulo: "Por que ver o código rodando", texto: "Quem programa bem tem na cabeça um modelo de como o computador executa: uma linha por vez, guardando valores em variáveis. O rastreador deste módulo mostra exatamente isso, com a sua função e os seus dados." },
@@ -376,6 +394,7 @@
 
       // =============================== BLOCO D: ANÁLISE ===============================
       { id: "s11", conceito: "pandas e gráfico", bloco: "D", nome: "Painel", parte: "observatorio",
+        trabalho: "pandas é a ferramenta de análise mais usada em vagas de dados. Agrupar, comparar e desenhar o gráfico é o que vira slide na reunião.",
         ferramenta: { nome: "Pyodide com pandas", url: "https://github.com/pyodide/pyodide", licenca: "MPL 2.0 (pandas: BSD 3)", papel: "o pandas, a biblioteca de análise mais usada do mundo, rodando no navegador" },
         slides: [
           { titulo: "Por que pandas", texto: "O que você fez com dicionário no Nó Python, o pandas faz em uma linha, para milhões de linhas. Ele é a ferramenta número um de análise de dados em Python, cobrada em vagas e em provas de ciência de dados." },
@@ -417,6 +436,7 @@
         estado: "", desfazer: "" },
 
       { id: "s12", conceito: "revisão com FSRS", bloco: "D", nome: "Agendador", parte: "arquivo",
+        trabalho: "Modelos que decidem quando algo deve acontecer estão em todo lugar: a revisão de um aluno, a manutenção de uma máquina, o lembrete de um boleto. Gravar a decisão no banco fecha o ciclo.",
         ferramenta: { nome: "ts-fsrs", url: "https://github.com/open-spaced-repetition/ts-fsrs", licenca: "MIT", papel: "o algoritmo FSRS, o mesmo do Anki, calculando quando cada questão deve voltar" },
         slides: [
           { titulo: "Por que revisar com algoritmo", texto: "A gente esquece rápido o que não revisa. O <b>FSRS</b> estima, para cada questão, quando você está prestes a esquecer, e agenda a revisão para esse dia: nem cedo demais (perda de tempo), nem tarde demais (já esqueceu)." },
@@ -445,9 +465,187 @@
             gabarito: "SELECT questao_id, proxima FROM revisoes ORDER BY proxima, questao_id", ordem: true,
             pista: "<code>ORDER BY proxima, questao_id</code>.",
             solucao: "SELECT questao_id, proxima\nFROM revisoes\nORDER BY proxima, questao_id;",
-            ok: "O centro de dados está completo: banco criado, análise feita e uma agenda de revisão gravada por você." },
+            ok: "Banco criado, análise feita e uma agenda de revisão gravada por você. Falta a operação: cuidar do banco e apresentar os resultados." },
         ],
         estado: T_REVISOES, desfazer: "DROP TABLE IF EXISTS revisoes;" },
+
+      // ---------------- Zona E · Operação: administrar o banco e entregar os resultados ----------------
+      { id: "s13", conceito: "índices e desempenho", bloco: "E", nome: "Acelerador", parte: "acelerador",
+        trabalho: "Segunda de manhã o painel de vendas demora dois minutos para abrir e a diretoria reclama. Medir a consulta lenta e criar o índice certo é tarefa do dia a dia de quem cuida dos dados.",
+        ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "mostra o plano de execução real do PostgreSQL com EXPLAIN ANALYZE" },
+        slides: [
+          { titulo: "Por que índice", texto: "Sem índice, para achar as respostas de uma questão o banco lê a tabela inteira, linha por linha: é a <b>leitura sequencial</b> (Seq Scan). Com 382 linhas isso é instantâneo; com 100 mil, já se mede. O <b>índice</b> é como o índice remissivo de um livro: vai direto às páginas certas." },
+          { titulo: "Como medir", codigo: "EXPLAIN ANALYZE\nSELECT COUNT(*) FROM historico\nWHERE questao_id = 35;", texto: "<code>EXPLAIN ANALYZE</code> roda a consulta e mostra o caminho que o banco escolheu e quanto tempo levou. É o termômetro de quem administra banco." },
+          { titulo: "O que você vai fazer", texto: "Gerar um histórico de teste com 100 mil respostas, medir uma consulta, criar o índice, medir de novo e, no fim, apagar o histórico de teste. Também cria o índice que o banco de verdade usa todo dia: o das respostas por aluno." },
+        ],
+        tarefas: [
+          { id: "t1", tipo: "acao", executar: "historico", titulo: "Gere o histórico de teste", botao: "Gerar 100 mil respostas",
+            enunciado: "Toque no botão: o banco cria a tabela <code>historico</code> com 100 mil respostas fictícias, repetindo os alunos e as questões que você já tem.",
+            verificar: [{ consulta: "SELECT COUNT(*) FROM historico", esperado: [[100000]], msg: "A tabela historico ainda não tem as 100 mil linhas." }],
+            ok: "Agora há volume de verdade para medir." },
+          { id: "t2", tipo: "sql", titulo: "Meça antes",
+            enunciado: "Rode o <code>EXPLAIN ANALYZE</code> que já está no editor e anote o tempo (Execution Time) e a palavra <b>Seq Scan</b>. Depois troque tudo pela consulta que conta as respostas da questão 35 no histórico e verifique.",
+            inicial: "EXPLAIN ANALYZE\nSELECT COUNT(*) FROM historico\nWHERE questao_id = 35;",
+            gabarito: "SELECT COUNT(*) FROM historico WHERE questao_id = 35",
+            pista: "tire o <code>EXPLAIN ANALYZE</code> e deixe só <code>SELECT COUNT(*) FROM historico WHERE questao_id = 35;</code>",
+            solucao: "SELECT COUNT(*) FROM historico\nWHERE questao_id = 35;",
+            ok: "São 1.667 respostas. Para achá-las sem índice, o banco leu as 100 mil." },
+          { id: "t3", tipo: "sql", titulo: "Crie o índice",
+            enunciado: "Crie o índice <code>idx_historico_questao</code> na coluna <code>questao_id</code> do <code>historico</code>. Depois rode de novo o <code>EXPLAIN ANALYZE</code> da tarefa anterior e compare o tempo.",
+            inicial: "CREATE INDEX ",
+            verificar: [{ consulta: "SELECT indexname FROM pg_indexes WHERE tablename = 'historico' AND indexdef LIKE '%(questao_id)%'", esperado: [["idx_historico_questao"]], msg: "Ainda não existe o índice idx_historico_questao em historico (questao_id)." }],
+            pista: "<code>CREATE INDEX idx_historico_questao ON historico (questao_id);</code>",
+            solucao: "CREATE INDEX idx_historico_questao ON historico (questao_id);",
+            ok: "Rode o EXPLAIN ANALYZE de novo: o plano troca o Seq Scan por um Index Scan (ou Bitmap Index Scan) e o tempo cai várias vezes." },
+          { id: "t4", tipo: "escolha", titulo: "O custo do índice",
+            pergunta: "Se índice acelera, por que não criar um em cada coluna de cada tabela?",
+            opcoes: ["Porque cada índice ocupa espaço e deixa INSERT e UPDATE mais lentos: o banco precisa atualizar todos", "Porque o PostgreSQL só aceita um índice por tabela", "Porque o índice muda o resultado das consultas"],
+            certa: 0, ok: "Isso: índice é troca. Acelera a leitura e cobra na escrita e no espaço. Cria-se para as consultas que mais rodam.", nao: "Índice não muda resultado e pode haver vários por tabela; o preço é espaço e escrita mais lenta, porque cada INSERT atualiza todos os índices." },
+          { id: "t5", tipo: "sql", titulo: "Índice no banco de verdade e mesa limpa",
+            enunciado: "Duas coisas, nesta ordem: crie o índice <code>idx_respostas_aluno</code> na coluna <code>aluno_id</code> de <code>respostas</code> (o painel por aluno usa toda hora) e apague a tabela de teste <code>historico</code>.",
+            inicial: "CREATE INDEX \n\nDROP TABLE ",
+            verificar: [
+              { consulta: "SELECT indexname FROM pg_indexes WHERE tablename = 'respostas' AND indexdef LIKE '%(aluno_id)%'", esperado: [["idx_respostas_aluno"]], msg: "Ainda não existe o índice idx_respostas_aluno em respostas (aluno_id)." },
+              { consulta: "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'historico'", esperado: [[0]], msg: "A tabela de teste historico ainda existe: apague com DROP TABLE." },
+            ],
+            pista: "<code>CREATE INDEX idx_respostas_aluno ON respostas (aluno_id);</code> e depois <code>DROP TABLE historico;</code>",
+            solucao: "CREATE INDEX idx_respostas_aluno ON respostas (aluno_id);\n\nDROP TABLE historico;",
+            ok: "Índice útil no lugar e o lixo de teste fora. Administrar banco também é não deixar sujeira para trás." },
+        ],
+        estado: "DROP TABLE IF EXISTS historico; CREATE INDEX IF NOT EXISTS idx_respostas_aluno ON respostas (aluno_id);", desfazer: "DROP TABLE IF EXISTS historico; DROP INDEX IF EXISTS idx_respostas_aluno;" },
+
+      { id: "s14", conceito: "transações", bloco: "E", nome: "Transações", parte: "transacoes",
+        trabalho: "A carga noturna de pedidos para no meio porque uma linha veio com erro. Se metade entrou e metade não, os números de amanhã saem errados. A transação garante que entra tudo ou nada.",
+        ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "aplica BEGIN, COMMIT e ROLLBACK como um PostgreSQL de servidor" },
+        slides: [
+          { titulo: "Tudo ou nada", texto: "Um Pix sai da sua conta e entra na de outra pessoa. Se o sistema caísse entre as duas coisas, o dinheiro sumiria. Por isso as duas operações vão numa <b>transação</b>: ou as duas acontecem, ou nenhuma." },
+          { titulo: "Os três comandos", codigo: "BEGIN;\nINSERT INTO materias VALUES (8, 'Economia', 'Cebraspe');\nINSERT INTO questoes VALUES (61, 8, '...', 'C', 3);\nCOMMIT;", texto: "<code>BEGIN</code> abre, <code>COMMIT</code> grava tudo de uma vez, <code>ROLLBACK</code> desfaz tudo desde o BEGIN. Se um comando falha no meio, o banco não deixa gravar a metade." },
+        ],
+        tarefas: [
+          { id: "t1", tipo: "sql", titulo: "Uma matéria nova, inteira",
+            enunciado: "Numa transação só, cadastre a matéria 8, <code>Economia</code>, da banca <code>Cebraspe</code>, e duas questões dela: a 61, <code>Elasticidade-preço da demanda</code>, gabarito <code>C</code>, nível 3; e a 62, <code>Custo de oportunidade</code>, gabarito <code>E</code>, nível 2. Termine com <code>COMMIT</code>.",
+            inicial: "BEGIN;\n\n\nCOMMIT;",
+            verificar: [
+              { consulta: "SELECT id, nome, banca FROM materias WHERE id = 8", esperado: [[8, "Economia", "Cebraspe"]], msg: "A matéria 8 não está como pedido (Economia, Cebraspe)." },
+              { consulta: "SELECT id, materia_id, gabarito, nivel FROM questoes WHERE id IN (61, 62) ORDER BY id", esperado: [[61, 8, "C", 3], [62, 8, "E", 2]], msg: "As questões 61 e 62 não estão como pedido." },
+            ],
+            pista: "entre o BEGIN e o COMMIT vão três INSERT: um em <code>materias</code> e dois em <code>questoes</code>, com os valores na ordem das colunas (id, materia_id, enunciado, gabarito, nivel).",
+            solucao: "BEGIN;\nINSERT INTO materias VALUES (8, 'Economia', 'Cebraspe');\nINSERT INTO questoes VALUES (61, 8, 'Elasticidade-preço da demanda', 'C', 3);\nINSERT INTO questoes VALUES (62, 8, 'Custo de oportunidade', 'E', 2);\nCOMMIT;",
+            ok: "Três linhas gravadas de uma vez só, no COMMIT." },
+          { id: "t2", tipo: "sql", titulo: "Uma carga que falha no meio",
+            enunciado: "O bloco no editor tenta cadastrar a matéria 9 e uma questão de uma matéria que não existe (99). Rode como está: vai dar erro, de propósito, e o banco desfaz a transação. Depois apague tudo e escreva a consulta que conta quantas matérias com id 9 existem.",
+            inicial: "BEGIN;\nINSERT INTO materias VALUES (9, 'Contabilidade Pública', 'FGV');\nINSERT INTO questoes VALUES (63, 99, 'Regime de competência', 'C', 3);\nCOMMIT;",
+            gabarito: "SELECT COUNT(*) FROM materias WHERE id = 9",
+            pista: "a consulta é <code>SELECT COUNT(*) FROM materias WHERE id = 9;</code>. Repare no resultado: zero.",
+            solucao: "SELECT COUNT(*) FROM materias WHERE id = 9;",
+            ok: "Zero. A matéria 9 chegou a ser inserida, mas a questão falhou e a transação inteira foi desfeita. Sem o BEGIN, a matéria 9 teria ficado sozinha no banco." },
+          { id: "t3", tipo: "escolha", titulo: "Sem transação",
+            pergunta: "Se o mesmo bloco rodasse sem BEGIN e COMMIT, o que ficaria no banco?",
+            opcoes: ["Nada, como com a transação", "A matéria 9, sem a questão: cada comando grava sozinho", "A matéria 9 e a questão 63"],
+            certa: 1, ok: "Isso: sem transação, cada comando é gravado na hora. O primeiro entra, o segundo falha, e o banco fica pela metade.", nao: "Sem transação, cada comando grava sozinho: a matéria 9 entraria e a questão falharia, deixando o banco pela metade." },
+        ],
+        estado: "INSERT INTO materias VALUES (8, 'Economia', 'Cebraspe') ON CONFLICT (id) DO NOTHING; INSERT INTO questoes VALUES (61, 8, 'Elasticidade-preço da demanda', 'C', 3) ON CONFLICT (id) DO NOTHING; INSERT INTO questoes VALUES (62, 8, 'Custo de oportunidade', 'E', 2) ON CONFLICT (id) DO NOTHING;",
+        desfazer: "DELETE FROM questoes WHERE id IN (61, 62, 63); DELETE FROM materias WHERE id IN (8, 9);" },
+
+      { id: "s15", conceito: "visões e permissões", bloco: "E", nome: "Portaria", parte: "portaria",
+        trabalho: "O time de marketing quer ver a taxa por matéria, mas não pode enxergar o e-mail de nenhum aluno. Você entrega uma visão pronta e um usuário que só lê essa visão: cada pessoa vê só o que precisa.",
+        ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "cria visões, usuários e permissões do PostgreSQL" },
+        slides: [
+          { titulo: "Visão: uma consulta com nome", texto: "Uma <b>visão</b> (VIEW) guarda uma consulta e se comporta como tabela. Quem usa escreve <code>SELECT * FROM painel_materias</code> e não precisa saber que por baixo há três tabelas e um GROUP BY." },
+          { titulo: "Permissão: quem vê o quê", codigo: "CREATE ROLE leitor;\nGRANT SELECT ON painel_materias TO leitor;", texto: "<b>CREATE ROLE</b> cria um usuário do banco. <b>GRANT</b> dá a ele uma permissão. O leitor pode ler a visão e nada mais: nem a tabela de alunos, nem a de respostas. Dar só o necessário protege as pessoas e a empresa; a LGPD trata disso, e o texto da lei fica para a matéria de Ética." },
+        ],
+        tarefas: [
+          { id: "t1", tipo: "sql", titulo: "A visão do painel",
+            enunciado: "Crie a visão <code>painel_materias</code> com três colunas: <code>materia</code> (o nome), <code>respostas</code> (quantas respostas preenchidas) e <code>taxa</code> (a taxa de acerto em porcentagem, com uma casa). Só respostas preenchidas.",
+            inicial: "CREATE VIEW painel_materias AS\nSELECT m.nome AS materia,\n       COUNT(*) AS respostas,\n       ROUND(AVG(CASE WHEN r.acertou THEN 100.0 ELSE 0 END), 1) AS taxa\nFROM respostas r\n",
+            verificar: [{ consulta: "SELECT materia, respostas, taxa FROM painel_materias ORDER BY taxa", esperado: [["Direito Administrativo", 52, 40.4], ["Raciocínio Lógico", 57, 47.4], ["Língua Portuguesa", 62, 50.0], ["Banco de Dados", 69, 50.7], ["Estatística", 53, 50.9], ["Informática", 69, 53.6]], msg: "A visão painel_materias não devolve as taxas esperadas: confira as junções, o WHERE das preenchidas e o GROUP BY." }],
+            pista: "faltam as duas junções (<code>JOIN questoes q ON q.id = r.questao_id</code> e <code>JOIN materias m ON m.id = q.materia_id</code>), o <code>WHERE r.resposta IS NOT NULL</code> e o <code>GROUP BY m.nome</code>.",
+            solucao: "CREATE VIEW painel_materias AS\nSELECT m.nome AS materia,\n       COUNT(*) AS respostas,\n       ROUND(AVG(CASE WHEN r.acertou THEN 100.0 ELSE 0 END), 1) AS taxa\nFROM respostas r\nJOIN questoes q ON q.id = r.questao_id\nJOIN materias m ON m.id = q.materia_id\nWHERE r.resposta IS NOT NULL\nGROUP BY m.nome;",
+            ok: "A consulta da Junção virou uma tabela de leitura com nome. Experimente: SELECT * FROM painel_materias;" },
+          { id: "t2", tipo: "sql", titulo: "O usuário que só lê",
+            enunciado: "Crie o usuário <code>leitor</code> e dê a ele permissão de leitura só na visão <code>painel_materias</code>.",
+            inicial: "CREATE ROLE ",
+            verificar: [{ consulta: "SELECT has_table_privilege('leitor', 'painel_materias', 'SELECT') AS visao, has_table_privilege('leitor', 'respostas', 'SELECT') AS respostas, has_table_privilege('leitor', 'alunos', 'SELECT') AS alunos", esperado: [[true, false, false]], msg: "O leitor precisa ler a visão painel_materias e mais nada." }],
+            pista: "<code>CREATE ROLE leitor;</code> e depois <code>GRANT SELECT ON painel_materias TO leitor;</code>",
+            solucao: "CREATE ROLE leitor;\nGRANT SELECT ON painel_materias TO leitor;",
+            ok: "O leitor existe e só enxerga a visão." },
+          { id: "t3", tipo: "sql", titulo: "Entre como leitor",
+            enunciado: "Troque de usuário com <code>SET ROLE leitor;</code> e, como leitor, mostre a visão em ordem crescente de taxa. Depois experimente, ainda como leitor, <code>SELECT * FROM respostas;</code> e veja o banco recusar. (Ao fim de cada execução o laboratório volta ao seu usuário.)",
+            inicial: "SET ROLE leitor;\n",
+            gabarito: "SELECT * FROM painel_materias ORDER BY taxa", ordem: true,
+            pista: "depois do SET ROLE, <code>SELECT * FROM painel_materias ORDER BY taxa;</code>",
+            solucao: "SET ROLE leitor;\nSELECT * FROM painel_materias ORDER BY taxa;",
+            ok: "Como leitor, a visão abre; a tabela de respostas responde “permissão negada”. É assim que um painel pode ir para outra área sem expor dado pessoal." },
+          { id: "t4", tipo: "escolha", titulo: "Por que não dar acesso a tudo",
+            pergunta: "O marketing pediu acesso direto à tabela alunos “para facilitar”. O que um cientista de dados responsável faz?",
+            opcoes: ["Dá o acesso: são colegas da mesma empresa", "Oferece uma visão com só os dados necessários, sem nome e e-mail, e um usuário de leitura", "Exporta a tabela inteira numa planilha e manda por e-mail"],
+            certa: 1, ok: "Isso: a visão entrega a informação que o marketing precisa sem expor nome e e-mail de ninguém. A LGPD tem um princípio sobre isso, o da necessidade (art. 6º, III); leia o texto oficial na matéria de Ética.", nao: "Compartilhar a tabela inteira expõe dado pessoal que o pedido não precisa. Uma visão sem nome e e-mail, lida por um usuário restrito, resolve o pedido sem expor ninguém." },
+        ],
+        estado: "CREATE OR REPLACE VIEW painel_materias AS SELECT m.nome AS materia, COUNT(*) AS respostas, ROUND(AVG(CASE WHEN r.acertou THEN 100.0 ELSE 0 END), 1) AS taxa FROM respostas r JOIN questoes q ON q.id = r.questao_id JOIN materias m ON m.id = q.materia_id WHERE r.resposta IS NOT NULL GROUP BY m.nome; DO $$ BEGIN CREATE ROLE leitor; EXCEPTION WHEN duplicate_object THEN NULL; END $$; GRANT SELECT ON painel_materias TO leitor;",
+        desfazer: "DROP VIEW IF EXISTS painel_materias;" },
+
+      { id: "s16", conceito: "backup e restauração", bloco: "E", nome: "Cofre", parte: "cofre",
+        trabalho: "Alguém roda um DROP TABLE no lugar errado numa sexta à tarde. Quem tem backup testado volta ao trabalho em minutos; quem não tem perde meses de dados. Fazer e, principalmente, testar a restauração é parte do ofício.",
+        ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "gera o backup em SQL e restaura o banco a partir dele" },
+        slides: [
+          { titulo: "Backup que não foi testado não existe", texto: "Um <b>backup</b> é uma cópia de tudo que recria o banco: tabelas, regras, dados, índices, visões e permissões. Só vale se a <b>restauração</b> funcionar, então quem administra banco testa: apaga numa cópia, restaura e confere os números." },
+          { titulo: "O que você vai fazer", texto: "Fazer o backup, simular um desastre apagando a tabela de respostas, restaurar e conferir que as contagens voltaram iguais. No fim, você baixa o arquivo .sql, que roda em qualquer PostgreSQL." },
+        ],
+        tarefas: [
+          { id: "t1", tipo: "acao", executar: "backup", titulo: "Faça o backup", botao: "Fazer o backup agora",
+            enunciado: "Toque no botão: o laboratório gera o arquivo SQL com tudo o que o seu banco tem e guarda neste aparelho. Repare nas contagens: elas são a prova de que o backup está completo.",
+            ok: "Backup feito e guardado. Agora dá para errar sem medo." },
+          { id: "t2", tipo: "escolha", titulo: "Onde guardar",
+            pergunta: "Onde o backup do banco da empresa deve ficar?",
+            opcoes: ["No mesmo servidor do banco, para estar sempre à mão", "Em outro lugar, como outro disco ou a nuvem, e de preferência em mais de um", "Em lugar nenhum: o banco não quebra"],
+            certa: 1, ok: "Isso: backup no mesmo lugar do banco morre junto com ele. A regra prática é ter cópias em lugares diferentes.", nao: "Se o servidor quebrar, o backup que mora nele vai junto. Cópia boa fica em outro lugar, de preferência em mais de um." },
+          { id: "t3", tipo: "sql", titulo: "Simule o desastre",
+            enunciado: "Apague a tabela <code>respostas</code> (com <code>CASCADE</code>, porque a visão do painel depende dela). É de propósito: o backup está guardado.",
+            inicial: "DROP TABLE ",
+            verificar: [{ consulta: "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'respostas'", esperado: [[0]], msg: "A tabela respostas ainda existe." }],
+            pista: "<code>DROP TABLE respostas CASCADE;</code>",
+            solucao: "DROP TABLE respostas CASCADE;",
+            ok: "Sumiram 382 respostas e a visão do painel. Agora, o teste que importa." },
+          { id: "t4", tipo: "acao", executar: "restaurar", titulo: "Restaure e confira", botao: "Restaurar do backup",
+            enunciado: "Toque no botão: o laboratório apaga o que sobrou e recria tudo a partir do backup. Depois confira as contagens, a visão e o índice.",
+            verificar: [
+              { consulta: "SELECT (SELECT COUNT(*) FROM materias) AS m, (SELECT COUNT(*) FROM alunos) AS a, (SELECT COUNT(*) FROM questoes) AS q, (SELECT COUNT(*) FROM respostas) AS r", esperado: [[8, 12, 62, 382]], msg: "As contagens não voltaram: 8 matérias, 12 alunos, 62 questões e 382 respostas." },
+              { consulta: "SELECT COUNT(*) FROM painel_materias", esperado: [[6]], msg: "A visão painel_materias não voltou." },
+            ],
+            ok: "Tudo de volta: dados, regras, índice, visão e permissão. Backup testado." },
+        ],
+        estado: "", desfazer: "" },
+
+      { id: "s17", conceito: "demonstração de resultados", bloco: "E", nome: "Apresentação", parte: "apresentacao",
+        trabalho: "No fim de todo projeto vem a reunião: dez minutos para mostrar o que os dados dizem e o que fazer com isso. O banco, as consultas e a análise só viram valor quando alguém decide com base neles.",
+        ferramenta: { nome: "PGlite", url: "https://github.com/electric-sql/pglite", licenca: "Apache 2.0 ou PostgreSQL", papel: "responde às consultas do painel final, direto do seu banco" },
+        slides: [
+          { titulo: "Do número à decisão", texto: "Uma boa apresentação de dados tem três partes: os <b>números de capa</b> (o tamanho do que foi analisado), a <b>evidência</b> (o gráfico que mostra o achado) e a <b>recomendação</b> (o que fazer). Sem a terceira, é só curiosidade." },
+          { titulo: "O que você vai montar", texto: "As consultas dos números de capa e da evolução no tempo, o painel com tudo junto, lido direto do seu banco, e o recado para a chefia em três frases." },
+        ],
+        tarefas: [
+          { id: "t1", tipo: "sql", titulo: "Os números de capa",
+            enunciado: "Numa linha só, mostre: <code>alunos</code> (quantos alunos existem), <code>respostas</code> (quantas respostas preenchidas) e <code>taxa</code> (a taxa geral de acerto das preenchidas, em porcentagem, com uma casa).",
+            inicial: "SELECT (SELECT COUNT(*) FROM alunos) AS alunos,\n",
+            gabarito: "SELECT (SELECT COUNT(*) FROM alunos) AS alunos, COUNT(*) AS respostas, ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1) AS taxa FROM respostas WHERE resposta IS NOT NULL",
+            pista: "depois da primeira coluna: <code>COUNT(*) AS respostas</code>, a taxa com <code>ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1)</code>, e <code>FROM respostas WHERE resposta IS NOT NULL</code>.",
+            solucao: "SELECT (SELECT COUNT(*) FROM alunos) AS alunos,\n       COUNT(*) AS respostas,\n       ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1) AS taxa\nFROM respostas\nWHERE resposta IS NOT NULL;",
+            ok: "12 alunos, 362 respostas e 49,2% de acerto: é a primeira frase da apresentação." },
+          { id: "t2", tipo: "sql", titulo: "A evolução no tempo",
+            enunciado: "Mostre a taxa de acerto das respostas preenchidas por mês: <code>mes</code> no formato AAAA-MM (use <code>to_char(respondida_em, 'YYYY-MM')</code>), <code>respostas</code> e <code>taxa</code>, em ordem de mês.",
+            inicial: "SELECT to_char(respondida_em, 'YYYY-MM') AS mes,\n",
+            gabarito: "SELECT to_char(respondida_em, 'YYYY-MM') AS mes, COUNT(*) AS respostas, ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1) AS taxa FROM respostas WHERE resposta IS NOT NULL GROUP BY mes ORDER BY mes", ordem: true,
+            pista: "as mesmas duas colunas da tarefa anterior, <code>WHERE resposta IS NOT NULL</code>, <code>GROUP BY mes</code> e <code>ORDER BY mes</code>.",
+            solucao: "SELECT to_char(respondida_em, 'YYYY-MM') AS mes,\n       COUNT(*) AS respostas,\n       ROUND(AVG(CASE WHEN acertou THEN 100.0 ELSE 0 END), 1) AS taxa\nFROM respostas\nWHERE resposta IS NOT NULL\nGROUP BY mes\nORDER BY mes;",
+            ok: "Agosto 48,6%, setembro 52,2%, outubro 44,9%. Outubro caiu, mas ainda está no começo do mês: com poucas respostas, cuidado ao concluir." },
+          { id: "t3", tipo: "acao", executar: "painel", titulo: "Monte o painel", botao: "Montar o painel",
+            enunciado: "Toque no botão: o laboratório roda as suas consultas e a visão do painel e monta a tela que você levaria para a reunião.",
+            ok: "Este é o painel que fecha o projeto: números de capa, a matéria que mais derruba a nota, a evolução no tempo e a agenda de revisão." },
+          { id: "t4", tipo: "texto", titulo: "O recado para a chefia",
+            enunciado: "Em três frases: o que os dados mostram, por que isso importa e o que você recomenda fazer.",
+            modelo: "Exemplo: “Em 362 respostas, a taxa de acerto foi 49,2%, e Direito Administrativo é a matéria mais fraca, com 40,4%. Ela pesa na nota de corte e vem caindo. Recomendo dobrar o tempo dela nas próximas quatro semanas e medir de novo em novembro.”" },
+        ],
+        estado: "", desfazer: "" },
     ],
 
     // testes de nivelamento: aplicados, entre um assunto e outro; passa quem acerta 3 de 4
@@ -472,6 +670,13 @@
           { id: "n2", tipo: "escolha", titulo: "Lista por compreensão", pergunta: "Com <code>r = [{\"a\": 1, \"ok\": True}, {\"a\": 2, \"ok\": False}, {\"a\": 3, \"ok\": True}]</code>, quanto vale <code>[x[\"a\"] for x in r if x[\"ok\"]]</code>?", opcoes: ["[1, 3]", "[True, True]", "[1, 2, 3]"], certa: 0, ok: "Isso: pega o \"a\" de quem tem ok verdadeiro.", nao: "A lista pega x[\"a\"] só quando x[\"ok\"] é True: [1, 3]." },
           { id: "n3", tipo: "python", titulo: "Acima do corte", enunciado: "Escreva <code>acima(taxas, corte)</code>: devolve quantos alunos têm taxa maior ou igual ao corte.", dados: [], esperados: [], inicial: "def acima(taxas, corte):\n    \n", testes: "assert acima({1: 50.0, 2: 80.0, 3: 70.0}, 70) == 2, \"Com corte 70, os alunos 2 e 3 contam\"\nassert acima({}, 70) == 0, \"Sem alunos, devolva 0\"", solucao: "def acima(taxas, corte):\n    total = 0\n    for aluno in taxas:\n        if taxas[aluno] >= corte:\n            total = total + 1\n    return total\n" },
           { id: "n4", tipo: "escolha", titulo: "None", pergunta: "Como testar, em Python, se uma resposta veio em branco do banco?", opcoes: ["resposta == \"NULL\"", "resposta is None", "resposta == 0"], certa: 1, ok: "Isso: o NULL do banco chega como None.", nao: "O NULL do banco chega como None, e o teste certo é resposta is None." },
+        ] },
+      { id: "D", nome: "Prova da análise", libera: "E", minimo: 3,
+        itens: [
+          { id: "n1", tipo: "sql", titulo: "Taxa por nível", enunciado: "Mostre <code>nivel</code> e a taxa de acerto (em porcentagem, com uma casa) das respostas preenchidas, por nível de dificuldade, em ordem de nível.", inicial: "SELECT q.nivel,\n", gabarito: "SELECT q.nivel, ROUND(AVG(CASE WHEN r.acertou THEN 100.0 ELSE 0 END), 1) AS taxa FROM respostas r JOIN questoes q ON q.id = r.questao_id WHERE r.resposta IS NOT NULL GROUP BY q.nivel ORDER BY q.nivel", ordem: true, solucao: "SELECT q.nivel,\n       ROUND(AVG(CASE WHEN r.acertou THEN 100.0 ELSE 0 END), 1) AS taxa\nFROM respostas r\nJOIN questoes q ON q.id = r.questao_id\nWHERE r.resposta IS NOT NULL\nGROUP BY q.nivel\nORDER BY q.nivel;" },
+          { id: "n2", tipo: "escolha", titulo: "idxmin", pergunta: "Em pandas, <code>por_materia.idxmin()</code> devolve:", opcoes: ["O menor valor da série, por exemplo 40.4", "O rótulo da linha com o menor valor, por exemplo \"Direito Administrativo\"", "A posição numérica da linha, por exemplo 0"], certa: 1, ok: "Isso: idxmin devolve o rótulo; o valor sairia de min().", nao: "idxmin devolve o rótulo (o índice) da linha com o menor valor; o valor em si sai de min()." },
+          { id: "n3", tipo: "escolha", titulo: "Revisão espaçada", pergunta: "Uma questão que você acertou de novo, no dia marcado, volta:", opcoes: ["Mais cedo do que da última vez", "Mais tarde do que da última vez: a memória ficou mais estável", "Sempre no dia seguinte"], certa: 1, ok: "Isso: cada acerto no dia certo aumenta a estabilidade e empurra a próxima revisão para mais longe.", nao: "Acertar no dia certo aumenta a estabilidade, e o intervalo cresce: 3, 14, 57 dias com Bom seguidos." },
+          { id: "n4", tipo: "sql", titulo: "A matéria mais fraca", enunciado: "Mostre só o <code>nome</code> da matéria com a menor taxa de acerto nas respostas preenchidas.", inicial: "SELECT m.nome\nFROM ", gabarito: "SELECT m.nome FROM respostas r JOIN questoes q ON q.id = r.questao_id JOIN materias m ON m.id = q.materia_id WHERE r.resposta IS NOT NULL GROUP BY m.nome ORDER BY AVG(CASE WHEN r.acertou THEN 1.0 ELSE 0 END) LIMIT 1", solucao: "SELECT m.nome\nFROM respostas r\nJOIN questoes q ON q.id = r.questao_id\nJOIN materias m ON m.id = q.materia_id\nWHERE r.resposta IS NOT NULL\nGROUP BY m.nome\nORDER BY AVG(CASE WHEN r.acertou THEN 1.0 ELSE 0 END)\nLIMIT 1;" },
         ] },
     ],
   };

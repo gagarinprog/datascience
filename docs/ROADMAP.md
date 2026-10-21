@@ -94,6 +94,8 @@ Adiantado (20/10/2026), na apostila: o Laboratório Castelo de Dados (`apostila/
 
 Adiantado (20/10/2026, à noite), na apostila: o laboratório virou o Centro de Dados (mapa com zonas e tráfego, painel com o ciclo entender, ver o passo a passo, fazer, explicar), com 12 passo a passo animados (Anime.js) feitos com linhas reais do banco de estudo, módulos em cascata e a dica dos exercícios de código como comentário no editor. As lições ganharam a mesma cascata por conceito.
 
+Adiantado (21/10/2026), na apostila: tutorial guiado na primeira visita ao mapa; cada matéria diz para que serve no trabalho do cientista de dados; o laboratório vai do banco vazio à operação, com a zona E (índices e `EXPLAIN ANALYZE`, transações com `ROLLBACK`, visão e usuário só leitura, backup e restauração pelo próprio `.sql`, painel de resultados com recado ao gestor), o nivelamento D e o guia abrindo cada módulo com o uso no trabalho. São 17 módulos em 5 zonas, todos com as soluções conferidas num PostgreSQL de verdade nos testes.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

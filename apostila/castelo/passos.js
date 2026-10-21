@@ -408,5 +408,158 @@
     })(),
   };
 
+  // ---------------- 13 · Acelerador: índice (medições reais: 100 mil linhas no PGlite) ----------------
+  const H13 = [[33, 34], [34, 35], [35, 36], [94, 35], [95, 36], [154, 35], [155, 36], [214, 35]];
+  const I13 = [[34, 33], [35, 34], [35, 94], [35, 154], [35, 214], [36, 35]];
+  D.s13 = {
+    titulo: "Como o índice evita ler a tabela inteira",
+    codigo: { partes: [{ id: "sel", texto: "SELECT COUNT(*) FROM historico\nWHERE questao_id = 35;" }, { id: "idx", texto: "\n\nCREATE INDEX idx_historico_questao\n  ON historico (questao_id);" }, { id: "exp", texto: "\n\nEXPLAIN ANALYZE\nSELECT COUNT(*) FROM historico\nWHERE questao_id = 35;" }, { id: "ins", texto: "\n\nINSERT INTO historico VALUES (...);" }] },
+    pecas: [{ id: "th", tipo: "rotulo", html: "tabela historico" }, { id: "ti", tipo: "rotulo", html: "o índice" },
+      ...H13.map(([l, q]) => ({ id: "h" + l, html: `<span class="fr2">linha ${l}</span><span class="fr">q ${q}</span>` })),
+      ...I13.map(([q, l], k) => ({ id: "i" + k, html: `<span>q ${q}</span><span class="fr2">→ linha ${l}</span>` })),
+      { id: "cont", tipo: "caixa" }, { id: "ta", tipo: "chip" }, { id: "td", tipo: "chip" }, { id: "novo", html: `<span class="fr2">linha 100.001</span><span class="fr">q 35</span>` }, { id: "inovo", html: `<span>q 35</span><span class="fr2">→ 100.001</span>` }],
+    altura: (W) => (W < 520 ? 450 : 420),
+    passos: (function () {
+      const geo = (W) => { const w = (larg(W) - 10) / 2; return { xa: P, xb: P + w + 10, w, y: (k) => 28 + k * 32, yc: 292, yt: W < 520 ? 366 : 352 }; };
+      const linhas = (W, extra) => { const g = geo(W), o = {}; H13.forEach(([l], k) => { o["h" + l] = Object.assign({ x: g.xa, y: g.y(k), w: g.w, o: 1, c: "" }, extra ? extra(l, k) : {}); }); return o; };
+      return [
+        { t: "A pergunta", d: "Quantas respostas a questão 35 tem no histórico? Aqui aparecem 8 das 100 mil linhas; a questão de cada uma está à direita.", foco: "sel",
+          layout: (W) => { const g = geo(W), o = { th: { x: g.xa, y: 6, o: 1 }, ti: { x: g.xb, y: 6, o: 0 }, cont: { x: P, y: g.yc, w: larg(W), o: 0 }, ta: { x: P, y: g.yt, w: larg(W) / 2 - 5, o: 0 }, td: { x: P + larg(W) / 2 + 5, y: g.yt, w: larg(W) / 2 - 5, o: 0 }, novo: { x: g.xa, y: g.yc, w: g.w, o: 0 }, inovo: { x: g.xb, y: g.yc, w: g.w, o: 0 } };
+            I13.forEach((_, k) => { o["i" + k] = { x: g.xb + 20, y: g.y(k), w: g.w, o: 0 }; }); return Object.assign(o, linhas(W)); } },
+        { t: "Sem índice: ler tudo", d: "O banco não sabe onde estão as linhas da questão 35. Lê as 100 mil, uma por uma, e separa as que servem. No plano, isso aparece como <b>Seq Scan</b>.", foco: "sel", escalonar: 70,
+          layout: (W) => Object.assign(linhas(W, (l, k) => ({ c: H13[k][1] === 35 ? "ok" : "foco" })), { cont: { o: 1, html: "<b>Seq Scan</b>leu 100.000 linhas para achar 1.667" } }) },
+        { t: "Quanto custou", d: "Medido com EXPLAIN ANALYZE no PostgreSQL deste laboratório: cerca de 11 milissegundos. Parece pouco, mas o painel faz essa consulta para cada questão, toda vez que abre.", foco: "exp",
+          layout: () => ({ ta: { o: 1, html: "<b>≈ 11 ms</b><small>sem índice</small>", pulso: true } }) },
+        { t: "CREATE INDEX", d: "O índice é uma lista à parte, em ordem de questão, que diz em que linha está cada uma. Como o índice remissivo de um livro.", foco: "idx", escalonar: 60,
+          layout: (W) => { const g = geo(W), o = linhas(W, () => ({ c: "" })); I13.forEach((_, k) => { o["i" + k] = { x: g.xb, y: g.y(k), w: g.w, o: 1, c: "" }; }); o.ti = { o: 1 }; o.cont = { o: 0 }; return o; } },
+        { t: "Com índice: direto às linhas", d: "O banco procura 35 no índice, que está em ordem, e vai direto às linhas certas. No plano, aparece <b>Index Scan</b> (ou Bitmap Index Scan).", foco: "exp", escalonar: 50,
+          layout: (W) => { const o = linhas(W, (l, k) => ({ c: H13[k][1] === 35 ? "ok" : "apagado" })); I13.forEach(([q], k) => { o["i" + k] = { c: q === 35 ? "ok" : "apagado" }; }); o.cont = { o: 1, html: "<b>Index Scan</b>foi direto às 1.667 linhas da questão 35" }; return o; } },
+        { t: "Quanto custou agora", d: "Cerca de 2,5 milissegundos: umas 4 vezes mais rápido. Em tabelas de milhões de linhas, a diferença vira a de minutos para segundos.", foco: "exp",
+          layout: () => ({ td: { o: 1, c: "ok", html: "<b>≈ 2,5 ms</b><small>com índice</small>", pulso: true } }) },
+        { t: "O preço do índice", d: "Cada linha nova agora é gravada em dois lugares: na tabela e no índice. Por isso não se cria índice em toda coluna, só nas que as consultas mais usam.", foco: "ins",
+          layout: () => ({ cont: { o: 0 }, novo: { o: 1, c: "aviso", pulso: true }, inovo: { o: 1, c: "aviso", pulso: true } }) },
+      ];
+    })(),
+  };
+
+  // ---------------- 14 · Transações: tudo ou nada ----------------
+  D.s14 = {
+    titulo: "Como a transação grava tudo ou nada",
+    codigo: { partes: [{ id: "b1", texto: "BEGIN;" }, { id: "i8", texto: "\nINSERT INTO materias VALUES (8, 'Economia', ...);" }, { id: "iq", texto: "\nINSERT INTO questoes VALUES (61, 8, ...);\nINSERT INTO questoes VALUES (62, 8, ...);" }, { id: "c1", texto: "\nCOMMIT;" },
+      { id: "b2", texto: "\n\nBEGIN;" }, { id: "i9", texto: "\nINSERT INTO materias VALUES (9, ...);" }, { id: "q99", texto: "\nINSERT INTO questoes VALUES (63, 99, ...);" }, { id: "rb", texto: "\n-- erro: o banco faz ROLLBACK" }] },
+    pecas: [{ id: "tx", tipo: "rotulo", html: "dentro da transação · ainda não gravado" }, { id: "bd", tipo: "rotulo", html: "no banco · gravado" },
+      { id: "m8", html: "<span>matéria 8</span><span class=\"fr\">Economia</span>" }, { id: "q61", html: "<span>questão 61</span><span class=\"fr\">matéria 8</span>" }, { id: "q62", html: "<span>questão 62</span><span class=\"fr\">matéria 8</span>" },
+      { id: "m9", html: "<span>matéria 9</span><span class=\"fr\">Contab. Pública</span>" }, { id: "q63", html: "<span>questão 63</span><span class=\"fr\">matéria 99</span>" }, { id: "nota", tipo: "caixa" }],
+    altura: (W) => (W < 520 ? 380 : 300),
+    passos: (function () {
+      // no computador, pendente à esquerda e gravado à direita; no celular, um em cima do outro
+      const geo = (W) => { const e = W < 520, w = e ? larg(W) : (larg(W) - 12) / 2; return { xa: P, xb: e ? P : P + w + 12, w, y: (k) => 34 + k * 36, yb: (k) => (e ? 186 : 34) + k * 36, lb: e ? 160 : 8, yn: e ? 300 : 176 }; };
+      return [
+        { t: "BEGIN abre a transação", d: "Daqui até o COMMIT, nada fica gravado para valer. O banco anota tudo à parte.", foco: "b1",
+          layout: (W) => { const g = geo(W); return { tx: { x: g.xa, y: 8, o: 1 }, bd: { x: g.xb, y: g.lb, o: 1 }, m8: { x: g.xa - 20, y: g.y(0), w: g.w, o: 0 }, q61: { x: g.xa - 20, y: g.y(1), w: g.w, o: 0 }, q62: { x: g.xa - 20, y: g.y(2), w: g.w, o: 0 }, m9: { x: g.xa - 20, y: g.y(0), w: g.w, o: 0 }, q63: { x: g.xa - 20, y: g.y(1), w: g.w, o: 0 }, nota: { x: P, y: g.yn, w: larg(W), o: 0 } }; } },
+        { t: "A matéria entra, mas fica pendente", d: "O INSERT da matéria 8 deu certo, mas só dentro da transação. Quem consultar o banco agora ainda não vê a Economia.", foco: "i8", feitos: ["b1"],
+          layout: (W) => ({ m8: { x: geo(W).xa, o: 1, c: "aviso" } }) },
+        { t: "As duas questões também", d: "As questões 61 e 62 entram na mesma transação. Três linhas pendentes.", foco: "iq", feitos: ["b1", "i8"], escalonar: 90,
+          layout: (W) => ({ q61: { x: geo(W).xa, o: 1, c: "aviso" }, q62: { x: geo(W).xa, o: 1, c: "aviso" } }) },
+        { t: "COMMIT grava tudo de uma vez", d: "No COMMIT, as três linhas passam a existir para todo mundo, juntas. Não há um momento em que a matéria exista sem as questões.", foco: "c1", feitos: ["b1", "i8", "iq"], escalonar: 80, dur: 800,
+          layout: (W) => { const g = geo(W); return { m8: { x: g.xb, y: g.yb(0), c: "ok" }, q61: { x: g.xb, y: g.yb(1), c: "ok" }, q62: { x: g.xb, y: g.yb(2), c: "ok" } }; } },
+        { t: "Outra transação: a matéria 9", d: "Uma nova carga começa. A matéria 9 entra, pendente.", foco: "i9", feitos: ["b1", "i8", "iq", "c1", "b2"],
+          layout: (W) => { const g = geo(W); return { m8: { o: 0.45 }, q61: { o: 0.45 }, q62: { o: 0.45 }, m9: { x: g.xa, o: 1, c: "aviso" } }; } },
+        { t: "A questão 63 aponta para a matéria 99", d: "A matéria 99 não existe: a trava da chave estrangeira recusa a linha. A transação inteira fica condenada.", foco: "q99", feitos: ["b2", "i9"],
+          layout: (W) => ({ q63: { x: geo(W).xa, o: 1, c: "ruim", pulso: true }, nota: { o: 1, c: "ruim", html: "<b>Erro</b><code>violates foreign key constraint</code>" } }) },
+        { t: "ROLLBACK: nada fica", d: "O banco desfaz tudo desde o BEGIN. A matéria 9, que tinha entrado, sai junto. O banco continua inteiro, sem metade de carga.", foco: "rb", feitos: ["b2", "i9", "q99"], escalonar: 80,
+          layout: () => ({ m9: { x: -40, o: 0 }, q63: { x: -40, o: 0 }, nota: { c: "ok", html: "<b>Resultado</b>SELECT COUNT(*) FROM materias WHERE id = 9 → 0" } }) },
+      ];
+    })(),
+  };
+
+  // ---------------- 15 · Portaria: visões e permissões ----------------
+  D.s15 = {
+    titulo: "Como a visão e a permissão mostram só o necessário",
+    codigo: { partes: [{ id: "view", texto: "CREATE VIEW painel_materias AS\nSELECT m.nome AS materia, ..., taxa\nFROM respostas r JOIN ...;" }, { id: "role", texto: "\n\nCREATE ROLE leitor;" }, { id: "grant", texto: "\nGRANT SELECT ON painel_materias\n  TO leitor;" }, { id: "set", texto: "\n\nSET ROLE leitor;\nSELECT * FROM painel_materias;\nSELECT * FROM respostas;" }] },
+    pecas: [{ id: "alunos", tipo: "caixa", html: "<b>alunos</b>nome, e-mail" }, { id: "resp", tipo: "caixa", html: "<b>respostas</b>quem, quando, acertou" }, { id: "quest", tipo: "caixa", html: "<b>questoes + materias</b>enunciado, matéria" },
+      { id: "vis", tipo: "caixa" }, { id: "leitor", tipo: "chip", html: "<b>leitor</b><small>marketing</small>" }, { id: "nota", tipo: "caixa" }],
+    altura: (W) => (W < 520 ? 440 : 330),
+    passos: (function () {
+      const geo = (W) => { const c = cols(W, 3, 8), estreito = W < 520; return { c, yv: estreito ? 130 : 92, wv: estreito ? larg(W) - 96 : larg(W) * 0.6, xl: estreito ? W - P - 86 : P + larg(W) * 0.6 + 16, yn: estreito ? 340 : 246 }; };
+      const VIS = "<b>painel_materias</b>Direito Administrativo · 40,4<br>Raciocínio Lógico · 47,4<br>Língua Portuguesa · 50,0<br>Banco de Dados · 50,7<br>Estatística · 50,9<br>Informática · 53,6";
+      return [
+        { t: "As tabelas de verdade", d: "Os dados ficam nas tabelas. Uma delas tem nome e e-mail de pessoas: dado pessoal, que não deve circular à toa.", foco: "view",
+          layout: (W) => { const g = geo(W); return { alunos: { x: g.c[0].x, y: 10, w: g.c[0].w, o: 1, c: "aviso" }, resp: { x: g.c[1].x, y: 10, w: g.c[1].w, o: 1 }, quest: { x: g.c[2].x, y: 10, w: g.c[2].w, o: 1 }, vis: { x: P, y: g.yv + 20, w: g.wv, o: 0, html: VIS }, leitor: { x: g.xl, y: g.yv + 30, w: 86, o: 0 }, nota: { x: P, y: g.yn, w: larg(W), o: 0 } }; } },
+        { t: "CREATE VIEW guarda a consulta", d: "A visão junta respostas, questões e matérias e entrega só três colunas: matéria, respostas e taxa. Nenhum nome, nenhum e-mail.", foco: "view",
+          layout: (W) => ({ vis: { y: geo(W).yv, o: 1, c: "ok", pulso: true }, alunos: { c: "apagado" } }) },
+        { t: "Ela roda na hora", d: "A visão não guarda os números: guarda a consulta. Cada SELECT nela calcula de novo com os dados de agora.", foco: "view",
+          layout: () => ({ resp: { c: "foco" }, quest: { c: "foco" } }) },
+        { t: "CREATE ROLE leitor", d: "Um usuário novo do banco, para o time de marketing. Ainda não pode ver nada.", foco: "role", feitos: ["view"],
+          layout: (W) => ({ resp: { c: "" }, quest: { c: "" }, leitor: { y: geo(W).yv, o: 1, pulso: true } }) },
+        { t: "GRANT SELECT só na visão", d: "O leitor recebe uma única permissão: ler a visão. As tabelas continuam fechadas para ele.", foco: "grant", feitos: ["view", "role"],
+          layout: () => ({ leitor: { c: "ok" }, nota: { o: 1, c: "ok", html: "<b>leitor</b>pode ler: painel_materias · não pode ler: alunos, respostas, questoes, materias" } }) },
+        { t: "Como leitor, a tabela fecha", d: "Com SET ROLE leitor, a visão abre normalmente; já SELECT * FROM respostas responde “permissão negada”.", foco: "set", feitos: ["view", "role", "grant"],
+          layout: () => ({ alunos: { c: "ruim" }, resp: { c: "ruim", pulso: true }, quest: { c: "ruim" }, nota: { c: "ruim", html: "<b>SELECT * FROM respostas</b><code>permission denied for table respostas</code>" } }) },
+      ];
+    })(),
+  };
+
+  // ---------------- 16 · Cofre: backup e restauração ----------------
+  const T16 = [["materias", 8], ["alunos", 12], ["questoes", 62], ["respostas", 382], ["revisoes", 5]];
+  D.s16 = {
+    titulo: "Como o backup recria o banco depois de um desastre",
+    rotuloCodigo: "O que acontece",
+    codigo: { partes: [{ id: "bk", texto: "-- 1. backup: gera o arquivo\nbackup.sql" }, { id: "fora", texto: "\n-- 2. guardar em outro lugar" }, { id: "drop", texto: "\n\nDROP TABLE respostas CASCADE;" }, { id: "rest", texto: "\n\n-- 3. restaurar: apagar e rodar\n--    o backup.sql de novo" }, { id: "conf", texto: "\n-- 4. conferir as contagens" }] },
+    pecas: [{ id: "rb", tipo: "rotulo", html: "o banco" }, { id: "ra", tipo: "rotulo", html: "backup.sql" },
+      ...T16.map(([t, n]) => ({ id: "b_" + t, html: `<span>${t}</span><span class="fr">${n}</span>` })), { id: "vis", html: "<span>+ visão e índice</span>" },
+      { id: "arq", tipo: "caixa" }, { id: "nota", tipo: "caixa" }],
+    altura: (W) => (W < 520 ? 360 : 300),
+    passos: (function () {
+      const geo = (W) => { const w = (larg(W) - 14) / 2; return { xa: P, xb: P + w + 14, w, y: (k) => 30 + k * 34, yn: W < 520 ? 246 : 240 }; };
+      const banco = (W, extra) => { const g = geo(W), o = {}; T16.forEach(([t], k) => { o["b_" + t] = Object.assign({ x: g.xa, y: g.y(k), w: g.w, o: 1, c: "" }, extra ? extra(t) : {}); }); o.vis = Object.assign({ x: g.xa, y: g.y(5), w: g.w, o: 1, c: "" }, extra ? extra("vis") : {}); return o; };
+      return [
+        { t: "O banco, como está", d: "Cinco tabelas, a visão do painel, o índice e o usuário leitor. É isso que um backup precisa recriar.", foco: "bk",
+          layout: (W) => { const g = geo(W); return Object.assign(banco(W), { rb: { x: g.xa, y: 6, o: 1 }, ra: { x: g.xb, y: 6, o: 0 }, arq: { x: g.xb, y: 30, w: g.w, h: 196, o: 0 }, nota: { x: P, y: g.yn, w: larg(W), o: 0 } }); } },
+        { t: "O backup: tudo vira SQL", d: "O laboratório escreve um arquivo com os CREATE TABLE, as regras, um INSERT por linha, o índice, a visão e as permissões. Rodar esse arquivo recria o banco inteiro.", foco: "bk",
+          layout: () => ({ ra: { o: 1 }, arq: { o: 1, c: "ok", pulso: true, html: "<b>backup.sql</b>CREATE TABLE materias ...<br>INSERT INTO materias ... × 8<br>INSERT INTO respostas ... × 382<br>CREATE INDEX idx_respostas_aluno ...<br>CREATE VIEW painel_materias ...<br>GRANT SELECT ... TO leitor" } }) },
+        { t: "Guardar em outro lugar", d: "Backup no mesmo servidor do banco morre junto com ele. A cópia vai para outro disco ou para a nuvem.", foco: "fora", feitos: ["bk"],
+          layout: () => ({ ra: { html: "backup.sql · fora daqui" } }) },
+        { t: "O desastre", d: "Alguém roda DROP TABLE respostas CASCADE. Somem 382 linhas e, junto, a visão que dependia delas.", foco: "drop", feitos: ["bk", "fora"],
+          layout: (W) => banco(W, (t) => (t === "respostas" || t === "vis" ? { c: "ruim cortado", o: 0.5 } : {})) },
+        { t: "Restaurar: apagar o que sobrou", d: "Para não misturar versões, a restauração apaga o que restou e começa limpa.", foco: "rest", feitos: ["bk", "fora", "drop"], escalonar: 50,
+          layout: (W) => banco(W, () => ({ o: 0, x: -30 })) },
+        { t: "Rodar o backup de novo", d: "O arquivo roda do começo ao fim: as tabelas voltam, os dados voltam, e o índice, a visão e o leitor também.", foco: "rest", feitos: ["bk", "fora", "drop"], escalonar: 70, dur: 800,
+          layout: (W) => banco(W, () => ({ o: 1, c: "ok" })) },
+        { t: "Conferir: o teste que importa", d: "As contagens de antes e de depois precisam bater. Backup que nunca foi restaurado é só esperança.", foco: "conf", feitos: ["bk", "fora", "drop", "rest"],
+          layout: () => ({ nota: { o: 1, c: "ok", html: "<b>Antes e depois</b>materias 8 · alunos 12 · questoes 62 · respostas 382: iguais" } }) },
+      ];
+    })(),
+  };
+
+  // ---------------- 17 · Apresentação: do número à decisão ----------------
+  const M17 = [["Direito Administrativo", 40.4], ["Raciocínio Lógico", 47.4], ["Língua Portuguesa", 50.0], ["Banco de Dados", 50.7], ["Estatística", 50.9], ["Informática", 53.6]];
+  const MES17 = [["ago/26", 48.6, 148], ["set/26", 52.2, 136], ["out/26", 44.9, 78]];
+  D.s17 = {
+    titulo: "Como o resultado vira uma apresentação",
+    codigo: { partes: [{ id: "capa", texto: "SELECT (SELECT COUNT(*) FROM alunos),\n       COUNT(*), ROUND(AVG(...), 1)\nFROM respostas\nWHERE resposta IS NOT NULL;" }, { id: "vis", texto: "\n\nSELECT * FROM painel_materias\nORDER BY taxa;" }, { id: "mes", texto: "\n\nSELECT to_char(respondida_em, 'YYYY-MM'),\n       ... GROUP BY 1 ORDER BY 1;" }, { id: "rec", texto: "\n\n-- e o recado: o que fazer" }] },
+    pecas: [{ id: "k0", tipo: "chip" }, { id: "k1", tipo: "chip" }, { id: "k2", tipo: "chip" }, ...M17.map((m, i) => ({ id: "m" + i })), ...MES17.map((m, i) => ({ id: "t" + i, tipo: "chip" })), { id: "rec", tipo: "caixa" }, { id: "nota", tipo: "rotulo" }],
+    altura: (W) => (W < 520 ? 470 : 460),
+    passos: (function () {
+      const geo = (W) => { const c3 = cols(W, 3, 8); return { c3, yb: 92, wb: larg(W), yt: W < 520 ? 312 : 92 + 6 * 32 + 14, rec: W < 520 ? 312 : 92 + 6 * 32 + 14 }; };
+      const barra = (n, v, W) => `<span style="flex:none;width:${Math.round((v / 60) * Math.max(80, larg(W) - 230))}px;height:12px;border-radius:3px;background:var(--tinta)"></span><span>${n}</span><span class="fr">${dec(v.toFixed(1))}</span>`;
+      return [
+        { t: "O que a chefia quer saber", d: "Como está o desempenho, onde está o problema e o que fazer. A apresentação responde nessa ordem: capa, evidência, recomendação.", foco: "capa",
+          layout: (W) => { const g = geo(W), o = { nota: { x: P, y: 10, o: 1, html: "três partes: capa · evidência · recomendação" }, rec: { x: P, y: g.rec, w: larg(W), o: 0 } };
+            ["k0", "k1", "k2"].forEach((k, i) => { o[k] = { x: g.c3[i].x, y: 10, w: g.c3[i].w, o: 0 }; });
+            M17.forEach(([n, v], i) => { o["m" + i] = { x: P, y: g.yb + i * 32, w: g.wb, o: 0, html: barra(n, v, W) }; });
+            MES17.forEach(([m, v, r], i) => { o["t" + i] = { x: g.c3[i].x, y: g.yt, w: g.c3[i].w, o: 0, html: `<b>${dec(v.toFixed(1))}%</b><small>${m} · ${r} resp.</small>` }; }); return o; } },
+        { t: "Os números de capa", d: "O tamanho do que foi analisado, numa linha: 12 alunos, 362 respostas, 49,2% de acerto.", foco: "capa", escalonar: 90,
+          layout: () => ({ nota: { o: 0 }, k0: { o: 1, html: "<b>12</b><small>alunos</small>" }, k1: { o: 1, html: "<b>362</b><small>respostas</small>" }, k2: { o: 1, html: "<b>49,2%</b><small>de acerto</small>" } }) },
+        { t: "A evidência: por matéria", d: "A visão do painel, em ordem crescente de taxa. A primeira barra é o achado: Direito Administrativo, com 40,4%.", foco: "vis", feitos: ["capa"], escalonar: 70,
+          layout: () => { const o = {}; M17.forEach((_, i) => { o["m" + i] = { o: 1, c: i === 0 ? "aviso" : "" }; }); return o; } },
+        { t: "A evolução no tempo", d: "Agosto 48,6%, setembro 52,2%, outubro 44,9%. Outubro tem só 78 respostas: o mês não acabou, então a queda pede cautela.", foco: "mes", feitos: ["capa", "vis"], escalonar: 90,
+          layout: (W) => { const o = {}; MES17.forEach((_, i) => { o["t" + i] = { o: 1, c: i === 2 ? "aviso" : "" }; }); if (W < 520) M17.forEach((_, i) => { o["m" + i] = { o: i === 0 ? 1 : 0.3 }; }); return o; } },
+        { t: "A recomendação", d: "Sem ela, é só curiosidade. Uma frase com o que fazer, quanto e quando medir de novo.", foco: "rec", feitos: ["capa", "vis", "mes"],
+          layout: (W) => { const o = { rec: { o: 1, c: "ok", pulso: true, html: "<b>Recomendação</b>Dobrar o tempo de Direito Administrativo por quatro semanas e medir de novo em novembro." } }; MES17.forEach((_, i) => { o["t" + i] = { o: W < 520 ? 0 : 1 }; }); if (W >= 520) o.rec.y = geo(W).rec + 70; return o; } },
+      ];
+    })(),
+  };
+
   raiz.PASSOS_LAB = D;
 })(typeof window !== "undefined" ? window : globalThis);

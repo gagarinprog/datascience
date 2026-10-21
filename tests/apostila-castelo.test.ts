@@ -24,6 +24,7 @@ type Tarefa = {
   tolerancia?: number;
   verificar?: Verificacao[];
   fonte?: string;
+  executar?: string;
   testes?: string;
   opcoes?: string[];
   certa?: number;
@@ -40,7 +41,16 @@ type Sala = {
   desfazer: string;
 };
 type Nivel = { id: string; libera: string; minimo: number; itens: Tarefa[] };
-type Castelo = { blocos: { id: string; porque: string }[]; salas: Sala[]; niveis: Nivel[] };
+type Castelo = {
+  blocos: { id: string; porque: string }[];
+  salas: Sala[];
+  niveis: Nivel[];
+  sqlHistorico: string;
+};
+type Backup = {
+  gerar: (consultar: (sql: string) => Promise<unknown[][]>) => Promise<{ sql: string }>;
+  LIMPAR: string;
+};
 type Resultado = { ok: boolean; motivo?: string };
 type Comparar = {
   comparar: (
@@ -55,14 +65,17 @@ type Comparar = {
 const PASTA = join(process.cwd(), "apostila");
 let C: Castelo;
 let Cmp: Comparar;
+let B: Backup;
 let carga: string;
 
 beforeAll(() => {
   new Function(readFileSync(join(PASTA, "castelo", "salas.js"), "utf-8"))();
   new Function(readFileSync(join(PASTA, "castelo", "comparar.js"), "utf-8"))();
-  const g = globalThis as unknown as { CASTELO: Castelo; Comparar: Comparar };
+  new Function(readFileSync(join(PASTA, "castelo", "backup.js"), "utf-8"))();
+  const g = globalThis as unknown as { CASTELO: Castelo; Comparar: Comparar; Backup: Backup };
   C = g.CASTELO;
   Cmp = g.Comparar;
+  B = g.Backup;
   carga = readFileSync(join(PASTA, "licoes", "dados", "estudo.sql"), "utf-8")
     .split("\n")
     .filter((l) => l.startsWith("INSERT INTO"))
@@ -71,6 +84,8 @@ beforeAll(() => {
 });
 
 const linhas = (r: { rows: unknown[] }) => r.rows.map((x) => Object.values(x as object));
+const consultar = (db: PGlite) => async (sql: string) =>
+  (await db.query<unknown[]>(sql, [], { rowMode: "array" })).rows;
 async function rodar(db: PGlite, sql: string) {
   const rs = await db.exec(sql.replace("--CARGA--", ""));
   if (sql.includes("--CARGA--")) await db.exec(carga);
@@ -116,9 +131,11 @@ describe("erros do PostgreSQL em português", () => {
 });
 
 describe("roteiro das salas", () => {
-  it("tem 12 salas em 4 fases, cada uma com apresentação, ferramenta e tarefas completas", () => {
-    expect(C.salas).toHaveLength(12);
-    expect(C.blocos.map((b) => b.id)).toEqual(["A", "B", "C", "D"]);
+  it("tem 17 salas em 5 zonas, cada uma com apresentação, ferramenta, uso no trabalho e tarefas completas", () => {
+    expect(C.salas).toHaveLength(17);
+    expect(C.blocos.map((b) => b.id)).toEqual(["A", "B", "C", "D", "E"]);
+    for (const s of C.salas)
+      expect((s as Sala & { trabalho?: string }).trabalho?.length ?? 0, s.id).toBeGreaterThan(60);
     for (const b of C.blocos) expect(b.porque.length).toBeGreaterThan(60);
     const partes = new Set<string>();
     for (const s of C.salas) {
@@ -136,7 +153,7 @@ describe("roteiro das salas", () => {
         if (t.tipo === "escolha") expect(t.opcoes?.[t.certa ?? -1], rotulo).toBeTruthy();
       }
     }
-    expect(partes.size).toBe(12);
+    expect(partes.size).toBe(17);
   });
 
   it("cada nivelamento libera a fase seguinte e é possível de passar", () => {
@@ -161,15 +178,25 @@ describe("o castelo construído num PostgreSQL de verdade", () => {
     async () => {
       const db = await PGlite.create();
       const falhas: string[] = [];
+      let backup = "";
       for (const s of C.salas) {
         for (const t of s.tarefas) {
           const rotulo = `${s.id}.${t.id}`;
           let ultimo: { rows: unknown[]; fields: unknown[] } | undefined;
           if (t.tipo === "sql" && t.solucao) {
             const rs = await rodar(db, t.solucao);
+            await db.exec("RESET ROLE");
             ultimo = [...rs].reverse().find((r) => r.fields.length > 0);
-          } else if (t.tipo === "acao") await db.exec(carga);
-          else if (t.tipo === "fsrs" && t.fonte) {
+          } else if (t.tipo === "acao") {
+            const acao = t.executar ?? "carga";
+            if (acao === "carga") await db.exec(carga);
+            else if (acao === "historico") await db.exec(C.sqlHistorico);
+            else if (acao === "backup") backup = (await B.gerar(consultar(db))).sql;
+            else if (acao === "restaurar") {
+              await db.exec(B.LIMPAR);
+              await db.exec(backup);
+            }
+          } else if (t.tipo === "fsrs" && t.fonte) {
             const qs = await db.query<{ id: number }>(t.fonte);
             if (qs.rows.length !== 5)
               falhas.push(`${rotulo}: a fonte trouxe ${qs.rows.length} questões`);
@@ -211,7 +238,7 @@ describe("o castelo construído num PostgreSQL de verdade", () => {
           }
       }
       expect(falhas).toEqual([]);
-      expect(await totais(db)).toEqual([7, 12, 60, 382]);
+      expect(await totais(db)).toEqual([8, 12, 62, 382]);
       await db.close();
     },
   );
@@ -234,7 +261,7 @@ describe("o castelo construído num PostgreSQL de verdade", () => {
       const db = await PGlite.create();
       for (let vez = 0; vez < 2; vez++)
         for (const s of C.salas) if (s.estado) await rodar(db, s.estado);
-      expect(await totais(db)).toEqual([7, 12, 60, 382]);
+      expect(await totais(db)).toEqual([8, 12, 62, 382]);
       await db.close();
     },
   );
