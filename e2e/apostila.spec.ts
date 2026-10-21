@@ -175,6 +175,59 @@ test.describe("apostila", () => {
     });
   }
 
+  // as caixas Experimente em Python: cada passo é um código que cumpre mais metas; a caixa conclui com as três
+  const SE =
+    'if pix <= saldo:\n    saldo = saldo - pix\nelse:\n    print("Saldo insuficiente")\nprint("Saldo:", saldo)';
+  const ML = (g: number) =>
+    `grau = ${g}\ncoef = np.polyfit(x_treino, y_treino, grau)\nerro_treino = np.sqrt(np.mean((np.polyval(coef, x_treino) - y_treino) ** 2))\nerro_novos = np.sqrt(np.mean((np.polyval(coef, x_novos) - y_novos) ** 2))`;
+  const CAIXAS: Record<string, string[]> = {
+    PY: [
+      'saldo = 500\npix = 650\nsaldo = saldo - pix\nprint("Saldo:", saldo)',
+      "saldo = 500\npix = 650\n" + SE,
+      "saldo = 500\npix = 120\n" + SE,
+    ],
+    EST: [
+      "acertos = pd.Series([9, 10, 8, 12, 16, 10, 17, 21, 19, 16, 19, 21, 90])\nmedia = acertos.mean()\nmediana = acertos.median()\ndesvio = acertos.std()",
+    ],
+    FMT: [
+      'texto = """nome;taxa_acerto\nAna Souza;0,26\nBruno Lima;0,32\nCarla Mendes;0,35\nDiego Rocha;0,40"""\ndf = pd.read_csv(StringIO(texto), sep=";", decimal=",")\nmedia = df["taxa_acerto"].mean()',
+    ],
+    AD: [
+      'taxa = respostas.groupby("materia")["acertou"].mean()\ntotal = respostas.groupby("materia")["acertou"].sum()\nrespondidas = respostas.groupby("materia")["acertou"].count()',
+    ],
+    VIS: [
+      'materias = ["Informática", "Estatística", "Dir. Adm.", "Banco de Dados"]\ntaxa = [0.54, 0.51, 0.40, 0.51]\nplt.bar(materias, taxa)\nplt.ylim(0, 0.6)\nplt.ylabel("taxa de acerto")',
+    ],
+    ML: [ML(3), ML(4), ML(10)],
+  };
+  for (const [sigla, passos] of Object.entries(CAIXAS)) {
+    test(`a caixa Experimente de ${sigla} roda o Python e conclui pelas metas`, async ({
+      page,
+    }) => {
+      test.setTimeout(180_000);
+      const erros = vigiarErros(page);
+      await page.addInitScript(() =>
+        localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+      );
+      await page.goto(BASE + `index.html#guia-${sigla}`);
+      const sub = page.locator('.sub[data-sub="experimente"]');
+      await sub.locator(".sub-cab").click();
+      await expect(sub.locator(".py-metas li")).toHaveCount(3);
+      await expect(sub.locator(".py-estado")).toBeHidden({ timeout: 150_000 });
+      await expect(sub.locator(".py-metas li.feita")).toHaveCount(0);
+      await expect(sub.locator("[data-concluir]")).toBeDisabled();
+      for (const [k, codigo] of passos.entries()) {
+        await sub.locator("textarea").fill(codigo);
+        const meta = passos.length === 1 ? 3 : k + 1;
+        await expect(sub.locator(".py-metas li.feita")).toHaveCount(meta, { timeout: 60_000 });
+      }
+      await expect(sub.locator("[data-tentativas]")).toHaveText("3 de 3 metas");
+      await expect(sub.locator("[data-concluir]")).toBeEnabled();
+      if (sigla === "VIS") await expect(sub.locator(".py-fig svg")).toBeVisible();
+      expect(erros).toEqual([]);
+    });
+  }
+
   test("a revisão do dia traz o exercício da lição e reagenda", async ({ page }) => {
     await page.goto(BASE + "licoes/LOG.01.html");
     const ontem = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
@@ -257,6 +310,9 @@ test.describe("apostila", () => {
   });
 
   test("um arquivo que não é trajeto é recusado sem mexer em nada", async ({ page }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
     await page.goto(BASE + "index.html#mapa");
     await page.locator("#guia-btn").click();
     const escolha = page.waitForEvent("filechooser");

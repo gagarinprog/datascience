@@ -106,6 +106,32 @@
     return `<p class="py-valor"><code>${esc(v.repr)}</code><small>${esc(v.py)}</small></p>`;
   }
 
+
+  // teste de mesa: uma linha por instrução executada; só aparece o valor que mudou naquele passo
+  function tabelaRastro(res, codigo, cols) {
+    const linhas = codigo.split("\n"), P = res.passos;
+    let corpo = "";
+    for (let k = 0; k < P.length - 1; k++) {
+      const [num, , ini] = P[k], depois = P[k + 1][1], antes = P[k][1], fim = P[k + 1][2];
+      const tela = (res.saida || "").slice(ini, fim).replace(/\n$/, "");
+      corpo += `<tr><td class="m">${k + 1}</td><td class="py-lin"><code>${esc((linhas[num - 1] || "").trim())}</code></td>${cols.map((n) => { const v = depois[n], mudou = v !== undefined && v !== antes[n]; return `<td class="${mudou ? "muda" : ""}"><code>${mudou ? esc(v) : ""}</code></td>`; }).join("")}<td><code>${esc(tela)}</code></td></tr>`;
+    }
+    return `<p class="py-rot">Teste de mesa: uma linha por instrução executada</p><div class="rolagem"><table class="tabela py-rastro"><thead><tr><th scope="col" class="m">passo</th><th scope="col">linha</th>${cols.map((n) => `<th scope="col"><code>${esc(n)}</code></th>`).join("")}<th scope="col">tela</th></tr></thead><tbody>${corpo}</tbody></table></div>`;
+  }
+  function tabelaVars(res, vars) {
+    return `<p class="py-rot">As variáveis agora</p><div class="rolagem"><table class="tabela py-vars" aria-label="As variáveis agora"><thead><tr><th scope="col">variável</th><th scope="col">valor</th><th scope="col">tipo</th></tr></thead><tbody>${vars.map((n) => { const v = res.valores[n]; return `<tr class="${v ? "" : "py-vazia"}"><td><code>${esc(n)}</code></td><td><code>${v ? esc(v.repr || (v.tipo === "serie" ? "série" : v.tipo)) : "ainda não existe"}</code></td><td>${v ? esc(v.py || v.tipo) : ""}</td></tr>`; }).join("")}</tbody></table></div>`;
+  }
+  // gráficos do matplotlib: o SVG que o próprio matplotlib gerou
+  const figuras = (res) => (res.figuras || []).map((f, k) => `<div class="py-res"><p class="py-rot">O gráfico${res.figuras.length > 1 ? ` ${k + 1}` : ""}</p><div class="py-fig" role="img" aria-label="Gráfico gerado pelo matplotlib">${f}</div></div>`).join("");
+
+  // o editor cresce com o código (no celular, nada de rolar dentro de uma caixinha)
+  function crescer(ta) {
+    const ajustar = () => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + 2 + "px"; };
+    ta.addEventListener("input", ajustar);
+    requestAnimationFrame(ajustar);
+    return ajustar;
+  }
+
   // ---------- o exercício ----------
   const tpl = (ex, nome) => { const t = ex.querySelector(`:scope > template[data-${nome}]`); return t ? t.innerHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/^\n/, "").replace(/\s+$/, "") : ""; };
   const tpls = (ex, nome) => [...ex.querySelectorAll(`:scope > template[data-${nome}]`)].map((t) => t.innerHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").trim());
@@ -136,6 +162,7 @@
     const ta = bloco.querySelector("textarea"), estado = bloco.querySelector(".py-estado"), saidas = bloco.querySelector(".py-saidas");
     const baseEl = bloco.querySelector(".py-base"), conta = bloco.querySelector(".py-conta");
     let tabelaBase = null, tentativas = 0, dicasUsadas = 0, timer = 0, versao = 0;
+    const ajustarAltura = crescer(ta);
 
     // Tab no editor põe 4 espaços (o recuo do Python); Esc devolve o foco à página
     ta.addEventListener("keydown", (e) => {
@@ -166,20 +193,13 @@
         html += `<p class="py-erro"><b>O Python parou.</b> ${esc(e.texto)}</p>`;
       }
       if (rastro && res.passos && res.passos.length > 1) {
-        // teste de mesa: uma linha por instrução executada; só aparece o valor que mudou naquele passo
-        const linhas = ta.value.split("\n"), P = res.passos, cols = vars;
-        let corpo = "";
-        for (let k = 0; k < P.length - 1; k++) {
-          const [num, , ini] = P[k], depois = P[k + 1][1], antes = P[k][1], fim = P[k + 1][2];
-          const tela = (res.saida || "").slice(ini, fim).replace(/\n$/, "");
-          corpo += `<tr><td class="m">${k + 1}</td><td class="py-lin"><code>${esc((linhas[num - 1] || "").trim())}</code></td>${cols.map((n) => { const v = depois[n], mudou = v !== undefined && v !== antes[n]; return `<td class="${mudou ? "muda" : ""}"><code>${mudou ? esc(v) : ""}</code></td>`; }).join("")}<td><code>${esc(tela)}</code></td></tr>`;
-        }
-        html += `<p class="py-rot">Teste de mesa: uma linha por instrução executada</p><div class="rolagem"><table class="tabela py-rastro"><thead><tr><th scope="col" class="m">passo</th><th scope="col">linha</th>${cols.map((n) => `<th scope="col"><code>${esc(n)}</code></th>`).join("")}<th scope="col">tela</th></tr></thead><tbody>${corpo}</tbody></table></div>`;
+        html += tabelaRastro(res, ta.value, vars);
       } else if (vars.length) {
-        html += `<p class="py-rot">As variáveis agora</p><div class="rolagem"><table class="tabela py-vars" aria-label="As variáveis agora"><thead><tr><th scope="col">variável</th><th scope="col">valor</th><th scope="col">tipo</th></tr></thead><tbody>${vars.map((n) => { const v = res.valores[n]; return `<tr class="${v ? "" : "py-vazia"}"><td><code>${esc(n)}</code></td><td><code>${v ? esc(v.repr || "") : "ainda não existe"}</code></td><td>${v ? esc(v.py || v.tipo) : ""}</td></tr>`; }).join("")}</tbody></table></div>`;
+        html += tabelaVars(res, vars);
       }
       ver.forEach((n) => { const v = res.valores[n]; if (v) html += `<div class="py-res"><p class="py-rot">Resultado: <code>${esc(n)}</code></p>${desenhar(v)}</div>`; });
       if (repl && res.ultimo) html += `<div class="py-res"><p class="py-rot">O REPL mostraria</p>${desenhar(res.ultimo)}</div>`;
+      html += figuras(res);
       if (res.saida) html += `<div class="py-res"><p class="py-rot">Na tela (print)</p><pre class="py-saida">${esc(res.saida)}</pre></div>`;
       if (!html) html = `<p class="py-nota">Nada para mostrar ainda: complete o código acima.</p>`;
       saidas.innerHTML = html;
@@ -235,9 +255,83 @@
       }
       h.mostrarRevelado(ex, `${esc(e.texto)} Uma solução:`, `<pre class="py-solucao"><code>${esc(solucao)}</code></pre><p><button type="button" class="botao" data-a="usar">Usar esta solução no editor</button></p>`);
       const usar = ex.querySelector('[data-a="usar"]');
-      if (usar) usar.addEventListener("click", () => { ta.readOnly = false; ta.value = solucao; aoVivo(); ta.readOnly = true; });
+      if (usar) usar.addEventListener("click", () => { ta.readOnly = false; ta.value = solucao; ajustarAltura(); aoVivo(); ta.readOnly = true; });
       h.resolver(ex, ctx, "revelada");
     });
+  }
+
+
+  // ---------- o quadro livre (caixas Experimente das matérias): sem verificar; metas que se marcam sozinhas ----------
+  // Laboratorio.quadro(el, { como, base, inicial, preparo, pacotes, vars, ver, rastro, entradas, metas: [{ texto, dica, teste }],
+  //   aoMeta(n), aoResultado(res, areaExtra) }). Cada meta é uma expressão Python que dá True quando o código chega lá;
+  // uma meta cumprida fica marcada, mesmo que o código mude depois.
+  function quadro(el, op) {
+    const pacotes = op.pacotes || [], vars = op.vars || [], ver = op.ver || [], metas = op.metas || [], entradas = op.entradas || [];
+    const inicial = op.inicial || "";
+    const idc = "py-" + Math.random().toString(36).slice(2, 8);
+    const feitas = new Set();
+    el.innerHTML = `<div class="py-quadro">
+      ${op.como ? `<div class="como-se-faz"><span class="cf-rot">Como se faz</span>${op.como}</div>` : ""}
+      ${op.base ? `<section class="py-dados" aria-label="Os dados"><p class="py-rot">Os dados: <code>${esc(op.base)}</code></p><div class="py-base"><p class="py-nota">Carregando a tabela...</p></div></section>` : ""}
+      ${metas.length ? `<section aria-label="Metas"><p class="py-rot">Metas <small>cada uma se marca sozinha quando o código chega lá</small></p><ol class="py-metas">${metas.map((m, k) => `<li data-meta="${k}"><div>${m.texto} <span class="meta-estado" data-estado>(a fazer)</span>${m.dica ? `<details><summary>Ver a dica</summary><code>${esc(m.dica)}</code></details>` : ""}</div></li>`).join("")}</ol></section>` : ""}
+      ${entradas.length ? `<p class="py-entradas">O <code>input()</code> vai receber, nesta ordem: ${entradas.map((e) => `<code>${esc(e)}</code>`).join(", ")}</p>` : ""}
+      <div class="py-editor">
+        <label class="py-rot" for="${idc}">Seu código <small>o resultado muda enquanto você digita</small></label>
+        <textarea id="${idc}" class="py-cod" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" rows="${Math.max(3, inicial.split("\n").length + 1)}">${esc(inicial)}</textarea>
+        <div class="py-acoes"><button type="button" class="botao" data-a="recomecar">Voltar ao código inicial</button></div>
+      </div>
+      <section class="py-vivo" aria-label="Resultado" aria-live="polite"><p class="py-estado">Preparando o Python: na primeira vez leva alguns segundos, depois fica no aparelho.</p><div class="py-extra"></div><div class="py-saidas"></div></section>
+    </div>`;
+    const ta = el.querySelector("textarea"), estado = el.querySelector(".py-estado"), saidas = el.querySelector(".py-saidas"), extra = el.querySelector(".py-extra");
+    const baseEl = el.querySelector(".py-base");
+    let timer = 0, versao = 0;
+    const ajustarAltura = crescer(ta);
+    ta.addEventListener("keydown", (e) => {
+      if (e.key === "Tab" && !e.shiftKey) { e.preventDefault(); const i = ta.selectionStart; ta.setRangeText("    ", i, ta.selectionEnd, "end"); ta.dispatchEvent(new Event("input", { bubbles: true })); }
+      if (e.key === "Escape") ta.blur();
+    });
+    function marcarMetas(res) {
+      (res.metas || []).forEach((ok, k) => { if (ok) feitas.add(k); });
+      el.querySelectorAll("[data-meta]").forEach((li) => {
+        const k = Number(li.dataset.meta), ok = feitas.has(k);
+        li.classList.toggle("feita", ok);
+        li.querySelector("[data-estado]").textContent = ok ? "(feita)" : "(a fazer)";
+      });
+      if (op.aoMeta) op.aoMeta(feitas.size, metas.length);
+    }
+    function mostrar(res) {
+      if (res.falhou) { estado.textContent = res.falhou; estado.className = "py-estado py-falhou"; return; }
+      if (res.demorou) { estado.textContent = "O código demorou demais e foi parado. Tem algum laço que nunca termina?"; estado.className = "py-estado py-falhou"; return; }
+      estado.className = "py-estado"; estado.textContent = "";
+      if (baseEl && res.valores[op.base] && res.valores[op.base].tipo === "tabela" && !baseEl.dataset.pronto) { baseEl.innerHTML = desenhar(res.valores[op.base]); baseEl.dataset.pronto = "1"; }
+      marcarMetas(res);
+      let html = "";
+      if (res.erro && ta.value.trim() === inicial.trim() && /^SyntaxError/m.test(res.erro)) html += `<p class="py-nota py-lacuna">Complete o código acima: o resultado aparece aqui enquanto você digita.</p>`;
+      else if (res.erro) html += `<p class="py-erro"><b>O Python parou.</b> ${esc(erroPython(res.erro).texto)}</p>`;
+      if (op.rastro && res.passos && res.passos.length > 1) html += tabelaRastro(res, ta.value, vars);
+      else if (vars.length) html += tabelaVars(res, vars);
+      ver.forEach((n) => { const v = res.valores[n]; if (v) html += `<div class="py-res"><p class="py-rot">Resultado: <code>${esc(n)}</code></p>${desenhar(v)}</div>`; });
+      html += figuras(res);
+      if (res.saida) html += `<div class="py-res"><p class="py-rot">Na tela (print)</p><pre class="py-saida">${esc(res.saida)}</pre></div>`;
+      saidas.innerHTML = html || `<p class="py-nota">Nada para mostrar ainda: escreva o código acima.</p>`;
+      if (op.aoResultado) { try { op.aoResultado(res, extra); } catch (e) { extra.innerHTML = ""; } }
+    }
+    const metasTeste = metas.map((m) => m.teste);
+    async function aoVivo() {
+      const minha = ++versao;
+      const res = await rodar({ codigo: ta.value, preparo: op.preparo || "", pacotes, entradas, repl: false, rastro: op.rastro ? vars : null, metas: metasTeste, mostrar: [...new Set([op.base, ...ver, ...vars, ...(op.mostrar || [])].filter(Boolean))] });
+      if (minha === versao) mostrar(res);
+    }
+    ta.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(aoVivo, ATRASO); });
+    el.querySelector('[data-a="recomecar"]').addEventListener("click", () => { ta.value = inicial; ajustarAltura(); aoVivo(); ta.focus(); });
+    const avisar = (s, msg) => {
+      if (!el.isConnected) { ouvintes.delete(avisar); return; }
+      if (s === "carregando") { estado.textContent = "Preparando o Python: na primeira vez leva alguns segundos, depois fica no aparelho."; estado.className = "py-estado"; }
+      if (s === "falhou") { estado.textContent = msg || "O Python não carregou."; estado.className = "py-estado py-falhou"; }
+    };
+    ouvintes.add(avisar);
+    aoVivo();
+    return { editor: ta, rodar: aoVivo, metasFeitas: () => feitas.size };
   }
 
   // ---------- "O comando": as partes do código acendem junto com a explicação de cada uma ----------
@@ -257,5 +351,5 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => comandos(document)); else comandos(document);
 
-  window.Laboratorio = { exercicio, rodar, preparar, erroPython, comandos };
+  window.Laboratorio = { exercicio, quadro, rodar, preparar, erroPython, comandos };
 })();

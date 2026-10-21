@@ -6,10 +6,12 @@ import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyod
 const PYODIDE = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
 let py = null;
 const pacotes = new Set();
+const IMPORTA = { matplotlib: "matplotlib.pyplot" };
 
 // converte o valor de uma variável em algo que a página sabe desenhar: tabela, série, lista ou valor
 const AJUDA = `
-import json as _json, io as _io, sys as _sys, builtins as _b
+import json as _json, io as _io, sys as _sys, builtins as _b, os as _os
+_os.environ.setdefault("MPLBACKEND", "agg")  # gráficos sem tela: viram SVG para a página desenhar
 def _forma(v):
     try:
         import pandas as _pd
@@ -24,9 +26,28 @@ def _forma(v):
                     "valores": _json.loads(d.to_json(orient="values", double_precision=6)), "total": int(len(v)), "dtype": str(v.dtype)}
     except ImportError:
         pass
+    if type(v).__module__ == "numpy":
+        if getattr(v, "ndim", 1) == 0:
+            v = v.item()  # número do numpy (np.float64) aparece como o número do Python
+        else:
+            return {"tipo": "valor", "repr": repr(v)[:400], "py": "array", "lista": v.tolist() if v.size <= 500 else None}
     if isinstance(v, bool) or v is None or isinstance(v, (int, float, str)):
         return {"tipo": "valor", "repr": repr(v), "py": type(v).__name__}
     return {"tipo": "valor", "repr": repr(v)[:400], "py": type(v).__name__}
+
+# os gráficos abertos pelo matplotlib viram SVG; depois são fechados, para a próxima execução começar limpa
+def _figuras():
+    if "matplotlib.pyplot" not in _sys.modules:
+        return "[]"
+    import matplotlib.pyplot as _plt
+    out = []
+    for n in _plt.get_fignums():
+        b = _io.StringIO()
+        _plt.figure(n).savefig(b, format="svg", bbox_inches="tight")
+        t = b.getvalue()
+        out.append(t[t.find("<svg"):])
+    _plt.close("all")
+    return _json.dumps(out)
 
 # teste de mesa: roda o código do aluno linha por linha e anota, a cada linha, as variáveis e o que saiu na tela
 class _Demais(Exception):
@@ -58,7 +79,7 @@ async function preparar(lista) {
     py.runPython(AJUDA);
   }
   // o import também acontece aqui, sem tempo limite: o primeiro import do pandas leva alguns segundos
-  for (const p of lista || []) if (!pacotes.has(p)) { await py.loadPackage(p); py.runPython(`import ${p}`); pacotes.add(p); }
+  for (const p of lista || []) if (!pacotes.has(p)) { await py.loadPackage(p); py.runPython(`import ${IMPORTA[p] || p}`); pacotes.add(p); }
 }
 
 async function rodar(m) {
@@ -69,7 +90,7 @@ async function rodar(m) {
   ns.set("_entradas", entradas);
   ns.set("_codigo", m.codigo || ""); // os testes podem olhar o texto (por exemplo, se há comentário)
   py.runPython(`
-from __main__ import _forma, _json, _io
+from __main__ import _forma, _json, _io, _figuras
 _saida = _io.StringIO()
 def print(*a, sep=" ", end="\\n", file=None, flush=False):
     _saida.write(sep.join(str(x) for x in a) + end)
@@ -101,6 +122,9 @@ def input(prompt=""):
   if (m.rastro) {
     try { res.passos = JSON.parse(py.runPython("_json.dumps(_passos)", { globals: ns })); } catch (e) { res.passos = []; }
   }
+  // metas das caixas Experimente: cada uma é uma expressão Python que dá True quando foi cumprida
+  if (m.metas) res.metas = m.metas.map((expr) => { try { return py.runPython(`bool(${expr})`, { globals: ns }) === true; } catch (e) { return false; } });
+  try { res.figuras = JSON.parse(py.runPython("_figuras()", { globals: ns })); } catch (e) { res.figuras = []; }
   for (const nome of m.mostrar || []) {
     if (!ns.has(nome)) continue;
     try { res.valores[nome] = JSON.parse(py.runPython(`_json.dumps(_forma(${nome}))`, { globals: ns })); } catch (e) { /* valor que não sai */ }

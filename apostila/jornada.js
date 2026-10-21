@@ -591,14 +591,25 @@
     }
     const exp = window.EXPERIMENTE && window.EXPERIMENTE[s];
     if (exp) {
-      const META = 3;
+      // caixa em Python: conclui com as metas cumpridas; as outras, com tentativas diferentes
+      const META = 3, py = !!exp.python, unidade = py ? "metas" : "tentativas";
+      const contagem = () => `${Math.min(META, progresso.interacoes[s] || 0)} de ${META} ${unidade}`;
       lista.push({
-        id: "experimente", icone: "cursor-click-duotone", titulo: "Experimente", dica: "mude os valores e veja o resultado na hora",
-        tarefa: `Faça ${META} tentativas diferentes para concluir.`,
+        id: "experimente", icone: "cursor-click-duotone", titulo: "Experimente",
+        dica: py ? "escreva o comando e veja o resultado na hora" : "mude os valores e veja o resultado na hora",
+        tarefa: py ? `Cumpra as ${META} metas do quadro para concluir.` : `Faça ${META} tentativas diferentes para concluir.`,
         pronto: () => (progresso.interacoes[s] || 0) >= META,
-        html: () => `${s === "LOG" ? figura(g.figuras[0][0], "O caminho que acende é o que o algoritmo segue com o valor que você digitou.") : ""}<section class="experimente"><header><b>experimente</b><span>${esc(exp.titulo)}</span><span class="tentativas" data-tentativas>${Math.min(META, progresso.interacoes[s] || 0)} de ${META} tentativas</span></header><div class="area-exp"></div></section>`,
+        html: () => `${s === "LOG" ? figura(g.figuras[0][0], "O caminho que acende é o que o algoritmo segue com o valor que você digitou.") : ""}<section class="experimente${py ? " exp-python" : ""}"><header><b>experimente</b><span>${esc(exp.titulo)}</span><span class="tentativas" data-tentativas>${contagem()}</span></header><div class="area-exp"></div></section>`,
         montar: (el, liberar) => {
           const area = el.querySelector(".area-exp");
+          const mostrarConta = () => { el.querySelector("[data-tentativas]").textContent = contagem(); if ((progresso.interacoes[s] || 0) >= META) liberar(); };
+          if (py) {
+            exp.montar(area, el.querySelector("figure"), (n) => {
+              if (n > (progresso.interacoes[s] || 0)) { progresso.interacoes[s] = n; salvar(); }
+              mostrarConta();
+            });
+            return;
+          }
           exp.montar(area, el.querySelector("figure"));
           let t = 0;
           const contar = () => {
@@ -606,8 +617,7 @@
             t = setTimeout(() => {
               progresso.interacoes[s] = (progresso.interacoes[s] || 0) + 1;
               salvar();
-              el.querySelector("[data-tentativas]").textContent = `${Math.min(META, progresso.interacoes[s])} de ${META} tentativas`;
-              if (progresso.interacoes[s] >= META) liberar();
+              mostrarConta();
             }, 650);
           };
           area.addEventListener("input", contar);

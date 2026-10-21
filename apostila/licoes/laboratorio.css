@@ -1,0 +1,91 @@
+/* O quadro de Python (licoes/laboratorio.js): exercícios Faça no Python das lições e caixas Experimente das matérias. */
+/* ---------- Faça no Python (laboratorio.js) ---------- */
+.py-lab { display: grid; gap: 12px; min-width: 0; }
+.py-rot { margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; font: 700 12px/1.3 var(--f-codigo); letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-2); }
+.py-rot small { font: 400 12px/1.3 var(--f-ui); letter-spacing: 0; text-transform: none; }
+.py-rot code { font-size: 12.5px; text-transform: none; color: var(--texto); }
+.py-conta { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--tinta); }
+.py-tabela { font-size: 14px; }
+.py-tabela .py-idx { color: var(--texto-2); font: 12px var(--f-codigo); width: 2.4em; }
+.py-tabela tr.fica td { background: color-mix(in srgb, var(--certo) 12%, transparent); }
+.py-tabela tr.fica td:first-child { box-shadow: inset 3px 0 0 var(--certo); }
+.py-tabela tr.sai td { color: var(--texto-2); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--texto-2) 60%, transparent); }
+.py-editor { display: grid; gap: 8px; }
+.py-cod { width: 100%; min-height: 96px; resize: vertical; padding: 12px 14px; border: 1.5px solid var(--linha-forte); border-radius: 10px; background: var(--folha-2); color: var(--texto); font: 15px/1.6 var(--f-codigo); tab-size: 4; white-space: pre; overflow-x: auto; }
+.py-cod:focus { outline: none; border-color: var(--tinta); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tinta) 25%, transparent); }
+.py-cod[readonly] { opacity: 0.85; }
+.py-acoes { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.py-acoes .botao { min-height: 44px; }
+.py-vivo { border: 1px dashed var(--linha-forte); border-radius: 10px; padding: 12px; display: grid; gap: 10px; min-width: 0; }
+.py-estado { margin: 0; font-size: 14px; color: var(--texto-2); }
+.py-estado:empty { display: none; }
+.py-estado.py-falhou { color: var(--aviso); }
+.py-saidas { display: grid; gap: 12px; min-width: 0; }
+.py-res { min-width: 0; }
+.py-valor { margin: 0; display: flex; align-items: baseline; gap: 10px; }
+.py-valor code { font: 700 20px/1.3 var(--f-codigo); color: var(--texto); background: none; border: 0; padding: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.py-valor small { font: 12px var(--f-codigo); color: var(--texto-2); }
+.py-saida { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--folha-2); border: 1px solid var(--linha); font: 14px/1.5 var(--f-codigo); white-space: pre-wrap; overflow-wrap: anywhere; }
+.py-erro { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--aviso-suave); color: var(--texto); font-size: 14.5px; line-height: 1.45; }
+.py-erro b { color: var(--aviso); }
+.py-nota { margin: 4px 0 0; font-size: 12.5px; color: var(--texto-2); }
+.py-vars { font-size: 14px; }
+.py-vars caption { text-align: left; }
+.py-vars tr.py-vazia td { color: var(--texto-2); }
+.py-entradas { margin: 0; font-size: 14px; color: var(--texto-2); }
+.py-solucao { margin: 8px 0; padding: 10px 12px; border-radius: 8px; background: var(--folha-2); border: 1px solid var(--linha); font: 14px/1.5 var(--f-codigo); white-space: pre-wrap; overflow-x: auto; }
+.como-se-faz { display: grid; gap: 8px; padding: 12px 14px; border-left: 3px solid var(--tinta); border-radius: 0 10px 10px 0; background: color-mix(in srgb, var(--tinta) 6%, var(--folha)); }
+.como-se-faz > p { margin: 0; font-size: 15px; line-height: 1.5; }
+.como-se-faz pre { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--folha-2); border: 1px solid var(--linha); font: 14.5px/1.6 var(--f-codigo); overflow-x: auto; white-space: pre; }
+.como-se-faz .cf-rot { font: 700 12px/1 var(--f-codigo); letter-spacing: 0.05em; text-transform: uppercase; color: var(--tinta); }
+
+/* "O comando": as partes do código e a explicação de cada uma acendem juntas */
+figure.comando { margin: 0; display: grid; gap: 10px; padding: 14px; border: 1px solid var(--linha-forte); border-radius: 12px; background: var(--folha); }
+figure.comando figcaption { font: 700 12px/1.3 var(--f-codigo); letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-2); }
+figure.comando pre { margin: 0; padding: 12px 14px; border-radius: 8px; background: var(--folha-2); border: 1px solid var(--linha); font: 16px/1.6 var(--f-codigo); overflow-x: auto; white-space: pre; }
+figure.comando pre [data-parte] { border-radius: 4px; padding: 1px 2px; box-shadow: inset 0 -2px color-mix(in srgb, var(--tinta) 45%, transparent); transition: background-color 0.2s; }
+figure.comando pre [data-parte].aceso { background: color-mix(in srgb, var(--tinta) 22%, transparent); }
+.comando-partes { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.comando-partes li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 6px 8px; border-radius: 8px; font-size: 15px; line-height: 1.45; cursor: default; }
+.comando-partes li code { font: 700 14px var(--f-codigo); color: var(--tinta); background: none; border: 0; padding: 0; white-space: nowrap; }
+.comando-partes li.aceso { background: color-mix(in srgb, var(--tinta) 10%, transparent); }
+.comando-partes li:focus-visible { outline: 3px solid var(--tinta); outline-offset: 1px; }
+.comando-nota { margin: 0; font-size: 14px; line-height: 1.5; color: var(--texto-2); }
+.exercicio.py, .py-lab > *, .py-dados, .py-editor, .py-vivo, .como-se-faz { min-width: 0; max-width: 100%; }
+.exercicio.py { display: grid; gap: 12px; }
+.exercicio.py > * { min-width: 0; }
+.como-se-faz pre, figure.comando pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.py-lacuna { font-size: 14px; }
+.comando-partes li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+.comando-partes li code { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (min-width: 720px) { .comando-partes li { grid-template-columns: minmax(120px, max-content) minmax(0, 1fr); gap: 12px; } }
+.py-tabela th, .py-tabela td { padding: 6px 8px; font-size: 13.5px; }
+.py-tabela th { font-size: 12.5px; }
+@media (max-width: 480px) { .py-tabela th, .py-tabela td { padding: 5px 6px; font-size: 12.5px; } .py-tabela th { font-size: 11.5px; } .py-tabela .py-idx { width: 1.6em; } }
+.py-cod { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .py-vivo { padding: 8px; } .py-tabela th, .py-tabela td { padding: 5px 5px; } .exercicio.py { padding-left: 12px; padding-right: 12px; } }
+.py-rastro { font-size: 13.5px; }
+.py-rastro td, .py-rastro th { padding: 5px 8px; white-space: nowrap; }
+.py-rastro td code { background: none; border: 0; padding: 0; font-size: 13px; }
+.py-rastro td.py-lin { white-space: normal; min-width: 9em; }
+.py-rastro td.py-lin code, .py-rastro td:last-child code { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .py-rastro td, .py-rastro th { padding: 4px 5px; } .py-rastro td code { font-size: 12px; } .py-rastro td.py-lin { min-width: 7em; } .py-rastro .m { display: none; } }
+.py-rastro td.muda { background: color-mix(in srgb, var(--tinta) 12%, transparent); font-weight: 700; }
+
+/* resultado em figura (matplotlib) e metas das caixas Experimente */
+.py-fig { margin: 0; padding: 8px; border-radius: 10px; background: #fff; border: 1px solid var(--linha); overflow-x: auto; }
+.py-fig svg { display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; }
+.py-metas { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; counter-reset: meta; }
+.py-metas li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; align-items: start; padding: 8px 10px; border: 1px solid var(--linha); border-radius: 8px; font-size: 15px; line-height: 1.45; }
+.py-metas li::before { counter-increment: meta; content: counter(meta); display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--linha-forte); font: 700 12px var(--f-codigo); color: var(--texto-2); }
+.py-metas li.feita { border-color: color-mix(in srgb, var(--certo) 55%, var(--linha)); background: color-mix(in srgb, var(--certo) 8%, transparent); }
+.py-metas li.feita::before { content: "ok"; border-color: var(--certo); color: var(--certo); font-size: 10px; }
+.py-metas details { margin-top: 4px; }
+.py-metas summary { display: inline-flex; align-items: center; min-height: 32px; font-size: 13.5px; color: var(--tinta); cursor: pointer; }
+.py-metas summary:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; border-radius: 4px; }
+.py-metas details code { display: block; margin-top: 4px; padding: 6px 8px; border-radius: 6px; background: var(--folha-2); font: 13.5px/1.5 var(--f-codigo); white-space: pre-wrap; overflow-wrap: anywhere; }
+.py-metas .meta-estado { font-size: 12.5px; color: var(--texto-2); }
+.py-quadro { display: grid; gap: 12px; min-width: 0; }
+.py-vars td code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.py-vars td:nth-child(2) { min-width: 6em; }
+@media (max-width: 480px) { .sub .experimente.exp-python { padding: 14px 10px; } }
