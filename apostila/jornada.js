@@ -647,7 +647,7 @@
       id: "codigo", icone: "code-duotone", titulo: "No computador", dica: totalPrev ? `a mesma ideia em código; preveja ${totalPrev === 1 ? "a saída" : `as ${totalPrev} saídas`}` : "a mesma ideia escrita em código",
       tarefa: totalPrev ? "Antes de ver cada saída, escreva o que você acha que aparece." : "Leia o código com calma e conclua.",
       pronto: () => !totalPrev || previstos(),
-      html: () => `<div class="duo">${blocos.map((b, k) => `<pre class="codigo-prever" data-bloco="${k}"><code class="hljs language-${lang}">${b.html}</code></pre>`).join("")}</div>`,
+      html: () => `<div class="duo">${blocos.map((b, k) => `<pre class="codigo-prever" data-bloco="${k}" tabindex="0"><code class="hljs language-${lang}">${b.html}</code></pre>`).join("")}</div>`,
       montar: (el, liberar) => {
         el.addEventListener("click", (e) => {
           const btn = e.target.closest(".prever-btn");
@@ -681,7 +681,7 @@
   }
   const concluidas = (s) => progresso.trilhas[s] || [];
   function figura(chave, legenda) {
-    return `<figure class="figura-jogo" data-fig="${chave}"><button class="ampliar" type="button">${ic("magnifying-glass-duotone")} Ampliar</button><div class="rolagem">${window.FIG[chave]()}</div><figcaption>${esc(legenda)}</figcaption></figure>`;
+    return `<figure class="figura-jogo" data-fig="${chave}"><button class="ampliar" type="button">${ic("magnifying-glass-duotone")} Ampliar</button><div class="rolagem" tabindex="0" role="group" aria-label="Figura: role para os lados se não couber">${window.FIG[chave]()}</div><figcaption>${esc(legenda)}</figcaption></figure>`;
   }
   function abaGuia(m) {
     const s = m.sigla;
@@ -1315,4 +1315,14 @@
   render();
   // aviso que sobrevive ao recarregar (depois de carregar ou desfazer um trajeto)
   try { const aviso = sessionStorage.getItem("dominio-aviso"); if (aviso) { sessionStorage.removeItem("dominio-aviso"); setTimeout(() => toast(aviso, "check-circle-duotone"), 400); } } catch (e) { /* sem armazenamento */ }
+
+  // "Pular para o conteúdo": leva o foco ao conteúdo sem trocar a rota (o endereço com # é a rota desta página)
+  document.querySelectorAll("a.pular, a.lab-pular-conteudo").forEach((a) => a.addEventListener("click", (e) => {
+    const alvo = document.getElementById(a.getAttribute("href").slice(1));
+    if (!alvo) return;
+    e.preventDefault();
+    if (!alvo.hasAttribute("tabindex")) alvo.setAttribute("tabindex", "-1");
+    alvo.focus({ preventScroll: true });
+    alvo.scrollIntoView({ block: "start" });
+  }));
 })();

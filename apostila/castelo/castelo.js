@@ -730,7 +730,7 @@
       <p class="lab-conceito">${esc(s.conceito)}</p>
       ${s.trabalho ? falaGuia("explica", `<p><span class="lab-tutor-rot">No trabalho do cientista de dados</span>${esc(s.trabalho)}</p>`) : ""}
       <p class="lab-ferramenta">Ferramenta: <a href="${s.ferramenta.url}" target="_blank" rel="noopener">${esc(s.ferramenta.nome)}</a> (licença ${esc(s.ferramenta.licenca)}): ${esc(s.ferramenta.papel)}.</p>
-      <div class="lab-aviso-banco" hidden></div><div class="cx" aria-label="Etapas do módulo"></div><div class="lab-fim-lugar"></div>
+      <div class="lab-aviso-banco" hidden></div><div class="cx" role="group" aria-label="Etapas do módulo"></div><div class="lab-fim-lugar"></div>
       <div class="lab-rodape"><a class="botao" href="#">Voltar ao centro de dados</a>${!salaCompleta(s) && s.desfazer ? '<button type="button" class="lab-link" data-a="desfazer">Recomeçar este módulo</button>' : ""}</div></article>${painelBanco()}`;
     ligarPainelBanco();
     const cx = cascata(palco.querySelector(".cx")), fimLugar = palco.querySelector(".lab-fim-lugar");
@@ -883,9 +883,15 @@
     palco.innerHTML = `<article class="lab-sala"><p class="sobretitulo">Nivelamento da zona ${b} · ${esc(bloco.zona)}</p><h2>${esc(nivel.nome)}</h2>
       <p class="lab-enunciado">${nivel.itens.length} itens práticos, uma entrega cada. Passa quem acertar ${nivel.minimo}. Antes de entregar, você pode rodar à vontade. Aqui não há dica nem solução: é a prova.</p>
       <div class="lab-aviso-banco" ${porPular ? "" : "hidden"}>${porPular ? "Preparando o banco com as soluções oficiais dos módulos desta zona, para a prova ter dados..." : ""}</div>
-      <div class="cx" aria-label="Itens do nivelamento"></div><div class="lab-resultado" aria-live="polite"></div>
+      <div class="cx" role="group" aria-label="Itens do nivelamento"></div><div class="lab-resultado" aria-live="polite"></div>
       <div class="lab-rodape"><a class="botao" href="#">Voltar ao centro de dados</a></div></article>`;
-    if (porPular) { await reconstruir(indice(ultima)); palco.querySelector(".lab-aviso-banco").hidden = true; }
+    if (porPular) {
+      // a reconstrução leva alguns segundos; se você saiu desta tela no meio, ela não continua a se montar em outra
+      const aviso = palco.querySelector(".lab-aviso-banco");
+      await reconstruir(indice(ultima));
+      if (!aviso.isConnected) return;
+      aviso.hidden = true;
+    }
     const cx = cascata(palco.querySelector(".cx")), res = palco.querySelector(".lab-resultado");
     const notas = {};
     nivel.itens.forEach((t, k) => {
@@ -916,6 +922,11 @@
   }
 
   async function telaRelatorio() {
+    const faltam = C.salas.filter((x) => !salaCompleta(x));
+    if (faltam.length) {
+      palco.innerHTML = `<div class="lab-cartao"><h2>O relatório fica pronto com os ${C.salas.length} módulos ligados.</h2><p>Faltam ${faltam.length}. O próximo é ${esc(faltam[0].nome)}.</p><p><a class="botao primario" href="#${faltam[0].id}">Ir para ${esc(faltam[0].nome)}</a> <a class="botao" href="#">Voltar ao centro de dados</a></p></div>`;
+      return;
+    }
     palco.innerHTML = '<article class="lab-sala"><p class="sobretitulo">O centro de dados está completo</p><h2>Relatório do centro de dados</h2><div class="lab-saida"><p class="lab-nota">Lendo o seu banco...</p></div><div class="lab-rodape"><a class="botao" href="#">Voltar ao centro de dados</a></div></article>' + painelBanco();
     ligarPainelBanco();
     const saida = palco.querySelector(".lab-saida");
@@ -950,4 +961,14 @@
   window.addEventListener("tema", () => desenharMapa());
   render();
   window.Castelo = { banco, executar, dividir, reconstruir, estado: () => estado };
+
+  // "Pular para o conteúdo": leva o foco ao conteúdo sem trocar a rota (o endereço com # é a rota desta página)
+  document.querySelectorAll("a.pular, a.lab-pular-conteudo").forEach((a) => a.addEventListener("click", (e) => {
+    const alvo = document.getElementById(a.getAttribute("href").slice(1));
+    if (!alvo) return;
+    e.preventDefault();
+    if (!alvo.hasAttribute("tabindex")) alvo.setAttribute("tabindex", "-1");
+    alvo.focus({ preventScroll: true });
+    alvo.scrollIntoView({ block: "start" });
+  }));
 })();
