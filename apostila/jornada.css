@@ -316,6 +316,10 @@ body.foco { background: var(--fundo); }
 .resposta-j .ic { width: 32px; height: 32px; color: var(--certo); }
 .resposta-j small { display: block; font: 700 12px/1 var(--f-ui); text-transform: uppercase; letter-spacing: 0.07em; color: var(--certo); margin-bottom: 6px; }
 .resposta-ver { margin-top: 10px; }
+.pratica-j { margin-top: 16px; border-top: 1px solid var(--linha); padding-top: 4px; }
+.pratica-j > summary { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--texto-2); cursor: pointer; }
+.pratica-j > summary:focus-visible { outline: 3px solid var(--azul-cor, var(--tinta)); outline-offset: 2px; border-radius: 4px; }
+.pratica-j[open] > summary { color: var(--texto); }
 .resposta-ver > summary { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--azul-cor, var(--tinta)); cursor: pointer; }
 .resposta-ver > summary:focus-visible { outline: 3px solid var(--azul-cor, var(--tinta)); outline-offset: 2px; border-radius: 4px; }
 .resposta-ver[open] > summary { margin-bottom: 8px; }

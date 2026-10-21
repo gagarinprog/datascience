@@ -330,6 +330,7 @@
       const confere = (r) => r.length === feitas.length && r.every((x, i) => x.t === feitas[i].t && (!comRecuo || x.n === feitas[i].n));
       if (respostas.some(confere)) {
         feitas.forEach((f) => f.el.classList.add("ok"));
+        ex.querySelector("[data-verificar]").disabled = true;
         mostrarCerto(ex); resolver(ex, ctx, tentativas > 1 ? "segunda" : "primeira"); return;
       }
       if (tentativas >= 2) {
@@ -337,6 +338,7 @@
         itens().forEach((it) => { banco.appendChild(it.querySelector(".linha")); it.remove(); });
         r.forEach((x) => { const l = linhas.find((k) => k.textContent.trim() === x.t && k.closest("[data-banco]")); paraMontagem(l); l.closest(".p-item").dataset.nivel = String(x.n); l.closest(".p-item").classList.add("revelado"); });
         linhas.filter((l) => l.hasAttribute("data-falsa")).forEach((l) => l.classList.add("falsa-revelada"));
+        ex.querySelector("[data-verificar]").disabled = true;
         mostrarRevelado(ex, `O programa certo foi montado acima${linhas.some((l) => l.hasAttribute("data-falsa")) ? "; as linhas riscadas não fazem parte dele" : ""}. ${semAbertura(retornoDe(ex).dataset.okTexto)}`);
         resolver(ex, ctx, "revelada");
         return;
@@ -428,7 +430,7 @@
       if (vagas.some((v) => !v.dataset.palavra)) { mostrarAviso(ex, "Preencha todas as lacunas antes de verificar: toque numa lacuna e depois numa palavra."); return; }
       tentativas++;
       const erradas = vagas.filter((v) => norm(v.dataset.palavra) !== norm(v.dataset.lacuna));
-      const fechar = () => { chips.forEach((c) => { c.disabled = true; }); vagas.forEach((v) => { v.disabled = true; }); };
+      const fechar = () => { chips.forEach((c) => { c.disabled = true; }); vagas.forEach((v) => { v.disabled = true; }); ex.querySelector("[data-verificar]").disabled = true; };
       if (!erradas.length) {
         vagas.forEach((v) => { v.classList.remove("nao"); v.classList.add("ok"); }); fechar(); ex.dataset.estado = "resolvido"; rotular();
         mostrarCerto(ex); resolver(ex, ctx, tentativas > 1 ? "segunda" : "primeira"); return;
@@ -450,11 +452,12 @@
   // ---------- montar um exercício a partir de dados (estudo em 5 passos, trilha, Centro de Dados) ----------
   // { f: "escolha", p, o: [[texto, certo, porque], ...] } · { f: "lacunas", p, t: "texto com {{palavra}}", x: [palavras que confundem], por }
   // { f: "erro", p, t: [frase, ...], e: índice da errada, por } · { f: "ordem", p, t: [passos na ordem certa], por }
+  // Opcional em todos: r, o rótulo acima da pergunta (sem ele, o do formato).
   const ROTULOS = { escolha: "Escolha a explicação", lacunas: "Complete a explicação", erro: "Ache o erro", ordem: "Ponha na ordem" };
   const embaralhar = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
   const at = (t) => esc(t).replace(/"/g, "&quot;");
   function criar(d) {
-    const cab = `<p class="rotulo">${ROTULOS[d.f] || ""}</p><p class="pergunta">${d.p}</p>`;
+    const cab = `<p class="rotulo">${d.r || ROTULOS[d.f] || ""}</p><p class="pergunta">${d.p}</p>`;
     if (d.f === "escolha") {
       const certo = d.o.find((o) => o[1]);
       return `<div class="exercicio" data-escolha>${cab}<div class="opcoes opcoes-texto">${embaralhar(d.o).map(([t, ok, por]) => `<button class="botao" type="button"${ok ? " data-ok" : ""} data-porque="${at(por || "")}">${t}</button>`).join("")}</div><div class="retorno" hidden data-ok-texto="${at(certo[2] || "")}" data-nao-texto="${at(`A certa é: “${certo[0]}”. ${certo[2] || ""}`)}"></div></div>`;
@@ -481,7 +484,7 @@
     const todos = ls.ler(CHAVE_EXP, {}), chave = `${ctx.licao}#${sec.id}`;
     p.insertAdjacentHTML("afterend", `<div class="explicar"><label class="visivel-leitor" for="exp-${sec.id}">Sua explicação em até 3 linhas</label>
       <textarea id="exp-${sec.id}" rows="3" maxlength="420" placeholder="Escreva com as suas palavras, como se explicasse para um colega.">${esc(todos[chave] || "")}</textarea>
-      <div class="explicar-acoes"><button type="button" class="botao" data-salvar>Salvar e comparar</button><span class="explicar-estado" aria-live="polite"></span></div>
+      <div class="explicar-acoes"><button type="button" class="botao" data-salvar>Salvar</button><span class="explicar-estado" aria-live="polite"></span></div>
       <p class="explicar-modelo" hidden></p></div>`);
     const caixa = p.nextElementSibling;
     caixa.querySelector("[data-salvar]").addEventListener("click", () => {
@@ -562,7 +565,11 @@
     // o botão de seguir vem depois de todas as etapas existirem, para saber o nome da próxima
     cx.itens.forEach((it) => {
       const g = it.grupo;
-      if (!g.ex) cx.seguir(it, g.tipo === "fecho" ? "Fechei este conceito" : null, () => cx.marcar(it, { feito: true, resumo: g.tipo === "animacao" ? "vista" : g.tipo === "fecho" ? "fechado" : "lido" }));
+      if (!g.ex) cx.seguir(it, g.tipo === "fecho" ? "Fechei este conceito" : null, () => {
+        // fechar o conceito também o marca como estudado (o botão de marcar fica escondido dentro da cascata)
+        if (g.tipo === "fecho") { const mk = it.corpo && it.corpo.querySelector("[data-marcar]"); if (mk && !mk.classList.contains("certo")) mk.click(); }
+        cx.marcar(it, { feito: true, resumo: g.tipo === "animacao" ? "vista" : g.tipo === "fecho" ? "fechado" : "lido" });
+      });
     });
     cx.porEx = porEx;
     cx.abrir(cx.itens[0], false);

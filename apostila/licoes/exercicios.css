@@ -112,3 +112,27 @@
 /* ordenar passos de uma explicação (texto, não código) */
 .exercicio.ex-texto .linha { font: 500 15px/1.4 var(--f-ui); white-space: normal; text-align: left; }
 .explique-opcional { opacity: 0.95; }
+
+/* ---- acabamento sóbrio (21/10/2026): respostas planas, cartões de 12 px, verde só para acerto ---- */
+:root .exercicio { border-radius: 12px; border-width: 1px; box-shadow: none; }
+:root .exercicio.desafio { border-left-width: 3px; background: var(--folha); }
+:root .exercicio :is(.opcoes .botao, .linha, .chip-l) {
+  border: 1px solid var(--linha-forte); border-radius: 8px; box-shadow: none; transform: none; text-shadow: none;
+  background: var(--folha); color: var(--texto); min-height: 44px; animation: none;
+  transition: border-color 150ms, background-color 150ms;
+}
+:root .exercicio :is(.opcoes .botao, .linha, .chip-l):hover:not(:disabled) { transform: none; border-color: var(--tinta); }
+:root .exercicio :is(.opcoes .botao, .linha, .chip-l):focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+:root .exercicio .opcoes .botao.certo, :root .exercicio .p-item.ok .linha { border-color: var(--certo); background: var(--certo-suave); box-shadow: none; color: var(--texto); }
+:root .exercicio .opcoes .botao.errado { border-color: var(--erro); background: var(--erro-suave); box-shadow: none; color: var(--texto-2); }
+:root .exercicio .opcoes .botao:disabled:not(.certo):not(.errado) { opacity: 0.6; }
+:root .exercicio .ache-linha { border-radius: 8px; }
+.lacuna.nao { background: transparent; }
+.lacuna.alvo { background: color-mix(in srgb, var(--tinta) 10%, var(--folha-2)); }
+/* o resumo é a ideia central: destaque neutro, não a cor de acerto */
+:root .resumo { background: color-mix(in srgb, var(--tinta) 7%, var(--folha)); border: 0; border-left: 3px solid var(--tinta); border-radius: 0 10px 10px 0; }
+:root .resumo b { color: var(--tinta); }
+:root :is(.simples, .cotidiano) { border-radius: 10px; }
+:root .explique { border-radius: 10px; }
+/* dentro da cascata, quem fecha o conceito é o botão de seguir; o marcar fica só fora dela */
+.cx-corpo [data-marcar] { display: none; }

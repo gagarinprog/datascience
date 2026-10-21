@@ -109,6 +109,8 @@ test.describe("apostila", () => {
     await expect(final).toBeVisible();
     await final.evaluate((e) => ((e as HTMLElement).dataset.vid = "final"));
     expect((await resolver(page, "final", true)).estado).toBe("resolvido");
+    // a prática da tarefa do módulo é opcional e vem recolhida
+    await page.locator(".pratica-j > summary").click();
     await page.locator("#resp").fill("Uma sequência finita de passos sem ambiguidade.");
     await page.locator("[data-acertei]").click();
     await expect(page.locator(".vitoria")).toBeVisible();
@@ -161,7 +163,8 @@ test.describe("apostila", () => {
               await ta.fill("Explicação com as minhas palavras.");
               await it.locator("[data-salvar]").click();
             }
-            if (await it.locator("[data-marcar]").count())
+            // dentro da cascata o marcar fica escondido: o botão de seguir fecha e marca o conceito
+            if (await it.locator("[data-marcar]").isVisible())
               await it.locator("[data-marcar]").click();
             if (await it.locator(".cx-seguir").count()) await it.locator(".cx-seguir").click();
           }

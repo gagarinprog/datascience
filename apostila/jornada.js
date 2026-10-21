@@ -945,9 +945,11 @@
       caixa.hidden = false;
       const ns0 = document.querySelector("[data-naosei]");
       if (ns0) ns0.closest(".botoes-j").hidden = true;
-      caixa.innerHTML = `<label class="resposta-campo"><span>Para praticar (opcional): ${esc(mod.pergunta)} O que você escrever fica salvo.</span><textarea id="resp" rows="3">${esc(resp.texto || "")}</textarea></label>
-        <details class="resposta-ver"><summary>Ver a nossa resposta</summary><div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div></details>
-        <div class="botoes-j" style="margin-top:14px">${acertou ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Dominar o módulo</button><button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button>` : `<button type="button" class="btn btn-3d" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button><button type="button" class="btn" data-de-novo>Tentar de novo</button>`}</div>`;
+      caixa.innerHTML = `<div class="botoes-j">${acertou ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Dominar o módulo</button><button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button>` : `<button type="button" class="btn btn-3d" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button><button type="button" class="btn" data-de-novo>Tentar de novo</button>`}</div>
+        <details class="pratica-j"><summary>Praticar com a tarefa do módulo (opcional)</summary>
+          <label class="resposta-campo"><span>${esc(mod.pergunta)} O que você escrever fica salvo.</span><textarea id="resp" rows="3">${esc(resp.texto || "")}</textarea></label>
+          <details class="resposta-ver"><summary>Ver a nossa resposta</summary><div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div></details>
+        </details>`;
       const t = caixa.querySelector("#resp");
       t.addEventListener("input", () => { progresso.respostas[cod] = { texto: t.value, em: hoje() }; salvar(); });
       const ac = caixa.querySelector("[data-acertei]");
