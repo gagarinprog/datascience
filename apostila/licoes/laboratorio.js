@@ -13,7 +13,8 @@
 //   <div class="retorno" hidden data-ok-texto="..."></div>
 // </div>
 // Opções: data-base (a tabela mostrada em "Os dados"; as linhas que ficam no resultado se destacam), data-ver
-// (variáveis mostradas em "Resultado"), data-vars (tabela de variáveis, o teste de mesa), data-repl (mostra o valor
+// (variáveis mostradas em "Resultado"), data-vars (tabela de variáveis), data-rastro (com data-vars: o teste de mesa,
+// uma linha por instrução executada, só com o que mudou), data-repl (mostra o valor
 // da última linha, como no REPL), data-entradas="20|8.5" (o que o input() recebe), data-pacotes="pandas".
 (function () {
   "use strict";
@@ -117,6 +118,7 @@
     const nomeBase = ex.dataset.base || "", ver = lista(ex.dataset.ver), vars = lista(ex.dataset.vars);
     const entradas = ex.dataset.entradas ? ex.dataset.entradas.split("|") : [];
     const repl = ex.hasAttribute("data-repl");
+    const rastro = ex.hasAttribute("data-rastro");
     const idc = "py-" + Math.random().toString(36).slice(2, 8);
     const retorno = ex.querySelector(":scope > .retorno");
     const bloco = document.createElement("div");
@@ -163,7 +165,17 @@
         const e = erroPython(res.erro);
         html += `<p class="py-erro"><b>O Python parou.</b> ${esc(e.texto)}</p>`;
       }
-      if (vars.length) {
+      if (rastro && res.passos && res.passos.length > 1) {
+        // teste de mesa: uma linha por instrução executada; só aparece o valor que mudou naquele passo
+        const linhas = ta.value.split("\n"), P = res.passos, cols = vars;
+        let corpo = "";
+        for (let k = 0; k < P.length - 1; k++) {
+          const [num, , ini] = P[k], depois = P[k + 1][1], antes = P[k][1], fim = P[k + 1][2];
+          const tela = (res.saida || "").slice(ini, fim).replace(/\n$/, "");
+          corpo += `<tr><td class="m">${k + 1}</td><td class="py-lin"><code>${esc((linhas[num - 1] || "").trim())}</code></td>${cols.map((n) => { const v = depois[n], mudou = v !== undefined && v !== antes[n]; return `<td class="${mudou ? "muda" : ""}"><code>${mudou ? esc(v) : ""}</code></td>`; }).join("")}<td><code>${esc(tela)}</code></td></tr>`;
+        }
+        html += `<p class="py-rot">Teste de mesa: uma linha por instrução executada</p><div class="rolagem"><table class="tabela py-rastro"><thead><tr><th scope="col" class="m">passo</th><th scope="col">linha</th>${cols.map((n) => `<th scope="col"><code>${esc(n)}</code></th>`).join("")}<th scope="col">tela</th></tr></thead><tbody>${corpo}</tbody></table></div>`;
+      } else if (vars.length) {
         html += `<p class="py-rot">As variáveis agora</p><div class="rolagem"><table class="tabela py-vars" aria-label="As variáveis agora"><thead><tr><th scope="col">variável</th><th scope="col">valor</th><th scope="col">tipo</th></tr></thead><tbody>${vars.map((n) => { const v = res.valores[n]; return `<tr class="${v ? "" : "py-vazia"}"><td><code>${esc(n)}</code></td><td><code>${v ? esc(v.repr || "") : "ainda não existe"}</code></td><td>${v ? esc(v.py || v.tipo) : ""}</td></tr>`; }).join("")}</tbody></table></div>`;
       }
       ver.forEach((n) => { const v = res.valores[n]; if (v) html += `<div class="py-res"><p class="py-rot">Resultado: <code>${esc(n)}</code></p>${desenhar(v)}</div>`; });
@@ -172,7 +184,7 @@
       if (!html) html = `<p class="py-nota">Nada para mostrar ainda: complete o código acima.</p>`;
       saidas.innerHTML = html;
     }
-    const pedido = (comTestes) => ({ codigo: ta.value, preparo, pacotes, mostrar: [...new Set([nomeBase, ...ver, ...vars].filter(Boolean))], entradas, repl, testes: comTestes ? testes : "" });
+    const pedido = (comTestes) => ({ codigo: ta.value, preparo, pacotes, mostrar: [...new Set([nomeBase, ...ver, ...vars].filter(Boolean))], entradas, repl, rastro: rastro ? vars : null, testes: comTestes ? testes : "" });
     async function aoVivo() {
       const minha = ++versao;
       const res = await rodar(pedido(false));

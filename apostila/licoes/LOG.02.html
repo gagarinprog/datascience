@@ -130,7 +130,33 @@ total = total + 30</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Letras, números e sublinhado, sem espaço, sem começar por número e sem palavras reservadas como <code>for</code> e <code>if</code>." data-nao-texto="Os campos em vermelho estão trocados. Confira: começa com número? Tem espaço? É uma palavra reservada do Python, como <code>for</code>?"></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>Variável é um nome colado num valor; se o valor muda, o nome fica e passa a apontar para o novo.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="total" data-rastro>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">O candidato ganhou 6 pontos de títulos. Acrescente uma linha que soma 6 ao total, usando o próprio total.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>A variável é um nome para um valor. <code>total = total + 6</code> pega o valor atual, soma 6 e guarda de volta no mesmo nome.</p><pre>total = 48
+total = total + 30
+total = total + 6</pre></div>
+          <template data-inicial>
+total = 48
+total = total + 30
+
+          </template>
+          <template data-solucao>
+total = 48
+total = total + 30
+total = total + 6
+          </template>
+          <template data-testes>
+assert total == 84, "total deveria terminar em 84: 48 + 30 + 6."
+assert "total + 6" in _codigo, "Use o próprio total: total = total + 6."
+          </template>
+          <template data-dica>
+a nova linha é total = total + 6.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O teste de mesa mostra o total passando por 48, 78 e 84: a cada linha o nome aponta para um valor novo."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Variável é um nome colado num valor; se o valor muda, o nome fica e passa a apontar para o novo.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que acontece com o 5 quando você escreve <code>x = x + 2</code> e x valia 5.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
@@ -185,7 +211,40 @@ y = x - 3</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Certo. x = 4; y = 4 * 2 = 8; x = 8 + 1 = 9; y = 9 - 3 = 6. Cada linha usa os valores de agora." data-nao-texto="Faça uma tabela e atualize linha por linha. Linha 2: y = 4 * 2 = 8. Linha 3: x = 8 + 1. Linha 4: y usa o novo x. Lembre que cada linha usa os valores do momento."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>Atribuição guarda o resultado do lado direito no nome da esquerda; copia o valor, não cria ligação.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="a b aux" data-rastro>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Troque os valores de a e b: no fim, a vale 10 e b vale 3. Use uma variável auxiliar.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Se você fizer <code>a = b</code> direto, o 3 se perde. Guarde antes numa auxiliar.</p><pre>a = 3
+b = 10
+aux = a
+a = b
+b = aux</pre></div>
+          <template data-inicial>
+a = 3
+b = 10
+aux = a
+
+          </template>
+          <template data-solucao>
+a = 3
+b = 10
+aux = a
+a = b
+b = aux
+          </template>
+          <template data-testes>
+assert a == 10 and b == 3, "No fim, a deveria valer 10 e b deveria valer 3."
+          </template>
+          <template data-dica>
+depois de aux = a, faça a = b.
+          </template>
+          <template data-dica>
+por último, b = aux (o 3 que estava guardado).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O teste de mesa mostra o 3 passando pela aux antes de chegar ao b."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Atribuição guarda o resultado do lado direito no nome da esquerda; copia o valor, não cria ligação.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> o que significa o sinal = em programação e por que <code>b = a</code> não faz b acompanhar as mudanças de a.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
@@ -220,6 +279,12 @@ y = x - 3</pre>
 <figure data-clip="tipos" style="--alt: 380px">
           <figcaption>Seis valores vão para a gaveta do tipo certo. Repare no “70” entre aspas.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="s">nome = "Ana"</span>          # str: texto
+<span data-parte="i">objetiva = 48</span>        # int: inteiro
+<span data-parte="f">media = 39.0</span>         # float: com casas decimais
+<span data-parte="b">classificada = True</span>  # bool: verdadeiro ou falso
+<span data-parte="t">type(media)</span>          # mostra o tipo: float</code></pre><ol class="comando-partes"><li data-parte="s"><code>str</code><span>texto, sempre entre aspas.</span></li><li data-parte="i"><code>int</code><span>número inteiro, sem ponto.</span></li><li data-parte="f"><code>float</code><span>número com ponto decimal.</span></li><li data-parte="b"><code>bool</code><span>True ou False, com maiúscula e sem aspas.</span></li><li data-parte="t"><code>type()</code><span>pergunta ao Python o tipo de um valor.</span></li></ol></figure>
 <h3>Exemplo resolvido: o tipo de cada valor de um candidato</h3>
 <pre>nome = "Ana"
 objetiva = 48
@@ -239,7 +304,38 @@ classificada = True</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Aspas indicam <code>str</code>; ponto decimal indica <code>float</code>; True e False são <code>bool</code>." data-nao-texto="Os campos em vermelho estão trocados. Aspas indicam texto (<code>str</code>); número com ponto é <code>float</code>; True e False são <code>bool</code>; número sem ponto é <code>int</code>."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>Todo valor tem um tipo (int, float, str ou bool), e o tipo decide o que se pode fazer com ele.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="nome objetiva media classificada">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Crie as quatro variáveis com o tipo certo: nome "Ana" (texto), objetiva 48 (inteiro), media 39.0 (decimal) e classificada True (lógico).</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O tipo vem de como você escreve o valor: aspas fazem texto, ponto faz decimal, True sem aspas faz lógico. A coluna “tipo” de baixo mostra o que o Python entendeu.</p></div>
+          <template data-inicial>
+nome = Ana
+objetiva = "48"
+media = 39
+classificada = "True"
+          </template>
+          <template data-solucao>
+nome = "Ana"
+objetiva = 48
+media = 39.0
+classificada = True
+          </template>
+          <template data-testes>
+assert isinstance(nome, str), "nome deveria ser texto: entre aspas."
+assert type(objetiva) is int, "objetiva deveria ser inteiro: 48 sem aspas."
+assert type(media) is float, "media deveria ser decimal: 39.0, com ponto."
+assert classificada is True, "classificada deveria ser o lógico True, sem aspas."
+          </template>
+          <template data-dica>
+texto vai entre aspas: "Ana". Número inteiro vai sem aspas: 48.
+          </template>
+          <template data-dica>
+decimal leva ponto: 39.0. O lógico é True, sem aspas.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso: str, int, float e bool. Repare como &quot;48&quot; entre aspas era texto, mesmo parecendo número."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Todo valor tem um tipo (int, float, str ou bool), e o tipo decide o que se pode fazer com ele.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>70</code> e <code>"70"</code> são diferentes para o Python.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
@@ -291,7 +387,29 @@ print("Total:", total)          # Total: 78</pre>
           <div class="retorno" hidden data-ok-texto="Isso. A linha 4 tenta juntar texto com número no +. Use &quot;Total: &quot; + str(total) ou print(&quot;Total:&quot;, total)." data-nao-texto="O erro está na linha 4: &quot;Total: &quot; + total mistura texto com número. As conversões das linhas 1 e 2 estão certas. Use str(total) ou a vírgula do print." data-pista="procure a linha em que o + junta dois tipos diferentes."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>int(), float() e str() trocam o tipo de um valor; só funcionam quando o valor faz sentido no novo tipo.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="total">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Este print para com erro. Conserte convertendo o número em texto, para a tela mostrar Total: 78.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Texto só se junta com texto. <code>str(total)</code> transforma o 78 em "78".</p><pre>total = 78
+print("Total: " + str(total))</pre></div>
+          <template data-inicial>
+total = 78
+print("Total: " + total)
+          </template>
+          <template data-solucao>
+total = 78
+print("Total: " + str(total))
+          </template>
+          <template data-testes>
+assert _saida.getvalue().strip() == "Total: 78", "A tela deveria mostrar Total: 78."
+          </template>
+          <template data-dica>
+o erro diz que texto só junta com texto: ponha o total dentro de str( ).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. str(total) virou &quot;78&quot; e o + juntou os dois textos."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>int(), float() e str() trocam o tipo de um valor; só funcionam quando o valor faz sentido no novo tipo.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>"8" + 2</code> dá erro e como corrigir.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
@@ -337,7 +455,36 @@ print(total &gt;= NOTA_DE_CORTE)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. O que vale para o programa inteiro e vem do edital é constante; o que muda de candidato para candidato é variável." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: o valor muda de pessoa para pessoa ou durante o programa? Então é variável. Vale sempre o mesmo para todos? Então é constante."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>Constante é um valor fixo guardado num nome em MAIÚSCULAS, definido num lugar só.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="NOTA_DE_CORTE">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Guarde o corte numa constante NOTA_DE_CORTE e use o nome no lugar do 70, nas duas regras.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Constante é uma variável que não deve mudar; o nome em maiúsculas avisa isso a quem lê. Se o edital mudar o corte, você muda num lugar só.</p><pre>NOTA_DE_CORTE = 70
+print(78 &gt;= NOTA_DE_CORTE)
+print(66 &gt;= NOTA_DE_CORTE)</pre></div>
+          <template data-inicial>
+print(78 &gt;= 70)
+print(66 &gt;= 70)
+          </template>
+          <template data-solucao>
+NOTA_DE_CORTE = 70
+print(78 &gt;= NOTA_DE_CORTE)
+print(66 &gt;= NOTA_DE_CORTE)
+          </template>
+          <template data-testes>
+assert NOTA_DE_CORTE == 70, "Crie a constante: NOTA_DE_CORTE = 70, na primeira linha."
+assert _codigo.count("70") == 1, "O 70 deveria aparecer uma vez só, na constante; nas regras, use o nome."
+assert _saida.getvalue().split() == ["True", "False"], "A tela deveria mostrar True e depois False."
+          </template>
+          <template data-dica>
+crie, na primeira linha, NOTA_DE_CORTE = 70.
+          </template>
+          <template data-dica>
+nas duas regras, troque o 70 por NOTA_DE_CORTE.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O número mora num lugar só, com um nome que explica o que ele é."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Constante é um valor fixo guardado num nome em MAIÚSCULAS, definido num lugar só.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> o que ganhamos ao trocar um número solto por uma constante com nome.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
@@ -357,7 +504,42 @@ aprovado = total &gt;= NOTA_DE_CORTE</pre>
           <p><strong>2. Programe.</strong> Escreva um script que pede a objetiva e a discursiva (números inteiros) e os pontos de títulos, soma tudo, compara com a constante <code>NOTA_DE_CORTE</code> e escreve a mensagem <code>Total: 70</code> seguida de <code>True</code> ou <code>False</code>. Use as conversões certas e nomes no padrão PEP 8.</p>
         </div>
         <p class="explique">Mande a tabela e o script no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
-        <details class="cartao">
+                <h3>Agora em Python</h3>
+        <div class="exercicio py" data-codigo data-vars="objetiva discursiva titulos total" data-entradas="40|24|6">
+          <p class="rotulo">Tarefa em Python</p>
+          <p class="pergunta">Escreva o programa da tarefa: leia objetiva, discursiva e títulos, some, mostre o total e se passou do corte.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O quadro responde ao <code>input</code> com 40, 24 e 6. Use <code>int()</code> em cada leitura e <code>str()</code> para juntar o total ao texto.</p></div>
+          <template data-inicial>
+NOTA_DE_CORTE = 70
+objetiva = int(input("Objetiva: "))
+
+          </template>
+          <template data-solucao>
+NOTA_DE_CORTE = 70
+objetiva = int(input("Objetiva: "))
+discursiva = int(input("Discursiva: "))
+titulos = int(input("Pontos de títulos: "))
+total = objetiva + discursiva + titulos
+print("Total: " + str(total))
+print(total &gt;= NOTA_DE_CORTE)
+          </template>
+          <template data-testes>
+assert total == 70, "total deveria ser objetiva + discursiva + titulos."
+assert "Total: 70" in _saida.getvalue(), "A tela deveria mostrar Total: 70."
+assert _saida.getvalue().strip().endswith("True"), "A última linha deveria mostrar True (70 &gt;= 70)."
+          </template>
+          <template data-dica>
+leia as outras duas notas do mesmo jeito: discursiva = int(input("Discursiva: ")).
+          </template>
+          <template data-dica>
+total = objetiva + discursiva + titulos e print("Total: " + str(total)).
+          </template>
+          <template data-dica>
+por último, print(total &gt;= NOTA_DE_CORTE).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. 40 + 24 + 6 = 70, e 70 &gt;= 70 é True: passou exatamente no corte."></div>
+        </div>
+<details class="cartao">
           <summary>Ver uma resposta possível (só depois de tentar)</summary>
           <p>Previsão: <code>total</code> começa em 64 (40 + 24), vai a 70 (64 + 6) e <code>aprovado</code> é <code>True</code>, porque 70 &gt;= 70.</p>
           <pre>NOTA_DE_CORTE = 70
@@ -385,6 +567,7 @@ print(total &gt;= NOTA_DE_CORTE)</pre>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-var.js" charset="utf-8"></script>
 <script src="../passo/cascata.js" charset="utf-8"></script>
+<script src="laboratorio.js" charset="utf-8"></script>
 <script src="motor.js" charset="utf-8"></script>
 <script>
   Motor.licao({ chave: "dominio:licao:LOG.02", trilha: "LOG", nomes: ["Variável como nome para um valor", "Atribuição", "Tipos primitivos", "Conversão de tipo", "Constantes", "Tarefa de domínio"] });

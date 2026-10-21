@@ -493,3 +493,10 @@ figure.comando pre [data-parte].aceso { background: color-mix(in srgb, var(--tin
 @media (max-width: 480px) { .py-tabela th, .py-tabela td { padding: 5px 6px; font-size: 12.5px; } .py-tabela th { font-size: 11.5px; } .py-tabela .py-idx { width: 1.6em; } }
 .py-cod { white-space: pre-wrap; overflow-wrap: anywhere; }
 @media (max-width: 480px) { .py-vivo { padding: 8px; } .py-tabela th, .py-tabela td { padding: 5px 5px; } .exercicio.py { padding-left: 12px; padding-right: 12px; } }
+.py-rastro { font-size: 13.5px; }
+.py-rastro td, .py-rastro th { padding: 5px 8px; white-space: nowrap; }
+.py-rastro td code { background: none; border: 0; padding: 0; font-size: 13px; }
+.py-rastro td.py-lin { white-space: normal; min-width: 9em; }
+.py-rastro td.py-lin code, .py-rastro td:last-child code { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .py-rastro td, .py-rastro th { padding: 4px 5px; } .py-rastro td code { font-size: 12px; } .py-rastro td.py-lin { min-width: 7em; } .py-rastro .m { display: none; } }
+.py-rastro td.muda { background: color-mix(in srgb, var(--tinta) 12%, transparent); font-weight: 700; }

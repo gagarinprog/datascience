@@ -27,6 +27,29 @@ def _forma(v):
     if isinstance(v, bool) or v is None or isinstance(v, (int, float, str)):
         return {"tipo": "valor", "repr": repr(v), "py": type(v).__name__}
     return {"tipo": "valor", "repr": repr(v)[:400], "py": type(v).__name__}
+
+# teste de mesa: roda o código do aluno linha por linha e anota, a cada linha, as variáveis e o que saiu na tela
+class _Demais(Exception):
+    pass
+def _rastrear(codigo, nomes, ns):
+    passos = ns["_passos"]
+    saida = ns["_saida"]
+    def foto(frame):
+        return {n: repr(frame.f_globals[n]) for n in nomes if n in frame.f_globals}
+    def tr(frame, ev, arg):
+        if frame.f_code.co_filename != "<aluno>":
+            return None
+        if ev == "line":
+            if len(passos) > 300:
+                raise _Demais("O código passou de 300 passos.")
+            passos.append([frame.f_lineno, foto(frame), len(saida.getvalue())])
+        return tr
+    _sys.settrace(tr)
+    try:
+        exec(compile(codigo, "<aluno>", "exec"), ns)
+    finally:
+        _sys.settrace(None)
+        passos.append([None, {n: repr(ns[n]) for n in nomes if n in ns}, len(saida.getvalue())])
 `;
 
 async function preparar(lista) {
@@ -60,7 +83,12 @@ def input(prompt=""):
   const res = { valores: {}, saida: "", erro: null, ultimo: null, teste: null };
   try {
     if (m.preparo) py.runPython(m.preparo, { globals: ns });
-    const ultimo = await py.runPythonAsync(m.codigo || "", { globals: ns });
+    if (m.rastro) {
+      ns.set("_passos", py.toPy([]));
+      ns.set("_nomes", py.toPy(m.rastro));
+      py.runPython("from __main__ import _rastrear", { globals: ns });
+    }
+    const ultimo = m.rastro ? py.runPython("_rastrear(_codigo, _nomes, globals())", { globals: ns }) : await py.runPythonAsync(m.codigo || "", { globals: ns });
     if (ultimo !== undefined && m.repl) {
       ns.set("_ultimo", ultimo);
       res.ultimo = JSON.parse(py.runPython("_json.dumps(_forma(_ultimo))", { globals: ns }));
@@ -70,6 +98,9 @@ def input(prompt=""):
     res.erro = String(e && e.message || e);
   }
   res.saida = py.runPython("_saida.getvalue()", { globals: ns });
+  if (m.rastro) {
+    try { res.passos = JSON.parse(py.runPython("_json.dumps(_passos)", { globals: ns })); } catch (e) { res.passos = []; }
+  }
   for (const nome of m.mostrar || []) {
     if (!ns.has(nome)) continue;
     try { res.valores[nome] = JSON.parse(py.runPython(`_json.dumps(_forma(${nome}))`, { globals: ns })); } catch (e) { /* valor que não sai */ }

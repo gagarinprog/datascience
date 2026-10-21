@@ -187,7 +187,15 @@
           <figcaption>As três partes de um algoritmo, com as notas de um candidato.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: conta de restaurante com 10% de serviço</h3>
+                <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code># entrada
+<span data-parte="e">conta = 80</span>
+# processamento
+<span data-parte="p1">servico = conta * 0.10</span>
+<span data-parte="p2">total = conta + servico</span>
+# saída (mostra 88.0)
+<span data-parte="s">print(total)</span></code></pre><ol class="comando-partes"><li data-parte="e"><code>conta = 80</code><span>a <b>entrada</b>: o dado que chega de fora (aqui escrito direto; num programa de verdade viria do input).</span></li><li data-parte="p1"><code>servico = conta * 0.10</code><span>o <b>processamento</b>: a conta dos 10%. Em Python, <code>*</code> é vezes e o decimal usa ponto.</span></li><li data-parte="p2"><code>total = conta + servico</code><span>mais processamento, usando o que já foi calculado.</span></li><li data-parte="s"><code>print(total)</code><span>a <b>saída</b>: o resultado aparece na tela.</span></li></ol></figure>
+<h3>Exemplo resolvido: conta de restaurante com 10% de serviço</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Achar a entrada: o que alguém precisa informar? Só o valor da conta.</p></div></li>
           <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Achar o processamento: <code>servico ← conta × 0,10</code> e depois <code>total ← conta + servico</code>.</p></div></li>
@@ -218,7 +226,35 @@
           <div class="retorno" hidden data-ok-texto="Tudo certo. Repare que decidir também é processamento: é trabalho feito com os dados, não algo que chega nem algo que sai." data-nao-texto="Os campos em vermelho estão trocados. Pergunte para cada um: chega de fora (entrada), é feito com os dados (processamento) ou é entregue no fim (saída)?"></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Entrada é o que chega, processamento é o que se faz, saída é o que se entrega.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="peso altura imc" data-rastro>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Calcule o IMC de quem pesa 72 kg e mede 1,80 m: entrada, processamento e saída.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O IMC é o peso dividido pela altura ao quadrado. Em Python, ao quadrado é <code>** 2</code>. Veja na tabela de baixo cada linha mudando uma variável.</p><pre>peso = 72
+altura = 1.80
+imc = peso / altura ** 2
+print(imc)</pre></div>
+          <template data-inicial>
+peso = 72
+altura = 1.80
+imc = 
+print(imc)
+          </template>
+          <template data-solucao>
+peso = 72
+altura = 1.80
+imc = peso / altura ** 2
+print(imc)
+          </template>
+          <template data-testes>
+assert round(imc, 2) == 22.22, "imc deveria ser peso / altura ** 2, que dá 22.22."
+          </template>
+          <template data-dica>
+imc = peso dividido por altura ao quadrado: peso / altura ** 2.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Entrada: peso e altura. Processamento: a conta. Saída: o print com 22.22... A tabela mostra cada passo."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Entrada é o que chega, processamento é o que se faz, saída é o que se entrega.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> escolha uma tarefa do seu trabalho e diga qual é a entrada, o processamento e a saída dela.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
@@ -264,7 +300,19 @@
           <figcaption>O computador executa uma linha por vez. Repare no que acontece com as caixas da memória e com o caminho do senão.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: média de duas notas, com aprovação a partir de 7</h3>
+                <h3>Do pseudocódigo para o Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code># leia n1
+<span data-parte="l">n1 = float(input())</span>
+# media ← (n1 + n2) / 2
+<span data-parte="a">media = (n1 + n2) / 2</span>
+# escreva media
+<span data-parte="e">print(media)</span>
+# se media ≥ 7 então / senão
+<span data-parte="s">if media &gt;= 7:</span>
+    print("aprovado")
+<span data-parte="s">else:</span>
+    print("reprovado")</code></pre><p class="comando-nota">Cada linha que começa com <code>#</code> é o pseudocódigo como comentário: o Python ignora. A linha de baixo é a tradução.</p><ol class="comando-partes"><li data-parte="l"><code>leia</code><span>vira <code>input()</code>, dentro de <code>float()</code> para virar número.</span></li><li data-parte="a"><code>←</code><span>a seta de guardar vira o sinal <code>=</code>.</span></li><li data-parte="e"><code>escreva</code><span>vira <code>print()</code>.</span></li><li data-parte="s"><code>se/senão/fimse</code><span>viram <code>if</code> e <code>else</code> com dois-pontos; o fimse some, e quem diz o fim do bloco é o recuo.</span></li></ol></figure>
+<h3>Exemplo resolvido: média de duas notas, com aprovação a partir de 7</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Ler as entradas.</p><pre>leia n1
 leia n2</pre></div></li>
@@ -307,7 +355,43 @@ fimse</pre></div></li>
           <div class="retorno" hidden data-ok-texto="Isso. Sem parênteses, a divisão vem antes da soma e só o n2 é dividido. O certo é media ← (n1 + n2) / 2." data-nao-texto="O erro está na linha 3: sem parênteses, só o n2 é dividido por 2. Com 6 e 8, daria 6 + 4 = 10. O certo é media ← (n1 + n2) / 2." data-pista="pense na ordem das contas: numa expressão sem parênteses, o que acontece primeiro, a soma ou a divisão?"></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Pseudocódigo é o algoritmo em passos escritos, uma linha por ação, feito para pessoas lerem.</p>
+                <h3>Faça no Python: traduza o pseudocódigo</h3>
+        <div class="exercicio py" data-codigo data-vars="n1 n2 media" data-entradas="6|9">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Traduza para Python: leia n1, leia n2, media ← (n1 + n2) / 2, escreva media.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Uma linha de pseudocódigo vira uma linha de Python. O quadro responde ao <code>input</code> com 6 e 9.</p><pre>n1 = float(input())
+n2 = float(input())
+media = (n1 + n2) / 2
+print(media)</pre></div>
+          <template data-inicial>
+n1 = float(input())
+n2 = 
+media = 
+
+          </template>
+          <template data-solucao>
+n1 = float(input())
+n2 = float(input())
+media = (n1 + n2) / 2
+print(media)
+          </template>
+          <template data-testes>
+assert n2 == 9, "n2 deveria ler a segunda nota: float(input())."
+assert media == 7.5, "media deveria ser (n1 + n2) / 2, com os parênteses."
+assert "7.5" in _saida.getvalue(), "Falta o escreva: print(media)."
+          </template>
+          <template data-dica>
+leia n2 vira n2 = float(input()).
+          </template>
+          <template data-dica>
+a seta vira =, e os parênteses continuam: media = (n1 + n2) / 2.
+          </template>
+          <template data-dica>
+escreva media vira print(media).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Quatro linhas de pseudocódigo, quatro linhas de Python. A tela mostra 7.5."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Pseudocódigo é o algoritmo em passos escritos, uma linha por ação, feito para pessoas lerem.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que se usa a seta ← e não o sinal de igual para guardar um valor.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
@@ -340,7 +424,14 @@ fimse</pre></div></li>
           <figcaption>Uma ficha percorre o fluxograma da classificação, duas vezes, com notas diferentes.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: percorrer o fluxograma com um carrinho de R$ 120</h3>
+                <h3>O fluxograma em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code>carrinho = 120
+<span data-parte="if">if carrinho &gt;= 100:</span>
+<span data-parte="s">    frete = 0</span>
+<span data-parte="el">else:</span>
+<span data-parte="n">    frete = 15</span>
+total = carrinho + frete</code></pre><ol class="comando-partes"><li data-parte="if"><code>if ...:</code><span>o <b>losango</b>: a pergunta de sim ou não.</span></li><li data-parte="s"><code>frete = 0</code><span>a seta do “sim”: só roda quando a resposta é True.</span></li><li data-parte="el"><code>else:</code><span>a seta do “não”.</span></li><li data-parte="n"><code>frete = 15</code><span>só roda quando a resposta é False. Os dois caminhos se juntam na linha sem recuo.</span></li></ol></figure>
+<h3>Exemplo resolvido: percorrer o fluxograma com um carrinho de R$ 120</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Começar no oval “início” e ler a entrada: carrinho = 120.</p></div></li>
           <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>No losango, responder a pergunta com o valor: 120 ≥ 100? Sim. Seguir a seta do “sim”: frete ← 0.</p></div></li>
@@ -371,7 +462,43 @@ fimse</pre></div></li>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Entrada e saída dividem a mesma forma (paralelogramo); a pergunta é sempre losango; a conta, retângulo." data-nao-texto="Os campos em vermelho estão trocados. Lembre: ler e mostrar são paralelogramo; pergunta é losango; conta é retângulo; início e fim são oval."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Fluxograma é o algoritmo desenhado: oval começa e termina, paralelogramo entra e sai dado, retângulo calcula, losango decide.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="carrinho frete total" data-rastro>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Escreva o fluxograma do frete em Python: frete grátis a partir de 100 reais, senão 15. Depois troque o carrinho para 80 e veja o outro caminho.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O losango vira <code>if</code>; cada seta vira um bloco com recuo. Na tabela de baixo, repare que só um dos fretes aparece.</p><pre>carrinho = 120
+if carrinho &gt;= 100:
+    frete = 0
+else:
+    frete = 15
+total = carrinho + frete</pre></div>
+          <template data-inicial>
+carrinho = 120
+if carrinho &gt;= 100:
+    frete = 
+else:
+    frete = 
+total = carrinho + frete
+          </template>
+          <template data-solucao>
+carrinho = 120
+if carrinho &gt;= 100:
+    frete = 0
+else:
+    frete = 15
+total = carrinho + frete
+          </template>
+          <template data-testes>
+assert "else" in _codigo, "Falta o caminho do não: else:."
+assert (carrinho &gt;= 100 and frete == 0) or (carrinho &lt; 100 and frete == 15), "O frete não segue a regra: 0 a partir de 100, senão 15."
+assert total == carrinho + frete, "total deveria ser carrinho + frete."
+          </template>
+          <template data-dica>
+no caminho do sim, frete = 0; no do não, frete = 15.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Com 120, o caminho do sim: frete 0 e total 120. A linha frete = 15 nem aparece no teste de mesa: ela não foi executada."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Fluxograma é o algoritmo desenhado: oval começa e termina, paralelogramo entra e sai dado, retângulo calcula, losango decide.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> quando um fluxograma ajuda mais que o pseudocódigo?</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
@@ -444,7 +571,47 @@ fimse</pre></div></li>
           <div class="retorno" hidden data-ok-texto="Certo. (5 + 7) / 2 = 6; como 6 ≥ 7 é falso, o caminho é a linha 7: reprovado." data-nao-texto="Confira os campos em vermelho. Primeiro a conta: some antes de dividir. Depois a pergunta: 6 é maior ou igual a 7? A resposta decide se a próxima linha é a 5 ou a 7."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Teste de mesa = executar à mão, anotando só o que muda a cada linha.</p>
+                <h3>Faça no Python: o teste de mesa automático</h3>
+        <div class="exercicio py" data-codigo data-vars="n1 n2 media" data-rastro data-entradas="6|9">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Complete o algoritmo das notas em Python e compare o teste de mesa da tabela de baixo com o que você fez à mão.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O quadro responde ao <code>input</code> com 6 e 9 e anota cada passo, como você fez no papel: uma linha por instrução, só com o que mudou.</p><pre>n1 = float(input())
+n2 = float(input())
+media = (n1 + n2) / 2
+if media &gt;= 7:
+    print("aprovado")
+else:
+    print("reprovado")</pre></div>
+          <template data-inicial>
+n1 = float(input())
+n2 = float(input())
+media = (n1 + n2) / 2
+if media &gt;= 7:
+    print("aprovado")
+
+          </template>
+          <template data-solucao>
+n1 = float(input())
+n2 = float(input())
+media = (n1 + n2) / 2
+if media &gt;= 7:
+    print("aprovado")
+else:
+    print("reprovado")
+          </template>
+          <template data-testes>
+assert "else" in _codigo and "reprovado" in _codigo, "Falta o senão: else: com print(\"reprovado\") recuado."
+assert _saida.getvalue().split()[-1] == "aprovado" and "reprovado" not in _saida.getvalue(), "Com 6 e 9 a tela deveria terminar mostrando só aprovado."
+          </template>
+          <template data-dica>
+o senão vira else: na mesma coluna do if.
+          </template>
+          <template data-dica>
+abaixo do else:, com 4 espaços: print("reprovado").
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. A tabela é o teste de mesa: passos 1 a 5, e a linha do reprovado nunca roda com média 7.5."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Teste de mesa = executar à mão, anotando só o que muda a cada linha.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> para que serve o teste de mesa, e por que ele pega erros que só ler o algoritmo não pega.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
@@ -458,7 +625,46 @@ fimse</pre></div></li>
           <p><strong>1.</strong> Escreva o pseudocódigo. <strong>2.</strong> Desenhe o fluxograma no papel. <strong>3.</strong> Faça o teste de mesa com leitura anterior 1200, atual 1450 e preço 0,80.</p>
         </div>
         <p class="explique">Mande o pseudocódigo e o teste de mesa no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
-        <details class="cartao">
+                <h3>Agora em Python</h3>
+        <div class="exercicio py" data-codigo data-vars="consumo valor" data-rastro data-entradas="1500|1720|0.80">
+          <p class="rotulo">Tarefa em Python</p>
+          <p class="pergunta">Escreva a conta de luz em Python: leituras 1500 e 1720, preço 0,80 o kWh, e 10% a mais quando o consumo passa de 200.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O quadro responde ao <code>input</code> com 1500, 1720 e 0.80. Mostre o valor com duas casas: <code>round(valor, 2)</code>.</p></div>
+          <template data-inicial>
+anterior = float(input())
+atual = float(input())
+preco = float(input())
+consumo = 
+valor = 
+
+          </template>
+          <template data-solucao>
+anterior = float(input())
+atual = float(input())
+preco = float(input())
+consumo = atual - anterior
+valor = consumo * preco
+if consumo &gt; 200:
+    valor = valor * 1.10
+print(round(valor, 2))
+          </template>
+          <template data-testes>
+assert consumo == 220, "consumo deveria ser atual - anterior."
+assert round(valor, 2) == 193.6, "valor: consumo * preco e, como passou de 200, mais 10% (valor * 1.10)."
+assert "193.6" in _saida.getvalue(), "Falta mostrar o valor: print(round(valor, 2))."
+          </template>
+          <template data-dica>
+consumo = atual - anterior e valor = consumo * preco.
+          </template>
+          <template data-dica>
+a regra: if consumo &gt; 200: e, recuado, valor = valor * 1.10.
+          </template>
+          <template data-dica>
+por último, print(round(valor, 2)).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Consumo 220, valor 176 e, com os 10%, 193.6. Compare com o seu teste de mesa no papel."></div>
+        </div>
+<details class="cartao">
           <summary>Ver uma resposta possível (só depois de tentar)</summary>
           <pre>leia anterior
 leia atual
@@ -488,6 +694,7 @@ escreva valor</pre>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-log.js" charset="utf-8"></script>
 <script src="../passo/cascata.js" charset="utf-8"></script>
+<script src="laboratorio.js" charset="utf-8"></script>
 <script src="motor.js" charset="utf-8"></script>
 <script>
   Motor.licao({ chave: "dominio:licao:LOG.01", trilha: "LOG", nomes: ["O que é algoritmo", "Entrada, processamento e saída", "Pseudocódigo", "Fluxograma", "Teste de mesa", "Tarefa de domínio"] });

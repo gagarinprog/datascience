@@ -137,7 +137,42 @@ print(media)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Certo. Repare que <code>10 / 2</code> dá <code>5.0</code>: com <code>/</code>, o resultado é sempre decimal." data-nao-texto="Confira os campos em vermelho. <code>**</code> é potência, e a divisão com <code>/</code> sempre mostra a parte decimal, mesmo quando é exata: <code>10 / 2</code> é <code>5.0</code>."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>+ - * / ** fazem as contas; a divisão com / sempre dá decimal.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="media falta" data-repl>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Calcule a média dos três simulados (62, 70 e 75) e quanto falta para chegar a 70. Na última linha, deixe só falta, para o REPL mostrar.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Parênteses na soma, e a divisão por 3 depois. A diferença é uma subtração.</p><pre>media = (s1 + s2 + s3) / 3
+falta = 70 - media
+falta</pre></div>
+          <template data-inicial>
+s1 = 62
+s2 = 70
+s3 = 75
+media = 
+falta = 
+falta
+          </template>
+          <template data-solucao>
+s1 = 62
+s2 = 70
+s3 = 75
+media = (s1 + s2 + s3) / 3
+falta = 70 - media
+falta
+          </template>
+          <template data-testes>
+assert media == 69.0, "media deveria ser (s1 + s2 + s3) / 3, com a soma entre parênteses."
+assert falta == 1.0, "falta deveria ser 70 - media."
+          </template>
+          <template data-dica>
+media = (s1 + s2 + s3) / 3.
+          </template>
+          <template data-dica>
+falta = 70 - media.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Média 69.0 e falta 1.0. Repare: a divisão / sempre devolve float, mesmo quando a conta dá exata."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>+ - * / ** fazem as contas; a divisão com / sempre dá decimal.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> como calcular uma nota com pesos usando os operadores do Python.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
@@ -197,7 +232,39 @@ print(blocos, sobra)</pre>
           <div class="opcoes coluna-opcoes"><button class="botao" type="button"><code>n / 2 == 0</code></button><button class="botao" type="button" data-ok><code>n % 2 == 0</code></button><button class="botao" type="button"><code>n // 2 == 0</code></button></div>
           <div class="retorno" hidden data-ok-texto="Certo. Número par dividido por 2 não deixa resto." data-nao-texto="Par é o número que, dividido por 2, deixa resto zero: <code>n % 2 == 0</code>."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>// conta os grupos completos e % devolve o que sobra.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="blocos sobra par">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Você tem 130 minutos livres e cada bloco de estudo tem 25. Quantos blocos cabem e quantos minutos sobram? E o número 130 é par?</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p><code>//</code> é a divisão inteira (quantos cabem); <code>%</code> é o resto (o que sobra). Número par tem resto 0 na divisão por 2.</p><pre>blocos = livre // 25
+sobra = livre % 25
+par = livre % 2 == 0</pre></div>
+          <template data-inicial>
+livre = 130
+blocos = 
+sobra = 
+par = 
+          </template>
+          <template data-solucao>
+livre = 130
+blocos = livre // 25
+sobra = livre % 25
+par = livre % 2 == 0
+          </template>
+          <template data-testes>
+assert blocos == 5, "blocos deveria ser livre // 25."
+assert sobra == 5, "sobra deveria ser livre % 25."
+assert par is True, "par deveria ser livre % 2 == 0."
+          </template>
+          <template data-dica>
+blocos = livre // 25 e sobra = livre % 25.
+          </template>
+          <template data-dica>
+par = livre % 2 == 0 (o resto da divisão por 2 é zero?).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Cabem 5 blocos e sobram 5 minutos; 130 é par porque 130 % 2 dá 0."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>// conta os grupos completos e % devolve o que sobra.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> como você usaria // e % para transformar 200 minutos em horas e minutos.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
@@ -249,7 +316,37 @@ print(aprovado, empatou)</pre>
           <div class="retorno" hidden data-ok-texto="Isso. Na linha 2, um sinal só tenta guardar; para comparar são dois: if nota == 70:. O Python acusa SyntaxError." data-nao-texto="O erro está na linha 2: um sinal de igual guarda, dois comparam. O certo é if nota == 70:. A linha 1 está certa, porque ali a intenção é guardar." data-pista="uma das linhas tenta guardar um valor no lugar em que deveria fazer uma pergunta."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Comparações (== != &gt; &lt; &gt;= &lt;=) respondem True ou False; = guarda e == compara.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="aprovado empatou">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Com total 70 e corte 70: aprovado diz se o total alcança o corte, e empatou diz se os dois são iguais.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Comparar é com <code>&gt;=</code> e <code>==</code> (dois sinais de igual). Um <code>=</code> só guarda valor, não compara.</p><pre>aprovado = total &gt;= corte
+empatou = total == corte</pre></div>
+          <template data-inicial>
+total = 70
+corte = 70
+aprovado = 
+empatou = total = corte
+          </template>
+          <template data-solucao>
+total = 70
+corte = 70
+aprovado = total &gt;= corte
+empatou = total == corte
+          </template>
+          <template data-testes>
+assert aprovado is True, "aprovado deveria ser total &gt;= corte, que dá True."
+assert empatou is True, "empatou deveria comparar com ==. Com um = só, o Python guarda 70 em vez de comparar."
+          </template>
+          <template data-dica>
+aprovado = total &gt;= corte.
+          </template>
+          <template data-dica>
+em empatou, troque = por ==: comparar usa dois sinais de igual.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Os dois dão True. E viu o que um = sozinho fazia? Guardava 70 em empatou em vez de comparar."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Comparações (== != &gt; &lt; &gt;= &lt;=) respondem True ou False; = guarda e == compara.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> a diferença entre <code>=</code> e <code>==</code>, com um exemplo seu.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
@@ -302,7 +399,31 @@ print(desconto, not desconto)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. and exige as duas; or se contenta com uma; not inverte." data-nao-texto="Os campos em vermelho estão trocados. Avalie cada parte primeiro (idade &gt;= 18 é True; tem_titulo é False) e depois aplique a tabela do and, do or e do not."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>and exige as duas condições, or se contenta com uma, not inverte.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="total discursiva passa">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Regra do edital: passa quem tem total maior ou igual a 70 e discursiva maior ou igual a 30. Este candidato passa?</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p><code>and</code> só dá True quando as duas partes dão True. <code>or</code> dá True quando pelo menos uma dá. <code>not</code> inverte.</p><pre>passa = total &gt;= 70 and discursiva &gt;= 30</pre></div>
+          <template data-inicial>
+total = 78
+discursiva = 28
+passa = 
+          </template>
+          <template data-solucao>
+total = 78
+discursiva = 28
+passa = total &gt;= 70 and discursiva &gt;= 30
+          </template>
+          <template data-testes>
+assert passa is False, "passa deveria ser total &gt;= 70 and discursiva &gt;= 30, que dá False."
+assert " and " in _codigo, "Use and para juntar as duas regras."
+          </template>
+          <template data-dica>
+junte as duas comparações com and: total &gt;= 70 and discursiva &gt;= 30.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O total passa (78), mas a discursiva não (28): com and, basta uma parte falsa para tudo dar False."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>and exige as duas condições, or se contenta com uma, not inverte.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> uma regra de edital que precise de <code>and</code> e outra que precise de <code>or</code>.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
@@ -346,7 +467,30 @@ print(desconto, not desconto)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Certo. Potência antes de multiplicação, multiplicação e divisão antes de soma e subtração, e os parênteses passando na frente de tudo." data-nao-texto="Confira os campos em vermelho e refaça na ordem: parênteses, depois **, depois * e /, depois + e -. Lembre que a divisão com / mostra a parte decimal."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>O Python resolve na ordem: parênteses, **, * / // %, + -, comparações, not, and, or.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="media">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Esta média está errada: deu 10.5 com as notas 6 e 9. Conserte com parênteses.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>A divisão vem antes da soma. Para somar primeiro, use parênteses.</p><pre>media = (n1 + n2) / 2</pre></div>
+          <template data-inicial>
+n1 = 6
+n2 = 9
+media = n1 + n2 / 2
+          </template>
+          <template data-solucao>
+n1 = 6
+n2 = 9
+media = (n1 + n2) / 2
+          </template>
+          <template data-testes>
+assert media == 7.5, "media deveria ser 7.5: some antes de dividir, com parênteses."
+          </template>
+          <template data-dica>
+ponha a soma entre parênteses: (n1 + n2) / 2.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Sem parênteses, o Python fazia 9 / 2 primeiro e somava 6: 10.5. Com eles, 7.5."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>O Python resolve na ordem: parênteses, **, * / // %, + -, comparações, not, and, or.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>2 + 3 * 4</code> dá 14 e como fazer dar 20.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
@@ -408,7 +552,31 @@ print(alta)</pre>
           <div class="retorno" hidden data-ok-texto="Certo. A proteção vagas != 0 vem primeiro: com vagas = 0, o and para ali e a divisão nunca acontece. O print fica dentro do bloco do if." data-nao-texto="A linha falsa é a que divide antes de proteger: com vagas = 0, ela quebra com ZeroDivisionError. O print vai recuado dentro do if." data-pista="qual das duas versões do if testa a proteção antes de dividir?"></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>and para no primeiro False e or no primeiro True; o resto nem é avaliado.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="alta">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Com vagas = 0, este código para com divisão por zero. Conserte com and, para a divisão só acontecer quando há vagas.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Em <code>A and B</code>, se A dá False o Python nem olha o B. Por isso o teste <code>vagas &gt; 0</code> vem primeiro.</p><pre>alta = vagas &gt; 0 and inscritos / vagas &gt; 100</pre></div>
+          <template data-inicial>
+inscritos = 1250
+vagas = 0
+alta = inscritos / vagas &gt; 100
+          </template>
+          <template data-solucao>
+inscritos = 1250
+vagas = 0
+alta = vagas &gt; 0 and inscritos / vagas &gt; 100
+          </template>
+          <template data-testes>
+assert alta is False, "alta deveria ser False quando não há vagas."
+assert "vagas &gt; 0 and" in _codigo, "Ponha vagas &gt; 0 and antes da divisão."
+          </template>
+          <template data-dica>
+comece a expressão com vagas &gt; 0 and.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Com vagas 0, a primeira parte dá False e o Python para ali: a divisão nem acontece."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>and para no primeiro False e or no primeiro True; o resto nem é avaliado.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> como o curto-circuito ajuda a evitar uma divisão por zero.</p>
         <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
       </section>
@@ -426,7 +594,36 @@ not 10 &gt; 5 or 2 == 2.0</pre>
           <p><strong>2. Programe.</strong> Escreva um script que pede o número de inscritos e de vagas de um cargo, mostra quantos candidatos há por vaga (parte inteira) e quantos sobram, e diz se a concorrência é alta (mais de 100 por vaga). Ele não pode quebrar quando as vagas forem 0.</p>
         </div>
         <p class="explique">Mande os passos e o script no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
-        <details class="cartao">
+                <h3>Agora em Python</h3>
+        <div class="exercicio py" data-codigo data-entradas="1250|10">
+          <p class="rotulo">Tarefa em Python</p>
+          <p class="pergunta">Escreva o programa da concorrência: leia inscritos e vagas, mostre candidatos por vaga e o que sobra (só se houver vagas) e se a concorrência é alta (mais de 100 por vaga).</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O quadro responde ao <code>input</code> com 1250 e 10.</p></div>
+          <template data-inicial>
+inscritos = int(input("Inscritos: "))
+vagas = int(input("Vagas: "))
+
+          </template>
+          <template data-solucao>
+inscritos = int(input("Inscritos: "))
+vagas = int(input("Vagas: "))
+if vagas &gt; 0:
+    print("Candidatos por vaga:", inscritos // vagas, "e sobram", inscritos % vagas)
+print("Concorrência alta:", vagas &gt; 0 and inscritos / vagas &gt; 100)
+          </template>
+          <template data-testes>
+assert "Candidatos por vaga: 125 e sobram 0" in _saida.getvalue(), "A tela deveria mostrar: Candidatos por vaga: 125 e sobram 0."
+assert "Concorrência alta: True" in _saida.getvalue(), "A tela deveria mostrar: Concorrência alta: True."
+          </template>
+          <template data-dica>
+if vagas &gt; 0: e, recuado, print("Candidatos por vaga:", inscritos // vagas, "e sobram", inscritos % vagas).
+          </template>
+          <template data-dica>
+depois, sem recuo: print("Concorrência alta:", vagas &gt; 0 and inscritos / vagas &gt; 100).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. 125 por vaga, sem sobra, e a concorrência é alta. Teste também com vagas 0: o programa não quebra."></div>
+        </div>
+<details class="cartao">
           <summary>Ver uma resposta possível (só depois de tentar)</summary>
           <p><code>7 // 2 + 7 % 2</code> = 3 + 1 = <code>4</code>. <code>2 + 3 * 4 ** 2</code> = 2 + 3 * 16 = 2 + 48 = <code>50</code>. <code>(48 + 30) &gt;= 70 and 30 &gt;= 30</code> = True and True = <code>True</code>. <code>not 10 &gt; 5 or 2 == 2.0</code>: primeiro as comparações (True e True), depois not True = False, e False or True = <code>True</code>.</p>
           <pre>inscritos = int(input("Inscritos: "))
@@ -452,6 +649,7 @@ print("Concorrência alta:", vagas &gt; 0 and inscritos / vagas &gt; 100)</pre>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-ops.js" charset="utf-8"></script>
 <script src="../passo/cascata.js" charset="utf-8"></script>
+<script src="laboratorio.js" charset="utf-8"></script>
 <script src="motor.js" charset="utf-8"></script>
 <script>
   Motor.licao({ chave: "dominio:licao:LOG.03", trilha: "LOG", nomes: ["Operadores aritméticos", "Divisão inteira e resto", "Operadores relacionais", "Operadores lógicos", "Precedência", "Curto-circuito", "Tarefa de domínio"] });
