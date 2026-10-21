@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="../icones/icone-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conceitos simples · Domínio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="../estilo.css">
+<link rel="stylesheet" href="../trilha.css">
+<link rel="stylesheet" href="../jornada.css">
+<link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="laboratorio.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="../icones/apple-touch-icon.png">
+<style>
+  .passos-licao { grid-template-columns: repeat(6, minmax(0, 1fr)); position: sticky; top: 0; z-index: 3; background: var(--fundo); padding: 10px 0; }
+  .nav-licao { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .nav-licao .estado-licao { font-size: 13px; color: var(--texto-2); }
+  .nav-licao .estado-licao.ok { color: var(--certo); font-weight: 500; }
+  .coluna { view-transition-name: conteudo; }
+  .lateral a svg { width: 16px; height: 16px; }
+  /* visual de jogo, igual ao da apostila */
+  body { --cor: var(--azul-cor); --cv: var(--azul-cv); --tinta: var(--azul-cor); --tinta-suave: color-mix(in srgb, var(--azul-cv) 14%, var(--folha)); --sobre-cor: #fff; }
+  .titulo-pagina, .secao h2 { font-family: var(--f-titulo); font-weight: 800; letter-spacing: -0.025em; }
+  .lateral { background: color-mix(in srgb, var(--folha) 80%, transparent); }
+  .lateral a { border-radius: 12px; min-height: 40px; align-items: center; padding: 8px 10px; }
+  .lateral a.ativo { background: color-mix(in srgb, var(--cv) 18%, var(--folha)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv) 55%, transparent); }
+  .lateral a.feito .n { color: var(--certo); }
+  .passos-licao { background: var(--fundo); }
+  .passos-barra button i { height: 10px; border-radius: 99px; }
+  .passos-barra button.feito i { background: var(--metal-barra); }
+  .passos-barra button.atual i { background: linear-gradient(90deg, var(--cv) 50%, var(--linha) 50%); opacity: 1; }
+  .exercicio { border-radius: 22px; border-width: 2px; padding: 18px 20px; box-shadow: var(--sombra); }
+  .exercicio.desafio { border-left-width: 2px; border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)); background: linear-gradient(135deg, var(--aviso-suave), var(--folha) 60%); }
+  .exercicio .pergunta { font-size: 18px; }
+  figure, .cartao, .explique { border-radius: 20px; }
+  .explique { border-left: 0; box-shadow: inset 5px 0 0 var(--cv); }
+  .botao { border-radius: 14px; border-width: 2px; min-height: 46px; padding: 10px 16px; font-weight: 700; box-shadow: 0 3px 0 var(--linha-forte); transition: transform 120ms var(--curva), box-shadow 120ms var(--curva), border-color 120ms; }
+  .botao:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--linha-hover); }
+  .botao:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--linha-forte); }
+  .botao.primario { background: var(--metal); background-size: 230% 100%; border-color: var(--metal-aresta); color: #fff; text-shadow: 0 1px 1px rgb(0 0 0 / 0.3); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 2px 0 var(--metal-aresta); transition: background-position 700ms var(--curva), transform 120ms var(--curva); }
+  .botao.primario:hover:not(:disabled) { background-position: 100% 0; }
+  .titulo-pagina { background: linear-gradient(180deg, var(--texto) 35%, color-mix(in srgb, var(--azul-cor) 65%, var(--texto)) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .botao.certo { box-shadow: 0 3px 0 color-mix(in srgb, var(--certo) 60%, #000), 0 0 18px -4px color-mix(in srgb, var(--certo) 70%, transparent); }
+  .botao.errado { box-shadow: 0 3px 0 color-mix(in srgb, var(--erro) 60%, #000); animation: tremer 420ms var(--curva); }
+  .retorno.ok { animation: pop 260ms var(--mola); }
+  .tabela input, .linha-classifica select { border-radius: 10px; min-height: 40px; border-width: 2px; }
+</style>
+<style>
+  .rl { max-width: 760px; margin: 0 auto; padding: 20px 16px 64px; display: grid; gap: 18px; }
+  .rl-voltar { font-weight: 600; color: var(--tinta); min-height: 44px; display: inline-flex; align-items: center; }
+  .rl-pontos { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .rl-pontos button { min-width: 44px; min-height: 44px; border-radius: 8px; border: 1px solid var(--linha-forte); background: var(--folha); color: var(--texto); font: 700 14px var(--f-codigo); cursor: pointer; }
+  .rl-pontos button.feito { border-color: var(--certo); color: var(--certo); }
+  .rl-pontos button[aria-current="step"] { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+  .rl-pontos button:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+  .rl-conta { margin: 0; font-size: 14px; color: var(--texto-2); }
+  .rl-item { display: grid; gap: 12px; }
+  .rl-item h2 { margin: 0; font-size: 22px; }
+  .rl-item .lede { margin: 0; }
+  .rl-nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--linha); padding-top: 14px; }
+  .rl-estado { font-size: 13.5px; color: var(--texto-2); }
+  .rl-estado.ok { color: var(--certo); font-weight: 600; }
+</style>
+<link rel="stylesheet" href="../passo/passo.css">
+<link rel="stylesheet" href="../guia-mov.css">
+<link rel="stylesheet" href="../botoes.css">
+<link rel="stylesheet" href="../tema.css">
+<script src="../tema.js"></script>
+</head>
+<body>
+<main class="rl">
+  <a class="rl-voltar" href="../index.html#mapa">Voltar ao mapa</a>
+  <header>
+    <p class="sobretitulo">Revisão à parte</p>
+    <h1 class="titulo-pagina">Conceitos simples, sem escrever código</h1>
+    <p class="lede">Para revisar rápido: escolha na lista, digite um valor ou conte as linhas da tabela, e veja o resultado mudar na hora. As matérias e as lições continuam com o Python.</p>
+  </header>
+  <ol class="rl-pontos" id="rl-pontos" aria-label="Itens da revisão"></ol>
+  <p class="rl-conta" id="rl-conta" aria-live="polite"></p>
+  <section class="rl-item" id="rl-palco" aria-live="polite"></section>
+  <div class="rl-nav"><button type="button" class="botao" id="rl-voltar">Anterior</button><span class="rl-estado" id="rl-estado"></span><button type="button" class="botao primario" id="rl-proximo">Próximo</button></div>
+</main>
+
+<template id="rl-contar">
+        <div class="exercicio" data-preencher>
+          <p class="pergunta">Use esta tabela com as notas totais. Escreva só o número.</p>
+          <div class="rolagem">
+          <table class="tabela"><thead><tr><th>Nome</th><th>Cargo</th><th>Total</th></tr></thead><tbody>
+            <tr><td>Ana</td><td>Analista</td><td class="m">78</td></tr><tr><td>Bruno</td><td>Técnico</td><td class="m">67</td></tr>
+            <tr><td>Carla</td><td>Analista</td><td class="m">85</td></tr><tr><td>Diego</td><td>Técnico</td><td class="m">73</td></tr>
+            <tr><td>Elisa</td><td>Analista</td><td class="m">66</td></tr><tr><td>Felipe</td><td>Técnico</td><td class="m">84</td></tr>
+            <tr><td>Gabriela</td><td>Analista</td><td class="m">73</td></tr><tr><td>Hugo</td><td>Técnico</td><td class="m">58</td></tr>
+          </tbody></table>
+          </div>
+<div class="linha-classifica"><span>Quantos têm total maior ou igual a 70?</span><input data-resposta="5" inputmode="numeric" aria-label="Quantos passaram do corte"></div>
+          <div class="linha-classifica"><span>Desses, quantos são Técnicos? (duas regras juntas)</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos técnicos passaram"></div>
+          <div class="linha-classifica"><span>Se o corte subisse para 80, quantos passariam?</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos passariam com corte 80"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Tudo certo. 5 passam do corte 70; entre eles, Diego e Felipe são Técnicos; com corte 80 só Carla (85) e Felipe (84) passam." data-nao-texto="Confira os campos em vermelho. Passe a regra linha por linha: total ≥ 70 (Ana, Carla, Diego, Felipe e Gabriela). Depois olhe o cargo de cada um. Para o corte de 80, só valem os totais de 80 para cima."></div>
+        </div>
+</template>
+<template id="rl-calcular">
+        <div class="exercicio" data-preencher>
+          <p class="pergunta">Com a tabela de totais (Ana 78, Bruno 67, Carla 85, Diego 73, Elisa 66, Felipe 84, Gabriela 73, Hugo 58), calcule. Use ponto como separador decimal, como no computador.</p>
+          <div class="linha-classifica"><span>Média dos totais dos Analistas (Ana 78, Carla 85, Elisa 66, Gabriela 73)</span><input data-resposta="75.5" inputmode="decimal" aria-label="Média dos Analistas"></div>
+          <div class="linha-classifica"><span>Maior total menos o menor total (85 e 58)</span><input data-resposta="27" inputmode="numeric" aria-label="Diferença entre maior e menor"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Certo. Analistas: (78 + 85 + 66 + 73) ÷ 4 = 302 ÷ 4 = 75,5. E 85 − 58 = 27, que mostra o quanto as notas se espalham." data-nao-texto="Confira os campos em vermelho. Para a média: some as quatro notas e divida por 4. Para a diferença: maior menos menor, 85 − 58."></div>
+        </div>
+</template>
+
+<script src="../mascote.js" charset="utf-8"></script>
+<script src="../personagens.js" charset="utf-8"></script>
+<script src="../avatares.js" charset="utf-8"></script>
+<script src="../avatares-manga.js" charset="utf-8"></script>
+<script src="../tracos.js" charset="utf-8"></script>
+<script src="../guia-mov.js" charset="utf-8"></script>
+<script src="clip.js" charset="utf-8"></script>
+<script src="motor.js" charset="utf-8"></script>
+<script src="reacao.js" charset="utf-8"></script>
+<script src="revisao-logica.js" charset="utf-8"></script>
+<script>
+  // App instalável: guarda os arquivos no aparelho para abrir sem internet. Só no site publicado (https ou localhost), fora do artefato.
+  if ("serviceWorker" in navigator && window.self === window.top && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("../sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>
