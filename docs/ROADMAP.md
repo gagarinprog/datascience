@@ -98,6 +98,8 @@ Adiantado (21/10/2026), na apostila: tutorial guiado na primeira visita ao mapa;
 
 Adiantado (21/10/2026, à tarde), na apostila: página inicial sem rolagem (apresentação na primeira visita, Continuar e três atalhos no dia a dia); os guias em três traços à escolha (Mangá, Anime próprio, Aventura) e com oito movimentos ligados ao estudo; exemplos de Banco de Dados e Análise de Dados migrados para o banco de estudo; verificação de todas as interações no navegador, que achou e corrigiu a troca de tela que travava quando vinha de um temporizador, o "ache o erro" que passava da largura do celular e contrastes abaixo de AA nas animações; a verificação virou o teste `e2e/apostila.spec.ts`, que roda no CI.
 
+Adiantado (21/10/2026, à noite), na apostila: salvar o trajeto num arquivo e carregar em outro aparelho (`trajeto.js`, no menu do guia, com conferência do arquivo e desfazer). Para a Fase 5: a sincronização na nuvem vai para um projeto Supabase novo, só do Domínio, usando o mesmo formato do arquivo.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

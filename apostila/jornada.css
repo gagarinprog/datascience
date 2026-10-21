@@ -954,3 +954,22 @@ body.no-inicio .palco { padding-top: 12px; padding-bottom: 12px; }
   .ini-acao { padding: 22px; gap: 14px; }
 }
 @media (max-height: 700px) and (max-width: 859px) { .ini-rosto.mascote { --tam: 72px; } .ini-atalho { min-height: 80px; } .inicio { gap: 10px; } }
+
+/* ---------- trajeto: salvar e carregar (trajeto.js) ---------- */
+.trajeto-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; background: var(--folha-2); color: var(--tinta); }
+.trajeto-ic .ic { width: 22px; height: 22px; }
+.ini-trajeto { margin: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13.5px; color: var(--texto-2); }
+.ini-trajeto > .ic { width: 18px; height: 18px; color: var(--tinta); }
+.ini-trajeto span { flex: 1 1 160px; }
+.ini-trajeto-btn { min-height: 44px; padding: 0 14px; border: 1px solid var(--linha-forte); border-radius: 8px; background: var(--folha); color: var(--tinta); font: 700 12px/1 var(--f-codigo); letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; }
+.ini-trajeto-btn:hover { border-color: var(--tinta); }
+.trajeto-dlg { width: min(440px, calc(100vw - 32px)); border: 1px solid var(--linha-forte); border-radius: 12px; background: var(--folha); color: var(--texto); padding: 20px; display: grid; gap: 12px; }
+.trajeto-dlg:not([open]) { display: none; }
+.trajeto-dlg::backdrop { background: rgb(0 0 0 / 0.55); }
+.trajeto-dlg h2 { margin: 0; font: 700 22px/1.2 var(--f-titulo); }
+.trajeto-dlg p { margin: 0; line-height: 1.5; }
+.trajeto-data { font: 700 12px/1.3 var(--f-codigo); letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-2); }
+.trajeto-resumo { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.trajeto-resumo li { border: 1px solid var(--linha); border-radius: 8px; padding: 10px; font-size: 13.5px; color: var(--texto-2); }
+.trajeto-resumo b { display: block; font: 700 22px/1.1 var(--f-titulo); color: var(--texto); }
+.trajeto-acoes { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }

@@ -212,4 +212,63 @@ test.describe("apostila", () => {
     }
     await expect(page.locator("#r-palco")).toContainText("Revisão concluída");
   });
+
+  test("o trajeto vai para um arquivo e volta em outro aparelho", async ({ page, browser }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true }));
+      localStorage.setItem(
+        "dominio:progresso:v1",
+        JSON.stringify({
+          modulos: { "LOG.01": { estado: "dominado", em: "2026-10-21" } },
+          passos: { "PY.01": 2 },
+        }),
+      );
+    });
+    await page.goto(BASE + "index.html");
+    await expect(page.locator(".ini-trajeto")).toBeVisible();
+    await page.locator("#guia-btn").click();
+    const baixado = page.waitForEvent("download");
+    await page.locator('[data-trajeto="salvar"]').click();
+    const arquivo = await baixado;
+    expect(arquivo.suggestedFilename()).toMatch(/^dominio-trajeto-\d{4}-\d{2}-\d{2}\.json$/);
+    const caminho = await arquivo.path();
+    await expect(page.locator(".ini-trajeto")).toHaveCount(0);
+
+    // outro aparelho: começa vazio e recebe o arquivo
+    const outro = await browser.newContext();
+    const pg = await outro.newPage();
+    await pg.goto(BASE + "index.html#mapa");
+    await pg.evaluate(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ visto: true })),
+    );
+    await pg.reload();
+    await expect(pg.locator("#hud-xp")).toHaveText("0");
+    await pg.locator("#guia-btn").click();
+    const escolha = pg.waitForEvent("filechooser");
+    await pg.locator('[data-trajeto="carregar"]').click();
+    await (await escolha).setFiles(caminho);
+    await expect(pg.locator(".trajeto-dlg")).toContainText("1 módulo dominado");
+    await pg.locator("[data-trocar]").click();
+    await expect(pg.locator(".toast")).toContainText("Trajeto carregado");
+    await expect(pg.locator("#hud-xp")).not.toHaveText("0");
+    await pg.locator("#guia-btn").click();
+    await expect(pg.locator('[data-trajeto="desfazer"]')).toBeVisible();
+    await outro.close();
+  });
+
+  test("um arquivo que não é trajeto é recusado sem mexer em nada", async ({ page }) => {
+    await page.goto(BASE + "index.html#mapa");
+    await page.locator("#guia-btn").click();
+    const escolha = page.waitForEvent("filechooser");
+    await page.locator('[data-trajeto="carregar"]').click();
+    await (
+      await escolha
+    ).setFiles({
+      name: "notas.json",
+      mimeType: "application/json",
+      buffer: Buffer.from('{"oi": 1}'),
+    });
+    await expect(page.locator(".trajeto-dlg")).toContainText("não é um trajeto");
+    await expect(page.locator("[data-trocar]")).toHaveCount(0);
+  });
 });

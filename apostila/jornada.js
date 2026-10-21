@@ -348,6 +348,15 @@
   // Primeira visita: o guia apresenta o programa e o botão abre o tutorial. Dia a dia: Continuar de onde parou,
   // e três atalhos (mapa, laboratório, revisão). O mapa fica em #mapa.
   function lerLocal(chave, padrao) { try { const v = JSON.parse(localStorage.getItem(chave) || "null"); return v == null ? padrao : v; } catch (e) { return padrao; } }
+  // no Início, um lembrete discreto: só aparece quando há progresso que ainda não foi para um arquivo há 7 dias
+  function lembreteTrajeto(primeira) {
+    const T = window.Trajeto;
+    if (!T || primeira) return "";
+    const ultimo = T.ultimoSalvo();
+    const dias = ultimo ? (Date.now() - new Date(ultimo).getTime()) / 864e5 : Infinity;
+    if (dias < 7) return "";
+    return `<p class="ini-trajeto">${ic("download-duotone")}<span>${ultimo ? `Último arquivo do trajeto em ${dataBR(ultimo)}.` : "Seu trajeto está só neste aparelho."}</span><button type="button" class="ini-trajeto-btn" data-ini-trajeto>Salvar arquivo</button></p>`;
+  }
   function vistaInicio() {
     const g = guia();
     const aqui = materiaAtual(), prox = proximoModulo(aqui);
@@ -385,8 +394,11 @@
           ${atalho("castelo/index.html", "database-duotone", "Centro de Dados", "laboratório", labFeitas ? `${labFeitas} de 17` : "17 módulos")}
           ${terceiro}
         </nav>
+        ${lembreteTrajeto(primeira || !(total || Object.keys(progresso.passos).length))}
       </div>
     </div>`;
+    const btT = document.querySelector("[data-ini-trajeto]");
+    if (btT) btT.addEventListener("click", () => acaoTrajeto("salvar"));
     const bt = document.querySelector("[data-ini-tutorial]");
     if (bt) bt.addEventListener("click", () => abrirTutorial(0));
     teclas = null;
@@ -1144,6 +1156,64 @@
   window.Tutorial = { abrir: abrirTutorial };
 
   // seletor de guia no topo
+  // ---------- trajeto: salvar num arquivo e carregar de um arquivo (trajeto.js) ----------
+  const dataBR = (iso) => { const d = new Date(iso); return isNaN(d) ? "" : `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`; };
+  function acaoTrajeto(acao) {
+    const T = window.Trajeto;
+    if (!T) return;
+    if (acao === "salvar") {
+      T.baixar();
+      toast("Trajeto salvo no arquivo. Guarde-o: é ele que leva seu progresso para outro aparelho.", "download-duotone");
+      if (rota().v === "inicio") render();
+      return;
+    }
+    if (acao === "desfazer") {
+      if (T.desfazer()) { try { sessionStorage.setItem("dominio-aviso", "Carregamento desfeito: voltou o trajeto de antes."); } catch (e) { /* sem armazenamento */ } location.reload(); }
+      return;
+    }
+    // carregar: escolhe o arquivo, mostra o que ele traz e só troca depois da confirmação
+    const entrada = document.createElement("input");
+    entrada.type = "file"; entrada.accept = ".json,application/json"; entrada.hidden = true;
+    document.body.appendChild(entrada);
+    entrada.addEventListener("change", () => {
+      const arq = entrada.files && entrada.files[0];
+      entrada.remove();
+      if (!arq) return;
+      arq.text().then((texto) => dialogoTrajeto(texto));
+    });
+    entrada.click();
+  }
+  function dialogoTrajeto(texto) {
+    const T = window.Trajeto;
+    let pacote = null, erro = "";
+    try { pacote = T.validar(texto); } catch (e) { erro = e.message; }
+    const dlg = document.createElement("dialog");
+    dlg.className = "trajeto-dlg";
+    dlg.setAttribute("aria-labelledby", "trajeto-t");
+    if (erro) {
+      dlg.innerHTML = `<h2 id="trajeto-t">Não deu para carregar</h2><p>${esc(erro)}</p><div class="trajeto-acoes"><button type="button" class="btn btn-3d" data-fechar>Entendi</button></div>`;
+    } else {
+      const r = T.resumo(pacote);
+      dlg.innerHTML = `<h2 id="trajeto-t">Carregar este trajeto?</h2>
+        <p class="trajeto-data">Salvo em ${esc(dataBR(r.salvo_em) || "data desconhecida")}</p>
+        <ul class="trajeto-resumo"><li><b>${r.modulos}</b> ${r.modulos === 1 ? "módulo dominado" : "módulos dominados"}</li><li><b>${r.licoes}</b> ${r.licoes === 1 ? "lição ilustrada" : "lições ilustradas"}</li><li><b>${r.revisoes}</b> ${r.revisoes === 1 ? "item de revisão" : "itens de revisão"}</li><li><b>${r.laboratorio}</b> de 17 módulos do laboratório</li></ul>
+        <p>O trajeto deste aparelho é trocado pelo do arquivo. Se mudar de ideia, o menu do guia oferece desfazer.</p>
+        <div class="trajeto-acoes"><button type="button" class="btn" data-fechar>Cancelar</button><button type="button" class="btn btn-3d" data-trocar>Trocar pelo do arquivo</button></div>`;
+    }
+    document.body.appendChild(dlg);
+    const sair = () => { dlg.close(); dlg.remove(); };
+    dlg.querySelector("[data-fechar]").addEventListener("click", sair);
+    dlg.addEventListener("cancel", (e) => { e.preventDefault(); sair(); });
+    const trocar = dlg.querySelector("[data-trocar]");
+    if (trocar) trocar.addEventListener("click", () => {
+      try { T.aplicar(pacote); } catch (e) { dlg.querySelector("p:last-of-type").textContent = e.message; return; }
+      try { sessionStorage.setItem("dominio-aviso", `Trajeto carregado: ${T.resumo(pacote).modulos} ${T.resumo(pacote).modulos === 1 ? "módulo dominado" : "módulos dominados"}.`); } catch (e) { /* sem armazenamento */ }
+      location.reload();
+    });
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+    (trocar || dlg.querySelector("[data-fechar]")).focus();
+  }
+
   function montarSeletorGuia() {
     const btn = document.getElementById("guia-btn"), menu = document.getElementById("guia-menu"), mini = document.getElementById("guia-mini");
     const ordem = ["rin", "takumi", "mei", "bia", "davi", "lia", "kenji", "sol", "rafa", "panda"].filter((id) => window.GUIAS[id]);
@@ -1151,13 +1221,15 @@
       mini.innerHTML = guia().expr.padrao;
       mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
       const tema = window.Tema ? window.Tema.atual() : "grafite";
-      menu.innerHTML = `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
+      menu.innerHTML = (window.Trajeto ? `<p>Seu trajeto</p><button type="button" data-trajeto="salvar"><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Salvar meu trajeto</b><small>${window.Trajeto.ultimoSalvo() ? "último arquivo em " + dataBR(window.Trajeto.ultimoSalvo()) : "baixa um arquivo com tudo"}</small></span><span></span></button><button type="button" data-trajeto="carregar"><span class="trajeto-ic">${ic("upload-duotone")}</span><span><b>Carregar trajeto</b><small>de um arquivo salvo antes</small></span><span></span></button>${window.Trajeto.temAnterior() ? `<button type="button" data-trajeto="desfazer"><span class="trajeto-ic">${ic("history-duotone")}</span><span><b>Desfazer o carregamento</b><small>volta ao trajeto de antes</small></span><span></span></button>` : ""}` : "") + `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
     };
     const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });
     menu.addEventListener("click", (e) => {
       const t = e.target.closest("[data-tema-opcao]");
       if (t && window.Tema) { window.Tema.definir(t.dataset.temaOpcao); atualizar(); return; }
+      const tj = e.target.closest("[data-trajeto]");
+      if (tj) { fechar(); acaoTrajeto(tj.dataset.trajeto); return; }
       const tr = e.target.closest("[data-traco-opcao]");
       if (tr && window.Tracos) { window.Tracos.definir(tr.dataset.tracoOpcao); atualizar(); render(); return; }
       const b = e.target.closest("[data-guia]");
@@ -1178,4 +1250,6 @@
   document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
   window.addEventListener("hashchange", () => transicao(() => { render(); window.scrollTo(0, 0); }));
   render();
+  // aviso que sobrevive ao recarregar (depois de carregar ou desfazer um trajeto)
+  try { const aviso = sessionStorage.getItem("dominio-aviso"); if (aviso) { sessionStorage.removeItem("dominio-aviso"); setTimeout(() => toast(aviso, "check-circle-duotone"), 400); } } catch (e) { /* sem armazenamento */ }
 })();
