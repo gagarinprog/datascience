@@ -578,8 +578,14 @@
         atualizar();
         if (secoes[atual].scrollIntoView) secoes[atual].scrollIntoView({ block: "start" });
       };
-      if (document.startViewTransition && !reduz() && !verTudo.checked) document.startViewTransition(fazer);
-      else fazer();
+      if (document.startViewTransition && !reduz() && !verTudo.checked) {
+        // se o navegador adiar a transição (troca vinda de temporizador), a tela troca sem animação
+        let feito = false;
+        const uma = () => { if (feito) return; feito = true; fazer(); };
+        const t = document.startViewTransition(uma);
+        [t.ready, t.finished, t.updateCallbackDone].forEach((pr) => pr && pr.catch(() => {}));
+        setTimeout(() => { if (!feito) { if (t.skipTransition) t.skipTransition(); uma(); } }, 350);
+      } else fazer();
     }
     let espera = null;
     function depois(ex, resultado) {

@@ -966,8 +966,13 @@
   function transicao(fazer) {
     if (!document.startViewTransition || semMovimento()) { fazer(); return; }
     // a transição pode ser abortada (por exemplo, quando a barra do navegador do celular muda a altura da tela); a troca acontece mesmo assim
-    const t = document.startViewTransition(fazer);
+    // quando a troca nasce de um temporizador (avanço automático, tutorial), o navegador pode adiar a transição
+    // até o próximo quadro desenhado; se ela não rodar logo, a tela troca sem animação
+    let feito = false;
+    const uma = () => { if (feito) return; feito = true; fazer(); };
+    const t = document.startViewTransition(uma);
     [t.ready, t.finished, t.updateCallbackDone].forEach((pr) => pr && pr.catch(() => {}));
+    setTimeout(() => { if (!feito) { if (t.skipTransition) t.skipTransition(); uma(); } }, 350);
   }
   let teclas = null;
   document.addEventListener("keydown", (e) => {
