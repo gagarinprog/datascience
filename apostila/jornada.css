@@ -886,3 +886,34 @@ pre code { display: block; background: none; border: 0; padding: 0; border-radiu
 .guia-menu { max-height: min(72vh, 560px); overflow-y: auto; overscroll-behavior: contain; }
 .guia-galeria { display: flex; align-items: center; min-height: 44px; margin-top: 4px; padding: 6px 8px; border-top: 1px solid var(--linha); color: var(--tinta); font-weight: 600; font-size: 14px; text-decoration: none; }
 .guia-galeria:hover { text-decoration: underline; }
+
+/* ---------- uso no trabalho do cientista de dados ---------- */
+.mat-cab .no-trabalho { margin-top: 14px; }
+.no-trabalho p { font-family: var(--f-leitura); font-weight: 500; font-size: 16px; line-height: 1.55; }
+
+/* ---------- tutorial: o guia para em cada parte real da tela ---------- */
+.tutorial-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--linha); background: var(--folha); color: var(--texto); font: 600 13.5px/1 var(--f-ui); cursor: pointer; }
+.tutorial-btn:hover { border-color: var(--linha-hover); }
+.tutorial-btn .ic { width: 20px; height: 20px; color: var(--tinta); }
+@media (max-width: 560px) { .tutorial-btn span { display: none; } .tutorial-btn { padding: 0 10px; } }
+.tut { position: fixed; inset: 0; z-index: 1000; }
+.tut-fundo { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.72); }
+.tut.com-foco .tut-fundo { background: transparent; }
+.tut-foco { position: fixed; display: none; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(5, 8, 14, 0.72), 0 0 0 3px var(--tinta); pointer-events: none; transition: left 300ms, top 300ms, width 300ms, height 300ms; }
+.tut.com-foco .tut-foco { display: block; }
+.tut-cartao { position: fixed; left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-width: 640px; margin: 0 auto;
+  display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 16px; align-items: start; padding: 18px; border-radius: 14px; background: var(--folha); color: var(--texto); border: 1px solid var(--linha-forte); box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6); max-height: calc(100vh - 140px); overflow-y: auto; }
+.tut-guia .mascote { --tam: 76px; }
+.tut-corpo { display: grid; gap: 8px; min-width: 0; }
+.tut-n { font: 700 11.5px/1.2 var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta); margin: 0; }
+.tut-corpo h2 { font-size: 21px; line-height: 1.2; margin: 0; }
+.tut-corpo h2:focus { outline: none; }
+.tut-texto { display: grid; gap: 8px; font-family: var(--f-leitura); font-size: 15.5px; line-height: 1.55; color: var(--texto-2); }
+.tut-texto p { margin: 0; }
+.tut-texto b { color: var(--texto); }
+.tut-lista { margin: 0; padding-left: 20px; display: grid; gap: 2px; }
+.tut-acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-top: 6px; }
+.tut-dir { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 560px) { .tut-cartao { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; padding: 14px; } .tut-guia .mascote { --tam: 52px; } .tut-corpo h2 { font-size: 18px; } }
+@media (prefers-reduced-motion: reduce) { .tut-foco { transition: none; } }
+@media (max-width: 420px) { .hud-status { gap: 4px; } .hud-dentro { gap: 6px; } #stat-ofensiva { display: none; } .tutorial-btn { padding: 0 8px; justify-content: center; min-width: 44px; } }

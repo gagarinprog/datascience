@@ -3,6 +3,8 @@ window.MATERIAS = [
  {
   "sigla": "LOG",
   "nome": "Lógica de programação",
+  "etapa": "Pensar em passos",
+  "trabalho": "Antes de qualquer análise, alguém precisa transformar um pedido vago, como “quero saber quem vai cancelar o plano”, em passos que um computador executa. Quem faz essa tradução é você, todos os dias.",
   "porque": "Começa sem computador, só com passos e teste de mesa, e logo passa a escrever esses passos em Python. As pesquisas que montaram trajetórias de aprendizagem (Rich e colegas, 2017) seguem esse caminho: do cotidiano para o pensamento computacional e depois para o programa. Primeiro a ordem dos passos, depois a repetição e a decisão, que mudam essa ordem.",
   "logos": [
    "python"
@@ -256,6 +258,8 @@ window.MATERIAS = [
  {
   "sigla": "PY",
   "nome": "Python",
+  "etapa": "Automatizar",
+  "trabalho": "Python é a ferramenta do dia a dia: ler a planilha que o financeiro mandou, juntar com a base do app e gerar o relatório de toda segunda sem refazer à mão. Um script curto troca uma tarde de copiar e colar.",
   "porque": "Segue a ordem dos cursos mais usados para iniciantes (CS50 Python, Python for Everybody, Think Python): textos, listas e dicionários; depois erros, arquivos, bibliotecas e testes, que são o kit para fazer coisas reais; só então os atalhos (compreensões), as classes e as anotações de tipo. Referências e mutabilidade ficam logo após as coleções, porque é um ponto de virada que tudo o que vem depois usa.",
   "logos": [
    "python",
@@ -616,6 +620,8 @@ window.MATERIAS = [
  {
   "sigla": "BD",
   "nome": "Banco de dados e SQL",
+  "etapa": "Guardar e consultar",
+  "trabalho": "A área de vendas pede a taxa de recompra por região até amanhã. Os dados estão no banco da empresa, e quem escreve a consulta SQL que responde é você.",
   "porque": "Primeiro usar um banco pronto, depois modificar, depois criar o seu (a progressão usar, modificar, criar). As consultas seguem a ordem de dificuldade medida em consultas reais de estudantes (Ahadi e colegas, 2015): uma tabela, agrupamento, junção, subconsulta simples, subconsulta correlacionada e, por último, a autojunção.",
   "logos": [
    "postgresql",
@@ -1143,6 +1149,8 @@ window.MATERIAS = [
  {
   "sigla": "CMP",
   "nome": "Como o computador funciona",
+  "etapa": "Entender a máquina",
+  "trabalho": "Quando a conta não fecha por centavos, o acento vira símbolo estranho ou o notebook trava com uma base grande, saber como o computador guarda números, textos e memória é o que separa o palpite da correção.",
   "porque": "Vem depois dos primeiros programas porque dá o porquê do que você já viu acontecer: o 0.1 + 0.2 estranho, o acento quebrado, o programa lento. Aprender o que a máquina faz por baixo (a máquina nocional, de du Boulay) explica boa parte dos erros de quem começa.",
   "logos": [
    "linux",
@@ -1334,6 +1342,8 @@ window.MATERIAS = [
  {
   "sigla": "MAT",
   "nome": "Matemática básica e lógica",
+  "etapa": "Raciocinar",
+  "trabalho": "Conjuntos e lógica estão em cada filtro que você escreve: “clientes que compraram e não voltaram” é uma diferença de conjuntos. A contagem diz quantos casos um teste precisa cobrir.",
   "porque": "Só o que a estatística e o raciocínio lógico de concurso pedem logo: conjuntos, lógica proposicional e contagem. A álgebra linear e o cálculo ficam numa matéria própria, perto do aprendizado de máquina, que é onde eles são usados (diretrizes do grupo do PCMI, De Veaux e colegas, 2017).",
   "logos": [],
   "modulos": [
@@ -1418,6 +1428,8 @@ window.MATERIAS = [
  {
   "sigla": "EST",
   "nome": "Probabilidade e estatística",
+  "etapa": "Medir a incerteza",
+  "trabalho": "O app mudou o botão de compra e as vendas subiram 3%. Foi o botão ou foi acaso? Responder isso com um teste A/B e um intervalo de confiança é trabalho central do cientista de dados.",
   "porque": "Simulação antes de fórmula: você sorteia no computador, vê a variação acontecer e só depois usa a fórmula que resume aquilo (a linha do Data 8, de Berkeley, e do OpenIntro). As diretrizes GAISE II lembram que todo iniciante começa pelo nível A, qualquer que seja a idade: perguntas e dados reais antes da teoria.",
   "logos": [
    "python",
@@ -1760,6 +1772,8 @@ window.MATERIAS = [
  {
   "sigla": "ED",
   "nome": "Estruturas de dados e algoritmos",
+  "etapa": "Fazer rápido",
+  "trabalho": "Uma rotina que demora duas horas pode cair para dois minutos trocando uma lista por um dicionário. Saber o custo de cada estrutura evita o código que funciona na amostra e trava na base real.",
   "porque": "Estruturas e algoritmos andam juntos, na ordem do livro Problem Solving with Algorithms and Data Structures using Python: primeiro medir custo, depois usar pilhas e filas prontas, só então construir a sua lista ligada; recursão antes das árvores, porque percorrer árvore é recursão; grafos por último, porque usam filas, pilhas e heaps. Os erros previsíveis vêm dos estudos de Zingaro e colegas (2018) e de Karpierz e Wolfman (2014).",
   "logos": [
    "python",
@@ -2378,6 +2392,8 @@ window.MATERIAS = [
  {
   "sigla": "POO",
   "nome": "Orientação a objetos",
+  "etapa": "Organizar o código",
+  "trabalho": "Os pacotes que você usa todo dia, como pandas e scikit-learn, são feitos de classes. Entender objetos ajuda a ler a documentação, estender uma ferramenta e organizar um projeto que outra pessoa vai manter.",
   "porque": "Orientação a objetos é um ponto de virada comprovado (Boustedt e colegas, 2007): demora a fazer sentido, mas depois muda o jeito de ler qualquer código. Por isso vem depois das classes em Python e das estruturas de dados, com tempo para praticar em Java, a linguagem da disciplina da UFMS.",
   "logos": [
    "java",
@@ -2595,6 +2611,8 @@ window.MATERIAS = [
  {
   "sigla": "ENG",
   "nome": "Ferramentas do ofício",
+  "etapa": "Entregar e manter",
+  "trabalho": "A análise só vale se outra pessoa consegue rodar de novo: o ambiente do projeto, o Git com o histórico de cada mudança e o pipeline que roda sozinho toda noite levam o seu notebook para dentro da empresa.",
   "porque": "Na ordem em que você precisa delas para trabalhar: terminal, ambiente do projeto, notebook, Git e só depois o trabalho em equipe, os pipelines e a nuvem. É a ordem do curso The Missing Semester, do MIT.",
   "logos": [
    "bash",
@@ -2878,6 +2896,8 @@ window.MATERIAS = [
  {
   "sigla": "FMT",
   "nome": "Formatos e coleta de dados",
+  "etapa": "Coletar",
+  "trabalho": "Os dados chegam de todo jeito: CSV exportado do sistema, JSON da API de um parceiro, planilha com células mescladas, datas em três formatos. Coletar e ler tudo isso direito é a primeira etapa de qualquer projeto.",
   "porque": "Do formato que mais aparece ao que menos aparece: CSV e JSON primeiro, datas logo depois (estão em toda base), planilhas, Parquet, APIs e dados públicos; raspagem, texto e imagem no fim.",
   "logos": [
    "json",
@@ -3214,6 +3234,8 @@ window.MATERIAS = [
  {
   "sigla": "AD",
   "nome": "Análise de dados",
+  "etapa": "Limpar e analisar",
+  "trabalho": "A maior parte do tempo de um cientista de dados passa aqui: limpar, juntar, agrupar e resumir tabelas com pandas até a pergunta do negócio virar um número confiável.",
   "porque": "Tabelas antes de modelos, como no Data 8 e no Data 100, de Berkeley: NumPy, depois o DataFrame, filtrar, agrupar, juntar, arrumar e limpar. Cada passo tem o seu par em SQL, que você já viu. Um estudo com os envios de alunos de um curso de análise de dados (Singh e colegas, 2024) mostra onde se erra: entender os dados, valores ausentes e uso errado das bibliotecas.",
   "logos": [
    "pandas",
@@ -3492,6 +3514,8 @@ window.MATERIAS = [
  {
   "sigla": "VIS",
   "nome": "Visualização e comunicação",
+  "etapa": "Comunicar",
+  "trabalho": "Um bom gráfico decide a reunião. Você mostra para a diretoria, num slide, que o cancelamento se concentra no segundo mês de assinatura, e a decisão sai ali.",
   "porque": "Primeiro como o olho lê um gráfico, depois qual gráfico usar, depois fazer e corrigir. A análise exploratória entra aqui porque é feita com gráficos. Relatório e painel fecham a matéria, porque comunicar é o fim de toda análise.",
   "logos": [
    "matplotlib",
@@ -3716,6 +3740,8 @@ window.MATERIAS = [
  {
   "sigla": "ALC",
   "nome": "Álgebra linear e cálculo para dados",
+  "etapa": "Entender os modelos",
+  "trabalho": "Por trás da recomendação do streaming, da regressão e das redes neurais há vetores e matrizes. Essa matemática é o que permite explicar por que um modelo errou, e não só rodar o comando.",
   "porque": "A matemática por trás dos modelos, logo antes de usá-los, na ordem do livro Mathematics for Machine Learning: vetores, matrizes, sistemas, espaços, mínimos quadrados, decomposições e cálculo para otimizar. Tudo com NumPy, que você já conhece.",
   "logos": [
    "numpy"
@@ -3912,6 +3938,8 @@ window.MATERIAS = [
  {
   "sigla": "ML",
   "nome": "Aprendizado de máquina",
+  "etapa": "Prever",
+  "trabalho": "Prever quem vai cancelar o plano, que transação de Pix é golpe ou quanto a loja vai vender no mês que vem: o modelo é treinado, avaliado com honestidade e colocado para funcionar.",
   "porque": "Na ordem do Data 100 e do livro An Introduction to Statistical Learning: o problema, a avaliação honesta e as métricas antes de qualquer modelo; depois modelos lineares, vizinhos, atributos, árvores, agrupamento, ajuste e interpretação. Redes neurais no fim.",
   "logos": [
    "scikitlearn",
@@ -4297,6 +4325,8 @@ window.MATERIAS = [
  {
   "sigla": "NSQ",
   "nome": "Dados além do relacional",
+  "etapa": "Escalar",
+  "trabalho": "Nem todo dado cabe em tabela: eventos de um app em tempo real, documentos JSON, a rede de quem segue quem. Saber quando usar outro tipo de banco evita forçar o problema no formato errado.",
   "porque": "Só depois de dominar o relacional faz sentido entender por que existem outros modelos: documento, colunar, chave-valor, grafo, processamento distribuído e fluxo.",
   "logos": [
    "mongodb",
@@ -4505,6 +4535,8 @@ window.MATERIAS = [
  {
   "sigla": "ETI",
   "nome": "Ética, privacidade e governança",
+  "etapa": "Cuidar dos dados",
+  "trabalho": "Todo projeto com dados pessoais passa pela LGPD: o que pode ser coletado, por quanto tempo e com que base legal. Um modelo que discrimina ou vaza dados é um risco para a empresa e para as pessoas.",
   "porque": "Fecha o percurso porque usa tudo: dados pessoais, modelos e pipelines. A LGPD é estudada sempre pelo texto oficial.",
   "logos": [],
   "modulos": [

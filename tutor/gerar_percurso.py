@@ -121,7 +121,7 @@ def main():
                 "passos": len(conceitos) + 1,
             })
         total += passo
-        guia.append({"sigla": sigla, "nome": mat["nome"], "porque": mat["porque"], "logos": mat["logos"], "modulos": mods})
+        guia.append({"sigla": sigla, "nome": mat["nome"], "etapa": mat["etapa"], "trabalho": mat["trabalho"], "porque": mat["porque"], "logos": mat["logos"], "modulos": mods})
 
     PERCURSO.write_text("\n".join(linhas) + "\n", encoding="utf-8", newline="\n")
     DADOS_GUIA.write_text(

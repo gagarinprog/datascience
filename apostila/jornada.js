@@ -322,7 +322,7 @@
         l.classList.toggle("rel-dep", dep.prepara.includes(l.dataset.s));
       });
       const nomes = (a) => a.map((s) => POR_SIGLA[s].nome).join(", ");
-      dica.textContent = `${m.nome}: ${dep.precisa.length ? "usa " + nomes(dep.precisa) : "não usa nenhuma matéria anterior"}. ${dep.prepara.length ? "Prepara " + nomes(dep.prepara) + "." : "Fecha o percurso."}`;
+      dica.textContent = `${m.nome}${m.etapa ? ` (no trabalho: ${m.etapa.toLowerCase()})` : ""}: ${dep.precisa.length ? "usa " + nomes(dep.precisa) : "não usa nenhuma matéria anterior"}. ${dep.prepara.length ? "Prepara " + nomes(dep.prepara) + "." : "Fecha o percurso."}`;
     };
     lis.forEach((li) => {
       li.addEventListener("mouseenter", () => relacionar(li));
@@ -373,6 +373,7 @@
           <div class="mat-cta"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" data-principal>${ic("play-bold")}<span>${d === n ? "Revisar" : d ? "Continuar" : "Começar"}: ${esc(prox.nome)}<small>módulo ${MODULO[prox.codigo].indice + 1} de ${n} · +${xpDe(prox.codigo)} XP</small></span></a></div>
         </div>
         ${g.frase ? `<figure class="resumo"><div class="mascote retrato">${gd.expr.explica}</div><p class="glossavel">${esc(g.frase)}</p></figure>` : ""}
+        ${m.trabalho ? `<div class="alvo no-trabalho"><span class="ic-a">${ic("graduation-cap-duotone")}</span><div><small>No trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></div>` : ""}
       </section>
       <nav class="abas tema-exp" aria-label="Partes da matéria" style="${coresExp()}">
         ${abas.map(([id, rotaAba, nome, icone]) => `<a class="aba" href="#${rotaAba}-${sigla}"${id === aba ? ' aria-current="page"' : ""}>${ic(icone)}${nome}${id === "guia" ? `<small class="aba-n">${concluidas(sigla).length}/${secoesDe(m).length}</small>` : ""}</a>`).join("")}
@@ -730,7 +731,8 @@
     }
     if (p === 1) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Para que serve</h1>
       <div class="fala" ${iv()}>${mascote("explica", "flutua")}<p class="balao cor texto-grande glossavel">${esc(mod.dia)}</p></div>
-      <div class="alvo" ${iv()}><span class="ic-a">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></div>`;
+      <div class="alvo" ${iv()}><span class="ic-a">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></div>
+      ${m.trabalho ? `<div class="alvo no-trabalho" ${iv()}><span class="ic-a">${ic("graduation-cap-duotone")}</span><div><small>${esc(m.nome)} no trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></div>` : ""}`;
     const marcados = new Set(progresso.conceitos[cod] || []);
     if (p === 2) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>O que você aprende</h1><p class="passo-sub" ${iv()}>${mod.conceitos.length} conceitos, nesta ordem. Marque cada um quando sentir que entendeu; a marcação fica salva. Toque nos termos sublinhados para ver o que significam.</p>
       <p class="conta-conceitos" id="conta-conceitos" ${iv()}>${marcados.size} de ${mod.conceitos.length} marcados como entendidos</p>
@@ -980,13 +982,109 @@
     clearTimeout(autoAvanco);
     document.querySelectorAll(".vitoria").forEach((v) => v.remove());
     desenharHud();
-    if (r.v === "mapa") vistaMapa();
+    if (r.v === "mapa") {
+      vistaMapa();
+      const t = lerTut();
+      if (!t.feito && !t.visto) setTimeout(() => abrirTutorial(t.parada || 0), 700);
+    }
     else if (r.v === "materia") vistaMateria(r.sigla, r.aba);
     else if (r.v === "estudo") vistaEstudo(r.cod);
     else vistaFontes();
     const titulo = r.v === "mapa" ? "Mapa" : r.v === "fontes" ? "Fontes" : r.v === "estudo" ? MODULO[r.cod].mod.nome : POR_SIGLA[r.sigla].nome;
     document.title = `${titulo} · Domínio`;
   }
+  // ---------- tutorial: o guia apresenta o Domínio, parando na parte real da tela de que fala ----------
+  const CHAVE_TUT = "dominio:tutorial:v1";
+  const lerTut = () => { try { return JSON.parse(localStorage.getItem(CHAVE_TUT) || "{}") || {}; } catch (e) { return {}; } };
+  const gravarTut = (v) => { try { localStorage.setItem(CHAVE_TUT, JSON.stringify(v)); } catch (e) { /* vale só nesta visita */ } };
+  const CICLO_CD = ["Perguntar", "Coletar", "Guardar", "Limpar", "Analisar", "Modelar", "Comunicar", "Cuidar dos dados"];
+  function paradasTutorial() {
+    const prox = proximoModulo(materiaAtual());
+    const lista = (itens, ordem) => `<${ordem ? "ol" : "ul"} class="tut-lista">${itens.map((x) => `<li>${x}</li>`).join("")}</${ordem ? "ol" : "ul"}>`;
+    return [
+      { alvo: null, expr: "feliz", t: `Oi, eu sou ${esc(guia().nome)}`, h: `<p>Vou acompanhar você do primeiro algoritmo ao primeiro modelo. Antes, o que faz um cientista de dados: ele percorre este ciclo, de novo e de novo, em cada projeto.</p>${lista(CICLO_CD, true)}<p>Cada matéria do Domínio treina uma ou mais etapas desse ciclo, e eu sempre aviso qual.</p>` },
+      { alvo: ".legenda-linhas", expr: "explica", t: "O mapa: 16 matérias em 6 linhas", h: `<p>Cada linha junta matérias que treinam as mesmas etapas do trabalho:</p>${lista(MUNDOS.map((w) => `<b>${esc(w.nome)}</b>: ${w.siglas.map((sg) => esc((POR_SIGLA[sg].etapa || "").toLowerCase())).join(", ")}`))}<p>Passe o mouse ou toque numa estação: eu digo o que ela usa, o que ela prepara e onde ela entra no trabalho.</p>` },
+      { alvo: "[data-principal]", expr: "explica", t: "Um botão para seguir", h: `<p>O Continuar leva sempre ao próximo módulo da sequência, agora <b>${esc(prox.nome)}</b>. Não precisa escolher nada: a ordem já respeita o que cada matéria pede antes.</p>` },
+      { alvo: null, expr: "explica", t: "Cada módulo em 5 passos", h: `${lista(PASSOS.map(([n]) => esc(n)), true)}<p>No passo “Para que serve” eu conto onde aquilo aparece no trabalho. No último, você responde com as suas palavras, compara com a resposta e o módulo fica dominado.</p>` },
+      { alvo: 'a[href="licoes/INICIO.html"]', expr: "uau", t: "Lições com animação e prática", h: "<p>Nas lições ilustradas, cada conceito abre em etapas, uma de cada vez: um desafio antes de ler, a animação passo a passo, os exercícios e a sua explicação. Errou? Na primeira vez vem a dica; na segunda, a resposta comentada. O melhor começo é a lista de aprovados.</p>" },
+      { alvo: 'a[href="castelo/index.html"]', expr: "feliz", t: "O laboratório: a prática que fixa", h: "<p>No Centro de Dados você monta um banco PostgreSQL do zero, como num projeto real: cria as tabelas, carrega os dados, consulta, analisa com Python, administra o banco e apresenta os resultados. Cada módulo começa dizendo em que momento do trabalho aquilo acontece.</p>" },
+      { alvo: "#guia-btn", expr: "padrao", t: "Seu guia, o tema e este tutorial", h: "<p>Aqui você troca o guia e o tema. O tutorial fica no botão ao lado, para rever quando quiser. O que você errar volta para revisão em 1, 3, 7, 14 e 30 dias, e o mapa avisa quando há revisão.</p>" },
+    ];
+  }
+  let tutAberto = null;
+  function abrirTutorial(inicio) {
+    if (tutAberto) return;
+    if (rota().v !== "mapa") { location.hash = "#mapa"; setTimeout(() => abrirTutorial(inicio), 450); return; }
+    const paradas = paradasTutorial(), n = paradas.length;
+    let k = Math.max(0, Math.min(n - 1, inicio || 0));
+    const voltarFoco = document.activeElement;
+    const el = document.createElement("div");
+    el.className = "tut";
+    el.innerHTML = `<div class="tut-fundo"></div><div class="tut-foco" aria-hidden="true"></div>
+      <section class="tut-cartao" role="dialog" aria-modal="true" aria-labelledby="tut-t" aria-describedby="tut-texto">
+        <div class="tut-guia"></div>
+        <div class="tut-corpo"><p class="tut-n"></p><h2 id="tut-t" tabindex="-1"></h2><div class="tut-texto" id="tut-texto"></div>
+          <div class="tut-acoes"><button type="button" class="btn btn-fantasma" data-tut="pular">Pular o tutorial</button><span class="tut-dir"><button type="button" class="btn" data-tut="voltar">Voltar</button><button type="button" class="btn btn-3d b-prog" data-tut="prox">Próximo</button></span></div></div>
+      </section>`;
+    document.body.appendChild(el);
+    tutAberto = el;
+    const foco = el.querySelector(".tut-foco");
+    const posicionar = () => {
+      const alvo = paradas[k].alvo && document.querySelector(paradas[k].alvo);
+      el.classList.toggle("com-foco", !!alvo);
+      if (!alvo) return;
+      const r = alvo.getBoundingClientRect(), m = 6;
+      Object.assign(foco.style, { left: r.left - m + "px", top: r.top - m + "px", width: r.width + m * 2 + "px", height: r.height + m * 2 + "px" });
+    };
+    const pintar = () => {
+      const P = paradas[k], alvo = P.alvo && document.querySelector(P.alvo);
+      gravarTut(Object.assign(lerTut(), { parada: k }));
+      el.querySelector(".tut-guia").innerHTML = mascote(P.expr);
+      el.querySelector(".tut-n").textContent = `Tutorial · ${k + 1} de ${n}`;
+      el.querySelector("#tut-t").textContent = P.t;
+      el.querySelector(".tut-texto").innerHTML = P.h;
+      el.querySelector('[data-tut="voltar"]').disabled = k === 0;
+      const bp = el.querySelector('[data-tut="prox"]');
+      bp.textContent = k === n - 1 ? "Começar a estudar" : "Próximo";
+      bp.style.setProperty("--p", (k + 1) / n); bp.dataset.passo = `${k + 1} de ${n}`;
+      if (alvo) {
+        // o alvo fica na metade de cima da tela; o cartão do guia fica embaixo
+        const topo = alvo.getBoundingClientRect().top + window.scrollY - 110;
+        window.scrollTo({ top: Math.max(0, topo), behavior: semMovimento() ? "auto" : "smooth" });
+      }
+      posicionar();
+      setTimeout(posicionar, 420);
+      el.querySelector("#tut-t").focus({ preventScroll: true });
+    };
+    const fechar = (feito) => {
+      gravarTut(Object.assign(lerTut(), feito ? { feito: true, parada: 0 } : { visto: true }));
+      window.removeEventListener("scroll", posicionar); window.removeEventListener("resize", posicionar);
+      el.remove(); tutAberto = null;
+      if (voltarFoco && voltarFoco.focus) voltarFoco.focus();
+    };
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-tut]");
+      if (!b) return;
+      if (b.dataset.tut === "pular") fechar(true);
+      else if (b.dataset.tut === "voltar" && k > 0) { k--; pintar(); }
+      else if (b.dataset.tut === "prox") { if (k < n - 1) { k++; pintar(); } else fechar(true); }
+    });
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { e.stopPropagation(); fechar(false); }
+      else if (e.key === "ArrowRight" && k < n - 1) { k++; pintar(); }
+      else if (e.key === "ArrowLeft" && k > 0) { k--; pintar(); }
+      else if (e.key === "Tab") {
+        const fs = [...el.querySelectorAll("button:not(:disabled)")];
+        const i = fs.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { e.preventDefault(); fs[fs.length - 1].focus(); }
+        else if (!e.shiftKey && i === fs.length - 1) { e.preventDefault(); fs[0].focus(); }
+      }
+    });
+    window.addEventListener("scroll", posicionar, { passive: true }); window.addEventListener("resize", posicionar, { passive: true });
+    pintar();
+  }
+  window.Tutorial = { abrir: abrirTutorial };
+
   // seletor de guia no topo
   function montarSeletorGuia() {
     const btn = document.getElementById("guia-btn"), menu = document.getElementById("guia-menu"), mini = document.getElementById("guia-mini");
@@ -1013,6 +1111,8 @@
     atualizar();
   }
   montarSeletorGuia();
+  const btTut = document.getElementById("tutorial-btn");
+  if (btTut) { btTut.innerHTML = ic("question-duotone") + "<span>Tutorial</span>"; btTut.addEventListener("click", () => abrirTutorial(0)); }
   document.querySelector(".hud-nav [data-v='materia']").addEventListener("click", (e) => { e.preventDefault(); location.hash = "#trilha-" + materiaAtual().sigla; });
   document.getElementById("fechar-ampliado").addEventListener("click", () => document.getElementById("ampliado").close());
   document.body.insertAdjacentHTML("afterbegin", window.FIG_DEFS);
