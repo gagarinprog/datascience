@@ -100,6 +100,8 @@ Adiantado (21/10/2026, à tarde), na apostila: página inicial sem rolagem (apre
 
 Adiantado (21/10/2026, à noite), na apostila: salvar o trajeto num arquivo e carregar em outro aparelho (`trajeto.js`, no menu do guia, com conferência do arquivo e desfazer). Para a Fase 5: a sincronização na nuvem vai para um projeto Supabase novo, só do Domínio, usando o mesmo formato do arquivo.
 
+Adiantado (21/10/2026, madrugada), na apostila e parte da Fase 8 (Python no navegador): "Faça no Python", em que se escreve o comando e a tabela muda enquanto se digita (Pyodide num Web Worker, pandas sob demanda, correção por testes, dicas em degraus, erros em português), com o bloco "O comando em Python" em cada conceito. Primeiro envio: Comece por aqui (8 exercícios em pandas: shape, coluna derivada, filtro e len, duas regras, dtypes e value_counts, sort_values com desempate, mean, max, min e groupby, e o mini-projeto inteiro) e PY.01 (7: REPL, script, input com float, comentário, recuo, PEP 8 e o aprovado.py). Próximos: LOG.01 a LOG.03 e as caixas Experimente das matérias com Python.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

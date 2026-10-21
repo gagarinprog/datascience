@@ -114,6 +114,10 @@
 <figure data-clip="repl" style="--alt: 300px">
           <figcaption>Cinco linhas no REPL, com as notas de um candidato. Repare em qual delas o Python não escreve nada.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="at">media = (6 + 9) / 2</span>    # guarda: o REPL não mostra nada
+<span data-parte="ex">media</span>                  # só o nome: o REPL mostra 7.5
+<span data-parte="cp">media &gt;= 7</span>             # uma pergunta: True</code></pre><ol class="comando-partes"><li data-parte="at"><code>media = ...</code><span>uma atribuição guarda o valor num nome. O REPL fica quieto.</span></li><li data-parte="ex"><code>media</code><span>uma expressão sozinha na linha: o REPL mostra o valor dela.</span></li><li data-parte="cp"><code>media &gt;= 7</code><span>uma comparação também é expressão: o valor é True (sim) ou False (não).</span></li></ol></figure>
 <h3>Exemplo resolvido: conferir uma média no REPL, com as notas 6 e 9</h3>
 <ol class="subobjetivos"><li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Fazer a conta direto. Os parênteses fazem a soma acontecer antes da divisão.</p><pre>&gt;&gt;&gt; (6 + 9) / 2
 7.5</pre></div></li><li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Guardar o resultado num nome. Nada aparece, e é isso mesmo: guardar não é mostrar.</p><pre>&gt;&gt;&gt; media = (6 + 9) / 2</pre></div></li><li><span class="so">Subobjetivo 3</span><div class="so-corpo"><p>Fazer uma pergunta com o nome guardado. O REPL mostra a resposta de toda pergunta.</p><pre>&gt;&gt;&gt; media &gt;= 7
@@ -131,7 +135,32 @@ True</pre></div></li></ol>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Conta, nome sozinho e pergunta produzem um valor, e o REPL mostra. Só o guardar (o sinal de igual) fica em silêncio." data-nao-texto="Os campos em vermelho estão trocados. Pergunte: a linha tem um sinal de <code>=</code> para guardar? Então nada aparece. Caso contrário, ela produz um valor e o REPL mostra."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>O interpretador executa o Python; o REPL é a conversa em que você digita uma linha e ele responde na hora.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="media" data-repl>
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Use o Python como calculadora: guarde em media a média de 6 e 9 e, na última linha, peça para o REPL mostrar se ela é maior ou igual a 7.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Parênteses primeiro, como na matemática. A última linha, sem <code>=</code>, é o que o REPL mostra.</p><pre>media = (6 + 9) / 2
+media &gt;= 7</pre></div>
+          <template data-inicial>
+media = 
+media &gt;= 
+          </template>
+          <template data-solucao>
+media = (6 + 9) / 2
+media &gt;= 7
+          </template>
+          <template data-testes>
+assert media == 7.5, "media deveria ser (6 + 9) / 2, que dá 7.5. Os parênteses fazem a soma vir antes da divisão."
+          </template>
+          <template data-dica>
+a média é a soma entre parênteses dividida por 2: (6 + 9) / 2.
+          </template>
+          <template data-dica>
+na última linha, compare com 7: media &gt;= 7.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. media vale 7.5 e a comparação mostra True. Repare: a linha com = não mostrou nada; a expressão sozinha mostrou."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>O interpretador executa o Python; o REPL é a conversa em que você digita uma linha e ele responde na hora.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que é o REPL e por que digitar <code>total = 78</code> não mostra nada.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
@@ -165,6 +194,11 @@ True</pre></div></li></ol>
 <figure data-clip="py-script" style="--alt: 330px">
           <figcaption>Um script de quatro linhas sendo executado. Só a última linha escreve algo na tela.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="a">objetiva = 48</span>
+<span data-parte="b">discursiva = 30</span>
+<span data-parte="c">total = objetiva + discursiva</span>
+<span data-parte="p">print(total)</span>    # 78 aparece na tela</code></pre><ol class="comando-partes"><li data-parte="a"><code>objetiva = 48</code><span>o script roda de cima para baixo: primeiro guarda a objetiva...</span></li><li data-parte="b"><code>discursiva = 30</code><span>...depois a discursiva...</span></li><li data-parte="c"><code>total = ...</code><span>...depois calcula o total, usando o que já existe.</span></li><li data-parte="p"><code>print(total)</code><span>num script, só aparece na tela o que passa pelo print.</span></li></ol></figure>
 <h3>Exemplo resolvido: um script com o total das notas de um candidato</h3>
 <pre>objetiva = 48
 discursiva = 30
@@ -190,7 +224,39 @@ print(total)</pre>
           <div class="opcoes coluna-opcoes"><button class="botao" type="button">78</button><button class="botao" type="button" data-ok>Nada</button><button class="botao" type="button">total = 78</button></div>
           <div class="retorno" hidden data-ok-texto="Isso. Guardar não escreve nada, e o script não tem nenhum print." data-nao-texto="Nada aparece: a linha só guarda o 78 no nome <code>total</code>, e o script não tem nenhum <code>print</code>."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>Script é um arquivo .py com o programa guardado; o Python o executa de cima para baixo e só escreve na tela o que tiver print.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="objetiva discursiva total">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Escreva o script do total de um candidato e mostre o total na tela.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Uma instrução por linha, na ordem em que precisam acontecer. A última manda o total para a tela.</p><pre>objetiva = 48
+discursiva = 30
+total = objetiva + discursiva
+print(total)</pre></div>
+          <template data-inicial>
+objetiva = 48
+discursiva = 30
+total = 
+
+          </template>
+          <template data-solucao>
+objetiva = 48
+discursiva = 30
+total = objetiva + discursiva
+print(total)
+          </template>
+          <template data-testes>
+assert total == 78, "total deveria ser objetiva + discursiva."
+assert "78" in _saida.getvalue(), "O total ainda não aparece na tela: num script, só o print mostra."
+          </template>
+          <template data-dica>
+total = objetiva + discursiva.
+          </template>
+          <template data-dica>
+na última linha, print(total).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O script rodou de cima para baixo e o print mostrou 78."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Script é um arquivo .py com o programa guardado; o Python o executa de cima para baixo e só escreve na tela o que tiver print.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> qual a diferença entre digitar no REPL e escrever um script, e quando você usaria cada um.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
@@ -225,6 +291,9 @@ print(total)</pre>
 <figure data-clip="py-input" style="--alt: 350px">
           <figcaption>Duas respostas chegam pelo input. Compare a caixa texto, com aspas, e a caixa nota, sem aspas.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="fl">float(</span><span data-parte="in">input("Nota 1: ")</span><span data-parte="fe">)</span>
+<span data-parte="pr">print("Média:", media)</span></code></pre><ol class="comando-partes"><li data-parte="in"><code>input("Nota 1: ")</code><span>mostra a pergunta e espera a pessoa digitar. O que volta é sempre <b>texto</b>.</span></li><li data-parte="fl"><code>float( ... )</code><span>converte o texto em número com casas decimais. Sem isso, a conta não funciona.</span></li><li data-parte="pr"><code>print("Média:", media)</code><span>mostra na tela. A vírgula separa as partes e põe um espaço entre elas.</span></li></ol></figure>
 <h3>Exemplo resolvido: ler duas notas e mostrar a média</h3>
 <pre>n1 = float(input("Nota 1: "))
 n2 = float(input("Nota 2: "))
@@ -255,7 +324,36 @@ print("Média:", (n1 + n2) / 2)</pre>
           <div class="retorno" hidden data-ok-texto="Isso. O erro aparece na linha 3, mas a causa é a linha 2: o input devolve texto, e texto não entra numa subtração. O certo é nota = int(input(&quot;Nota: &quot;))." data-nao-texto="A causa está na linha 2: o input devolve texto, e 70 - &quot;62&quot; não existe. A linha 3 só mostra o problema. O certo é nota = int(input(&quot;Nota: &quot;))." data-pista="o erro aparece na linha 3, mas a causa vem antes. Que tipo de valor o input devolve?"></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>print escreve na tela, input pergunta e devolve texto; int() e float() convertem texto em número.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="n1 n2" data-entradas="6|9">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Leia as duas notas com input, converta em número e mostre a média na tela.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Cada <code>input</code> fica dentro de <code>float(...)</code>. Neste quadro, o <code>input</code> recebe sozinho os valores 6 e 9.</p><pre>n1 = float(input("Nota 1: "))
+n2 = float(input("Nota 2: "))
+print("Média:", (n1 + n2) / 2)</pre></div>
+          <template data-inicial>
+n1 = input("Nota 1: ")
+n2 = input("Nota 2: ")
+print("Média:", (n1 + n2) / 2)
+          </template>
+          <template data-solucao>
+n1 = float(input("Nota 1: "))
+n2 = float(input("Nota 2: "))
+print("Média:", (n1 + n2) / 2)
+          </template>
+          <template data-testes>
+assert n1 == 6 and n2 == 9, "n1 e n2 ainda são texto: ponha cada input dentro de float(...)."
+assert "Média: 7.5" in _saida.getvalue(), "A tela deveria mostrar Média: 7.5."
+          </template>
+          <template data-dica>
+o input devolve texto: "6" + "9" vira "69", e texto não divide. Ponha cada input dentro de float( ).
+          </template>
+          <template data-dica>
+a linha fica assim: n1 = float(input("Nota 1: ")).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Com float, os textos 6 e 9 viraram números e a média deu 7.5. Repare no erro de antes: texto não se divide."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>print escreve na tela, input pergunta e devolve texto; int() e float() convertem texto em número.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que a nota lida com <code>input</code> precisa de <code>int</code> ou <code>float</code> antes de entrar numa conta.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
@@ -289,6 +387,12 @@ print("Média:", (n1 + n2) / 2)</pre>
 <figure data-clip="py-comentario" style="--alt: 320px">
           <figcaption>As linhas em cinza e itálico são comentários. Repare que o Python nunca para nelas.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="c1"># corte do edital (fictício)</span>
+corte = 70
+total = 78  <span data-parte="c2"># 48 + 30</span>
+<span data-parte="c3"># print(corte)</span>
+print(total &gt;= corte)</code></pre><ol class="comando-partes"><li data-parte="c1"><code># ...</code><span>linha inteira de comentário: o Python ignora. Serve para quem lê.</span></li><li data-parte="c2"><code># 48 + 30</code><span>comentário no fim da linha: o código antes do # roda; o resto é nota.</span></li><li data-parte="c3"><code># print(corte)</code><span>um código “desligado”: com # na frente, ele não roda.</span></li></ol></figure>
 <h3>Exemplo resolvido: documentar um cálculo</h3>
 <pre># corte do edital (fictício)
 corte = 70
@@ -309,7 +413,39 @@ print(total &gt;= corte)</pre>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Comentário no fim da linha não impede a execução do código antes dele, e um # dentro de aspas é só um caractere do texto." data-nao-texto="Os campos em vermelho estão trocados. O # só vira comentário fora de aspas. Se a linha começa com ele, é ignorada; se ele vem depois do código, só o que vem depois é ignorado."></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>Comentário é uma nota depois do #: o Python ignora, e quem lê entende o porquê.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="corte">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">A linha corte = 80 é de um teste antigo. Desligue-a com um comentário, sem apagar, para o corte voltar a 70. E explique o 70 num comentário.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Um <code>#</code> no começo da linha desliga a linha inteira. Um comentário também explica o porquê de um número.</p><pre># corte do edital (fictício)
+corte = 70
+# corte = 80
+print(78 &gt;= corte)</pre></div>
+          <template data-inicial>
+corte = 70
+corte = 80
+print(78 &gt;= corte)
+          </template>
+          <template data-solucao>
+# corte do edital (fictício)
+corte = 70
+# corte = 80
+print(78 &gt;= corte)
+          </template>
+          <template data-testes>
+assert corte == 70, "corte ainda vale 80: ponha # no começo da linha corte = 80."
+assert "corte = 80" in _codigo, "A linha corte = 80 deveria continuar no código, só desligada com #."
+assert _codigo.count("#") &gt;= 2, "Falta o comentário que explica o 70 (uma linha começando com #)."
+          </template>
+          <template data-dica>
+ponha # no começo da linha corte = 80: ela vira comentário.
+          </template>
+          <template data-dica>
+acrescente, antes de corte = 70, uma linha como # corte do edital (fictício).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. A linha de 80 ficou no código, desligada, e o comentário diz de onde vem o 70. A tela mostra True."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Comentário é uma nota depois do #: o Python ignora, e quem lê entende o porquê.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> o que um bom comentário explica e por que repetir o que a linha já diz não ajuda.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
@@ -345,6 +481,11 @@ print(total &gt;= corte)</pre>
 <figure data-clip="py-bloco" data-preveja="No fim da animação, o print(&quot;aprovado&quot;) perde o recuo. Com nota = 62, o que aparece na tela?|só “fim da lista”|*“aprovado” e “fim da lista”|nada" style="--alt: 280px">
           <figcaption>A mesma nota, 62, em dois códigos que só diferem por um recuo. Veja o que muda na saída.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code>if media &gt;= 7<span data-parte="dp">:</span>
+<span data-parte="rc">    </span>print("aprovado")
+<span data-parte="el">else:</span>
+    print("reprovado")</code></pre><ol class="comando-partes"><li data-parte="dp"><code>:</code><span>os dois-pontos abrem um bloco.</span></li><li data-parte="rc"><code>4 espaços</code><span>o recuo diz quais linhas são do bloco. Tudo com 4 espaços a mais roda só quando a condição é True.</span></li><li data-parte="el"><code>else:</code><span>na mesma coluna do if: abre o bloco do “senão”.</span></li></ol></figure>
 <h3>Exemplo resolvido: aprovado ou reprovado pela média</h3>
 <pre>media = (6 + 9) / 2
 if media &gt;= 7:
@@ -388,7 +529,45 @@ print("aprovado")</pre>
           <div class="retorno" hidden data-ok-texto="Certo. A linha do if termina em dois-pontos, cada print fica recuado dentro do seu bloco, e o else volta para a margem, alinhado com o if." data-nao-texto="Confira: a linha falsa é a do if sem dois-pontos; os prints vão recuados um nível; o else fica na margem." data-pista="olhe o final da linha do if: o que abre um bloco em Python? E o else, fica dentro ou fora do bloco do if?"></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Dois-pontos abrem um bloco; as linhas recuadas pertencem a ele, e o fim do recuo é o fim do bloco.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="nota situacao">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">O código abaixo está sem recuo e o Python não aceita. Ponha 4 espaços nas linhas de dentro de cada bloco.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Depois de <code>if ...:</code> e de <code>else:</code>, as linhas do bloco começam com 4 espaços. No quadro, a tecla Tab põe os 4 espaços.</p><pre>nota = 78
+if nota &gt;= 70:
+    situacao = "aprovado"
+else:
+    situacao = "reprovado"
+print(situacao)</pre></div>
+          <template data-inicial>
+nota = 78
+if nota &gt;= 70:
+situacao = "aprovado"
+else:
+situacao = "reprovado"
+print(situacao)
+          </template>
+          <template data-solucao>
+nota = 78
+if nota &gt;= 70:
+    situacao = "aprovado"
+else:
+    situacao = "reprovado"
+print(situacao)
+          </template>
+          <template data-testes>
+assert situacao == "aprovado", "Com nota 78, situacao deveria ser aprovado."
+assert _saida.getvalue().strip() == "aprovado", "A tela deveria mostrar só aprovado."
+          </template>
+          <template data-dica>
+a linha situacao = "aprovado" fica dentro do if: comece com 4 espaços.
+          </template>
+          <template data-dica>
+a linha depois do else: também leva 4 espaços. O print(situacao) fica sem recuo: ele roda sempre.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O recuo mostrou ao Python o que é de cada bloco. Troque a nota para 58 e veja o resultado mudar."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Dois-pontos abrem um bloco; as linhas recuadas pertencem a ele, e o fim do recuo é o fim do bloco.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que, em Python, mudar o recuo de uma linha pode mudar o resultado do programa sem dar erro.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
@@ -424,6 +603,10 @@ print("aprovado")</pre>
 <figure data-clip="py-pep8" style="--alt: 210px">
           <figcaption>O mesmo código antes e depois de seguir o PEP 8. O destaque mostra o que mudou.</figcaption>
         </figure>
+        <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="nm">nota1</span> <span data-parte="es">=</span> 6
+media = (nota1 + 9) / 2
+print(media)</code></pre><ol class="comando-partes"><li data-parte="nm"><code>nota1</code><span>nomes em minúsculas, com _ entre palavras (nota_final), sem acento.</span></li><li data-parte="es"><code> = </code><span>um espaço de cada lado do = e dos sinais de conta. Dentro dos parênteses, sem espaço sobrando.</span></li></ol><p class="comando-nota">O PEP 8 é o guia de estilo do Python: o código faz a mesma coisa, mas fica fácil de ler.</p></figure>
 <h3>Exemplo resolvido: arrumar um código bagunçado</h3>
 <pre>N1=6
 Media=(N1+9)/2
@@ -444,7 +627,38 @@ print(media)</pre></div></li></ol>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
           <div class="retorno" hidden data-ok-texto="Tudo certo. Nomes em minúsculas com sublinhado, espaço em volta de = e dos operadores, e nada de espaço dentro dos parênteses." data-nao-texto="Os campos em vermelho estão trocados. Confira três coisas: o nome está em minúsculas com sublinhado? Há espaço em volta do = e das contas? Há espaço sobrando dentro dos parênteses?"></div>
         </div>
-        <p class="resumo"><b>Resumo em uma frase</b>PEP 8 é o guia de estilo do Python: nomes em minúsculas com sublinhado, espaços em volta dos operadores e recuo de 4 espaços.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-vars="media">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Arrume o código no estilo do PEP 8: nomes em minúsculas e espaços em volta do = e dos sinais.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Troque <code>N1</code> por <code>nota1</code> e <code>Media</code> por <code>media</code>, em todas as linhas. Ponha espaços em volta de <code>=</code>, <code>+</code> e <code>/</code>.</p><pre>nota1 = 6
+media = (nota1 + 9) / 2
+print(media)</pre></div>
+          <template data-inicial>
+N1=6
+Media=(N1+9)/2
+print( Media )
+          </template>
+          <template data-solucao>
+nota1 = 6
+media = (nota1 + 9) / 2
+print(media)
+          </template>
+          <template data-testes>
+assert media == 7.5, "O código deveria continuar calculando 7.5."
+assert "N1" not in _codigo and "Media" not in _codigo, "Ainda há nomes com maiúscula: troque N1 por nota1 e Media por media."
+assert "nota1 = 6" in _codigo and "media = (nota1 + 9) / 2" in _codigo, "Falta espaço em volta do = ou dos sinais: nota1 = 6 e media = (nota1 + 9) / 2."
+assert "print(media)" in _codigo, "No print, sem espaço dentro dos parênteses: print(media)."
+          </template>
+          <template data-dica>
+troque os nomes: N1 vira nota1 e Media vira media (nas três linhas).
+          </template>
+          <template data-dica>
+espaços em volta de = + /, e nenhum logo depois de ( ou antes de ).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. O código ficou mais fácil de ler e faz exatamente a mesma conta: 7.5."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>PEP 8 é o guia de estilo do Python: nomes em minúsculas com sublinhado, espaços em volta dos operadores e recuo de 4 espaços.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que seguir um padrão de estilo ajuda, mesmo que o Python rode o código sem ele.</p>
         <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
       </section>
@@ -458,7 +672,48 @@ print(media)</pre></div></li></ol>
           <p><strong>1.</strong> Escreva o script, com pelo menos um comentário que explique o porquê do 70. <strong>2.</strong> Rode no computador com os dados de Ana (48 e 30) e de Hugo (36 e 22). <strong>3.</strong> Confira se a saída bate com a lista da lição “Comece por aqui”.</p>
         </div>
         <p class="explique">Mande o script e as duas saídas no <code>/aula</code>: o tutor corrige e, se estiver certo, o módulo fica dominado.</p>
-        <details class="cartao">
+                <h3>Escreva o script aqui</h3>
+        <div class="exercicio py" data-codigo data-vars="nome objetiva discursiva total" data-entradas="Ana|48|30">
+          <p class="rotulo">Tarefa em Python</p>
+          <p class="pergunta">Escreva o script aprovado.py: pergunte nome, objetiva e discursiva, mostre o total e diga se a pessoa foi aprovada (corte 70). Com um comentário que explique o 70.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>O quadro responde ao <code>input</code> com os dados da Ana: Ana, 48 e 30. Junte o que você viu: <code>input</code> com <code>int</code>, a conta, o <code>print</code> e o <code>if</code>/<code>else</code> com recuo.</p></div>
+          <template data-inicial>
+# 
+corte = 70
+nome = input("Nome: ")
+
+          </template>
+          <template data-solucao>
+# nota de corte do edital (fictício)
+corte = 70
+nome = input("Nome: ")
+objetiva = int(input("Objetiva: "))
+discursiva = int(input("Discursiva: "))
+total = objetiva + discursiva
+print(nome, "fez", total, "pontos")
+if total &gt;= corte:
+    print("aprovado")
+else:
+    print("reprovado")
+          </template>
+          <template data-testes>
+assert total == 78, "total deveria ser objetiva + discursiva, com as notas convertidas por int()."
+assert "Ana fez 78 pontos" in _saida.getvalue(), "A tela deveria mostrar: Ana fez 78 pontos."
+assert _saida.getvalue().strip().endswith("aprovado"), "Depois do total, a tela deveria dizer aprovado."
+assert [l for l in _codigo.splitlines() if l.strip().startswith("#") and len(l.strip()) &gt; 3], "Falta o comentário que explica o 70."
+          </template>
+          <template data-dica>
+as notas: objetiva = int(input("Objetiva: ")) e o mesmo para a discursiva.
+          </template>
+          <template data-dica>
+o total e a mensagem: total = objetiva + discursiva e print(nome, "fez", total, "pontos").
+          </template>
+          <template data-dica>
+a decisão: if total &gt;= corte: com print("aprovado") recuado, e else: com print("reprovado") recuado.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Com os dados da Ana, o script mostrou o total e a situação. Mande este script no /aula para o tutor corrigir e marcar o módulo."></div>
+        </div>
+<details class="cartao">
           <summary>Ver uma resposta possível (só depois de tentar)</summary>
           <pre># nota de corte do edital (fictício)
 corte = 70
@@ -489,6 +744,7 @@ else:
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-py.js" charset="utf-8"></script>
 <script src="../passo/cascata.js" charset="utf-8"></script>
+<script src="laboratorio.js" charset="utf-8"></script>
 <script src="motor.js" charset="utf-8"></script>
 <script>
   Motor.licao({ chave: "dominio:licao:PY.01", trilha: "LOG", nomes: ["Interpretador e REPL", "Script", "print e input", "Comentários", "Indentação como bloco", "PEP 8", "Tarefa de domínio"] });

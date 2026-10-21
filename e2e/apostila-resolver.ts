@@ -1,7 +1,7 @@
 /**
  * Resolve um exercício da apostila como o aluno faria, lendo a resposta certa do próprio HTML (data-ok,
- * data-resposta, data-erro). Com errar = true, erra de propósito na primeira tentativa para conferir a dica e o
- * retorno. Roda dentro da página: é um texto de função, passado ao page.evaluate.
+ * data-resposta, data-erro, a solução do Faça no Python). Com errar = true, erra de propósito na primeira tentativa
+ * para conferir a dica e o retorno. Roda dentro da página: é um texto de função, passado ao page.evaluate.
  */
 export const RESOLVER = `async ([exId, errar]) => {
   const ex = document.querySelector(\`[data-vid="\${exId}"]\`);
@@ -51,6 +51,21 @@ export const RESOLVER = `async ([exId, errar]) => {
     const lis = [...ex.querySelectorAll(".ache-codigo li")];
     if (errar) { clicar(lis.find((l) => !l.hasAttribute("data-erro")).querySelector("button")); await espera(80); log.push("1a: " + ret()); }
     clicar(lis.find((l) => l.hasAttribute("data-erro")).querySelector("button"));
+  } else if (ex.hasAttribute("data-codigo")) {
+    // Faça no Python: escreve a solução no quadro e espera o Python corrigir (na primeira vez ele carrega)
+    const tipoPy = "codigo";
+    const ta = ex.querySelector("textarea.py-cod");
+    const sol = ex.querySelector(":scope > template[data-solucao]").innerHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").trim();
+    const verificar = async () => {
+      const b = ex.querySelector("[data-verificar]");
+      clicar(b);
+      for (let k = 0; k < 600 && (b.disabled || b.textContent !== "Verificar"); k++) await espera(200);
+      await espera(100);
+    };
+    if (errar) { await verificar(); log.push("1a: " + ret()); }
+    ta.value = sol; ta.dispatchEvent(new Event("input", {bubbles: true}));
+    if (ex.dataset.estado !== "resolvido") await verificar();
+    return { tipo: tipoPy, estado: ex.dataset.estado || "", retorno: ret(), log };
   } else log.push("tipo desconhecido");
   await espera(150);
   return { tipo, estado: ex.dataset.estado || "", retorno: ret(), log };

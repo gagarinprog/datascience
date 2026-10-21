@@ -111,7 +111,11 @@
           <figcaption>Uma lista de candidatos organizada em tabela. Repare nos três nomes importantes: linha, coluna e célula.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: transformar uma frase numa linha da tabela</h3>
+                <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="df">df</span><span data-parte="shape">.shape</span>      # (8, 4): 8 linhas e 4 colunas
+<span data-parte="df2">df</span><span data-parte="col">.columns</span>    # os nomes das colunas
+<span data-parte="df3">df</span><span data-parte="head">.head(3)</span>    # só as 3 primeiras linhas</code></pre><ol class="comando-partes"><li data-parte="df"><code>df</code><span>a tabela. No pandas, a biblioteca de tabelas do Python, ela se chama <b>DataFrame</b>; <code>df</code> é o apelido de costume.</span></li><li data-parte="shape"><code>.shape</code><span>o formato: quantas linhas (observações) e quantas colunas (variáveis).</span></li><li data-parte="col"><code>.columns</code><span>os nomes das colunas, isto é, das variáveis.</span></li><li data-parte="head"><code>.head(3)</code><span>mostra o começo da tabela. Útil quando ela tem milhares de linhas.</span></li></ol><p class="comando-nota">O ponto depois de <code>df</code> quer dizer “da tabela df, me dê...”. É assim em todo o pandas.</p></figure>
+<h3>Exemplo resolvido: transformar uma frase numa linha da tabela</h3>
         <p class="prosa" style="font-size:16.5px">A frase: <em>“Carla concorreu a Analista e fez 54 pontos na objetiva e 31 na discursiva.”</em></p>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Achar a observação: de quem estamos falando? De uma pessoa só, a Carla. Ela vai ocupar <strong>uma linha</strong>.</p></div></li>
@@ -149,7 +153,42 @@
           <div class="retorno" hidden data-ok-texto="Isso: cargo, objetiva e discursiva. O 8 é o número de observações (candidatos), que são as linhas." data-nao-texto="São 3 variáveis: cargo, objetiva e discursiva. O número 8 conta as linhas, ou seja, as observações (os candidatos)."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Tabela é um quadro em que cada linha é uma observação e cada coluna é uma variável.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="formato variaveis">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Descubra o formato da tabela dos candidatos e quantas variáveis ela tem sem contar o nome.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>A tabela já está carregada com o nome <code>df</code>. O formato sai de <code>df.shape</code>, que devolve (linhas, colunas). As variáveis, sem o nome, são as colunas menos uma.</p><pre>formato = df.shape
+variaveis = formato[1] - 1</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+          </template>
+          <template data-inicial>
+formato = df.
+variaveis = formato[1] - 
+          </template>
+          <template data-solucao>
+formato = df.shape
+variaveis = formato[1] - 1
+          </template>
+          <template data-testes>
+assert formato == (8, 4), "formato deveria guardar df.shape, que dá (8, 4)."
+assert variaveis == 3, "variaveis deveria ser 3: as 4 colunas menos o nome."
+          </template>
+          <template data-dica>
+depois de df. escreva shape (sem parênteses): é uma informação da tabela, não uma ação.
+          </template>
+          <template data-dica>
+formato[1] é o segundo número, o de colunas. Tire 1, que é a coluna do nome.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso: df.shape dá (8, 4). São 8 observações (linhas) e 4 colunas; sem o nome, 3 variáveis."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Tabela é um quadro em que cada linha é uma observação e cada coluna é uma variável.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, a diferença entre uma linha e uma coluna. Use a sua planilha de estudos como exemplo.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
@@ -181,7 +220,10 @@
           <figcaption>A nota de corte aplicada aos 8 candidatos. Cada candidato mostra o nome e a nota total.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: quantos passaram da nota de corte (70)?</h3>
+                <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="ap">aprovados =</span> <span data-parte="df">df[</span><span data-parte="regra">df["total"] &gt;= 70</span><span data-parte="fecha"></span>]
+<span data-parte="len">len(aprovados)</span>    # 5</code></pre><ol class="comando-partes"><li data-parte="ap"><code>aprovados =</code><span>guarda o resultado com um nome, para usar depois.</span></li><li data-parte="df"><code>df[ ... ]</code><span>da tabela df, fique só com as linhas em que a regra dentro dos colchetes dá <b>True</b> (sim).</span></li><li data-parte="regra"><code>df["total"] &gt;= 70</code><span>a regra, testada linha por linha: a coluna total é maior ou igual a 70?</span></li><li data-parte="len"><code>len(aprovados)</code><span>conta as linhas que sobraram. É o “quantos passaram?”.</span></li></ol><p class="comando-nota">O nome da coluna vai entre aspas dentro dos colchetes: <code>df["total"]</code>. Sem aspas, o Python procura uma variável chamada total e não acha.</p></figure>
+<h3>Exemplo resolvido: quantos passaram da nota de corte (70)?</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Criar o que falta: a nota total. Para cada pessoa, objetiva + discursiva. Ana: 48 + 30 = 78. Ter calculado uma coluna nova a partir de outras é comum em dados; ela se chama <strong>variável derivada</strong>.</p></div></li>
           <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Aplicar a regra a cada linha: total ≥ 70? Ana 78 sim; Bruno 67 não; Carla 85 sim; Diego 73 sim; Elisa 66 não; Felipe 84 sim; Gabriela 73 sim; Hugo 58 não.</p></div></li>
@@ -198,25 +240,81 @@
           <div class="retorno" hidden data-ok-texto="Isso. A regra olha só a coluna total. O cargo e o nome não entraram nessa decisão." data-nao-texto="A regra do corte olha só para a coluna total. 67 não é maior nem igual a 70, então o Bruno fica de fora. Cargo e nome não entram nessa regra."></div>
         </div>
 
-        <h3>Pratique: filtre você mesmo</h3>
-        <div class="exercicio" data-preencher>
-          <p class="pergunta">Use esta tabela com as notas totais. Escreva só o número.</p>
-          <div class="rolagem">
-          <table class="tabela"><thead><tr><th>Nome</th><th>Cargo</th><th>Total</th></tr></thead><tbody>
-            <tr><td>Ana</td><td>Analista</td><td class="m">78</td></tr><tr><td>Bruno</td><td>Técnico</td><td class="m">67</td></tr>
-            <tr><td>Carla</td><td>Analista</td><td class="m">85</td></tr><tr><td>Diego</td><td>Técnico</td><td class="m">73</td></tr>
-            <tr><td>Elisa</td><td>Analista</td><td class="m">66</td></tr><tr><td>Felipe</td><td>Técnico</td><td class="m">84</td></tr>
-            <tr><td>Gabriela</td><td>Analista</td><td class="m">73</td></tr><tr><td>Hugo</td><td>Técnico</td><td class="m">58</td></tr>
-          </tbody></table>
-          </div>
-          <div class="linha-classifica"><span>Quantos têm total maior ou igual a 70?</span><input data-resposta="5" inputmode="numeric" aria-label="Quantos passaram do corte"></div>
-          <div class="linha-classifica"><span>Desses, quantos são Técnicos? (duas regras juntas)</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos técnicos passaram"></div>
-          <div class="linha-classifica"><span>Se o corte subisse para 80, quantos passariam?</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos passariam com corte 80"></div>
-          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
-          <div class="retorno" hidden data-ok-texto="Tudo certo. 5 passam do corte 70; entre eles, Diego e Felipe são Técnicos; com corte 80 só Carla (85) e Felipe (84) passam." data-nao-texto="Confira os campos em vermelho. Passe a regra linha por linha: total ≥ 70 (Ana, Carla, Diego, Felipe e Gabriela). Depois olhe o cargo de cada um. Para o corte de 80, só valem os totais de 80 para cima."></div>
+        <h3>Faça no Python: filtre você mesmo</h3>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="aprovados n">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Crie a coluna total, filtre quem tem total maior ou igual a 70 e conte quantos passaram.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Primeiro a variável derivada: a soma de duas colunas vira uma coluna nova. Depois o filtro e a contagem, como no comando acima.</p><pre>df["total"] = df["objetiva"] + df["discursiva"]
+aprovados = df[df["total"] &gt;= 70]
+n = len(aprovados)</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+          </template>
+          <template data-inicial>
+df["total"] = df["objetiva"] + df["discursiva"]
+aprovados = df[df["total"] &gt;= ]
+n = len()
+          </template>
+          <template data-solucao>
+df["total"] = df["objetiva"] + df["discursiva"]
+aprovados = df[df["total"] &gt;= 70]
+n = len(aprovados)
+          </template>
+          <template data-testes>
+assert "total" in df.columns, "A coluna total não foi criada."
+assert list(aprovados["nome"]) == ["Ana", "Carla", "Diego", "Felipe", "Gabriela"], "aprovados deveria ter só quem tem total maior ou igual a 70."
+assert n == 5, "n deveria contar as linhas de aprovados: len(aprovados)."
+          </template>
+          <template data-dica>
+depois de &gt;= vem a nota de corte, 70.
+          </template>
+          <template data-dica>
+len() conta as linhas da tabela que estiver dentro dos parênteses: aprovados.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. 5 passaram: Ana, Carla, Diego, Felipe e Gabriela. Repare na tabela de cima: as linhas de quem ficou de fora aparecem riscadas."></div>
         </div>
-
-        <p class="resumo"><b>Resumo em uma frase</b>Filtrar é perguntar “esta linha atende à regra?” para cada linha e ficar só com as que respondem sim.</p>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="tecnicos corte80">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Agora duas regras juntas: quantos Técnicos passaram? E se o corte subisse para 80, quantos passariam?</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Duas regras ao mesmo tempo usam <code>&amp;</code> (e), cada uma entre parênteses. Texto vai entre <b>aspas</b>: <code>"Técnico"</code>, com acento, igual está na tabela.</p><pre>tecnicos = df[(df["total"] &gt;= 70) &amp; (df["cargo"] == "Técnico")]
+corte80 = df[df["total"] &gt;= 80]</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+df["total"] = df["objetiva"] + df["discursiva"]
+          </template>
+          <template data-inicial>
+tecnicos = df[(df["total"] &gt;= 70) &amp; (df["cargo"] == )]
+corte80 = df[df["total"] &gt;= ]
+          </template>
+          <template data-solucao>
+tecnicos = df[(df["total"] &gt;= 70) &amp; (df["cargo"] == "Técnico")]
+corte80 = df[df["total"] &gt;= 80]
+          </template>
+          <template data-testes>
+assert list(tecnicos["nome"]) == ["Diego", "Felipe"], "tecnicos deveria ter quem passou e é Técnico: Diego e Felipe."
+assert list(corte80["nome"]) == ["Carla", "Felipe"], "corte80 deveria ter só quem tem total maior ou igual a 80."
+          </template>
+          <template data-dica>
+compare com o texto "Técnico", entre aspas e com acento: (df["cargo"] == "Técnico").
+          </template>
+          <template data-dica>
+no corte80, troque 70 por 80.
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. 2 Técnicos passaram (Diego e Felipe) e, com corte 80, só Carla (85) e Felipe (84)." data-pista="texto vai entre aspas: &quot;Técnico&quot;. Sem aspas, o Python procura uma variável com esse nome."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Filtrar é perguntar “esta linha atende à regra?” para cada linha e ficar só com as que respondem sim.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> qual é a diferença entre dado e informação? Use a nota de corte como exemplo.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
@@ -244,7 +342,11 @@
           <figcaption>As seis colunas da tabela de aprovados, separadas pelo tipo. Três delas (total, situação e posição) foram calculadas a partir das outras.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: decidir o tipo da coluna “Situação”</h3>
+                <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="dt">df.dtypes</span>                     # o tipo de cada coluna
+<span data-parte="vc">df["cargo"].value_counts()</span>    # categoria: contar
+<span data-parte="me">df["objetiva"].mean()</span>         # número: média</code></pre><ol class="comando-partes"><li data-parte="dt"><code>df.dtypes</code><span>o tipo de cada coluna: <b>int64</b> é número inteiro, <b>object</b> é texto (aqui, categoria).</span></li><li data-parte="vc"><code>.value_counts()</code><span>conta quantas vezes cada valor aparece. É a conta que serve para categoria.</span></li><li data-parte="me"><code>.mean()</code><span>a média. Só faz sentido em coluna de número: tirar a média de cargo dá erro.</span></li></ol></figure>
+<h3>Exemplo resolvido: decidir o tipo da coluna “Situação”</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Olhar os valores que ela assume: “aprovado” e “reprovado”.</p></div></li>
           <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Fazer a pergunta: dá para somar ou tirar a média disso? Somar “aprovado” com “reprovado” não faz sentido.</p></div></li>
@@ -284,7 +386,45 @@
           <div class="retorno" hidden data-ok-texto="Isso. Nota total é número, e a média de números faz sentido." data-nao-texto="Só a média das notas totais faz sentido, porque nota é número. Cargo é categoria (só dá para contar) e posição é ordem (somar não diz nada)."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Número aceita conta, categoria aceita contagem e ordem aceita comparação de quem vem antes.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="tipos por_cargo media_objetiva">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Veja o tipo de cada coluna, conte os candidatos de cada cargo e tire a média da objetiva.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>A primeira linha já está pronta: ela mostra os tipos. Complete as outras duas com a conta certa para cada tipo.</p><pre>tipos = df.dtypes
+por_cargo = df["cargo"].value_counts()
+media_objetiva = df["objetiva"].mean()</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+          </template>
+          <template data-inicial>
+tipos = df.dtypes
+por_cargo = df["cargo"].
+media_objetiva = df["objetiva"].
+          </template>
+          <template data-solucao>
+tipos = df.dtypes
+por_cargo = df["cargo"].value_counts()
+media_objetiva = df["objetiva"].mean()
+          </template>
+          <template data-testes>
+assert por_cargo["Analista"] == 4 and por_cargo["Técnico"] == 4, "por_cargo deveria contar 4 Analistas e 4 Técnicos: use value_counts()."
+assert abs(media_objetiva - 44.875) &lt; 0.001, "media_objetiva deveria ser a média da objetiva: use mean()."
+          </template>
+          <template data-dica>
+cargo é categoria: a conta que serve é contar, value_counts() (com parênteses).
+          </template>
+          <template data-dica>
+objetiva é número: a média sai de mean() (com parênteses).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. 4 de cada cargo, e a média da objetiva é 44,875. Repare em tipos: as notas são int64 (número) e cargo é object (texto)."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Número aceita conta, categoria aceita contagem e ordem aceita comparação de quem vem antes.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que o tipo da variável importa antes de fazer qualquer conta.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
@@ -317,7 +457,9 @@ fimse</pre>
           <figcaption>Do cadastro em ordem alfabética até a classificação final. O empate entre Diego e Gabriela é resolvido pela nota objetiva.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: quem fica em 4º, Diego ou Gabriela?</h3>
+                <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code>df.<span data-parte="sv">sort_values</span>(<span data-parte="by">by=["total", "objetiva"</span>], <span data-parte="asc">ascending=False</span>)</code></pre><ol class="comando-partes"><li data-parte="sv"><code>sort_values</code><span>ordena as linhas. Os valores não mudam; só a ordem.</span></li><li data-parte="by"><code>by=["total", "objetiva"]</code><span>o critério: primeiro o total; quem empatar, desempata pela objetiva.</span></li><li data-parte="asc"><code>ascending=False</code><span>do maior para o menor. Com True (o padrão), seria do menor para o maior.</span></li></ol></figure>
+<h3>Exemplo resolvido: quem fica em 4º, Diego ou Gabriela?</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Comparar pelo critério principal: total. Diego 73 e Gabriela 73. Empate.</p></div></li>
           <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Aplicar o desempate: nota objetiva. Diego 45, Gabriela 44. Diego tem a maior.</p></div></li>
@@ -357,7 +499,40 @@ fimse</pre>
           <div class="retorno" hidden data-ok-texto="Certo. As duas leituras vêm primeiro (a ordem entre elas tanto faz), depois a conta do total, e só então dá para ordenar por ele." data-nao-texto="Ainda não. Pergunte para cada linha: ela usa algo que outra linha prepara? Ordenar por total só dá certo depois que o total existe, e o total precisa das duas notas lidas."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Ordenar põe as linhas em fila por uma coluna; o desempate é a segunda regra para quando a primeira empata.</p>
+                <h3>Faça no Python</h3>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="classificacao">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Gere a classificação: do maior total para o menor, com desempate pela objetiva.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>A lista em <code>by</code> diz a ordem dos critérios. <code>ascending=False</code> põe o maior primeiro.</p><pre>classificacao = df.sort_values(by=["total", "objetiva"], ascending=False)</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+df["total"] = df["objetiva"] + df["discursiva"]
+          </template>
+          <template data-inicial>
+classificacao = df.sort_values(by=["total", ], ascending=)
+          </template>
+          <template data-solucao>
+classificacao = df.sort_values(by=["total", "objetiva"], ascending=False)
+          </template>
+          <template data-testes>
+assert list(classificacao["nome"])[:5] == ["Carla", "Felipe", "Ana", "Diego", "Gabriela"], "A ordem ainda não está certa: maior total primeiro e, no empate, maior objetiva."
+assert list(classificacao["nome"]) == ["Carla", "Felipe", "Ana", "Diego", "Gabriela", "Bruno", "Elisa", "Hugo"], "Confira o fim da fila: Bruno, Elisa e Hugo."
+          </template>
+          <template data-dica>
+o segundo critério é a coluna objetiva, entre aspas: "objetiva".
+          </template>
+          <template data-dica>
+ascending=False põe o maior primeiro (False com F maiúsculo).
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Carla, Felipe, Ana, Diego e Gabriela; Diego fica na frente da Gabriela pela objetiva (45 contra 44). As notas não mudaram, só a ordem."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Ordenar põe as linhas em fila por uma coluna; o desempate é a segunda regra para quando a primeira empata.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> o que muda e o que não muda numa tabela quando você a ordena.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
@@ -385,7 +560,11 @@ fimse</pre>
           <figcaption>Oito notas totais, a soma, a média e quem está acima ou abaixo dela.</figcaption>
         </figure>
 
-        <h3>Exemplo resolvido: a média dos Técnicos</h3>
+                <h3>O comando em Python</h3>
+        <figure class="comando"><figcaption>Passe o dedo ou o mouse nas partes</figcaption><pre><code><span data-parte="me">df["total"].mean()</span>                    # 73.0
+<span data-parte="mx">df["total"].max()</span> - <span data-parte="mn">df["total"].min()</span>   # 85 - 58
+<span data-parte="gb">df.groupby("cargo")</span><span data-parte="gc">["total"].mean()</span>   # a média de cada cargo</code></pre><ol class="comando-partes"><li data-parte="me"><code>.mean()</code><span>a média da coluna.</span></li><li data-parte="mx"><code>.max()</code><span>o maior valor.</span></li><li data-parte="mn"><code>.min()</code><span>o menor valor.</span></li><li data-parte="gb"><code>df.groupby("cargo")</code><span>separa as linhas em grupos, um por cargo.</span></li><li data-parte="gc"><code>["total"].mean()</code><span>em cada grupo, tira a média do total. Juntos, é o “filtrar e tirar a média” de uma vez só.</span></li></ol></figure>
+<h3>Exemplo resolvido: a média dos Técnicos</h3>
         <ol class="subobjetivos">
           <li><span class="so">Subobjetivo 1</span><div class="so-corpo"><p>Filtrar: ficar só com as linhas de cargo Técnico. São Bruno (67), Diego (73), Felipe (84) e Hugo (58).</p></div></li>
           <li><span class="so">Subobjetivo 2</span><div class="so-corpo"><p>Somar: 67 + 73 + 84 + 58 = 282.</p></div></li>
@@ -403,12 +582,40 @@ fimse</pre>
         </div>
 
         <h3>Pratique</h3>
-        <div class="exercicio" data-preencher>
-          <p class="pergunta">Com a mesma tabela de totais, calcule. Use ponto como separador decimal, como no computador.</p>
-          <div class="linha-classifica"><span>Média dos totais dos Analistas (Ana 78, Carla 85, Elisa 66, Gabriela 73)</span><input data-resposta="75.5" inputmode="decimal" aria-label="Média dos Analistas"></div>
-          <div class="linha-classifica"><span>Maior total menos o menor total (85 e 58)</span><input data-resposta="27" inputmode="numeric" aria-label="Diferença entre maior e menor"></div>
-          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
-          <div class="retorno" hidden data-ok-texto="Certo. Analistas: (78 + 85 + 66 + 73) ÷ 4 = 302 ÷ 4 = 75,5. E 85 − 58 = 27, que mostra o quanto as notas se espalham." data-nao-texto="Confira os campos em vermelho. Para a média: some as quatro notas e divida por 4. Para a diferença: maior menos menor, 85 − 58."></div>
+                <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="media_analistas amplitude">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Calcule a média dos totais dos Analistas e a diferença entre o maior e o menor total.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Para a média de um grupo: filtre e tire a média da coluna. Para a diferença: máximo menos mínimo.</p><pre>media_analistas = df[df["cargo"] == "Analista"]["total"].mean()
+amplitude = df["total"].max() - df["total"].min()</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+df["total"] = df["objetiva"] + df["discursiva"]
+          </template>
+          <template data-inicial>
+media_analistas = df[df["cargo"] == "Analista"]["total"].
+amplitude = df["total"].max() - df["total"].
+          </template>
+          <template data-solucao>
+media_analistas = df[df["cargo"] == "Analista"]["total"].mean()
+amplitude = df["total"].max() - df["total"].min()
+          </template>
+          <template data-testes>
+assert media_analistas == 75.5, "media_analistas deveria ser a média do total dos Analistas: termine com mean()."
+assert amplitude == 27, "amplitude deveria ser o maior total menos o menor: max() - min()."
+          </template>
+          <template data-dica>
+a média sai de mean(), com parênteses.
+          </template>
+          <template data-dica>
+o menor valor sai de min().
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Analistas: média 75,5. Maior menos menor: 85 - 58 = 27."></div>
         </div>
         <div class="exercicio" data-escolha>
           <p class="pergunta">A média dos Analistas é 75,5 e a dos Técnicos é 70,5. O que podemos dizer?</p>
@@ -420,7 +627,36 @@ fimse</pre>
           <div class="retorno" hidden data-ok-texto="Isso. A média compara os grupos, mas não vale para cada pessoa: o Felipe (Técnico, 84) superou a Ana (Analista, 78)." data-nao-texto="A média compara grupos, não pessoas. Felipe (Técnico, 84) foi melhor que Ana (Analista, 78), então “todo Analista foi melhor” é falso. E comparar grupos por média é justamente possível."></div>
         </div>
 
-        <p class="resumo"><b>Resumo em uma frase</b>Média, contagem, máximo e mínimo resumem muitas linhas em poucos números; o gráfico resume com os olhos, e os dois se completam.</p>
+                <h3>Faça no Python: média por grupo</h3>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="medias">
+          <p class="rotulo">Faça no Python</p>
+          <p class="pergunta">Calcule de uma vez a média do total de cada cargo.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p><code>groupby</code> separa em grupos; a conta depois dele vale para cada grupo.</p><pre>medias = df.groupby("cargo")["total"].mean()</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+df["total"] = df["objetiva"] + df["discursiva"]
+          </template>
+          <template data-inicial>
+medias = df.groupby()["total"].mean()
+          </template>
+          <template data-solucao>
+medias = df.groupby("cargo")["total"].mean()
+          </template>
+          <template data-testes>
+assert medias["Analista"] == 75.5 and medias["Técnico"] == 70.5, "medias deveria ter a média de cada cargo: agrupe pela coluna \"cargo\"."
+          </template>
+          <template data-dica>
+dentro do groupby vai o nome da coluna dos grupos, entre aspas: "cargo".
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso: Analista 75,5 e Técnico 70,5, numa linha só. É o mesmo que o GROUP BY do SQL."></div>
+        </div>
+<p class="resumo"><b>Resumo em uma frase</b>Média, contagem, máximo e mínimo resumem muitas linhas em poucos números; o gráfico resume com os olhos, e os dois se completam.</p>
         <p class="explique"><strong>Explique em 3 linhas:</strong> por que a média sozinha pode esconder informação importante.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
@@ -455,7 +691,60 @@ fimse</pre>
           <p><strong>3. Classificação:</strong> 1º Carla (85), 2º Felipe (84), 3ª Ana (78), 4º Diego (73, objetiva 45), 5ª Gabriela (73, objetiva 44).</p>
           <p><strong>4. Média geral:</strong> 584 ÷ 8 = 73.</p>
         </details>
-        <p class="simples"><b>Próximo passo</b>Você já sabe o que é entrada, processamento e saída, sem ter ouvido a palavra “algoritmo”. O Módulo 1 dá nome a isso e ensina a escrever esses passos com clareza, para qualquer pessoa ou máquina seguir.</p>
+                <h3>Agora, o projeto inteiro em Python</h3>
+        <div class="exercicio py" data-codigo data-pacotes="pandas" data-base="df" data-ver="classificacao media_geral">
+          <p class="rotulo">Mini-projeto em Python</p>
+          <p class="pergunta">Faça as quatro etapas do projeto em Python: total, aprovados, classificação e média geral.</p>
+          <div class="como-se-faz"><span class="cf-rot">Como se faz</span><p>Cada etapa é um comando que você já usou nesta lição. Escreva um por linha, na ordem.</p><pre>df["total"] = df["objetiva"] + df["discursiva"]
+aprovados = df[df["total"] &gt;= 70]
+classificacao = aprovados.sort_values(by=["total", "objetiva"], ascending=False)
+media_geral = df["total"].mean()</pre></div>
+          <template data-preparo>
+import pandas as pd
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla", "Diego", "Elisa", "Felipe", "Gabriela", "Hugo"],
+    "cargo": ["Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico", "Analista", "Técnico"],
+    "objetiva": [48, 42, 54, 45, 39, 51, 44, 36],
+    "discursiva": [30, 25, 31, 28, 27, 33, 29, 22],
+})
+          </template>
+          <template data-inicial>
+# 1. a coluna total
+df["total"] = 
+# 2. quem passou (total &gt;= 70)
+aprovados = 
+# 3. a classificação dos aprovados, com desempate pela objetiva
+classificacao = 
+# 4. a média geral do total
+media_geral = 
+          </template>
+          <template data-solucao>
+df["total"] = df["objetiva"] + df["discursiva"]
+aprovados = df[df["total"] &gt;= 70]
+classificacao = aprovados.sort_values(by=["total", "objetiva"], ascending=False)
+media_geral = df["total"].mean()
+          </template>
+          <template data-testes>
+assert "total" in df.columns and list(df["total"]) == [78, 67, 85, 73, 66, 84, 73, 58], "Etapa 1: total = objetiva + discursiva."
+assert len(aprovados) == 5, "Etapa 2: aprovados deveria ter 5 linhas (total &gt;= 70)."
+assert list(classificacao["nome"]) == ["Carla", "Felipe", "Ana", "Diego", "Gabriela"], "Etapa 3: ordene os aprovados por total e objetiva, do maior para o menor."
+assert media_geral == 73, "Etapa 4: a média geral do total é df[\"total\"].mean()."
+          </template>
+          <template data-dica>
+etapa 1: df["objetiva"] + df["discursiva"].
+          </template>
+          <template data-dica>
+etapa 2: df[df["total"] &gt;= 70].
+          </template>
+          <template data-dica>
+etapa 3: aprovados.sort_values(by=["total", "objetiva"], ascending=False).
+          </template>
+          <template data-dica>
+etapa 4: df["total"].mean().
+          </template>
+          <div class="retorno" hidden data-ok-texto="Isso. Você escreveu, em quatro linhas de Python, um projeto de dados inteiro: entrada (a tabela), processamento (total, filtro, ordem) e saída (classificação e média)."></div>
+        </div>
+<p class="simples"><b>Próximo passo</b>Você já sabe o que é entrada, processamento e saída, sem ter ouvido a palavra “algoritmo”. O Módulo 1 dá nome a isso e ensina a escrever esses passos com clareza, para qualquer pessoa ou máquina seguir.</p>
         <div class="opcoes"><button class="botao" type="button" data-marcar="td">Marcar o mini-projeto como feito</button><a class="botao primario" href="LOG.01.html" style="text-decoration:none">Ir para o Módulo 1: Algoritmo</a></div>
       </section>
     </div>
@@ -472,6 +761,7 @@ fimse</pre>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="clipes-inicio.js" charset="utf-8"></script>
 <script src="../passo/cascata.js" charset="utf-8"></script>
+<script src="laboratorio.js" charset="utf-8"></script>
 <script src="motor.js" charset="utf-8"></script>
 <script>
   Motor.licao({ chave: "dominio:licao:INICIO", trilha: "LOG", nomes: ["Tabela, linha e coluna", "Filtrar", "Tipos de variável", "Ordenar e desempatar", "Resumir", "Mini-projeto"] });
