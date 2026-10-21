@@ -96,6 +96,8 @@ Adiantado (20/10/2026, à noite), na apostila: o laboratório virou o Centro de 
 
 Adiantado (21/10/2026), na apostila: tutorial guiado na primeira visita ao mapa; cada matéria diz para que serve no trabalho do cientista de dados; o laboratório vai do banco vazio à operação, com a zona E (índices e `EXPLAIN ANALYZE`, transações com `ROLLBACK`, visão e usuário só leitura, backup e restauração pelo próprio `.sql`, painel de resultados com recado ao gestor), o nivelamento D e o guia abrindo cada módulo com o uso no trabalho. São 17 módulos em 5 zonas, todos com as soluções conferidas num PostgreSQL de verdade nos testes.
 
+Adiantado (21/10/2026, à tarde), na apostila: página inicial sem rolagem (apresentação na primeira visita, Continuar e três atalhos no dia a dia); os guias em três traços à escolha (Mangá, Anime próprio, Aventura) e com oito movimentos ligados ao estudo; exemplos de Banco de Dados e Análise de Dados migrados para o banco de estudo; verificação de todas as interações no navegador, que achou e corrigiu a troca de tela que travava quando vinha de um temporizador, o "ache o erro" que passava da largura do celular e contrastes abaixo de AA nas animações; a verificação virou o teste `e2e/apostila.spec.ts`, que roda no CI.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

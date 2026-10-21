@@ -85,27 +85,29 @@
     },
   };
 
+  // questões do banco de estudo por matéria e faixa de nível: [nome, fácil (nível 1 e 2), médio (3), difícil (4 e 5)]
   const QUESTOES = [
-    ["Banco de Dados", 6, 10, 8], ["Estatística", 6, 14, 2], ["Lógica de Programação", 6, 8, 5],
-    ["Estruturas de Dados", 8, 7, 6], ["Aprendizado de Máquina", 5, 11, 2], ["Engenharia de Software", 6, 4, 6],
+    ["Banco de Dados", 5, 3, 2], ["Língua Portuguesa", 4, 2, 4], ["Raciocínio Lógico", 4, 3, 3],
+    ["Direito Administrativo", 3, 1, 6], ["Informática", 2, 2, 6], ["Estatística", 1, 3, 6],
   ];
   X.BD = {
     titulo: "Monte a consulta e veja quantas linhas sobram em cada etapa (números reais do banco de estudo)",
     montar(el) {
-      el.innerHTML = `<div class="controles">${seletor("WHERE dificuldade =", [["todas", "(sem filtro)"], ["facil", "'facil'"], ["media", "'media'"], ["dificil", "'dificil'"]], "facil")}<label class="campo marcar"><input type="checkbox" checked> <span>GROUP BY disciplina</span></label></div><pre class="sql-montado"></pre><div class="etapas-sql"></div><div class="rolagem"><table class="tabela"><thead></thead><tbody></tbody></table></div>`;
+      el.innerHTML = `<div class="controles">${seletor("WHERE q.nivel", [["todas", "(sem filtro)"], ["facil", "<= 2 (fácil)"], ["medio", "= 3 (médio)"], ["dificil", ">= 4 (difícil)"]], "facil")}<label class="campo marcar"><input type="checkbox" checked> <span>GROUP BY matéria</span></label></div><pre class="sql-montado"></pre><div class="etapas-sql"></div><div class="rolagem"><table class="tabela"><thead></thead><tbody></tbody></table></div>`;
       const sel = el.querySelector("select"), agrupar = el.querySelector("input[type=checkbox]");
       ligar(el, () => {
-        const col = { facil: 1, media: 2, dificil: 3 }[sel.value];
+        const col = { facil: 1, medio: 2, dificil: 3 }[sel.value];
         const conta = (q) => (col ? q[col] : q[1] + q[2] + q[3]);
         const filtradas = QUESTOES.reduce((a, q) => a + conta(q), 0);
-        const where = col ? `\nWHERE q.dificuldade = '${sel.value}'` : "";
+        const total = QUESTOES.reduce((a, q) => a + q[1] + q[2] + q[3], 0);
+        const where = col ? `\nWHERE q.nivel ${{ facil: "<= 2", medio: "= 3", dificil: ">= 4" }[sel.value]}` : "";
         el.querySelector(".sql-montado").textContent = agrupar.checked
-          ? `SELECT d.nome, COUNT(*) AS questoes\nFROM questoes q\nJOIN disciplinas d ON d.id = q.disciplina_id${where}\nGROUP BY d.nome\nORDER BY questoes DESC;`
+          ? `SELECT m.nome, COUNT(*) AS questoes\nFROM questoes q\nJOIN materias m ON m.id = q.materia_id${where}\nGROUP BY m.nome\nORDER BY questoes DESC;`
           : `SELECT COUNT(*) AS questoes\nFROM questoes q${where};`;
-        const etapas = [["FROM", "120 linhas"], ["WHERE", col ? `${filtradas} linhas` : "sem filtro: 120"], ["GROUP BY", agrupar.checked ? "6 grupos" : "um grupo só"], ["SELECT", agrupar.checked ? "2 colunas" : "1 coluna"]];
+        const etapas = [["FROM", `${total} linhas`], ["WHERE", col ? `${filtradas} linhas` : `sem filtro: ${total}`], ["GROUP BY", agrupar.checked ? `${QUESTOES.length} grupos` : "um grupo só"], ["SELECT", agrupar.checked ? "2 colunas" : "1 coluna"]];
         el.querySelector(".etapas-sql").innerHTML = etapas.map(([a, b]) => `<span><b>${a}</b>${b}</span>`).join("<i aria-hidden=\"true\">→</i>");
         const linhas = agrupar.checked
-          ? QUESTOES.map((q) => [q[0], conta(q)]).sort((a, b) => b[1] - a[1])
+          ? QUESTOES.map((q) => [q[0], conta(q)]).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
           : [["(todas)", filtradas]];
         el.querySelector("thead").innerHTML = `<tr><th>${agrupar.checked ? "nome" : ""}</th><th>questoes</th></tr>`;
         el.querySelector("tbody").innerHTML = linhas.map(([n, c]) => `<tr><td>${esc(n)}</td><td class="m">${c}</td></tr>`).join("");
@@ -299,16 +301,17 @@
     },
   };
 
-  const RESPOSTAS = [["BD", 1], ["EST", 0], ["BD", 0], ["EST", 1], ["BD", 1], ["LOG", 1], ["LOG", 0], ["BD", 1]];
+  // oito respostas reais do banco de estudo (ids 4 a 16): [matéria, acertou]
+  const RESPOSTAS = [["Língua Portuguesa", 1], ["Banco de Dados", 0], ["Língua Portuguesa", 0], ["Banco de Dados", 1], ["Estatística", 0], ["Banco de Dados", 0], ["Estatística", 0], ["Estatística", 0]];
   X.AD = {
     titulo: "Escolha a conta e veja o agrupamento (o groupby do pandas, o GROUP BY do SQL)",
     montar(el) {
-      el.innerHTML = `<div class="controles">${seletor("conta aplicada em cada grupo", [["mean", ".mean() — taxa de acerto"], ["sum", ".sum() — total de acertos"], ["count", ".count() — número de respostas"]], "mean")}</div><pre class="sql-montado"></pre><div class="rolagem"><table class="tabela"><thead><tr><th>disciplina</th><th>resultado</th></tr></thead><tbody></tbody></table></div>`;
+      el.innerHTML = `<div class="controles">${seletor("conta aplicada em cada grupo", [["mean", ".mean() — taxa de acerto"], ["sum", ".sum() — total de acertos"], ["count", ".count() — número de respostas"]], "mean")}</div><pre class="sql-montado"></pre><div class="rolagem"><table class="tabela"><thead><tr><th>materia</th><th>resultado</th></tr></thead><tbody></tbody></table></div>`;
       const sel = el.querySelector("select");
       ligar(el, () => {
         const g = {};
         RESPOSTAS.forEach(([d, c]) => { (g[d] = g[d] || []).push(c); });
-        el.querySelector(".sql-montado").textContent = `df.groupby("disciplina")["correta"].${sel.value}()`;
+        el.querySelector(".sql-montado").textContent = `df.groupby("materia")["acertou"].${sel.value}()`;
         el.querySelector("tbody").innerHTML = Object.entries(g).map(([d, vals]) => {
           const soma = vals.reduce((a, b) => a + b, 0);
           const r = sel.value === "mean" ? fmt(soma / vals.length) : sel.value === "sum" ? soma : vals.length;

@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<link rel="icon" type="image/png" href="../icones/icone-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Galeria de guias e animações · Domínio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,6 +53,9 @@
   .galeria { max-width: 920px; margin: 0 auto; padding: 20px 16px 64px; display: grid; gap: 28px; }
   .galeria h2 { font-family: var(--f-titulo); font-weight: 700; margin: 0 0 6px; }
   .g-voltar { font-weight: 600; color: var(--tinta); min-height: 44px; display: inline-flex; align-items: center; }
+  .g-tracos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .g-tracos .botao { min-height: 44px; }
+  .g-tracos-rot { align-self: center; font-weight: 700; color: var(--texto-2); }
   .g-guias { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; margin-top: 12px; }
   .g-guia { min-width: 0; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 12px; display: grid; gap: 10px; }
   .g-guia.escolhido { border-color: var(--tinta); box-shadow: inset 0 0 0 1px var(--tinta); }
@@ -72,13 +76,14 @@
   .g-molde p { margin: 0; color: var(--texto-2); }
   .g-molde pre { white-space: pre-wrap; font-size: 13px; }
 </style>
+<link rel="stylesheet" href="../guia-mov.css">
 <link rel="stylesheet" href="../botoes.css">
 <link rel="stylesheet" href="../tema.css">
 <script src="../tema.js"></script>
 </head>
 <body>
 <main class="galeria">
-  <a class="g-voltar" href="../index.html">Voltar ao mapa</a>
+  <a class="g-voltar" href="../index.html#mapa">Voltar ao mapa</a>
   <header>
     <p class="sobretitulo">Domínio · galeria</p>
     <h1 class="titulo-pagina">Guias e animações</h1>
@@ -88,6 +93,7 @@
   <section aria-labelledby="t-guias">
     <h2 id="t-guias">Guias</h2>
     <p>O guia escolhido aparece no mapa e reage nos exercícios: fica feliz no acerto e pensativo no erro. A escolha fica salva neste aparelho.</p>
+    <div class="g-tracos" id="g-tracos" role="group" aria-label="Traço dos guias"></div>
     <div class="g-guias" id="g-guias"></div>
   </section>
 
@@ -142,6 +148,9 @@
 <script src="../mascote.js" charset="utf-8"></script>
 <script src="../personagens.js" charset="utf-8"></script>
 <script src="../avatares.js" charset="utf-8"></script>
+<script src="../avatares-manga.js" charset="utf-8"></script>
+<script src="../tracos.js" charset="utf-8"></script>
+<script src="../guia-mov.js" charset="utf-8"></script>
 <script src="clip.js" charset="utf-8"></script>
 <script src="clipes-galeria.js" charset="utf-8"></script>
 <script>
@@ -160,6 +169,18 @@
         <button type="button" class="botao${id === atual ? " certo" : " primario"}" data-usar="${id}" aria-pressed="${id === atual}">${id === atual ? "Guia atual" : "Usar " + g.nome}</button></article>`;
     }).join("");
   }
+  const tracos = document.getElementById("g-tracos");
+  function pintarTracos() {
+    if (!window.Tracos) { tracos.hidden = true; return; }
+    tracos.innerHTML = `<span class="g-tracos-rot">Traço:</span>` + window.Tracos.LISTA.map((t) => `<button type="button" class="botao${t.id === window.Tracos.atual() ? " primario" : ""}" data-traco="${t.id}" aria-pressed="${t.id === window.Tracos.atual()}" title="${t.credito}">${t.nome}</button>`).join("");
+  }
+  tracos.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-traco]");
+    if (!b) return;
+    window.Tracos.definir(b.dataset.traco);
+    pintarTracos(); pintar();
+  });
+  pintarTracos();
   caixa.addEventListener("click", (e) => {
     const b = e.target.closest("[data-usar]");
     if (!b) return;

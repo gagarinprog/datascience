@@ -522,11 +522,11 @@ dialog.ampliado { --tinta: var(--cor, #5b45e0); --tinta-suave: color-mix(in srgb
 .guia-mini { width: 100%; height: 100%; border-radius: 7px; overflow: hidden; display: block; background: color-mix(in srgb, var(--cv, var(--tinta)) 14%, var(--folha-2)); }
 .guia-mini svg { width: 100%; height: 100%; display: block; }
 .guia-mini:not(.retrato) svg { transform: scale(1.1); }
-.guia-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; width: 250px; padding: 8px; border-radius: 12px; background: var(--folha); border: 1px solid var(--linha-forte); box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.5); display: grid; gap: 2px; }
+.guia-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; width: 250px; padding: 8px; border-radius: 12px; background: var(--folha); border: 1px solid var(--linha-forte); box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.5); display: grid; gap: 2px; max-height: min(74vh, 680px); overflow-y: auto; overscroll-behavior: contain; }
 .guia-menu p { margin: 0; padding: 6px 8px; font: 600 11.5px/1 var(--f-ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
 .guia-menu button { display: grid; grid-template-columns: 44px minmax(0, 1fr) 20px; gap: 12px; align-items: center; width: 100%; min-height: 56px; padding: 6px 8px; border: 0; border-radius: 8px; background: none; color: var(--texto); cursor: pointer; text-align: left; font: inherit; }
 .guia-menu button:hover { background: var(--folha-2); }
-.guia-menu button[aria-checked="true"] { background: var(--tinta-suave); }
+.guia-menu button[aria-pressed="true"] { background: var(--tinta-suave); }
 .guia-menu .guia-mini { width: 44px; height: 44px; }
 .guia-menu b { display: block; font-weight: 600; font-size: 15px; }
 .guia-menu small { color: var(--texto-2); font-size: 12.5px; }
@@ -550,6 +550,8 @@ dialog.ampliado { --tinta: var(--cor, #5b45e0); --tinta-suave: color-mix(in srgb
 .metricas dd { margin: 0; font: 700 28px/1 var(--f-titulo); font-variant-numeric: tabular-nums; }
 .metricas dd small { font: 500 14px/1 var(--f-ui); color: var(--texto-2); }
 .metricas .barra-fina { --cv: var(--tinta); }
+.metricas dd.m-extra { font: inherit; }
+.metricas dd.m-extra .barra-fina { display: block; }
 @media (max-width: 900px) {
   .mapa-cab { grid-template-columns: 1fr; }
   .metricas { grid-template-columns: 1fr; }
@@ -917,3 +919,38 @@ pre code { display: block; background: none; border: 0; padding: 0; border-radiu
 @media (max-width: 560px) { .tut-cartao { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; padding: 14px; } .tut-guia .mascote { --tam: 52px; } .tut-corpo h2 { font-size: 18px; } }
 @media (prefers-reduced-motion: reduce) { .tut-foco { transition: none; } }
 @media (max-width: 420px) { .hud-status { gap: 4px; } .hud-dentro { gap: 6px; } #stat-ofensiva { display: none; } .tutorial-btn { padding: 0 8px; justify-content: center; min-width: 44px; } }
+
+/* ---------- início: uma tela, sem rolagem, uma ação principal ---------- */
+body.no-inicio .palco { padding-top: 12px; padding-bottom: 12px; }
+.inicio { min-height: calc(100dvh - var(--hud) - 24px); max-width: 1000px; margin: 0 auto; display: grid; align-content: center; gap: 14px; }
+.ini-guia { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; align-items: end; }
+.ini-rosto.mascote { --tam: 92px; }
+.ini-fala { max-width: none; margin: 0; font-size: 15.5px; line-height: 1.45; padding: 11px 14px; }
+.ini-fala small { display: block; margin-bottom: 3px; font: 700 11px/1.2 var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta); }
+.ini-lado { display: grid; gap: 10px; min-width: 0; }
+.ini-acao { background: var(--folha); border: 1.5px solid color-mix(in srgb, var(--tinta) 70%, var(--linha)); border-radius: 12px; padding: 16px; display: grid; gap: 10px; }
+.ini-meta { margin: 0; font: 700 11.5px/1.35 var(--f-codigo); letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-2); }
+.ini-titulo { margin: 0; font: 700 clamp(22px, 5.4vw, 32px)/1.12 var(--f-titulo); letter-spacing: -0.01em; text-wrap: balance; }
+.ini-botao.b-prog { width: 100%; min-height: 52px; padding: 0 16px; text-decoration: none; }
+.ini-pular { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--texto-2); }
+.ini-pular:hover { color: var(--tinta); }
+.ini-pilares { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; counter-reset: ini; font-size: 14.5px; line-height: 1.35; }
+.ini-pilares li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; align-items: start; }
+.ini-pilares li::before { counter-increment: ini; content: counter(ini); height: 24px; border: 1px solid var(--linha-forte); border-radius: 6px; font: 700 12px/22px var(--f-codigo); text-align: center; color: var(--tinta); }
+.ini-atalhos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ini-atalho { display: grid; gap: 3px; align-content: start; min-height: 92px; padding: 10px; border: 1px solid var(--linha-forte); border-radius: 10px; background: var(--folha); color: var(--texto); text-decoration: none; transition: border-color 150ms; }
+.ini-atalho:hover { border-color: var(--tinta); }
+.ini-ic .ic { width: 22px; height: 22px; color: var(--tinta); }
+.ini-atalho b { font-size: 14px; line-height: 1.2; }
+.ini-atalho small { font-size: 12px; line-height: 1.25; color: var(--texto-2); }
+.ini-num { margin-top: 2px; font: 700 12px/1.2 var(--f-codigo); color: var(--tinta); }
+@media (min-width: 860px) {
+  body.no-inicio .palco { padding-top: 20px; padding-bottom: 20px; }
+  .inicio { min-height: calc(100dvh - var(--hud) - 40px); grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); align-items: center; gap: 44px; }
+  .ini-guia { grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 16px; }
+  .ini-rosto.mascote { --tam: 200px; }
+  .ini-fala { font-size: 17px; padding: 14px 18px; }
+  .ini-fala::after { left: 40px; bottom: auto; top: -9px; transform: rotate(135deg); }
+  .ini-acao { padding: 22px; gap: 14px; }
+}
+@media (max-height: 700px) and (max-width: 859px) { .ini-rosto.mascote { --tam: 72px; } .ini-atalho { min-height: 80px; } .inicio { gap: 10px; } }

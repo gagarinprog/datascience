@@ -667,9 +667,9 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "No banco de estudo, como a tabela respostas sabe de qual usuário é cada resposta?",
-    "resposta": "Pela chave estrangeira usuario_id, que aponta para usuarios.id.",
-    "tropeco": "Repetir o nome do usuário em cada resposta, em vez de guardar só o id dele.",
+    "pergunta": "No banco de estudo, como a tabela respostas sabe de qual aluno é cada resposta?",
+    "resposta": "Pela chave estrangeira aluno_id, que aponta para alunos.id.",
+    "tropeco": "Repetir o nome do aluno em cada resposta, em vez de guardar só o id dele.",
     "dia": "Seu CPF identifica você em qualquer sistema: ninguém copia seu nome inteiro, só o número.",
     "virada": false,
     "passos": 6
@@ -692,8 +692,8 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Escreva a consulta que mostra o nome e o e-mail de todos os usuários.",
-    "resposta": "SELECT nome, email FROM usuarios;",
+    "pergunta": "Escreva a consulta que mostra o nome e o e-mail de todos os alunos.",
+    "resposta": "SELECT nome, email FROM alunos;",
     "tropeco": "Usar SELECT * por hábito: traz colunas demais e esconde o que você realmente quer.",
     "dia": "Escolher quais colunas aparecem numa planilha: você não precisa ver todas.",
     "virada": false,
@@ -724,9 +724,9 @@ window.MATERIAS = [
       "materia": "LOG"
      }
     ],
-    "pergunta": "Escreva a consulta das questões fáceis da disciplina 1.",
-    "resposta": "SELECT * FROM questoes WHERE dificuldade = 'facil' AND disciplina_id = 1;",
-    "tropeco": "Texto entre aspas duplas (\"facil\") em vez de simples ('facil'). No PostgreSQL, aspas duplas são nome de coluna. É o seu erro recorrente.",
+    "pergunta": "Escreva a consulta das questões de gabarito C da matéria 1.",
+    "resposta": "SELECT * FROM questoes WHERE gabarito = 'C' AND materia_id = 1;",
+    "tropeco": "Texto entre aspas duplas (\"C\") em vez de simples ('C'). No PostgreSQL, aspas duplas são nome de coluna. É o seu erro recorrente.",
     "dia": "O filtro do e-mail: “de: banco” e “com anexo” ao mesmo tempo.",
     "virada": false,
     "passos": 8
@@ -749,7 +749,7 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "WHERE email = NULL encontra os usuários sem e-mail?",
+    "pergunta": "WHERE email = NULL encontra os alunos sem e-mail?",
     "resposta": "Não. Nada é igual a NULL, nem o próprio NULL. Use WHERE email IS NULL.",
     "tropeco": "Tratar NULL como zero ou texto vazio. NULL quer dizer “não informado”.",
     "dia": "O campo “telefone (opcional)” que a pessoa deixou em branco no cadastro: não é zero, é desconhecido.",
@@ -797,8 +797,8 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Como mostrar “fácil”, “média” ou “difícil” com acento a partir da coluna dificuldade?",
-    "resposta": "CASE dificuldade WHEN 'facil' THEN 'fácil' WHEN 'media' THEN 'média' ELSE 'difícil' END.",
+    "pergunta": "Como mostrar “fácil”, “médio” ou “difícil” a partir da coluna nivel, que vai de 1 a 5?",
+    "resposta": "CASE WHEN nivel <= 2 THEN 'fácil' WHEN nivel = 3 THEN 'médio' ELSE 'difícil' END.",
     "tropeco": "Comparar datas guardadas como texto em formatos diferentes. Padronize para AAAA-MM-DD.",
     "dia": "As fórmulas SE, MAIÚSCULA e TEXTO da planilha, só que dentro da consulta.",
     "virada": false,
@@ -859,8 +859,8 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Que junção mostra também os usuários que nunca responderam nada?",
-    "resposta": "LEFT JOIN de usuarios com respostas: quem não tem resposta aparece com NULL nas colunas de respostas.",
+    "pergunta": "Que junção mostra também os alunos que nunca responderam nada?",
+    "resposta": "LEFT JOIN de alunos com respostas: quem não tem resposta aparece com NULL nas colunas de respostas.",
     "tropeco": "Esquecer a condição ON e gerar todas as combinações (produto cartesiano), ou duplicar linhas sem perceber.",
     "dia": "O PROCV da planilha: trazer o nome do restaurante para cada pedido pela coluna em comum.",
     "virada": false,
@@ -883,8 +883,8 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Liste o nome dos usuários que têm pelo menos uma resposta, usando IN.",
-    "resposta": "SELECT nome FROM usuarios WHERE id IN (SELECT usuario_id FROM respostas);",
+    "pergunta": "Liste o nome dos alunos que têm pelo menos uma resposta, usando IN.",
+    "resposta": "SELECT nome FROM alunos WHERE id IN (SELECT aluno_id FROM respostas);",
     "tropeco": "Usar = com uma subconsulta que devolve várias linhas. Use IN ou EXISTS.",
     "dia": "“Mostre os produtos mais caros que a média”: primeiro a média, depois a comparação. Uma pergunta dentro da outra.",
     "virada": false,
@@ -959,9 +959,9 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Um aluno faz várias disciplinas e cada disciplina tem vários alunos. Como guardar isso?",
-    "resposta": "Relacionamento N:M: uma terceira tabela (matrícula) com aluno_id e disciplina_id.",
-    "tropeco": "Pôr uma lista de disciplinas dentro de uma coluna do aluno (\"BD, EST, LOG\").",
+    "pergunta": "Um aluno estuda várias matérias e cada matéria tem vários alunos. Como guardar isso?",
+    "resposta": "Relacionamento N:M: uma terceira tabela (matrícula) com aluno_id e materia_id.",
+    "tropeco": "Pôr uma lista de matérias dentro de uma coluna do aluno (\"BD, EST, LOG\").",
     "dia": "Seguidores numa rede social: cada pessoa segue várias e é seguida por várias. Isso pede uma tabela de “quem segue quem”.",
     "virada": false,
     "passos": 6
@@ -1008,7 +1008,7 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Que restrição impede cadastrar dois usuários com o mesmo e-mail?",
+    "pergunta": "Que restrição impede cadastrar dois alunos com o mesmo e-mail?",
     "resposta": "UNIQUE na coluna email.",
     "tropeco": "Rodar UPDATE ou DELETE sem WHERE: muda ou apaga a tabela inteira.",
     "dia": "As regras do formulário de cadastro: campo obrigatório, e-mail único, idade maior que zero.",
@@ -1036,8 +1036,8 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Como numerar as respostas de cada usuário da mais antiga para a mais nova?",
-    "resposta": "ROW_NUMBER() OVER (PARTITION BY usuario_id ORDER BY respondida_em).",
+    "pergunta": "Como numerar as respostas de cada aluno da mais antiga para a mais nova?",
+    "resposta": "ROW_NUMBER() OVER (PARTITION BY aluno_id ORDER BY respondida_em).",
     "tropeco": "Confundir GROUP BY (resume as linhas) com PARTITION BY (calcula por grupo e mantém todas as linhas).",
     "dia": "O ranking das músicas mais tocadas de cada país, calculado sem perder nenhuma música.",
     "virada": false,
@@ -3360,8 +3360,8 @@ window.MATERIAS = [
       "materia": "BD"
      }
     ],
-    "pergunta": "Como calcular a taxa de acerto por disciplina?",
-    "resposta": "df.groupby(\"disciplina\")[\"correta\"].mean().",
+    "pergunta": "Como calcular a taxa de acerto por matéria?",
+    "resposta": "df.groupby(\"materia_id\")[\"acertou\"].mean().",
     "tropeco": "Esquecer que o groupby sozinho não calcula nada: precisa da conta (mean, sum, count).",
     "dia": "A tabela dinâmica da planilha.",
     "virada": false,

@@ -30,16 +30,16 @@ window.GUIA = {
     BD: {
       frase: "Um banco relacional guarda dados em tabelas ligadas por chaves, e o SQL é a língua para fazer perguntas a elas.",
       texto: [
-        "Cada <strong>tabela</strong> guarda um tipo de coisa: usuários, disciplinas, questões, respostas. Cada <strong>linha</strong> é um registro; cada <strong>coluna</strong>, um atributo. Parece uma planilha, só que com regras que impedem bagunça.",
-        "A <strong>chave primária</strong> identifica cada linha sem repetição (o <code>id</code>). A <strong>chave estrangeira</strong> aponta para a chave de outra tabela: <code>questoes.disciplina_id</code> diz a qual disciplina cada questão pertence. Assim cada informação é escrita uma vez só.",
-        "Em SQL você diz <em>o que</em> quer, não <em>como</em> buscar: <code>SELECT nome FROM usuarios WHERE ...</code>. O banco escolhe o caminho mais rápido.",
+        "Cada <strong>tabela</strong> guarda um tipo de coisa: alunos, matérias, questões, respostas. Cada <strong>linha</strong> é um registro; cada <strong>coluna</strong>, um atributo. Parece uma planilha, só que com regras que impedem bagunça.",
+        "A <strong>chave primária</strong> identifica cada linha sem repetição (o <code>id</code>). A <strong>chave estrangeira</strong> aponta para a chave de outra tabela: <code>questoes.materia_id</code> diz a qual matéria cada questão pertence. Assim cada informação é escrita uma vez só.",
+        "Em SQL você diz <em>o que</em> quer, não <em>como</em> buscar: <code>SELECT nome FROM alunos WHERE ...</code>. O banco escolhe o caminho mais rápido.",
         "A consulta é escrita numa ordem e executada em outra: <code>FROM</code> escolhe a tabela, <code>WHERE</code> filtra linhas, <code>GROUP BY</code> forma grupos, <code>HAVING</code> filtra grupos, <code>SELECT</code> escolhe as colunas e <code>ORDER BY</code> ordena. Entender essa ordem resolve a maior parte das dúvidas.",
         "Texto vai entre <strong>aspas simples</strong> (<code>'Kaio'</code>). Aspas duplas são para nomes de coluna. Esse é o erro mais comum de quem começa.",
       ],
       figuras: [["BD", "Em cima, duas tabelas do banco de estudo ligadas por chave. Embaixo, o caminho da consulta, com os números reais do banco."]],
       dia: "O app de delivery: restaurantes numa tabela, pratos em outra e pedidos numa terceira, que liga quem pediu o quê. Ninguém copia o nome do restaurante em cada pedido; usa o número dele.",
       lang: "sql",
-      codigo: "SELECT d.nome, COUNT(*) AS questoes\nFROM questoes q\nJOIN disciplinas d ON d.id = q.disciplina_id\nWHERE q.dificuldade = 'facil'\nGROUP BY d.nome\nORDER BY questoes DESC;\n-- Estruturas de Dados | 8 (a primeira das 6 linhas)",
+      codigo: "SELECT m.nome, COUNT(*) AS questoes\nFROM questoes q\nJOIN materias m ON m.id = q.materia_id\nWHERE q.nivel <= 2\nGROUP BY m.nome\nORDER BY questoes DESC;\n-- Banco de Dados | 5 (a primeira das 6 linhas)",
       onde: [["UFMS", "Banco de Dados"], ["Concursos", "presente em quase toda prova de TI"], ["Trabalho", "a habilidade mais pedida nas vagas de dados"]],
     },
     CMP: {
@@ -126,7 +126,7 @@ window.GUIA = {
       figuras: [["ENG", "Cada bolinha é um commit. O ramo da análise saiu da main, ganhou dois commits e voltou para ela."]],
       dia: "O histórico de versões de um documento compartilhado é um Git simplificado: dá para ver quem mudou o quê e voltar atrás.",
       lang: "bash",
-      codigo: 'git add analise.py\ngit commit -m "Calcula a média por disciplina"\ngit log --oneline\n# 3f2a1c9 Calcula a média por disciplina',
+      codigo: 'git add analise.py\ngit commit -m "Calcula a média por matéria"\ngit log --oneline\n# 3f2a1c9 Calcula a média por matéria',
       onde: [["Concursos", "engenharia de software"], ["Trabalho", "todo dia, em qualquer equipe"]],
     },
     FMT: {
@@ -152,9 +152,9 @@ window.GUIA = {
         "<strong>Juntar</strong> tabelas por uma chave (<code>merge</code>) é o <code>JOIN</code> do SQL; o cuidado é não perder nem duplicar linhas no caminho.",
         "<strong>Limpar</strong> é tratar o que vem errado: valores ausentes, linhas duplicadas, números guardados como texto, a mesma categoria escrita de jeitos diferentes. Cada decisão fica registrada. Por baixo, o NumPy faz as contas em bloco (vetorização), por isso tudo é rápido.",
       ],
-      figuras: [["AD", "Separar, aplicar e juntar: a taxa de acerto por disciplina sai de seis respostas."]],
+      figuras: [["AD", "Separar, aplicar e juntar: a taxa de acerto por matéria sai de seis respostas do banco de estudo."]],
       dia: "A tabela dinâmica da planilha é um agrupamento: você escolhe o grupo (as linhas) e a conta (soma, média).",
-      codigo: 'import pandas as pd\nr = pd.read_sql("SELECT * FROM respostas", conexao)\ntaxa = r.groupby("usuario_id")["correta"].mean()\nprint(taxa.sort_values(ascending=False).head(3))',
+      codigo: 'import pandas as pd\nr = pd.read_sql("SELECT * FROM respostas", conexao)\ntaxa = r.groupby("aluno_id")["acertou"].mean()\nprint(taxa.sort_values(ascending=False).head(3))',
       onde: [["UFMS", "Introdução à Ciência de Dados"], ["Concursos", "ciência de dados: preparação de dados"], ["Trabalho", "todos os dias"]],
     },
     VIS: {
@@ -210,7 +210,7 @@ window.GUIA = {
       figuras: [["NSQ", "Quatro modelos de dados e para que cada um é bom."]],
       dia: "A rede de amigos de uma rede social é um grafo; o carrinho de compras guardado por alguns minutos é um chave-valor.",
       lang: "json",
-      codigo: '{\n  "nome": "Kaio Mendes",\n  "respostas": [\n    {"questao": 12, "resposta": "C", "correta": true},\n    {"questao": 47, "resposta": "E", "correta": false}\n  ]\n}',
+      codigo: '{\n  "nome": "Kaio Mendes",\n  "respostas": [\n    {"questao": 12, "resposta": "C", "acertou": true},\n    {"questao": 47, "resposta": "E", "acertou": false}\n  ]\n}',
       onde: [["UFMS", "Banco de Dados, módulo 4 (NoSQL)"], ["Concursos", "big data, NoSQL"], ["Trabalho", "onde o dado de muitas empresas mora"]],
     },
     ETI: {

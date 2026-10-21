@@ -81,6 +81,9 @@
 .cx-item.trancado .cx-cab { cursor: default; color: var(--texto-2); }
 .cx-item.trancado .cx-seta { visibility: hidden; }
 .cx-corpo { border-top: 1px solid var(--linha); padding: 14px; display: grid; gap: 12px; min-width: 0; }
+/* nada dentro de uma etapa alarga a tela: código e tabelas rolam no próprio lugar */
+.cx-corpo > * { min-width: 0; max-width: 100%; }
+.cx-corpo > table { display: block; overflow-x: auto; }
 .cx-corpo .lab-slides { border: 0; padding: 0; background: none; }
 .cx-seguir { justify-self: start; gap: 10px; }
 .cx-seguir svg { width: 18px; height: 18px; }

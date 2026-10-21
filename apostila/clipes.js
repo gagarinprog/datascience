@@ -171,27 +171,27 @@
   }];
 
   // ---------- BD: como a consulta pensa ----------
-  const LINHAS_BD = [[1, 1, "dificil"], [2, 1, "media"], [12, 1, "facil"], [28, 2, "facil"], [47, 3, "facil"], [49, 3, "dificil"]];
+  const LINHAS_BD = [[1, 1, "E"], [3, 1, "C"], [11, 2, "E"], [12, 2, "C"], [21, 3, "E"], [31, 4, "C"]];
   C.BD = [{
     titulo: "Como a consulta pensa",
     fim: 11.6,
     legendas: [
       [0, "Você escreve a consulta nesta ordem. O banco executa em outra."],
       [1.4, "1. FROM: primeiro ele pega a tabela questoes inteira."],
-      [3.4, "2. WHERE: depois filtra as linhas. Só ficam as de dificuldade 'facil'."],
-      [5.6, "3. SELECT: só então escolhe as colunas. disciplina_id sai."],
+      [3.4, "2. WHERE: depois filtra as linhas. Só ficam as de gabarito 'C'."],
+      [5.6, "3. SELECT: só então escolhe as colunas. materia_id sai."],
       [7.6, "4. ORDER BY id DESC: por último, ordena do maior id para o menor."],
-      [9.6, "Resultado: 3 linhas. E o texto vai entre aspas simples: 'facil'."],
+      [9.6, "Resultado: 3 linhas. E o texto vai entre aspas simples: 'C'."],
     ],
     svg: `
       ${caixa(16, 70, 262, 200, "cl-painel", 14)}
       <rect id="realce" x="24" y="88" width="246" height="34" rx="8" class="cl-cor-suave" opacity="0"/>
-      ${[["SELECT", " id, dificuldade", 3], ["FROM", " questoes", 1], ["WHERE", " dificuldade =", 2], ["", "      'facil'", 0], ["ORDER BY", " id DESC", 4]].map(([k, r, n], i) => `<text x="34" y="${105 + i * 34}" class="cl-tm" dominant-baseline="central"><tspan class="cl-chave">${k}</tspan>${r.replace("'facil'", "<tspan class=\"cl-str\">'facil'</tspan>")}</text>${n ? `<g class="ordem" opacity="0"><circle cx="258" cy="${105 + i * 34}" r="11" class="cl-cor"/>${texto(258, 105 + i * 34, n, "cl-sobre")}</g>` : ""}`).join("")}
+      ${[["SELECT", " id, gabarito", 3], ["FROM", " questoes", 1], ["WHERE", " gabarito =", 2], ["", "      'C'", 0], ["ORDER BY", " id DESC", 4]].map(([k, r, n], i) => `<text x="34" y="${105 + i * 34}" class="cl-tm" dominant-baseline="central"><tspan class="cl-chave">${k}</tspan>${r.replace("'facil'", "<tspan class=\"cl-str\">'facil'</tspan>")}</text>${n ? `<g class="ordem" opacity="0"><circle cx="258" cy="${105 + i * 34}" r="11" class="cl-cor"/>${texto(258, 105 + i * 34, n, "cl-sobre")}</g>` : ""}`).join("")}
       <g id="tabela" opacity="0">
         ${texto(456, 40, "questoes", "cl-t2")}
-        ${caixa(300, 56, 320, 34, "cl-cab", 8)}${texto(340, 73, "id", "cl-tb")}<g id="col-disc">${texto(445, 73, "disciplina_id", "cl-tb")}</g>${texto(562, 73, "dificuldade", "cl-tb")}
+        ${caixa(300, 56, 320, 34, "cl-cab", 8)}${texto(340, 73, "id", "cl-tb")}<g id="col-disc">${texto(445, 73, "materia_id", "cl-tb")}</g>${texto(562, 73, "gabarito", "cl-tb")}
       </g>
-      ${LINHAS_BD.map(([id, d, dif], i) => `<g class="linha-bd ${dif === "facil" ? "fica" : "sai"}" data-id="${id}" opacity="0" transform="translate(0,${96 + i * 38})">
+      ${LINHAS_BD.map(([id, d, dif], i) => `<g class="linha-bd ${dif === "C" ? "fica" : "sai"}" data-id="${id}" opacity="0" transform="translate(0,${96 + i * 38})">
         ${caixa(300, 0, 320, 32, "cl-caixa", 7)}<rect x="300" y="0" width="320" height="32" rx="7" class="cl-linha-ok" opacity="0"/>
         ${texto(340, 16, id, "cl-tm")}<g class="cel-disc">${texto(445, 16, d, "cl-tm")}</g>${texto(562, 16, dif, "cl-tm")}
         <path d="M308,16 H612" class="cl-risco" opacity="0"/></g>`).join("")}`,
@@ -214,7 +214,7 @@
       t.to($("#realce"), { y: 136, duration: 0.4 }, 7.6);
       t.to(ordem[3], { opacity: 1, duration: 0.3 }, 7.7);
       t.to($$(".sai"), { opacity: 0, duration: 0.3 }, 8.0);
-      const destino = { 47: 0, 28: 1, 12: 2 };
+      const destino = { 31: 0, 12: 1, 3: 2 };
       $$(".fica").forEach((g) => t.to(g, { y: 96 + destino[g.dataset.id] * 38, duration: 0.8, ease: "power2.inOut" }, 8.2));
     },
   }];

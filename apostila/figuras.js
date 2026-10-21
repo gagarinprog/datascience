@@ -117,11 +117,11 @@
       "O caminho dos dados: entrada, processador, memória e armazenamento, saída. Abaixo, 13 escrito em binário como 1101.");
 
   FIG.BD = () => {
-    const disc = texto(84, 58, "disciplinas", "fx-tb", "start") + tabela(20, 70, "", [{ nome: "id", w: 44, destaque: true }, { nome: "nome", w: 190 }],
-      [["1", "Banco de Dados"], ["2", "Estatística"], ["3", "Lógica de Programação"]]);
-    const ques = tabela(420, 70, "questoes", [{ nome: "id", w: 44 }, { nome: "disciplina_id", w: 116, destaque: true }, { nome: "dificuldade", w: 104 }],
-      [["1", "1", "media"], ["2", "1", "facil"], ["3", "2", "facil"], ["4", "3", "dificil"]]);
-    const etapas = [["FROM questoes\n+ JOIN", "120 linhas"], ["WHERE\nfacil", "37 linhas"], ["GROUP BY\nnome", "6 grupos"], ["SELECT\nnome, COUNT", "2 colunas"], ["ORDER BY\nquestoes DESC", "maior primeiro"]];
+    const disc = texto(84, 58, "materias", "fx-tb", "start") + tabela(20, 70, "", [{ nome: "id", w: 44, destaque: true }, { nome: "nome", w: 190 }],
+      [["1", "Língua Portuguesa"], ["2", "Raciocínio Lógico"], ["3", "Direito Administrativo"]]);
+    const ques = tabela(420, 70, "questoes", [{ nome: "id", w: 44 }, { nome: "materia_id", w: 116, destaque: true }, { nome: "nivel", w: 104 }],
+      [["1", "1", "5"], ["2", "1", "2"], ["11", "2", "1"], ["21", "3", "4"]]);
+    const etapas = [["FROM questoes\n+ JOIN", "60 linhas"], ["WHERE\nnivel <= 2", "19 linhas"], ["GROUP BY\nnome", "6 grupos"], ["SELECT\nnome, COUNT", "2 colunas"], ["ORDER BY\nquestoes DESC", "maior primeiro"]];
     let pipe = texto(20, 252, "a ordem em que o banco executa a consulta", "fx-tb", "start");
     etapas.forEach(([a, b], i) => {
       const x = 20 + i * 148;
@@ -133,8 +133,8 @@
       `<path d="M 522 70 C 522 30, 42 30, 42 68" class="fx-traco-tinta" marker-end="url(#ponta)"/>` +
       texto(280, 18, "a chave estrangeira aponta para a chave primária", "fx-tt") +
       texto(20, 190, "id: chave primária, não se repete", "fx-t2", "start") +
-      texto(420, 216, "disciplina_id: de qual disciplina é a questão", "fx-t2", "start") + pipe,
-      "Duas tabelas ligadas: questoes.disciplina_id aponta para disciplinas.id. Abaixo, a ordem de execução de uma consulta, de 120 linhas até 6 grupos ordenados.");
+      texto(420, 216, "materia_id: de qual matéria é a questão", "fx-t2", "start") + pipe,
+      "Duas tabelas ligadas: questoes.materia_id aponta para materias.id. Abaixo, a ordem de execução de uma consulta, de 60 linhas até 6 grupos ordenados.");
   };
 
   FIG.MAT = () => {
@@ -283,7 +283,7 @@
     [[70, "dados brutos"], [140, "limpeza"], [220, "README"], [420, "junta a análise"], [500, "relatório"]].forEach(([x, t], i) => {
       s += circulo(x, 90, 12, i === 4 ? "fx-destaque" : "fx-caixa") + texto(x, 60 - (i % 2) * 18, t, "fx-t2");
     });
-    [[290, "média por\ndisciplina"], [360, "gráficos"]].forEach(([x, t]) => { s += circulo(x, 170, 12, "fx-caixa") + texto(x, 205, t, "fx-t2"); });
+    [[290, "média por\nmatéria"], [360, "gráficos"]].forEach(([x, t]) => { s += circulo(x, 170, 12, "fx-caixa") + texto(x, 205, t, "fx-t2"); });
     s += texto(500, 118, "você está aqui", "fx-tt");
     s += caixa(560, 130, 190, 100, "", "fx-suave");
     s += ["$ git log --oneline", "e71 relatório", "a41 junta a análise", "9e0 gráficos"].map((l, i) => texto(572, 150 + i * 21, l, "fx-tm", "start")).join("");
@@ -302,11 +302,12 @@
   };
 
   FIG.AD = () => {
-    const linhas = [["BD", "1"], ["EST", "0"], ["BD", "0"], ["EST", "1"], ["BD", "1"], ["LOG", "1"]];
-    const cor = { BD: "fx-destaque", EST: "fx-aviso", LOG: "fx-certo" };
+    // seis respostas reais do banco de estudo (ids 4 a 13): matéria 1 Língua Portuguesa, 6 Banco de Dados, 5 Estatística
+    const linhas = [["1", "1"], ["6", "0"], ["1", "0"], ["6", "1"], ["5", "0"], ["6", "0"]];
+    const cor = { 1: "fx-certo", 6: "fx-destaque", 5: "fx-aviso" };
     let s = texto(20, 18, "tabela de respostas", "fx-tb", "start") + texto(220, 18, "1. separar por grupo", "fx-tb", "start") + texto(430, 18, "2. aplicar a média", "fx-tb", "start") + texto(610, 18, "3. juntar", "fx-tb", "start");
-    s += tabela(20, 36, "", [{ nome: "disciplina", w: 90 }, { nome: "correta", w: 70 }], linhas, (i) => cor[linhas[i][0]]);
-    const grupos = [["BD", ["1", "0", "1"], "0,67"], ["EST", ["0", "1"], "0,50"], ["LOG", ["1"], "1,00"]];
+    s += tabela(20, 36, "", [{ nome: "materia_id", w: 90 }, { nome: "acertou", w: 70 }], linhas, (i) => cor[linhas[i][0]]);
+    const grupos = [["1", ["1", "0"], "0,50"], ["6", ["0", "1", "0"], "0,33"], ["5", ["0"], "0,00"]];
     let y = 36;
     grupos.forEach(([g, vals, m]) => {
       vals.forEach((v, i) => { s += caixa(220, y + i * 24, 60, 24, g, cor[g], "fx-tm", 0) + caixa(280, y + i * 24, 50, 24, v, cor[g], "fx-tm", 0); });
@@ -315,9 +316,9 @@
       s += seta(562, meio, 608, 70 + grupos.findIndex((x) => x[0] === g) * 26 + 13);
       y += vals.length * 24 + 14;
     });
-    s += tabela(610, 44, "", [{ nome: "disciplina", w: 80 }, { nome: "taxa", w: 60 }], grupos.map(([g, , m]) => [g, m]), (i) => cor[grupos[i][0]]);
+    s += tabela(610, 44, "", [{ nome: "materia_id", w: 84 }, { nome: "taxa", w: 56 }], grupos.map(([g, , m]) => [g, m]), (i) => cor[grupos[i][0]]);
     s += seta(182, 120, 216, 120);
-    return svg(760, 260, s, "Agrupar em três passos: separar as respostas por disciplina, calcular a média de acerto de cada grupo e juntar numa tabela.");
+    return svg(760, 260, s, "Agrupar em três passos: separar as respostas por matéria, calcular a média de acerto de cada grupo e juntar numa tabela.");
   };
 
   FIG.VIS = () => {
@@ -368,7 +369,7 @@
     const g = { Ana: [450, 60], Kaio: [520, 100], Joana: [440, 150], Igor: [540, 170] };
     [["Ana", "Kaio"], ["Kaio", "Joana"], ["Ana", "Joana"], ["Kaio", "Igor"]].forEach(([a, b]) => { s += `<line x1="${g[a][0]}" y1="${g[a][1]}" x2="${g[b][0]}" y2="${g[b][1]}" class="fx-traco"/>`; });
     Object.entries(g).forEach(([n, [x, y]]) => { s += caixa(x - 30, y - 14, 60, 28, n, "fx-caixa", "fx-t2", 14); });
-    [["id", ["1", "2", "3"]], ["nome", ["Ana", "Kaio", "Igor"]], ["correta", ["1", "0", "1"]]].forEach(([c, vals], i) => {
+    [["id", ["1", "2", "3"]], ["nome", ["Ana", "Kaio", "Igor"]], ["acertou", ["1", "0", "1"]]].forEach(([c, vals], i) => {
       const x = 590 + i * 56;
       s += caixa(x, 34, 52, 24, c, "fx-suave", "fx-t2", 0) + vals.map((v, j) => caixa(x, 58 + j * 24, 52, 24, v, "fx-destaque", "fx-tm", 0)).join("");
     });

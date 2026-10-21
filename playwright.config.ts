@@ -33,11 +33,21 @@ export default defineConfig({
       },
     },
   ],
-  // Testa o build de produção, que é o que mais se parece com o uso real.
-  webServer: {
-    command: `pnpm build && pnpm start --port ${PORTA}`,
-    url: `http://localhost:${PORTA}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 240_000,
-  },
+  webServer: [
+    // Testa o build de produção, que é o que mais se parece com o uso real.
+    {
+      command: `pnpm build && pnpm start --port ${PORTA}`,
+      url: `http://localhost:${PORTA}`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 240_000,
+    },
+    // A apostila é um site estático: um servidor de arquivos basta (e2e/apostila.spec.ts).
+    {
+      command: "python3 -m http.server 3200 --bind 127.0.0.1",
+      url: "http://127.0.0.1:3200/apostila/index.html",
+      stderr: "ignore",
+      reuseExistingServer: !process.env.CI,
+      timeout: 30_000,
+    },
+  ],
 });

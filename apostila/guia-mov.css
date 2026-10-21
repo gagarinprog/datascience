@@ -1,0 +1,19 @@
+/* Movimento dos guias (guia-mov.js). Cada movimento é curto e só roda sem "reduzir movimento".
+   O seletor dobrado (.gm-x.gm-x) vence a flutuação de .mascote.flutua enquanto o movimento dura. */
+@media (prefers-reduced-motion: no-preference) {
+  .gm-chegar.gm-chegar { animation: gm-chegar 950ms cubic-bezier(0.34, 1.56, 0.64, 1) both; transform-origin: 50% 100%; }
+  .gm-pensar.gm-pensar { animation: gm-pensar 1.6s ease-in-out both; transform-origin: 50% 100%; }
+  .gm-acerto.gm-acerto { animation: gm-acerto 650ms cubic-bezier(0.34, 1.56, 0.64, 1) both, gm-anel 900ms ease-out both; transform-origin: 50% 100%; }
+  .gm-erro.gm-erro { animation: gm-erro 1.1s ease-in-out both; transform-origin: 50% 100%; }
+  .gm-dica.gm-dica { animation: gm-dica 1.4s ease-in-out both; transform-origin: 50% 100%; }
+  .gm-concluir.gm-concluir { animation: gm-concluir 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) both, gm-anel 1.3s ease-out both; transform-origin: 50% 100%; }
+  .gm-falando.gm-falando { animation: gm-falando 0.5s ease-in-out infinite; transform-origin: 50% 100%; }
+}
+@keyframes gm-chegar { 0% { transform: translateY(18px) scale(0.92); opacity: 0; } 55% { transform: translateY(-3px) rotate(-3deg); opacity: 1; } 75% { transform: rotate(3deg); } 100% { transform: none; } }
+@keyframes gm-pensar { 0% { transform: none; } 30%, 80% { transform: rotate(-5deg) translateX(-2px); } 100% { transform: none; } }
+@keyframes gm-acerto { 0% { transform: none; } 30% { transform: translateY(-12px) scaleY(1.04); } 55% { transform: translateY(0) scaleY(0.95) scaleX(1.03); } 75% { transform: translateY(-3px); } 100% { transform: none; } }
+@keyframes gm-anel { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--certo) 0%, transparent); } 30% { box-shadow: 0 0 0 3px var(--certo); } 100% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--certo) 0%, transparent); } }
+@keyframes gm-erro { 0%, 100% { transform: none; } 20% { transform: rotate(-4deg); } 40% { transform: rotate(4deg); } 60% { transform: rotate(-3deg); } 80% { transform: rotate(2deg); } }
+@keyframes gm-dica { 0% { transform: none; } 35%, 75% { transform: scale(1.07) translateX(4px) rotate(2deg); } 100% { transform: none; } }
+@keyframes gm-concluir { 0% { transform: none; } 40% { transform: translateY(-10px) scale(1.06); } 100% { transform: none; } }
+@keyframes gm-falando { 50% { transform: rotate(-1.5deg) translateY(-1px); } }

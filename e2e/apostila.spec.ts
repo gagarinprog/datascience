@@ -1,0 +1,215 @@
+import { expect, test, type Page } from "@playwright/test";
+
+import { RESOLVER } from "./apostila-resolver";
+
+/**
+ * A apostila (apostila/, site estático no GitHub Pages) testada como o aluno usa: a página inicial, o traço e o
+ * movimento dos guias, o estudo em 5 passos, cada lição ilustrada inteira e a revisão do dia. O servidor estático
+ * sobe junto com o do app (playwright.config.ts). Roda no celular (390 px) e no computador (1280 px).
+ */
+const BASE = "http://127.0.0.1:3200/apostila/";
+const LICOES = ["INICIO", "LOG.01", "LOG.02", "LOG.03", "PY.01"];
+
+type Resultado = { tipo: string; estado: string; retorno: string; log: string[] };
+
+function vigiarErros(page: Page) {
+  const erros: string[] = [];
+  page.on("pageerror", (e) => erros.push(String(e)));
+  page.on("console", (m) => {
+    if (m.type() === "error") erros.push(m.text());
+  });
+  return erros;
+}
+
+async function resolver(page: Page, vid: string, errar: boolean) {
+  return (await page.evaluate(`(${RESOLVER})(${JSON.stringify([vid, errar])})`)) as Resultado;
+}
+
+test.describe("apostila", () => {
+  test.use({ actionTimeout: 15_000 });
+  test("a página inicial cabe numa tela e apresenta o programa na primeira visita", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.goto(BASE + "index.html");
+    await expect(page.locator(".inicio.primeira")).toBeVisible();
+    await expect(page.locator(".ini-atalho")).toHaveCount(3);
+    const [altura, tela, largura, telaL] = await page.evaluate(() => [
+      document.documentElement.scrollHeight,
+      innerHeight,
+      document.documentElement.scrollWidth,
+      innerWidth,
+    ]);
+    expect(altura).toBeLessThanOrEqual((tela ?? 0) + 1);
+    expect(largura).toBeLessThanOrEqual((telaL ?? 0) + 1);
+    await page.locator("[data-ini-tutorial]").click();
+    await expect(page.locator(".tut-cartao")).toBeVisible();
+    await expect(page).toHaveURL(/#mapa$/);
+    for (let k = 0; k < 7; k++) await page.locator('[data-tut="prox"]').click();
+    await expect(page.locator(".tut-cartao")).toHaveCount(0);
+    await page.goto(BASE + "index.html#inicio");
+    await expect(page.locator(".inicio:not(.primeira)")).toBeVisible();
+    await expect(page.locator(".ini-botao")).toHaveAttribute("href", /#estudo-LOG\.01$/);
+    expect(erros).toEqual([]);
+  });
+
+  test("os três traços trocam o rosto dos guias e ficam salvos", async ({ page }) => {
+    await page.goto(BASE + "index.html#mapa");
+    await page.evaluate(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
+    await page.reload();
+    const rostos = new Set<string>();
+    for (const traco of ["manga", "anime", "aventura"]) {
+      await page.locator("#guia-btn").click();
+      await page.locator(`[data-traco-opcao="${traco}"]`).click();
+      rostos.add(await page.locator("#guia-mini").innerHTML());
+      await page.reload();
+      expect(
+        await page.evaluate(
+          () =>
+            (window as unknown as { GUIAS: Record<string, { estilo: string }> }).GUIAS.rin!.estilo,
+        ),
+      ).toBe(traco);
+    }
+    expect(rostos.size).toBe(3);
+  });
+
+  test("o guia se mexe no estudo e, com reduzir movimento, só troca a expressão", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("dominio:traco:v1", "manga");
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true }));
+    });
+    await page.goto(BASE + "index.html#estudo-LOG.01");
+    const guia = page.locator(".cartao-passo .mascote");
+    await expect(guia).toHaveClass(/gm-chegar/);
+    await expect(guia).toHaveAttribute("data-quadro", "explica");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(BASE + "index.html#estudo-LOG.02");
+    await page.reload();
+    const parado = page.locator(".cartao-passo .mascote");
+    await expect(parado).toHaveAttribute("data-quadro", "explica");
+    await expect(parado).not.toHaveClass(/gm-/);
+  });
+
+  test("o estudo em 5 passos vai do começo ao módulo dominado", async ({ page }) => {
+    const erros = vigiarErros(page);
+    await page.addInitScript(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
+    await page.goto(BASE + "index.html#estudo-LOG.01");
+    for (let p = 0; p < 4; p++) {
+      if (p === 2) for (const b of await page.locator(".c-ok").all()) await b.click();
+      await page.locator("[data-continuar]").click();
+    }
+    await page.locator("#resp").fill("Uma sequência finita de passos sem ambiguidade.");
+    await page.locator("[data-comparar]").click();
+    await page.locator("[data-acertei]").click();
+    await expect(page.locator(".vitoria")).toBeVisible();
+    await page.locator("[data-ficar]").click();
+    await expect(page.locator("#hud-xp")).not.toHaveText("0");
+    expect(erros).toEqual([]);
+  });
+
+  for (const licao of LICOES) {
+    test(`a lição ${licao} é resolvida inteira, etapa por etapa`, async ({ page }) => {
+      test.setTimeout(240_000);
+      const erros = vigiarErros(page);
+      await page.goto(BASE + `licoes/${licao}.html`);
+      await page.evaluate(() =>
+        document
+          .querySelectorAll<HTMLElement>(".exercicio")
+          .forEach((e, i) => (e.dataset.vid = "x" + i)),
+      );
+      const secoes = page.locator(".secao");
+      const n = await secoes.count();
+      let k = 0;
+      for (let i = 0; i < n; i++) {
+        const sec = secoes.nth(i);
+        const itens = sec.locator(".cx-item");
+        for (let j = 0; j < (await itens.count()); j++) {
+          const it = itens.nth(j);
+          await expect(it).not.toHaveClass(/trancado/);
+          if ((await it.locator(".cx-cab").getAttribute("aria-expanded")) !== "true")
+            await it.locator(".cx-cab").click();
+          const classe = (await it.getAttribute("class")) ?? "";
+          if (classe.includes("cx-exercicio")) {
+            const vid = (await it.locator(".exercicio").first().getAttribute("data-vid")) ?? "";
+            const r = await resolver(page, vid, k++ % 2 === 0);
+            expect(r.estado, `${licao} ${vid} ${r.tipo}`).toBe("resolvido");
+            expect(r.retorno).not.toBe("");
+            await expect(it.locator(".retorno-guia")).toHaveCount(1);
+          } else if (classe.includes("cx-animacao")) {
+            const fig = it.locator("figure[data-clip]");
+            if (await fig.locator("[data-aposta]").count())
+              await fig.locator("[data-aposta]").first().click();
+            const passos = await fig.locator(".clip-pontos button").count();
+            for (let p = 1; p < passos; p++) await fig.locator('[data-a="prox"]').click();
+            await expect(fig.locator(".clip-legenda")).toContainText(
+              `Passo ${passos} de ${passos}`,
+            );
+            await it.locator(".cx-seguir").click();
+          } else {
+            const ta = it.locator(".explicar textarea");
+            if (await ta.count()) {
+              await ta.fill("Explicação com as minhas palavras.");
+              await it.locator("[data-salvar]").click();
+            }
+            if (await it.locator("[data-marcar]").count())
+              await it.locator("[data-marcar]").click();
+            if (await it.locator(".cx-seguir").count()) await it.locator(".cx-seguir").click();
+          }
+        }
+        await expect(sec.locator(".cx-item:not(.feito)")).toHaveCount(0);
+        const prox = sec.locator("[data-proximo]");
+        if (await prox.count()) {
+          await expect(prox).toBeEnabled();
+          await prox.click();
+          await expect(secoes.nth(i + 1)).toBeVisible();
+        }
+      }
+      expect(k).toBeGreaterThan(10);
+      expect(erros).toEqual([]);
+    });
+  }
+
+  test("a revisão do dia traz o exercício da lição e reagenda", async ({ page }) => {
+    await page.goto(BASE + "licoes/LOG.01.html");
+    const ontem = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    await page.evaluate((dia) => {
+      const M = (window as unknown as { Motor: { idDe: (e: Element) => string } }).Motor;
+      const cartoes: Record<string, object> = {};
+      for (const sec of document.querySelectorAll(".secao"))
+        for (const ex of sec.querySelectorAll(".exercicio:not(.desafio)")) {
+          if (Object.keys(cartoes).length >= 2) break;
+          const id = M.idDe(ex);
+          cartoes[id] = {
+            id,
+            licao: "LOG.01",
+            titulo: "Lógica",
+            url: "LOG.01.html",
+            sec: sec.id,
+            conceito: sec.id,
+            caixa: 0,
+            proxima: dia,
+            erros: 1,
+            acertos: 0,
+            criado: dia,
+          };
+        }
+      localStorage.setItem("dominio:revisao:v1", JSON.stringify(cartoes));
+    }, ontem);
+    await page.goto(BASE + "licoes/REVISAR.html");
+    for (let i = 0; i < 2; i++) {
+      await expect(page.locator("#r-palco .exercicio")).toBeVisible();
+      await page.evaluate(() => {
+        (document.querySelector("#r-palco .exercicio") as HTMLElement).dataset.vid = "r";
+      });
+      expect((await resolver(page, "r", false)).estado).toBe("resolvido");
+      await page.locator("#r-proximo").click();
+    }
+    await expect(page.locator("#r-palco")).toContainText("Revisão concluída");
+  });
+});

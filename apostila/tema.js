@@ -5,6 +5,8 @@
   "use strict";
   var CHAVE = "dominio:tema:v1";
   var raiz = document.documentElement;
+  // a página publicada como artefato não traz <html lang>: a língua fica marcada aqui, para leitores de tela
+  if (!raiz.getAttribute("lang")) raiz.setAttribute("lang", "pt-BR");
   function aplicar(v) {
     if (v === "impresso") { raiz.setAttribute("data-tema", "impresso"); raiz.setAttribute("data-theme", "light"); }
     else { raiz.removeAttribute("data-tema"); raiz.removeAttribute("data-theme"); }

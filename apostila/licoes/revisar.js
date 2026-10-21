@@ -15,14 +15,14 @@
   }
 
   function vazio() {
-    palco.innerHTML = `<div class="r-vazio"><h2>Nada para revisar hoje.</h2><p>Quando você errar um exercício numa lição, acertar só na segunda tentativa ou responder no chute, ele aparece aqui no dia seguinte.</p><p><a class="botao primario" href="../index.html">Voltar ao mapa</a></p></div>`;
+    palco.innerHTML = `<div class="r-vazio"><h2>Nada para revisar hoje.</h2><p>Quando você errar um exercício numa lição, acertar só na segunda tentativa ou responder no chute, ele aparece aqui no dia seguinte.</p><p><a class="botao primario" href="../index.html#mapa">Voltar ao mapa</a></p></div>`;
     contagem.textContent = "";
   }
 
   function fim() {
     barra.style.width = "100%";
     const prox = Object.values(R.todos()).sort((a, b) => (a.proxima < b.proxima ? -1 : 1))[0];
-    palco.innerHTML = `<div class="r-fim"><h2>Revisão concluída.</h2><p>Você acertou de primeira ${primeira} de ${resultados.length}.</p><ul>${resultados.map((r) => `<li>${esc(r.conceito)}: ${r.ok ? `volta em ${R.INTERVALOS[r.caixa]} ${R.INTERVALOS[r.caixa] === 1 ? "dia" : "dias"}` : "volta amanhã"}</li>`).join("")}</ul>${prox ? `<p>Próxima revisão: ${prox.proxima.split("-").reverse().join("/")}.</p>` : ""}<p><a class="botao primario" href="../index.html">Voltar ao mapa</a></p></div>`;
+    palco.innerHTML = `<div class="r-fim"><h2>Revisão concluída.</h2><p>Você acertou de primeira ${primeira} de ${resultados.length}.</p><ul>${resultados.map((r) => `<li>${esc(r.conceito)}: ${r.ok ? `volta em ${R.INTERVALOS[r.caixa]} ${R.INTERVALOS[r.caixa] === 1 ? "dia" : "dias"}` : "volta amanhã"}</li>`).join("")}</ul>${prox ? `<p>Próxima revisão: ${prox.proxima.split("-").reverse().join("/")}.</p>` : ""}<p><a class="botao primario" href="../index.html#mapa">Voltar ao mapa</a></p></div>`;
     contagem.textContent = "";
   }
 

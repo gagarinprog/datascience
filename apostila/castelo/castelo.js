@@ -633,7 +633,7 @@
   }
   function falaGuia(expr, html) {
     const g = guiaLab();
-    return `<figure class="lab-tutor">${g ? `<div class="lab-tutor-rosto${g.id === "panda" ? "" : " retrato"}" aria-hidden="true">${g.expr[expr] || g.expr.padrao}</div>` : ""}<figcaption>${g ? `<b>${esc(g.nome)}</b>` : ""}${html}</figcaption></figure>`;
+    return `<figure class="lab-tutor">${g ? `<div class="lab-tutor-rosto${g.id === "panda" ? "" : " retrato"}" data-guia="${g.id}" data-expr="${expr}" data-mov="chegar falar" aria-hidden="true">${g.expr[expr] || g.expr.padrao}</div>` : ""}<figcaption>${g ? `<b>${esc(g.nome)}</b>` : ""}${html}</figcaption></figure>`;
   }
 
   // ---------- telas ----------

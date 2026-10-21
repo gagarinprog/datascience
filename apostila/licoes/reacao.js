@@ -17,7 +17,24 @@
     const atual = r.querySelector(":scope > .retorno-guia");
     if (atual && atual.dataset.e === expr) return;
     if (atual) atual.remove();
-    r.insertAdjacentHTML("afterbegin", `<span class="retorno-guia${guia.id === "panda" ? "" : " retrato"} ${ok ? "comemora" : revelado ? "" : "pondera"}" data-e="${expr}" aria-hidden="true">${guia.expr[expr] || guia.expr.padrao}</span>`);
+    const mov = ok ? "acerto" : revelado ? "dica" : "erro";
+    // com o motor de movimento (guia-mov.js), o guia se mexe; sem ele, fica o pulinho de antes
+    const classe = window.GuiaMov ? "" : ok ? " comemora" : revelado ? "" : " pondera";
+    r.insertAdjacentHTML("afterbegin", `<span class="retorno-guia${guia.id === "panda" ? "" : " retrato"}${classe}" data-e="${expr}" data-guia="${guia.id}" data-expr="${expr}" aria-hidden="true">${guia.expr[expr] || guia.expr.padrao}</span>`);
+    if (window.GuiaMov) window.GuiaMov.mover(r.firstElementChild, mov, expr);
+  }
+
+  // no desafio (pergunta antes da leitura) e no "preveja antes de ver", o guia aparece pensando
+  function pensativos(raiz) {
+    (raiz || document).querySelectorAll(".exercicio.desafio > .pergunta, figure[data-preveja] .preveja > p").forEach((p) => {
+      if (p.querySelector(".pensa-guia")) return;
+      p.insertAdjacentHTML("afterbegin", `<span class="pensa-guia${guia.id === "panda" ? "" : " retrato"}" data-guia="${guia.id}" data-expr="pensa" aria-hidden="true">${guia.expr.pensa || guia.expr.padrao}</span>`);
+      const el = p.firstElementChild;
+      if (window.GuiaMov && "IntersectionObserver" in window) {
+        const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); window.GuiaMov.mover(el, "pensar", "pensa"); } }, { threshold: 0.6 });
+        io.observe(el);
+      }
+    });
   }
 
   function observar(raiz) {
@@ -28,8 +45,8 @@
       decorar(r);
     });
   }
-  window.Reacao = { observar };
-  function iniciar() { observar(document); }
+  window.Reacao = { observar, pensativos };
+  function iniciar() { observar(document); setTimeout(() => pensativos(document), 0); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);
   else iniciar();
 })();

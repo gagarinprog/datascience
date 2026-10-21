@@ -176,21 +176,21 @@ BD-002 BD.01.02 problemas de planilhas e arquivos soltos
 BD-003 BD.01.03 independência de dados
 BD-004 BD.01.04 arquitetura de três esquemas
 BD-005 BD.01.TD tarefa de domínio
-M BD.02 Modelo relacional | CE, MD, AE | Identificar as chaves e as ligações do esquema do banco de estudo | antes: BD.01 Por que bancos | pronto: No banco de estudo, como a tabela respostas sabe de qual usuário é cada resposta?
+M BD.02 Modelo relacional | CE, MD, AE | Identificar as chaves e as ligações do esquema do banco de estudo | antes: BD.01 Por que bancos | pronto: No banco de estudo, como a tabela respostas sabe de qual aluno é cada resposta?
 BD-006 BD.02.01 relação, tupla e atributo
 BD-007 BD.02.02 domínio
 BD-008 BD.02.03 esquema e instância
 BD-009 BD.02.04 chave candidata, primária e estrangeira
 BD-010 BD.02.05 integridade de entidade e referencial
 BD-011 BD.02.TD tarefa de domínio
-M BD.03 Primeira consulta | SQ, PS | Responder perguntas simples numa tabela | antes: BD.02 Modelo relacional | pronto: Escreva a consulta que mostra o nome e o e-mail de todos os usuários.
+M BD.03 Primeira consulta | SQ, PS | Responder perguntas simples numa tabela | antes: BD.02 Modelo relacional | pronto: Escreva a consulta que mostra o nome e o e-mail de todos os alunos.
 BD-012 BD.03.01 `SELECT` e `FROM`
 BD-013 BD.03.02 colunas e `*`
 BD-014 BD.03.03 apelido com `AS`
 BD-015 BD.03.04 expressões
 BD-016 BD.03.05 `DISTINCT`
 BD-017 BD.03.TD tarefa de domínio
-M BD.04 Filtrar | SQ, AE, CE | Escrever filtros compostos sem erro de aspas nem de precedência | antes: BD.03 Primeira consulta; LOG.04 Lógica booleana | pronto: Escreva a consulta das questões fáceis da disciplina 1.
+M BD.04 Filtrar | SQ, AE, CE | Escrever filtros compostos sem erro de aspas nem de precedência | antes: BD.03 Primeira consulta; LOG.04 Lógica booleana | pronto: Escreva a consulta das questões de gabarito C da matéria 1.
 BD-018 BD.04.01 `WHERE`
 BD-019 BD.04.02 comparação
 BD-020 BD.04.03 `AND`, `OR`, `NOT` e precedência
@@ -199,7 +199,7 @@ BD-022 BD.04.05 `BETWEEN`
 BD-023 BD.04.06 `LIKE`
 BD-024 BD.04.07 aspas simples para texto
 BD-025 BD.04.TD tarefa de domínio
-M BD.05 NULL | PS, AE, CE | Prever o resultado de filtros com NULL | antes: BD.04 Filtrar | pronto: WHERE email = NULL encontra os usuários sem e-mail?
+M BD.05 NULL | PS, AE, CE | Prever o resultado de filtros com NULL | antes: BD.04 Filtrar | pronto: WHERE email = NULL encontra os alunos sem e-mail?
 BD-026 BD.05.01 o que é NULL
 BD-027 BD.05.02 lógica de três valores
 BD-028 BD.05.03 `IS NULL`
@@ -212,7 +212,7 @@ BD-033 BD.06.02 `ASC` e `DESC`
 BD-034 BD.06.03 `LIMIT` e `OFFSET`
 BD-035 BD.06.04 onde ficam os NULL
 BD-036 BD.06.TD tarefa de domínio
-M BD.11 Funções úteis | SQ, CP | Criar faixas e rótulos dentro da consulta | antes: BD.04 Filtrar | pronto: Como mostrar “fácil”, “média” ou “difícil” com acento a partir da coluna dificuldade?
+M BD.11 Funções úteis | SQ, CP | Criar faixas e rótulos dentro da consulta | antes: BD.04 Filtrar | pronto: Como mostrar “fácil”, “médio” ou “difícil” a partir da coluna nivel, que vai de 1 a 5?
 BD-037 BD.11.01 texto (`UPPER`, `SUBSTR`, `TRIM`, concatenação)
 BD-038 BD.11.02 datas
 BD-039 BD.11.03 `CASE WHEN`
@@ -225,7 +225,7 @@ BD-044 BD.07.03 `GROUP BY`
 BD-045 BD.07.04 `HAVING`
 BD-046 BD.07.05 ordem lógica de execução
 BD-047 BD.07.TD tarefa de domínio
-M BD.08 Junções | SQ, PS, AE, SI | Cruzar as quatro tabelas do banco de estudo sem perder nem duplicar linhas | antes: BD.02 Modelo relacional; BD.07 Agregação | pronto: Que junção mostra também os usuários que nunca responderam nada?
+M BD.08 Junções | SQ, PS, AE, SI | Cruzar as quatro tabelas do banco de estudo sem perder nem duplicar linhas | antes: BD.02 Modelo relacional; BD.07 Agregação | pronto: Que junção mostra também os alunos que nunca responderam nada?
 BD-048 BD.08.01 produto cartesiano
 BD-049 BD.08.02 `INNER JOIN`
 BD-050 BD.08.03 `LEFT JOIN`
@@ -234,7 +234,7 @@ BD-052 BD.08.06 junção com várias tabelas
 BD-053 BD.08.07 linhas duplicadas por junção
 BD-054 BD.08.05 autojunção
 BD-055 BD.08.TD tarefa de domínio
-M BD.09 Subconsultas | SQ, PS | Resolver a mesma pergunta com junção e com subconsulta | antes: BD.08 Junções | pronto: Liste o nome dos usuários que têm pelo menos uma resposta, usando IN.
+M BD.09 Subconsultas | SQ, PS | Resolver a mesma pergunta com junção e com subconsulta | antes: BD.08 Junções | pronto: Liste o nome dos alunos que têm pelo menos uma resposta, usando IN.
 BD-056 BD.09.01 subconsulta escalar
 BD-057 BD.09.02 em `WHERE` com `IN` e `EXISTS`
 BD-058 BD.09.04 em `FROM`
@@ -250,7 +250,7 @@ M BD.18 Álgebra relacional | CE, CP | Traduzir consultas entre álgebra relacio
 BD-066 BD.18.01 seleção, projeção, junção, união, diferença, renomeação
 BD-067 BD.18.02 equivalência com SQL
 BD-068 BD.18.TD tarefa de domínio
-M BD.12 Modelagem conceitual | MD, CE | Modelar um caso pequeno do zero e gerar as tabelas | antes: BD.08 Junções | pronto: Um aluno faz várias disciplinas e cada disciplina tem vários alunos. Como guardar isso?
+M BD.12 Modelagem conceitual | MD, CE | Modelar um caso pequeno do zero e gerar as tabelas | antes: BD.08 Junções | pronto: Um aluno estuda várias matérias e cada matéria tem vários alunos. Como guardar isso?
 BD-069 BD.12.01 entidade, atributo, relacionamento
 BD-070 BD.12.02 cardinalidade (1:1, 1:N, N:M)
 BD-071 BD.12.03 entidade fraca
@@ -263,14 +263,14 @@ BD-076 BD.13.02 anomalias de inserção, atualização e remoção
 BD-077 BD.13.03 1FN, 2FN, 3FN e FNBC
 BD-078 BD.13.04 quando desnormalizar
 BD-079 BD.13.TD tarefa de domínio
-M BD.14 Criar e alterar | SQ, AE | Criar o esquema do banco de estudo com todas as restrições | antes: BD.13 Normalização | pronto: Que restrição impede cadastrar dois usuários com o mesmo e-mail?
+M BD.14 Criar e alterar | SQ, AE | Criar o esquema do banco de estudo com todas as restrições | antes: BD.13 Normalização | pronto: Que restrição impede cadastrar dois alunos com o mesmo e-mail?
 BD-080 BD.14.01 `CREATE TABLE`
 BD-081 BD.14.02 tipos de dados
 BD-082 BD.14.03 restrições (`PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`)
 BD-083 BD.14.04 `INSERT`, `UPDATE`, `DELETE`
 BD-084 BD.14.05 `ALTER TABLE`
 BD-085 BD.14.TD tarefa de domínio
-M BD.15 SQL analítico | SQ, PS | Calcular ranking por disciplina e evolução das respostas no tempo | antes: BD.07 Agregação; BD.09 Subconsultas | pronto: Como numerar as respostas de cada usuário da mais antiga para a mais nova?
+M BD.15 SQL analítico | SQ, PS | Calcular ranking por disciplina e evolução das respostas no tempo | antes: BD.07 Agregação; BD.09 Subconsultas | pronto: Como numerar as respostas de cada aluno da mais antiga para a mais nova?
 BD-086 BD.15.01 CTE com `WITH`
 BD-087 BD.15.02 CTE recursiva
 BD-088 BD.15.03 funções de janela (`ROW_NUMBER`, `RANK`, `LAG`, `LEAD`, somas acumuladas, `PARTITION BY`)
@@ -816,7 +816,7 @@ AD-017 AD.03.03 `query`
 AD-018 AD.03.04 criar e transformar colunas
 AD-019 AD.03.05 aviso de cópia
 AD-020 AD.03.TD tarefa de domínio
-M AD.04 Agrupar | CD, PS | Fazer em pandas a mesma análise feita em SQL e conferir | antes: AD.03 Selecionar e filtrar; BD.07 Agregação | pronto: Como calcular a taxa de acerto por disciplina?
+M AD.04 Agrupar | CD, PS | Fazer em pandas a mesma análise feita em SQL e conferir | antes: AD.03 Selecionar e filtrar; BD.07 Agregação | pronto: Como calcular a taxa de acerto por matéria?
 AD-021 AD.04.01 `groupby`
 AD-022 AD.04.02 `agg` com várias funções
 AD-023 AD.04.03 `transform`

@@ -54,9 +54,10 @@
   try { const salvo = localStorage.getItem(CHAVE_GUIA); if (salvo && window.GUIAS && window.GUIAS[salvo]) guiaId = salvo; } catch (e) { /* sem armazenamento */ }
   const guia = () => window.GUIAS[guiaId] || window.GUIAS.rin;
   window.guiaAtual = guia;
-  function mascote(expr = "padrao", classe = "") {
+  // mov: movimentos de guia-mov.js que rodam quando o guia aparece (por exemplo "chegar falar")
+  function mascote(expr = "padrao", classe = "", mov = "") {
     const g = guia();
-    return `<div class="mascote${g.id === "panda" ? "" : " retrato"} ${classe}" aria-hidden="true">${g.expr[expr] || g.expr.padrao}</div>`;
+    return `<div class="mascote${g.id === "panda" ? "" : " retrato"} ${classe}" data-guia="${g.id}" data-expr="${expr}"${mov ? ` data-mov="${mov}"` : ""} aria-hidden="true">${g.expr[expr] || g.expr.padrao}</div>`;
   }
 
   // ---------- progresso: base de dados do artefato quando houver; navegador como reserva ----------
@@ -135,7 +136,7 @@
   }
 
   function rota() {
-    const h = decodeURIComponent(location.hash.replace("#", "")) || "mapa";
+    const h = decodeURIComponent(location.hash.replace("#", "")) || "inicio";
     const [v, a, b] = h.split("-");
     if (v === "estudo" && MODULO[a]) return { v: "estudo", cod: a, sigla: MODULO[a].materia.sigla };
     if (v === "trilha" && POR_SIGLA[a] && MODULO[b]) return { v: "estudo", cod: b, sigla: a };
@@ -143,7 +144,8 @@
     if (v === "trilha" || v === "guia") return { v: "materia", aba: v === "trilha" ? "jornada" : "guia", sigla: materiaAtual().sigla };
     if (v === "fontes" && POR_SIGLA[a]) return { v: "materia", aba: "fontes", sigla: a };
     if (v === "fontes") return { v: "fontes" };
-    return { v: "mapa" };
+    if (v === "mapa") return { v: "mapa" };
+    return { v: "inicio" };
   }
 
   // número que sobe até o valor novo e dá um pulinho no cartão; sem movimento, troca direto
@@ -166,6 +168,7 @@
   function desenharHud() {
     const r = rota();
     document.body.classList.toggle("foco", r.v === "estudo");
+    document.body.classList.toggle("no-inicio", r.v === "inicio");
     document.querySelectorAll(".hud-nav a").forEach((a) => {
       const ativo = a.dataset.v === r.v || (a.dataset.v === "materia" && r.v === "materia");
       if (ativo) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
@@ -293,9 +296,9 @@
           <figcaption><b>${esc(g.nome)}</b><span>${esc(g.funcao)}</span><p>${esc(fala)}</p></figcaption>
         </figure>
         <dl class="metricas">
-          <div><dt>Módulos dominados</dt><dd>${total}<small> / ${TOTAL}</small></dd><span class="barra-fina"><i style="width:${(total / TOTAL) * 100}%"></i></span></div>
-          <div><dt>Nível</dt><dd>${nv.n}<small> · ${xp} XP</small></dd><span class="barra-fina"><i style="width:${nv.resto}%"></i></span></div>
-          <div><dt>Ofensiva</dt><dd>${of}<small> ${of === 1 ? "dia" : "dias"}</small></dd><span class="nota">${of ? "estudando em dias seguidos" : "domine um módulo hoje"}</span></div>
+          <div><dt>Módulos dominados</dt><dd>${total}<small> / ${TOTAL}</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${(total / TOTAL) * 100}%"></i></span></dd></div>
+          <div><dt>Nível</dt><dd>${nv.n}<small> · ${xp} XP</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${nv.resto}%"></i></span></dd></div>
+          <div><dt>Ofensiva</dt><dd>${of}<small> ${of === 1 ? "dia" : "dias"}</small></dd><dd class="m-extra"><span class="nota">${of ? "estudando em dias seguidos" : "domine um módulo hoje"}</span></dd></div>
         </dl>
       </section>
       <section class="metro-bloco" aria-label="Diagrama das matérias">
@@ -339,6 +342,54 @@
       metro.querySelectorAll(".trecho").forEach((p) => p.classList.toggle("da-linha", p.dataset.w === linhaAtiva));
     }));
     teclas = (e) => { if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click(); };
+  }
+
+  // ---------- INÍCIO: uma tela, sem rolagem, uma ação principal ----------
+  // Primeira visita: o guia apresenta o programa e o botão abre o tutorial. Dia a dia: Continuar de onde parou,
+  // e três atalhos (mapa, laboratório, revisão). O mapa fica em #mapa.
+  function lerLocal(chave, padrao) { try { const v = JSON.parse(localStorage.getItem(chave) || "null"); return v == null ? padrao : v; } catch (e) { return padrao; } }
+  function vistaInicio() {
+    const g = guia();
+    const aqui = materiaAtual(), prox = proximoModulo(aqui);
+    const total = MATERIAS.reduce((a, m) => a + dominados(m), 0);
+    const tut = lerTut();
+    const primeira = total === 0 && !Object.keys(progresso.passos).length && !tut.feito && !tut.visto;
+    const d = new Date();
+    const hojeLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const nRev = Object.values(lerLocal("dominio:revisao:v1", {})).filter((x) => x && x.proxima <= hojeLocal).length;
+    const lab = lerLocal("dominio:castelo:v1", null);
+    const labFeitas = lab && lab.feitas ? lab.feitas : 0;
+    const pct = Math.round((total / TOTAL) * 100);
+    const passo = estadoDe(prox.codigo) === "dominado" ? 0 : Math.min(4, progresso.passos[prox.codigo] || 0);
+    const saudacao = d.getHours() < 12 ? "Bom dia" : d.getHours() < 18 ? "Boa tarde" : "Boa noite";
+    const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+    const fala = primeira
+      ? `Oi, eu sou ${g.nome}. Vou guiar você do zero até analisar dados de verdade: ${MATERIAS.length} matérias em ordem, lições curtas com exercício corrigido na hora e um laboratório onde você monta um banco de dados.`
+      : `${saudacao}! ${passo ? `Você parou no passo ${passo + 1} de 5 de ${prox.nome}.` : `O próximo módulo é ${prox.nome}.`} ${nRev ? `Depois, ${plural(nRev, "revisão te espera", "revisões te esperam")}.` : total ? `Você já domina ${plural(total, "módulo", "módulos")}.` : "São cinco passos curtos."}`;
+    const acao = primeira
+      ? `<div class="ini-acao"><p class="ini-meta">Começo</p><h1 class="ini-titulo">Conheça o Domínio em um minuto</h1>
+          <ol class="ini-pilares"><li>O mapa com as ${MATERIAS.length} matérias, na ordem em que uma prepara a outra</li><li>Lições de 5 minutos, com exercício corrigido na hora</li><li>O laboratório: um banco de dados que você constrói e apresenta</li></ol>
+          <button type="button" class="btn btn-3d b-prog ini-botao" data-ini-tutorial style="--p:0" data-passo="7 paradas">Começar o tutorial</button>
+          <a class="ini-pular" href="#estudo-${prox.codigo}">Pular e ir direto para a primeira lição</a></div>`
+      : `<div class="ini-acao"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
+          <a class="btn btn-3d b-prog ini-botao" href="#estudo-${prox.codigo}" style="--p:${passo / 5}" data-passo="passo ${passo + 1} de 5">${passo ? "Continuar" : "Começar"}</a></div>`;
+    const atalho = (href, icone, titulo, sub, num) => `<a class="ini-atalho" href="${href}"><span class="ini-ic">${ic(icone)}</span><b>${titulo}</b><small>${sub}</small><span class="ini-num">${num}</span></a>`;
+    const terceiro = primeira
+      ? atalho("licoes/INICIO.html", "sparkle-duotone", "Comece por aqui", "a lista de aprovados", "5 passos")
+      : atalho("licoes/REVISAR.html", "brain-duotone", "Revisão de hoje", "o que você errou", nRev ? plural(nRev, "item", "itens") : "nada hoje");
+    centro().innerHTML = `<div class="inicio${primeira ? " primeira" : ""}" style="${coresDe(aqui.sigla)}">
+      <div class="ini-guia">${mascote(primeira ? "explica" : "padrao", "ini-rosto", "chegar falar")}<p class="balao cor ini-fala"><small>${esc(g.nome)}</small>${esc(fala)}</p></div>
+      <div class="ini-lado">${acao}
+        <nav class="ini-atalhos" aria-label="Atalhos">
+          ${atalho("#mapa", "map-trifold-duotone", "Mapa de formação", `${MATERIAS.length} matérias`, `${pct}%`)}
+          ${atalho("castelo/index.html", "database-duotone", "Centro de Dados", "laboratório", labFeitas ? `${labFeitas} de 17` : "17 módulos")}
+          ${terceiro}
+        </nav>
+      </div>
+    </div>`;
+    const bt = document.querySelector("[data-ini-tutorial]");
+    if (bt) bt.addEventListener("click", () => abrirTutorial(0));
+    teclas = null;
   }
 
   // ---------- MATÉRIA ----------
@@ -555,7 +606,7 @@
     lista.push({
       id: "dia", icone: "coffee-duotone", titulo: "No dia a dia", dica: "onde você já usa isso sem perceber",
       tarefa: "Se quiser, escreva um exemplo seu; ele fica salvo.", pronto: () => true,
-      html: () => `<div class="fala">${mascote("feliz")}<p class="balao cor glossavel">${esc(g.dia)}</p></div>${nota("dia", "Onde você já viu isso no seu dia? Um exemplo seu (opcional).", 2)}`,
+      html: () => `<div class="fala">${mascote("feliz", "", "falar")}<p class="balao cor glossavel">${esc(g.dia)}</p></div>${nota("dia", "Onde você já viu isso no seu dia? Um exemplo seu (opcional).", 2)}`,
       montar: (el, liberar) => ligarNota(el, "dia", 0, liberar),
     });
     const blocos = [g.codigo, g.codigo2].filter(Boolean).map((c, k) => codigoInterativo(c, lang, `${s}:cod${k}`));
@@ -621,7 +672,7 @@
           </button>
           <div class="sub-corpo-wrap"><div class="sub-corpo" id="corpo-${x.id}" role="region" aria-label="${x.titulo}"><div></div></div></div>
         </section>`).join("")}
-        <div class="trilha-fim" hidden>${mascote("feliz")}<div><b>Trilha de ${esc(m.nome)} concluída</b><p>Agora é praticar: cada módulo tem uma lição de cinco passos, e o passo em que você parar fica salvo.</p></div><a class="btn btn-3d" href="#trilha-${s}">${ic("path-duotone")}Ir para os módulos</a></div>
+        <div class="trilha-fim" hidden>${mascote("feliz", "", "concluir")}<div><b>Trilha de ${esc(m.nome)} concluída</b><p>Agora é praticar: cada módulo tem uma lição de cinco passos, e o passo em que você parar fica salvo.</p></div><a class="btn btn-3d" href="#trilha-${s}">${ic("path-duotone")}Ir para os módulos</a></div>
       </div>`;
     const atualizar = () => {
       const f = feitas();
@@ -725,12 +776,12 @@
     if (p === 0) {
       const falta = mod.antes.filter((a) => estadoDe(a.codigo) !== "dominado");
       corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>${esc(mod.nome)}</h1><p class="passo-sub" ${iv()}>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}${estadoDe(cod) === "dominado" ? " · já dominado" : ""}</p>
-        <div class="fala" ${iv()}>${mascote(mod.antes.length ? "explica" : "feliz", "flutua")}<p class="balao cor">${mod.antes.length ? `Este módulo usa ${mod.antes.length === 1 ? "uma coisa" : mod.antes.length + " coisas"} que vieram antes. ${falta.length ? "Se travar, volte nelas." : "Você já dominou tudo. Bora!"}` : "Este módulo não exige nada antes. É um começo. Bora!"}${mod.virada ? " <b>É um ponto de virada:</b> demora um pouco a fazer sentido, e depois muda tudo." : ""}</p></div>
+        <div class="fala" ${iv()}>${mascote(mod.antes.length ? "explica" : "feliz", "flutua", "chegar falar")}<p class="balao cor">${mod.antes.length ? `Este módulo usa ${mod.antes.length === 1 ? "uma coisa" : mod.antes.length + " coisas"} que vieram antes. ${falta.length ? "Se travar, volte nelas." : "Você já dominou tudo. Bora!"}` : "Este módulo não exige nada antes. É um começo. Bora!"}${mod.virada ? " <b>É um ponto de virada:</b> demora um pouco a fazer sentido, e depois muda tudo." : ""}</p></div>
         ${mod.antes.length ? `<ul class="lista-pre-j" ${iv()}>${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}"><a href="#estudo-${a.codigo}"><span class="bolinha">${ic(estadoDe(a.codigo) === "dominado" ? "check-bold" : "question-duotone")}</span><span><b>${esc(a.nome)}</b><br><small>${esc(POR_SIGLA[a.materia].nome)}</small></span><small>${estadoDe(a.codigo) === "dominado" ? "dominado" : "não marcado"}</small></a></li>`).join("")}</ul>` : ""}
         ${falta.length ? `<p class="aviso-j" ${iv()}>Você ainda não marcou ${falta.length === 1 ? "esse pré-requisito" : "esses pré-requisitos"} como dominado. Pode seguir; se travar, volte ${falta.length === 1 ? "nele" : "neles"} primeiro.</p>` : ""}`;
     }
     if (p === 1) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Para que serve</h1>
-      <div class="fala" ${iv()}>${mascote("explica", "flutua")}<p class="balao cor texto-grande glossavel">${esc(mod.dia)}</p></div>
+      <div class="fala" ${iv()}>${mascote("explica", "flutua", "falar")}<p class="balao cor texto-grande glossavel">${esc(mod.dia)}</p></div>
       <div class="alvo" ${iv()}><span class="ic-a">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></div>
       ${m.trabalho ? `<div class="alvo no-trabalho" ${iv()}><span class="ic-a">${ic("graduation-cap-duotone")}</span><div><small>${esc(m.nome)} no trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></div>` : ""}`;
     const marcados = new Set(progresso.conceitos[cod] || []);
@@ -742,9 +793,9 @@
       <p class="passo-sub" ${iv()}>A aula de cada conceito, com exercícios corrigidos, também está no tutor: no Claude Code, digite <code>/aula</code>.</p>`;
     if (p === 3) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Cuidado com</h1>
       <div class="cuidado" ${iv()}><span class="ic-a">${ic("warning-duotone")}</span><p class="glossavel">${esc(mod.tropeco)}</p></div>
-      <div class="fala" ${iv()}>${mascote("pensa")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
+      <div class="fala" ${iv()}>${mascote("pensa", "", "pensar")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
     if (p === 4) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
-      <div class="fala" ${iv()}>${mascote("pensa", "flutua")}<p class="balao cor texto-grande">${esc(mod.pergunta)}</p></div>
+      <div class="fala" ${iv()}>${mascote("pensa", "flutua", "pensar")}<p class="balao cor texto-grande">${esc(mod.pergunta)}</p></div>
       <label class="resposta-campo" ${iv()}><span>Escreva a sua resposta antes de ver a nossa. Ela fica salva${progresso.respostas[cod] ? ` (última edição em ${progresso.respostas[cod].em.split("-").reverse().join("/")})` : ""}.</span><textarea id="resp" rows="4">${esc((progresso.respostas[cod] || {}).texto || "")}</textarea></label>
       <div class="botoes-j" ${iv()}><button type="button" class="btn btn-3d" data-comparar disabled>${ic("check-bold")}Comparar com a resposta</button><button type="button" class="btn" data-naosei>Ainda não sei</button></div>
       <div data-resposta hidden></div>`;
@@ -817,7 +868,8 @@
     const caixa = document.querySelector("[data-resposta]");
     const mostrar = (podeAcertar) => {
       const pf = document.querySelector(".cartao-passo .mascote");
-      if (pf) pf.innerHTML = guia().expr[podeAcertar ? "explica" : "padrao"];
+      if (pf && window.GuiaMov) window.GuiaMov.mover(pf, "dica", podeAcertar ? "explica" : "padrao");
+      else if (pf) pf.innerHTML = guia().expr[podeAcertar ? "explica" : "padrao"];
       caixa.hidden = false;
       caixa.innerHTML = `<div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div>
         <div class="botoes-j" style="margin-top:14px">${podeAcertar ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Acertei: dominar módulo</button>` : ""}<button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Ainda não: rever os conceitos</button></div>`;
@@ -852,7 +904,7 @@
     el.style.cssText = coresExp();
     el.classList.add("tema-exp");
     el.innerHTML = `<div class="vitoria-cartao">
-      ${mascote(fimMateria ? "uau" : "feliz")}
+      ${mascote(fimMateria ? "uau" : "feliz", "", "concluir")}
       <h2>${fimMateria ? "Matéria concluída!" : "Módulo dominado!"}</h2>
       <span class="ganho-xp">${ic("lightning-duotone")}<span>+<span data-xp>0</span> XP</span></span>
       <p>${jaEra ? "Revisão feita. " : ""}Nível ${depois.n} · ${depois.resto} de 100 XP${depois.n > antes ? ". Você subiu de nível!" : ""}</p>
@@ -987,7 +1039,8 @@
     clearTimeout(autoAvanco);
     document.querySelectorAll(".vitoria").forEach((v) => v.remove());
     desenharHud();
-    if (r.v === "mapa") {
+    if (r.v === "inicio") vistaInicio();
+    else if (r.v === "mapa") {
       vistaMapa();
       const t = lerTut();
       if (!t.feito && !t.visto) setTimeout(() => abrirTutorial(t.parada || 0), 700);
@@ -995,7 +1048,7 @@
     else if (r.v === "materia") vistaMateria(r.sigla, r.aba);
     else if (r.v === "estudo") vistaEstudo(r.cod);
     else vistaFontes();
-    const titulo = r.v === "mapa" ? "Mapa" : r.v === "fontes" ? "Fontes" : r.v === "estudo" ? MODULO[r.cod].mod.nome : POR_SIGLA[r.sigla].nome;
+    const titulo = r.v === "inicio" ? "Início" : r.v === "mapa" ? "Mapa" : r.v === "fontes" ? "Fontes" : r.v === "estudo" ? MODULO[r.cod].mod.nome : POR_SIGLA[r.sigla].nome;
     document.title = `${titulo} · Domínio`;
   }
   // ---------- tutorial: o guia apresenta o Domínio, parando na parte real da tela de que fala ----------
@@ -1044,7 +1097,7 @@
     const pintar = () => {
       const P = paradas[k], alvo = P.alvo && document.querySelector(P.alvo);
       gravarTut(Object.assign(lerTut(), { parada: k }));
-      el.querySelector(".tut-guia").innerHTML = mascote(P.expr);
+      el.querySelector(".tut-guia").innerHTML = mascote(P.expr, "", k === inicio ? "chegar falar" : "falar");
       el.querySelector(".tut-n").textContent = `Tutorial · ${k + 1} de ${n}`;
       el.querySelector("#tut-t").textContent = P.t;
       el.querySelector(".tut-texto").innerHTML = P.h;
@@ -1098,13 +1151,15 @@
       mini.innerHTML = guia().expr.padrao;
       mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
       const tema = window.Tema ? window.Tema.atual() : "grafite";
-      menu.innerHTML = `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" role="menuitemradio" aria-checked="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" role="menuitemradio" aria-checked="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
+      menu.innerHTML = `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
     };
     const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });
     menu.addEventListener("click", (e) => {
       const t = e.target.closest("[data-tema-opcao]");
       if (t && window.Tema) { window.Tema.definir(t.dataset.temaOpcao); atualizar(); return; }
+      const tr = e.target.closest("[data-traco-opcao]");
+      if (tr && window.Tracos) { window.Tracos.definir(tr.dataset.tracoOpcao); atualizar(); render(); return; }
       const b = e.target.closest("[data-guia]");
       if (!b) return;
       guiaId = b.dataset.guia;
