@@ -79,6 +79,7 @@
       def.aplicar(palco, k, antes);
       bAnt.disabled = k === 0;
       bProx.disabled = k === n - 1;
+      bProx.classList.add("b-prog"); bProx.style.setProperty("--p", (k + 1) / n); bProx.dataset.passo = `${k + 1} de ${n}`;
       if (k >= n - 1 && tocando) { clearTimeout(t); tocando = false; }
       if (k >= n - 1) julgar();
       rotulo();

@@ -53,6 +53,7 @@
     devicon: ["Devicon: logos de tecnologias (MIT)", "https://github.com/devicons/devicon", "logos usados nesta apostila"],
     simpleicons: ["Simple Icons (CC0)", "https://github.com/simple-icons/simple-icons", "logos de DuckDB, dbt e Polars"],
     hljs: ["highlight.js (BSD-3)", "https://github.com/highlightjs/highlight.js", "cores do código nos exemplos"],
+    adventurer: ["Adventurer, de Lisa Wischofsky (CC BY 4.0), gerado com o DiceBear (MIT)", "https://www.dicebear.com/styles/adventurer/", "rostos dos guias"],
     solar: ["Solar Icon Set, de 480 Design (CC BY 4.0)", "https://github.com/480-Design/Solar-Icon-Set", "ícones da apostila, estilo bold duotone"],
   };
   const POR_MATERIA = {
@@ -78,7 +79,7 @@
     ["Cursos e livros que definem a ordem de cada matéria", ["cs50p", "py4e", "thinkpy", "cs50x", "pythonds", "data8", "data100", "mml", "islp", "missing"]],
     ["Material gratuito para estudar", ["pydocs", "pgtut", "pgex", "float", "unicode", "nand", "mit6042", "openintro", "visualgo", "javatut", "progit", "pandasio", "mckinney", "numpy100", "wilke", "mpl", "b1b", "sklearn", "duckdb", "mongodb"]],
     ["Fontes oficiais de dados e de lei", ["dadosgov", "ibge", "lgpd", "anpd"]],
-    ["Repositórios usados no visual desta apostila", ["solar", "devicon", "simpleicons", "hljs"]],
+    ["Repositórios usados no visual desta apostila", ["adventurer", "solar", "devicon", "simpleicons", "hljs"]],
   ];
   window.FONTES = { F, POR_MATERIA, GRUPOS };
 })();

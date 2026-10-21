@@ -550,7 +550,10 @@
       s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + esc(nomes[i + 1] || "") + "</button>" : `<a class="botao primario" href="../index.html#trilha-${esc(cfg.trilha || "LOG")}">Voltar para a trilha</a>`}</div>`);
       s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
       const prox = s.querySelector("[data-proximo]");
-      if (prox) prox.addEventListener("click", () => ir(i + 1));
+      if (prox) {
+        prox.addEventListener("click", () => ir(i + 1));
+        prox.classList.add("b-prog"); prox.style.setProperty("--p", (i + 1) / secoes.length); prox.dataset.passo = `conceito ${i + 1} de ${secoes.length}`;
+      }
     });
     function atualizar() {
       secoes.forEach((s, i) => {

@@ -313,7 +313,7 @@
     function pintar() {
       const sl = s.slides[i];
       caixa.innerHTML = `<p class="lab-slide-n">Apresentação · ${i + 1} de ${s.slides.length}</p><h3>${sl.titulo}</h3>${sl.texto ? `<p>${sl.texto}</p>` : ""}${sl.codigo ? `<pre class="lab-slide-cod"><code>${esc(sl.codigo)}</code></pre>` : ""}
-        <div class="lab-slide-nav"><button type="button" class="botao" data-a="ant"${i === 0 ? " disabled" : ""}>Voltar</button><span class="lab-pontos">${s.slides.map((_, k) => `<i class="${k === i ? "atual" : k < i ? "feito" : ""}"></i>`).join("")}</span>${i < s.slides.length - 1 ? '<button type="button" class="botao primario" data-a="prox">Avançar</button>' : '<button type="button" class="botao primario" data-a="fim">Entendi: seguir</button>'}</div>
+        <div class="lab-slide-nav"><button type="button" class="botao" data-a="ant"${i === 0 ? " disabled" : ""}>Voltar</button><span class="lab-pontos">${s.slides.map((_, k) => `<i class="${k === i ? "atual" : k < i ? "feito" : ""}"></i>`).join("")}</span>${i < s.slides.length - 1 ? `<button type="button" class="botao primario b-prog" data-a="prox" style="--p:${(i + 1) / s.slides.length}" data-passo="tela ${i + 1} de ${s.slides.length}">Avançar</button>` : `<button type="button" class="botao primario b-prog" data-a="fim" style="--p:1" data-passo="tela ${s.slides.length} de ${s.slides.length}">Entendi: seguir</button>`}</div>
         <button type="button" class="lab-pular" data-a="fim">Pular a apresentação</button>`;
       caixa.querySelectorAll("[data-a]").forEach((b) => b.addEventListener("click", () => {
         if (b.dataset.a === "ant") i--; else if (b.dataset.a === "prox") i++; else { estado.slides[s.id] = true; salvar(); aoFim(); return; }

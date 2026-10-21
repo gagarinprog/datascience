@@ -1,0 +1,57 @@
+/* Botões do Domínio, escolhidos pelo Kaio em 20/10/2026 no quadro "Avatares e botões":
+   C "Contorno técnico" para as ações (Verificar, Rodar, Começar...) e os secundários (Voltar, Rodar, Pular...);
+   D "Progresso no botão" para avançar numa sequência: a barra dentro do botão mostra em que passo você está.
+   Os botões de D ganham a classe .b-prog, o --p (de 0 a 1) e o data-passo ("passo 2 de 5") pelo código de
+   cada tela. As respostas dos exercícios (.opcoes) ficam de fora: são texto para ler, não ação.
+   Carregado depois das folhas das páginas e antes do tema.css, para o tema Impresso manter os seus botões. */
+
+/* ---------- C · primário: contorno azul que se enche no hover ---------- */
+:root :is(.btn-3d, .botao.primario):not(.b-prog) {
+  color: var(--tinta); font-family: var(--f-codigo); font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1.5px solid var(--tinta); border-radius: 6px; box-shadow: none; text-shadow: none; filter: none;
+  background: linear-gradient(var(--tinta), var(--tinta)) no-repeat left center / 0% 100%, transparent;
+  transition: background-size 220ms cubic-bezier(0.2, 0, 0, 1), color 220ms, transform 120ms;
+}
+:root :is(.btn-3d, .botao.primario):not(.b-prog):hover:not(:disabled) {
+  color: var(--sobre-tinta); border-color: var(--tinta); filter: none; transform: none;
+  background: linear-gradient(var(--tinta), var(--tinta)) no-repeat left center / 100% 100%, transparent;
+}
+:root :is(.btn-3d, .botao.primario):not(.b-prog):active:not(:disabled) { transform: translateY(1px); }
+:root :is(.btn-3d, .botao.primario):not(.b-prog):disabled {
+  color: var(--texto-2); border-color: var(--linha-forte); opacity: 0.7; filter: none;
+  background: linear-gradient(var(--tinta), var(--tinta)) no-repeat left center / 0% 100%, transparent;
+}
+:root :is(.btn-3d, .botao.primario) small { font-family: var(--f-ui, inherit); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+/* ---------- C · secundário: contorno cinza, mesma letra técnica ---------- */
+:root :is(.btn, .botao):not(.btn-3d):not(.primario):not(.btn-fantasma):not(.btn-redondo):not(.b-prog):not(.opcoes .botao):not(.lab-notas .botao):not(.c-ok):not([data-aposta]):not([aria-pressed]):not(.certo):not(.errado) {
+  color: var(--texto-2); font-family: var(--f-codigo); font-size: 13.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1.5px solid var(--linha-forte); border-radius: 6px; background: transparent; box-shadow: none;
+  transition: border-color 150ms, color 150ms;
+}
+:root :is(.btn, .botao):not(.btn-3d):not(.primario):not(.btn-fantasma):not(.btn-redondo):not(.b-prog):not(.opcoes .botao):not(.lab-notas .botao):not(.c-ok):not([data-aposta]):not([aria-pressed]):not(.certo):not(.errado):hover:not(:disabled) {
+  color: var(--texto); border-color: var(--texto-2); background: transparent;
+}
+
+/* ---------- D · progresso no botão ---------- */
+:root body .b-prog.b-prog {
+  position: relative; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px;
+  color: #ffffff; font-family: var(--f-ui, inherit); font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none;
+  border: 1px solid #4f8ff7; border-radius: 8px; box-shadow: none; text-shadow: none; filter: none;
+  background: linear-gradient(#2453c9, #2453c9) no-repeat left center / calc(var(--p, 0) * 100%) 100%, #141922;
+  transition: background-size 420ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms, transform 120ms;
+}
+:root body .b-prog.b-prog::after { content: attr(data-passo); font-size: 13px; font-weight: 500; color: #dce6ff; white-space: nowrap; }
+:root body .b-prog.b-prog:hover:not(:disabled) {
+  color: #ffffff; border-color: #8db8ff; filter: none; transform: none;
+  background: linear-gradient(#2453c9, #2453c9) no-repeat left center / calc(var(--p, 0) * 100%) 100%, #141922;
+}
+:root body .b-prog.b-prog:active:not(:disabled) { transform: translateY(1px); }
+:root body .b-prog.b-prog:disabled { border-color: #343d4e; color: #9aa4b5; opacity: 0.75; cursor: not-allowed; }
+:root body .b-prog.b-prog:disabled::after { color: #9aa4b5; }
+:root body .b-prog.b-prog .ic { color: inherit; }
+@media (max-width: 420px) { :root body .b-prog.b-prog::after { font-size: 12px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  :root :is(.btn, .botao, .b-prog) { transition: none !important; }
+}

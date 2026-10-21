@@ -784,7 +784,11 @@
     document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.ir))));
     document.querySelector("[data-voltar]").addEventListener("click", () => ir(estudo.passo - 1));
     const cont = document.querySelector("[data-continuar]");
-    if (cont) cont.addEventListener("click", avancar);
+    if (cont) {
+      cont.addEventListener("click", avancar);
+      // botão com progresso: a barra mostra em que passo da lição você está
+      cont.classList.add("b-prog"); cont.style.setProperty("--p", (p + 1) / PASSOS.length); cont.dataset.passo = `passo ${p + 1} de ${PASSOS.length}`;
+    }
     if (p === 4) montarPergunta(cod, mod, seguinte);
     if (p === 2) document.querySelectorAll(".c-ok").forEach((b) => b.addEventListener("click", () => {
       const j = Number(b.dataset.c);

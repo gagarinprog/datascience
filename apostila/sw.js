@@ -3,7 +3,7 @@
 // Fontes e bibliotecas de CDN: cópia guardada primeiro, porque não mudam. As grandes (o PostgreSQL e o Python
 // do laboratório) não entram na instalação: ficam guardadas no primeiro uso, e daí em diante abrem sem internet.
 // Toda lição ou arquivo novo em apostila/ entra em ARQUIVOS; o teste tests/apostila-pwa.test.ts confere.
-const CACHE = "dominio-v7";
+const CACHE = "dominio-v8";
 const ARQUIVOS = [
   "./",
   "./index.html",
@@ -55,6 +55,8 @@ const ARQUIVOS = [
   "./castelo/comparar.js",
   "./castelo/relogio.py",
   "./castelo/passos.js",
+  "./botoes.css",
+  "./avatares.js",
   "./passo/passo.js",
   "./passo/cascata.js",
   "./passo/passo.css",

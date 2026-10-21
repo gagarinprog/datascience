@@ -60,7 +60,9 @@
         const prox = c.proxima(it);
         if (!prox && !aoSeguir) return;
         const b = document.createElement("button");
-        b.type = "button"; b.className = "botao primario cx-seguir";
+        b.type = "button"; b.className = "botao primario cx-seguir b-prog";
+        const pos = itens.indexOf(it) + 1;
+        b.style.setProperty("--p", pos / itens.length); b.dataset.passo = `etapa ${pos} de ${itens.length}`;
         b.innerHTML = `${esc(texto || (prox ? `Seguir: ${prox.titulo}` : "Pronto"))}${ICONE.ir}`;
         b.addEventListener("click", () => { if (aoSeguir) aoSeguir(); const p = c.proxima(it); if (p) c.abrir(p, true); });
         it.corpo.appendChild(b);

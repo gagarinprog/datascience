@@ -94,7 +94,9 @@
       raiz.querySelectorAll("[data-ordem]").forEach((s) => { s.classList.toggle("aceso", s.dataset.ordem === P.foco); s.classList.toggle("feito", feitos.includes(s.dataset.ordem) && s.dataset.ordem !== P.foco); });
       raiz.querySelectorAll("[data-ir]").forEach((b, j) => { b.classList.toggle("atual", j === k); b.classList.toggle("feito", j < k); b.setAttribute("aria-current", j === k ? "step" : "false"); });
       raiz.querySelector('[data-pp="voltar"]').disabled = k === 0;
-      raiz.querySelector('[data-pp="passo"]').disabled = k === def.passos.length - 1;
+      const bp = raiz.querySelector('[data-pp="passo"]');
+      bp.disabled = k === def.passos.length - 1;
+      bp.classList.add("b-prog"); bp.style.setProperty("--p", (k + 1) / def.passos.length); bp.dataset.passo = `${k + 1} de ${def.passos.length}`;
       if (k === def.passos.length - 1 && def.aoFim && !raiz.dataset.visto) { raiz.dataset.visto = "1"; def.aoFim(); }
     }
     const btTocar = raiz.querySelector('[data-pp="tocar"]');
