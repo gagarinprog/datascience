@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="exercicios.css">
 <link rel="stylesheet" href="laboratorio.css">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
@@ -147,8 +148,16 @@
           <div class="retorno" hidden data-ok-texto="Isso. Clareza não basta: o algoritmo precisa terminar e entregar um resultado." data-nao-texto="O gabarito é Errado. Clareza não basta: um algoritmo precisa terminar e entregar um resultado. Um passo a passo que nunca acaba não resolve a tarefa."></div>
         </div>
 
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">Qual explicação de algoritmo uma máquina conseguiria seguir?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-ok data-porque="Ordem, nenhuma ambiguidade e um fim. Se um passo dependesse de “achar”, a máquina não teria como decidir.">Uma sequência finita de passos em ordem, cada um com um único jeito de ser feito, que termina com um resultado.</button><button class="botao" type="button" data-porque="Se cada pessoa entende de um jeito, há ambiguidade, e a máquina não interpreta. Algoritmo exige um único jeito de executar cada passo.">Qualquer lista de dicas que ajude a resolver um problema, mesmo que cada pessoa a entenda de um jeito.</button><button class="botao" type="button" data-porque="Programa é um algoritmo escrito numa linguagem, mas o algoritmo existe antes dela: uma receita bem escrita também é um algoritmo.">Um programa escrito em Python ou em outra linguagem de programação.</button></div>
+          <div class="retorno" hidden data-ok-texto="Ordem, nenhuma ambiguidade e um fim. Se um passo dependesse de “achar”, a máquina não teria como decidir." data-nao-texto="A certa é: “Uma sequência finita de passos em ordem, cada um com um único jeito de ser feito, que termina com um resultado.”. Ordem, nenhuma ambiguidade e um fim. Se um passo dependesse de “achar”, a máquina não teria como decidir."></div>
+        </div>
+
         <p class="resumo"><b>Resumo em uma frase</b>Algoritmo = passos em ordem, sem ambiguidade e com um fim.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que é um algoritmo e o que ele precisa ter para uma máquina conseguir seguir. Escreva no <code>/aula</code> para o tutor corrigir.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Com as suas palavras, o que é um algoritmo e o que ele precisa ter para uma máquina conseguir seguir. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
 
@@ -255,8 +264,16 @@ imc = peso dividido por altura ao quadrado: peso / altura ** 2.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Entrada: peso e altura. Processamento: a conta. Saída: o print com 22.22... A tabela mostra cada passo."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Na tarefa “calcular o troco no caixa do mercado”, uma das partes está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>Entrada: o valor da compra e o valor que o cliente entregou.</li><li>Processamento: subtrair o valor da compra do valor entregue.</li><li data-erro>Saída: o valor da compra, que aparece primeiro no visor.</li></ol>
+          <div class="retorno" hidden data-ok-texto="A saída é o que se entrega no fim: o troco. O valor da compra chega no começo, então é entrada." data-nao-texto="O trecho errado é o 3. A saída é o que se entrega no fim: o troco. O valor da compra chega no começo, então é entrada." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Entrada é o que chega, processamento é o que se faz, saída é o que se entrega.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> escolha uma tarefa do seu trabalho e diga qual é a entrada, o processamento e a saída dela.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Escolha uma tarefa do seu trabalho e diga qual é a entrada, o processamento e a saída dela. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
 
@@ -392,8 +409,18 @@ escreva media vira print(media).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Quatro linhas de pseudocódigo, quatro linhas de Python. A tela mostra 7.5."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: por que o pseudocódigo usa a seta para guardar um valor.</p>
+          <p class="lacunas-texto">Em media ← (n1 + n2) / 2, a seta mostra que o valor da <span data-lacuna="direita"></span> é calculado e guardado no nome da <span data-lacuna="esquerda"></span>. Com um sinal de igual, a linha pareceria uma <span data-lacuna="igualdade"></span> da matemática, que afirma algo em vez de mandar guardar.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">direita</button><button class="botao chip-l" type="button">esquerda</button><button class="botao chip-l" type="button">igualdade</button><button class="botao chip-l" type="button">variável</button><button class="botao chip-l" type="button">saída</button><button class="botao chip-l" type="button">entrada</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="A seta tem direção: calcula à direita e guarda à esquerda. Lida como igualdade, x = x + 1 seria absurdo; lida como ordem de guardar, faz todo sentido." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Pseudocódigo é o algoritmo em passos escritos, uma linha por ação, feito para pessoas lerem.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que se usa a seta ← e não o sinal de igual para guardar um valor.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que se usa a seta ← e não o sinal de igual para guardar um valor. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
 
@@ -499,8 +526,16 @@ no caminho do sim, frete = 0; no do não, frete = 15.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Com 120, o caminho do sim: frete 0 e total 120. A linha frete = 15 nem aparece no teste de mesa: ela não foi executada."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">Quando um fluxograma ajuda mais que o pseudocódigo?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="Os dois descrevem o mesmo algoritmo, e nenhum é mais correto. O desenho ganha em leitura quando há desvios.">Sempre: o fluxograma é mais correto que o pseudocódigo.</button><button class="botao" type="button" data-porque="Uma sequência de contas fica mais curta e clara em pseudocódigo; o desenho só acrescentaria caixas em fila.">Quando o algoritmo tem muitas contas em sequência, sem nenhuma decisão.</button><button class="botao" type="button" data-ok data-porque="O losango e as setas deixam os caminhos visíveis. Num algoritmo reto, sem decisão, o pseudocódigo resolve igual.">Quando há decisões e caminhos que se separam e voltam: o desenho mostra de relance para onde cada resposta leva.</button></div>
+          <div class="retorno" hidden data-ok-texto="O losango e as setas deixam os caminhos visíveis. Num algoritmo reto, sem decisão, o pseudocódigo resolve igual." data-nao-texto="A certa é: “Quando há decisões e caminhos que se separam e voltam: o desenho mostra de relance para onde cada resposta leva.”. O losango e as setas deixam os caminhos visíveis. Num algoritmo reto, sem decisão, o pseudocódigo resolve igual."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Fluxograma é o algoritmo desenhado: oval começa e termina, paralelogramo entra e sai dado, retângulo calcula, losango decide.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> quando um fluxograma ajuda mais que o pseudocódigo?</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Quando um fluxograma ajuda mais que o pseudocódigo? Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
 
@@ -612,8 +647,23 @@ abaixo do else:, com 4 espaços: print("reprovado").
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. A tabela é o teste de mesa: passos 1 a 5, e a linha do reprovado nunca roda com média 7.5."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio ex-texto" data-ordenar data-resposta="Escolher valores de entrada para testar|Fazer uma coluna para cada variável|Executar uma linha por vez, anotando só o valor que mudou|Comparar a saída com o resultado esperado">
+          <p class="rotulo">Para fechar: ponha na ordem</p>
+          <p class="pergunta">Ponha na ordem como se faz um teste de mesa.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">Executar uma linha por vez, anotando só o valor que mudou</button>
+            <button class="botao linha" type="button">Fazer uma coluna para cada variável</button>
+            <button class="botao linha" type="button">Escolher valores de entrada para testar</button>
+            <button class="botao linha" type="button">Comparar a saída com o resultado esperado</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Teste de mesa é executar à mão: com entradas escolhidas, linha por linha, anotando o que muda. Ele pega erros que a leitura não pega porque obriga a seguir a ordem real, com valores reais." data-pista="pergunte de cada passo: ele precisa de algo que outro passo prepara?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Teste de mesa = executar à mão, anotando só o que muda a cada linha.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> para que serve o teste de mesa, e por que ele pega erros que só ler o algoritmo não pega.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Para que serve o teste de mesa, e por que ele pega erros que só ler o algoritmo não pega. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
 

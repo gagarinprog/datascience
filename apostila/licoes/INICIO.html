@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="exercicios.css">
 <link rel="stylesheet" href="laboratorio.css">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
@@ -189,8 +190,18 @@ formato[1] é o segundo número, o de colunas. Tire 1, que é a coluna do nome.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso: df.shape dá (8, 4). São 8 observações (linhas) e 4 colunas; sem o nome, 3 variáveis."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete pensando na sua planilha de estudos.</p>
+          <p class="lacunas-texto">Na planilha de estudos, cada <span data-lacuna="linha"></span> é uma sessão de estudo, e cada <span data-lacuna="coluna"></span> guarda a mesma informação para todas as sessões, como a matéria ou os minutos estudados. Uma planilha com 30 sessões e 4 informações tem 30 linhas e <span data-lacuna="4"></span> colunas.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">linha</button><button class="botao chip-l" type="button">coluna</button><button class="botao chip-l" type="button">4</button><button class="botao chip-l" type="button">tabela</button><button class="botao chip-l" type="button">célula</button><button class="botao chip-l" type="button">30</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Linha é uma observação (uma sessão); coluna é uma variável (a mesma informação para todas). 30 sessões viram 30 linhas, e 4 informações viram 4 colunas." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Tabela é um quadro em que cada linha é uma observação e cada coluna é uma variável.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, a diferença entre uma linha e uma coluna. Use a sua planilha de estudos como exemplo.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Com as suas palavras, a diferença entre uma linha e uma coluna. Use a sua planilha de estudos como exemplo. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
 
@@ -315,8 +326,16 @@ no corte80, troque 70 por 80.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. 2 Técnicos passaram (Diego e Felipe) e, com corte 80, só Carla (85) e Felipe (84)." data-pista="texto vai entre aspas: &quot;Técnico&quot;. Sem aspas, o Python procura uma variável com esse nome."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">Qual frase explica melhor a diferença entre dado e informação, usando a nota de corte?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="O suporte não importa: um 78 na planilha continua sendo dado. O que transforma o dado em informação é compará-lo com a regra.">Dado é o que está num papel, e informação é o que está no computador.</button><button class="botao" type="button" data-ok data-porque="O dado é o valor solto; a informação nasce quando o dado passa por uma regra e responde a uma pergunta.">“Ana fez 78 pontos” é um dado; “Ana passou do corte de 70” é informação, porque o 78 foi comparado com a regra e virou uma resposta útil.</button><button class="botao" type="button" data-porque="Não são a mesma coisa: o 78 sozinho não diz se Ana passou. Só depois de comparar com o corte ele vira informação.">Dado e informação são a mesma coisa; só muda o nome que cada banca usa.</button></div>
+          <div class="retorno" hidden data-ok-texto="O dado é o valor solto; a informação nasce quando o dado passa por uma regra e responde a uma pergunta." data-nao-texto="A certa é: ““Ana fez 78 pontos” é um dado; “Ana passou do corte de 70” é informação, porque o 78 foi comparado com a regra e virou uma resposta útil.”. O dado é o valor solto; a informação nasce quando o dado passa por uma regra e responde a uma pergunta."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Filtrar é perguntar “esta linha atende à regra?” para cada linha e ficar só com as que respondem sim.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> qual é a diferença entre dado e informação? Use a nota de corte como exemplo.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Qual é a diferença entre dado e informação? Use a nota de corte como exemplo. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
 
@@ -425,8 +444,16 @@ objetiva é número: a média sai de mean() (com parênteses).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. 4 de cada cargo, e a média da objetiva é 44,875. Repare em tipos: as notas são int64 (número) e cargo é object (texto)."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Uma destas frases sobre tipos de variável está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>Nota é número: dá para somar, tirar média e comparar.</li><li>Cargo é categoria: dá para contar quantos há de cada.</li><li>Classificação (1º, 2º, 3º) é ordem: dá para dizer quem vem antes.</li><li data-erro>Cargo também aceita média: a média dos cargos mostra o cargo típico.</li></ol>
+          <div class="retorno" hidden data-ok-texto="Cargo é categoria: não existe média de “Analista” e “Técnico”. Com categoria se conta (e se acha a mais frequente). Por isso o tipo vem antes da conta." data-nao-texto="O trecho errado é o 4. Cargo é categoria: não existe média de “Analista” e “Técnico”. Com categoria se conta (e se acha a mais frequente). Por isso o tipo vem antes da conta." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Número aceita conta, categoria aceita contagem e ordem aceita comparação de quem vem antes.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que o tipo da variável importa antes de fazer qualquer conta.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que o tipo da variável importa antes de fazer qualquer conta. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
 
@@ -533,8 +560,23 @@ ascending=False põe o maior primeiro (False com F maiúsculo).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Carla, Felipe, Ana, Diego e Gabriela; Diego fica na frente da Gabriela pela objetiva (45 contra 44). As notas não mudaram, só a ordem."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio ex-texto" data-ordenar data-resposta="Somar objetiva e discursiva no total|Ordenar pelo total, do maior para o menor|Nos empates de total, usar a discursiva como segunda regra|Numerar as posições de cima para baixo">
+          <p class="rotulo">Para fechar: ponha na ordem</p>
+          <p class="pergunta">Ponha na ordem os passos para montar a lista de classificação com desempate.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">Numerar as posições de cima para baixo</button>
+            <button class="botao linha" type="button">Nos empates de total, usar a discursiva como segunda regra</button>
+            <button class="botao linha" type="button">Ordenar pelo total, do maior para o menor</button>
+            <button class="botao linha" type="button">Somar objetiva e discursiva no total</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="O total precisa existir antes de ordenar por ele; o desempate só entra onde a primeira regra empatou; a posição só se numera com a fila pronta. Ordenar muda a ordem das linhas, nunca o conteúdo delas." data-pista="pergunte de cada passo: ele precisa de algo que outro passo prepara?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Ordenar põe as linhas em fila por uma coluna; o desempate é a segunda regra para quando a primeira empata.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> o que muda e o que não muda numa tabela quando você a ordena.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> O que muda e o que não muda numa tabela quando você a ordena. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
 
@@ -657,8 +699,18 @@ dentro do groupby vai o nome da coluna dos grupos, entre aspas: "cargo".
           </template>
           <div class="retorno" hidden data-ok-texto="Isso: Analista 75,5 e Técnico 70,5, numa linha só. É o mesmo que o GROUP BY do SQL."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: por que a média sozinha pode esconder informação.</p>
+          <p class="lacunas-texto">Duas turmas têm média 70. Na primeira, todos tiraram perto de 70; na segunda, metade tirou 40 e metade tirou <span data-lacuna="100"></span>. A média é a mesma, mas o <span data-lacuna="espalhamento"></span> das notas é bem diferente. Por isso, junto com a média, olhe o <span data-lacuna="máximo"></span> e o mínimo, ou um gráfico.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">100</button><button class="botao chip-l" type="button">espalhamento</button><button class="botao chip-l" type="button">máximo</button><button class="botao chip-l" type="button">70</button><button class="botao chip-l" type="button">total</button><button class="botao chip-l" type="button">nome</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="A média resume tudo num número só e esconde como os valores se espalham: (40 + 100) / 2 também dá 70. Máximo, mínimo e gráfico mostram o que ela esconde." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Média, contagem, máximo e mínimo resumem muitas linhas em poucos números; o gráfico resume com os olhos, e os dois se completam.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que a média sozinha pode esconder informação importante.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que a média sozinha pode esconder informação importante. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
 

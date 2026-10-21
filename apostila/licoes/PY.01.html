@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="exercicios.css">
 <link rel="stylesheet" href="laboratorio.css">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
@@ -161,8 +162,16 @@ na última linha, compare com 7: media &gt;= 7.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. media vale 7.5 e a comparação mostra True. Repare: a linha com = não mostrou nada; a expressão sozinha mostrou."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">No REPL, por que digitar total = 78 não mostra nada, mas digitar total mostra 78?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="Não há atraso: o REPL responde na hora. Ele mostra quando a linha é uma expressão com valor.">Porque o REPL estava ocupado guardando, e mostra o valor só na próxima linha.</button><button class="botao" type="button" data-ok data-porque="O REPL mostra o valor de expressões. Guardar não tem valor de volta.">Atribuição só guarda e não devolve valor para mostrar; quando a linha é uma expressão, como total, o REPL mostra o valor dela.</button><button class="botao" type="button" data-porque="No REPL, uma expressão sozinha já aparece. O print é necessário no script, não no REPL.">Porque faltou print; sem print, nem total mostraria o 78.</button></div>
+          <div class="retorno" hidden data-ok-texto="O REPL mostra o valor de expressões. Guardar não tem valor de volta." data-nao-texto="A certa é: “Atribuição só guarda e não devolve valor para mostrar; quando a linha é uma expressão, como total, o REPL mostra o valor dela.”. O REPL mostra o valor de expressões. Guardar não tem valor de volta."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>O interpretador executa o Python; o REPL é a conversa em que você digita uma linha e ele responde na hora.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que é o REPL e por que digitar <code>total = 78</code> não mostra nada.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Com as suas palavras, o que é o REPL e por que digitar <code>total = 78</code> não mostra nada. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
 
@@ -257,8 +266,16 @@ na última linha, print(total).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O script rodou de cima para baixo e o print mostrou 78."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Uma destas frases sobre REPL e script está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>O REPL é bom para testar uma linha e ver a resposta na hora.</li><li>O script guarda o programa num arquivo .py, para rodar de novo quando quiser.</li><li data-erro>No script, uma linha só com total mostra o valor na tela, igual ao REPL.</li><li>Para um programa que você vai usar toda semana, o script é a escolha.</li></ol>
+          <div class="retorno" hidden data-ok-texto="No script, só aparece na tela o que tiver print. A expressão sozinha é calculada e descartada; mostrar o valor é coisa do REPL." data-nao-texto="O trecho errado é o 3. No script, só aparece na tela o que tiver print. A expressão sozinha é calculada e descartada; mostrar o valor é coisa do REPL." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Script é um arquivo .py com o programa guardado; o Python o executa de cima para baixo e só escreve na tela o que tiver print.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> qual a diferença entre digitar no REPL e escrever um script, e quando você usaria cada um.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Qual a diferença entre digitar no REPL e escrever um script, e quando você usaria cada um. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
 
@@ -354,8 +371,18 @@ a linha fica assim: n1 = float(input("Nota 1: ")).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Com float, os textos 6 e 9 viraram números e a média deu 7.5. Repare no erro de antes: texto não se divide."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: por que a nota lida com input precisa de conversão.</p>
+          <p class="lacunas-texto">O input sempre devolve <span data-lacuna="texto"></span>, mesmo quando você digita 48. Por isso nota = input() seguido de nota + 30 dá <span data-lacuna="erro"></span>. A correção é converter: nota = <span data-lacuna="int"></span>(input()), e a conta funciona.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">texto</button><button class="botao chip-l" type="button">erro</button><button class="botao chip-l" type="button">int</button><button class="botao chip-l" type="button">número</button><button class="botao chip-l" type="button">print</button><button class="botao chip-l" type="button">78</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="input devolve str. Para fazer conta, converta com int() (inteiro) ou float() (decimal)." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>print escreve na tela, input pergunta e devolve texto; int() e float() convertem texto em número.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que a nota lida com <code>input</code> precisa de <code>int</code> ou <code>float</code> antes de entrar numa conta.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que a nota lida com <code>input</code> precisa de <code>int</code> ou <code>float</code> antes de entrar numa conta. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
 
@@ -446,8 +473,16 @@ acrescente, antes de corte = 70, uma linha como # corte do edital (fictício).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. A linha de 80 ficou no código, desligada, e o comentário diz de onde vem o 70. A tela mostra True."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">Qual destes comentários ajuda quem vai ler o código?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="Repete o que a linha total = objetiva + discursiva já diz. Comentário bom explica o porquê, não o quê."># soma objetiva com discursiva</button><button class="botao" type="button" data-porque="Não traz informação nenhuma: o editor já numera as linhas."># linha 12</button><button class="botao" type="button" data-ok data-porque="Explica o porquê, que o código sozinho não diz."># o edital desempata pela discursiva, por isso ela entra como segunda chave</button></div>
+          <div class="retorno" hidden data-ok-texto="Explica o porquê, que o código sozinho não diz." data-nao-texto="A certa é: “# o edital desempata pela discursiva, por isso ela entra como segunda chave”. Explica o porquê, que o código sozinho não diz."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Comentário é uma nota depois do #: o Python ignora, e quem lê entende o porquê.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> o que um bom comentário explica e por que repetir o que a linha já diz não ajuda.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> O que um bom comentário explica e por que repetir o que a linha já diz não ajuda. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
 
@@ -568,8 +603,16 @@ a linha depois do else: também leva 4 espaços. O print(situacao) fica sem recu
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O recuo mostrou ao Python o que é de cada bloco. Troque a nota para 58 e veja o resultado mudar."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Uma destas frases sobre o recuo em Python está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>Depois dos dois-pontos, as linhas recuadas formam o bloco do if.</li><li>Uma linha recuada dentro do if só roda quando a condição é verdadeira.</li><li>Tirar o recuo de uma linha do bloco faz ela rodar sempre, depois do if.</li><li data-erro>Como o recuo é só visual, o Python roda o programa igual de qualquer jeito.</li></ol>
+          <div class="retorno" hidden data-ok-texto="Em Python o recuo não é enfeite: é ele que diz o que está dentro do bloco. Mudar o recuo muda o que roda, muitas vezes sem dar erro nenhum." data-nao-texto="O trecho errado é o 4. Em Python o recuo não é enfeite: é ele que diz o que está dentro do bloco. Mudar o recuo muda o que roda, muitas vezes sem dar erro nenhum." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Dois-pontos abrem um bloco; as linhas recuadas pertencem a ele, e o fim do recuo é o fim do bloco.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que, em Python, mudar o recuo de uma linha pode mudar o resultado do programa sem dar erro.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que, em Python, mudar o recuo de uma linha pode mudar o resultado do programa sem dar erro. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
 
@@ -659,8 +702,16 @@ espaços em volta de = + /, e nenhum logo depois de ( ou antes de ).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O código ficou mais fácil de ler e faz exatamente a mesma conta: 7.5."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Uma destas frases sobre a PEP 8 está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>O Python roda o código mesmo fora do padrão da PEP 8.</li><li>Com todos no mesmo padrão, você lê o código de outra pessoa sem tropeçar no estilo.</li><li>nota_final, em minúsculas e com sublinhado, segue a PEP 8.</li><li data-erro>Seguir a PEP 8 deixa o programa mais rápido.</li></ol>
+          <div class="retorno" hidden data-ok-texto="A PEP 8 não muda a velocidade: o Python executa igual. O ganho é de leitura: com um padrão comum, entender o código custa menos." data-nao-texto="O trecho errado é o 4. A PEP 8 não muda a velocidade: o Python executa igual. O ganho é de leitura: com um padrão comum, entender o código custa menos." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>PEP 8 é o guia de estilo do Python: nomes em minúsculas com sublinhado, espaços em volta dos operadores e recuo de 4 espaços.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que seguir um padrão de estilo ajuda, mesmo que o Python rode o código sem ele.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que seguir um padrão de estilo ajuda, mesmo que o Python rode o código sem ele. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
       </section>
 

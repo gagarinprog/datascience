@@ -3,11 +3,12 @@
  * data-resposta, data-erro, a solução do Faça no Python). Com errar = true, erra de propósito na primeira tentativa
  * para conferir a dica e o retorno. Roda dentro da página: é um texto de função, passado ao page.evaluate.
  */
-export const RESOLVER = `async ([exId, errar]) => {
+export const RESOLVER = `
+async ([exId, errar]) => {
   const ex = document.querySelector(\`[data-vid="\${exId}"]\`);
   const clicar = (el) => { el.scrollIntoView({block: "center"}); el.click(); };
   const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-  const tipo = ["escolha","classificar","preencher","ordenar","ache"].find((t) => ex.hasAttribute("data-" + t));
+  const tipo = ["escolha","classificar","preencher","ordenar","ache","lacunas"].find((t) => ex.hasAttribute("data-" + t));
   const log = [];
   const ret = () => { const r = ex.querySelector(".retorno"); return r && !r.hidden ? r.textContent.replace(/\\s+/g, " ").trim().slice(0, 140) : ""; };
   if (tipo === "escolha") {
@@ -51,6 +52,19 @@ export const RESOLVER = `async ([exId, errar]) => {
     const lis = [...ex.querySelectorAll(".ache-codigo li")];
     if (errar) { clicar(lis.find((l) => !l.hasAttribute("data-erro")).querySelector("button")); await espera(80); log.push("1a: " + ret()); }
     clicar(lis.find((l) => l.hasAttribute("data-erro")).querySelector("button"));
+  } else if (tipo === "lacunas") {
+    // toca cada lacuna e depois a palavra; errando de propósito, troca a primeira por uma palavra que não serve
+    const vagas = [...ex.querySelectorAll("button.lacuna")];
+    const chip = (t) => [...ex.querySelectorAll(".lacunas-banco button")].find((c) => !c.disabled && c.textContent.trim() === t);
+    const pôr = (v, t) => { clicar(v); const c = chip(t); if (c) clicar(c); else log.push("palavra não encontrada: " + t); };
+    if (errar) {
+      const usadas = vagas.map((v) => v.dataset.lacuna);
+      const outra = [...ex.querySelectorAll(".lacunas-banco button")].map((c) => c.textContent.trim()).find((t) => !usadas.includes(t));
+      vagas.forEach((v, k) => pôr(v, k === 0 && outra ? outra : v.dataset.lacuna));
+      clicar(ex.querySelector("[data-verificar]")); await espera(80); log.push("1a: " + ret());
+    }
+    vagas.forEach((v) => { if (!v.dataset.palavra) pôr(v, v.dataset.lacuna); });
+    clicar(ex.querySelector("[data-verificar]"));
   } else if (ex.hasAttribute("data-codigo")) {
     // Faça no Python: escreve a solução no quadro e espera o Python corrigir (na primeira vez ele carrega)
     const tipoPy = "codigo";

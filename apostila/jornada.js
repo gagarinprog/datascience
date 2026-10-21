@@ -64,7 +64,7 @@
   // Um documento só (progresso/geral) guarda tudo: módulos dominados, o passo em que cada lição parou,
   // conceitos marcados, respostas escritas, trilhas de explicação, clipes vistos, previsões e tentativas.
   const CHAVE = "dominio:progresso:v1";
-  const CAMPOS = ["modulos", "passos", "conceitos", "respostas", "trilhas", "notas", "clipes", "previsoes", "interacoes"];
+  const CAMPOS = ["modulos", "passos", "conceitos", "respostas", "trilhas", "notas", "clipes", "previsoes", "interacoes", "verificados"];
   const normalizar = (d) => Object.fromEntries(CAMPOS.map((k) => [k, d && d[k] && typeof d[k] === "object" && !Array.isArray(d[k]) ? d[k] : {}]));
   let progresso = normalizar(null);
   try { progresso = normalizar(JSON.parse(localStorage.getItem(CHAVE))); } catch (e) { /* sem armazenamento */ }
@@ -559,12 +559,20 @@
       t.addEventListener("input", () => { progresso.notas[`${s}:${id}`] = t.value; salvar(); checar(); });
       checar();
     };
+    const itemIdeia = (window.VERIFICA_MATERIAS || {})[s];
     lista.push({
       id: "ideia", icone: "lightbulb-duotone", titulo: "A ideia", dica: "o essencial, em poucas linhas",
-      tarefa: "Explique com suas palavras para concluir.",
-      pronto: () => (progresso.notas[`${s}:ideia`] || "").trim().length >= 10,
-      html: () => `<p class="frase-destaque">${esc(g.frase)}</p><div class="prosa-jogo glossavel">${g.texto.map((p) => `<p>${p}</p>`).join("")}</div>${nota("ideia", "Agora com suas palavras: explique a ideia em uma ou duas frases, como se contasse a um amigo.")}`,
-      montar: (el, liberar) => ligarNota(el, "ideia", 10, liberar),
+      tarefa: itemIdeia && window.Motor ? "Acerte a pergunta para concluir. Escrever com suas palavras é opcional." : "Explique com suas palavras para concluir.",
+      pronto: () => itemIdeia && window.Motor ? !!progresso.verificados[`${s}:ideia`] || (progresso.notas[`${s}:ideia`] || "").trim().length >= 10 : (progresso.notas[`${s}:ideia`] || "").trim().length >= 10,
+      html: () => `<p class="frase-destaque">${esc(g.frase)}</p><div class="prosa-jogo glossavel">${g.texto.map((p) => `<p>${p}</p>`).join("")}</div>${itemIdeia && window.Motor ? `<div class="verifica-ideia">${window.Motor.criar(itemIdeia)}</div>${nota("ideia", "Com suas palavras (opcional): explique a ideia em uma ou duas frases, como se contasse a um amigo.", 2)}` : nota("ideia", "Agora com suas palavras: explique a ideia em uma ou duas frases, como se contasse a um amigo.")}`,
+      montar: (el, liberar) => {
+        if (!(itemIdeia && window.Motor)) { ligarNota(el, "ideia", 10, liberar); return; }
+        const ex = el.querySelector(".verifica-ideia .exercicio");
+        window.Motor.montarExercicio(ex, { licao: s, titulo: m.nome, conceito: "A ideia", resumo: g.frase, aoResolver: (e, r) => { progresso.verificados[`${s}:ideia`] = { r, em: hoje() }; salvar(); liberar(); } });
+        if (window.Reacao) window.Reacao.observar(ex);
+        const t = el.querySelector('[data-nota="ideia"]');
+        t.addEventListener("input", () => { progresso.notas[`${s}:ideia`] = t.value; salvar(); });
+      },
     });
     lista.push({
       id: "desenho", icone: "image-duotone", titulo: "Veja o desenho", dica: g.figuras.length > 1 ? `${g.figuras.length} ilustrações; toque para ampliar` : "a ilustração; toque para ampliar",
@@ -817,7 +825,13 @@
     if (p === 3) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Cuidado com</h1>
       <div class="cuidado" ${iv()}><span class="ic-a">${ic("warning-duotone")}</span><p class="glossavel">${esc(mod.tropeco)}</p></div>
       <div class="fala" ${iv()}>${mascote("pensa", "", "pensar")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
-    if (p === 4) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
+    if (p === 4) corpo = (window.VERIFICA_MODULOS || {})[cod] && window.Motor
+      ? `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
+      <div class="fala" ${iv()}>${mascote("pensa", "flutua", "pensar")}<p class="balao cor">Confira se entendeu. Tem duas tentativas, e o erro vem explicado.</p></div>
+      <div class="verifica-estudo" ${iv()} data-verifica></div>
+      <div class="botoes-j" ${iv()}><button type="button" class="btn" data-naosei>Ainda não sei: rever os conceitos</button></div>
+      <div data-resposta hidden></div>`
+      : `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
       <div class="fala" ${iv()}>${mascote("pensa", "flutua", "pensar")}<p class="balao cor texto-grande">${esc(mod.pergunta)}</p></div>
       <label class="resposta-campo" ${iv()}><span>Escreva a sua resposta antes de ver a nossa. Ela fica salva${progresso.respostas[cod] ? ` (última edição em ${progresso.respostas[cod].em.split("-").reverse().join("/")})` : ""}.</span><textarea id="resp" rows="4">${esc((progresso.respostas[cod] || {}).texto || "")}</textarea></label>
       <div class="botoes-j" ${iv()}><button type="button" class="btn btn-3d" data-comparar disabled>${ic("check-bold")}Comparar com a resposta</button><button type="button" class="btn" data-naosei>Ainda não sei</button></div>
@@ -886,6 +900,8 @@
     };
   }
   function montarPergunta(cod, mod, seguinte) {
+    const alvo = document.querySelector("[data-verifica]");
+    if (alvo) { montarVerificacao(alvo, cod, mod, seguinte); return; }
     const area = document.getElementById("resp");
     const comparar = document.querySelector("[data-comparar]");
     const caixa = document.querySelector("[data-resposta]");
@@ -910,6 +926,40 @@
     comparar.addEventListener("click", () => mostrar(true));
     document.querySelector("[data-naosei]").addEventListener("click", () => mostrar(false));
     area.focus({ preventScroll: true });
+  }
+
+  // a pergunta final que corrige: escolher, completar, achar o erro ou ordenar (window.VERIFICA_MODULOS, verifica-modulos.js).
+  // Acertou (de primeira ou na segunda), pode dominar o módulo; com a resposta revelada, revê os conceitos ou tenta de novo.
+  // A tarefa de domínio continua como prática opcional, com o texto salvo como antes.
+  function montarVerificacao(alvo, cod, mod, seguinte) {
+    const caixa = document.querySelector("[data-resposta]");
+    alvo.innerHTML = window.Motor.criar(window.VERIFICA_MODULOS[cod]);
+    const ex = alvo.querySelector(".exercicio");
+    const rever = () => { marcar(cod, "rever"); toast("Marcado para rever. Volte aos conceitos com calma.", "arrow-counter-clockwise-bold"); estudo.direcao = -1; estudo.passo = 2; vistaEstudo(cod); window.scrollTo(0, 0); };
+    window.Motor.montarExercicio(ex, { licao: cod, titulo: mod.nome, conceito: mod.nome, resumo: mod.resposta, aoResolver: (e, r) => {
+      progresso.verificados[cod] = { r, em: hoje() }; salvar();
+      const acertou = r !== "revelada";
+      const pf = document.querySelector(".cartao-passo .mascote");
+      if (pf && window.GuiaMov) window.GuiaMov.mover(pf, acertou ? "acerto" : "erro", acertou ? "feliz" : "pensa");
+      const resp = progresso.respostas[cod] || {};
+      caixa.hidden = false;
+      const ns0 = document.querySelector("[data-naosei]");
+      if (ns0) ns0.closest(".botoes-j").hidden = true;
+      caixa.innerHTML = `<label class="resposta-campo"><span>Para praticar (opcional): ${esc(mod.pergunta)} O que você escrever fica salvo.</span><textarea id="resp" rows="3">${esc(resp.texto || "")}</textarea></label>
+        <details class="resposta-ver"><summary>Ver a nossa resposta</summary><div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div></details>
+        <div class="botoes-j" style="margin-top:14px">${acertou ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Dominar o módulo</button><button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button>` : `<button type="button" class="btn btn-3d" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button><button type="button" class="btn" data-de-novo>Tentar de novo</button>`}</div>`;
+      const t = caixa.querySelector("#resp");
+      t.addEventListener("input", () => { progresso.respostas[cod] = { texto: t.value, em: hoje() }; salvar(); });
+      const ac = caixa.querySelector("[data-acertei]");
+      if (ac) { ac.addEventListener("click", () => vitoria(cod, seguinte)); ac.focus({ preventScroll: true }); }
+      caixa.querySelector("[data-rever]").addEventListener("click", rever);
+      const dn = caixa.querySelector("[data-de-novo]");
+      if (dn) dn.addEventListener("click", () => { caixa.hidden = true; caixa.innerHTML = ""; montarVerificacao(alvo, cod, mod, seguinte); });
+      caixa.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "nearest" });
+    } });
+    if (window.Reacao) window.Reacao.observar(ex);
+    const ns = document.querySelector("[data-naosei]");
+    if (ns && !ns.dataset.ligado) { ns.dataset.ligado = "1"; ns.addEventListener("click", rever); }
   }
   function vitoria(cod, seguinte) {
     const antes = nivelDe(xpTotal()).n;

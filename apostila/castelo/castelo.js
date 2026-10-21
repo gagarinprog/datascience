@@ -15,7 +15,7 @@
 
   // ---------- utilidades ----------
   const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const VAZIO = () => ({ slides: {}, tarefas: {}, codigos: {}, niveis: {}, intros: {}, dominadas: {}, textos: {}, passos: {}, explica: {} });
+  const VAZIO = () => ({ slides: {}, tarefas: {}, codigos: {}, niveis: {}, intros: {}, dominadas: {}, textos: {}, passos: {}, explica: {}, verificados: {} });
   const ler = () => { try { return Object.assign(VAZIO(), JSON.parse(localStorage.getItem(CHAVE) || "{}")); } catch (e) { return VAZIO(); } };
   let estado = ler();
   // "feitas" é só um resumo para o cartão do mapa, que não carrega o roteiro das salas
@@ -240,7 +240,7 @@
       { nome: "Entender", detalhe: `${(s.slides || []).length} telas`, feito: dom || !!estado.slides[s.id] },
       { nome: "Ver o passo a passo", detalhe: window.PASSOS_LAB && window.PASSOS_LAB[s.id] ? `${window.PASSOS_LAB[s.id].passos.length} etapas` : "", feito: dom || !!estado.passos[s.id] },
       { nome: "Fazer", detalhe: `${feitas} de ${s.tarefas.length} tarefas`, feito: dom || feitas === s.tarefas.length },
-      { nome: "Explicar", detalhe: "1 frase", feito: !!estado.explica[s.id] },
+      { nome: "Explicar", detalhe: (window.VERIFICA_CASTELO || {})[s.id] ? "1 pergunta" : "1 frase", feito: !!(estado.verificados && estado.verificados[s.id]) || !!estado.explica[s.id] },
     ];
   }
   const cicloHTML = (s) => { const c = ciclo(s), atual = c.findIndex((x) => !x.feito);
@@ -609,7 +609,25 @@
     })();
   }
 
+  // a frase de análise: com item em verifica.js, escolher a melhor frase (corrigida); escrever a sua fica opcional
   function tarefaTexto(el, t, chave, aoConcluir) {
+    const item = (window.VERIFICA_CASTELO || {})[chave];
+    if (item && window.Motor) {
+      el.insertAdjacentHTML("beforeend", window.Motor.criar(item));
+      const ex = el.querySelector(".exercicio");
+      window.Motor.montarExercicio(ex, { licao: "castelo", titulo: "Centro de Dados", conceito: t.titulo, aoResolver: (e, r) => {
+        if (!el.dataset.feita) { el.dataset.feita = "1"; aoConcluir(r); }
+        livre();
+      } });
+      if (window.Reacao) window.Reacao.observar(ex);
+      const livre = () => {
+        if (el.querySelector(".lab-texto")) return;
+        el.insertAdjacentHTML("beforeend", `<label class="lab-enunciado" for="tx-${chave}">A sua versão (opcional), com os números do seu banco. Fica salva neste aparelho.</label><textarea id="tx-${chave}" class="lab-texto" rows="3">${esc(estado.textos[chave] || "")}</textarea>`);
+        const ta = el.querySelector(".lab-texto");
+        ta.addEventListener("input", () => { estado.textos[chave] = ta.value; salvar(); });
+      };
+      return;
+    }
     el.insertAdjacentHTML("beforeend", `<textarea class="lab-texto" rows="4" aria-label="Sua frase de análise">${esc(estado.textos[chave] || "")}</textarea><div class="lab-acoes"><button type="button" class="botao primario" data-a="salvar">Salvar</button></div><p class="lab-nota">${t.modelo}</p><div class="retorno" hidden></div>`);
     el.querySelector('[data-a="salvar"]').addEventListener("click", () => {
       const v = el.querySelector("textarea").value.trim();
@@ -759,15 +777,32 @@
             if (prox && prox.trancado) cx.marcar(prox, { trancado: false });
             pintarPainel();
             if (salaCompleta(s)) concluirSala(s, fimLugar, false, cx);
-            cx.seguir(it, prox ? `Próxima tarefa: ${prox.titulo}` : "Explicar com as suas palavras");
+            cx.seguir(it, prox ? `Próxima tarefa: ${prox.titulo}` : (window.VERIFICA_CASTELO || {})[s.id] ? "Explicar: confira se entendeu" : "Explicar com as suas palavras");
           }, "", s);
           if (it.feito) cx.seguir(it);
         } });
     });
 
-    // 4. Explicar: uma frase, com as suas palavras
-    cx.add({ id: "explicar", rotulo: "Explicar", titulo: "Com as suas palavras", feito: !!estado.explica[s.id], resumo: estado.explica[s.id] ? "salva" : "1 frase",
+    // 4. Explicar: um item corrigido (verifica.js) e, se quiser, uma frase com as suas palavras
+    const itemExp = (window.VERIFICA_CASTELO || {})[s.id];
+    const expFeita = () => !!(estado.verificados && estado.verificados[s.id]) || !!estado.explica[s.id];
+    cx.add({ id: "explicar", rotulo: "Explicar", titulo: itemExp ? "Confira se entendeu" : "Com as suas palavras", feito: expFeita(), resumo: expFeita() ? "feita" : itemExp ? "1 pergunta" : "1 frase",
       montar: (it) => {
+        if (itemExp && window.Motor) {
+          it.corpo.innerHTML = `${window.Motor.criar(itemExp)}
+            <label class="lab-enunciado" for="ex-${s.id}">Com as suas palavras (opcional): o que ${esc(s.conceito)} faz, e quando você usaria isso?</label><textarea id="ex-${s.id}" class="lab-texto" rows="2">${esc(estado.explica[s.id] || "")}</textarea>`;
+          const ex = it.corpo.querySelector(".exercicio");
+          window.Motor.montarExercicio(ex, { licao: "castelo", titulo: "Centro de Dados", conceito: s.conceito, aoResolver: (e, r) => {
+            estado.verificados = estado.verificados || {};
+            estado.verificados[s.id] = r; salvar();
+            cx.marcar(it, { feito: true, resumo: r === "revelada" ? "revista" : "feita" });
+            pintarPainel();
+          } });
+          if (window.Reacao) window.Reacao.observar(ex);
+          const ta = it.corpo.querySelector(".lab-texto");
+          ta.addEventListener("input", () => { estado.explica[s.id] = ta.value; salvar(); });
+          return;
+        }
         it.corpo.innerHTML = `<p class="lab-enunciado">Em uma ou duas frases, como se fosse para um colega: o que ${esc(s.conceito)} faz, e quando você usaria isso?</p>
           <label class="visivel-leitor" for="ex-${s.id}">Sua explicação</label><textarea id="ex-${s.id}" class="lab-texto" rows="3">${esc(estado.explica[s.id] || "")}</textarea>
           <div class="lab-acoes"><button type="button" class="botao primario" data-a="salvar">Salvar a explicação</button></div><div class="retorno" hidden></div>
@@ -821,7 +856,7 @@
     const i = indice(s), prox = C.salas[i + 1], fimDoBloco = ultimaDoBloco(s.bloco) === s, nivel = C.niveis.find((n) => n.id === s.bloco);
     if (!jaEstava) pintarCentro(s.id);
     const destino = fimDoBloco && nivel ? `<a class="botao primario" href="#nivel-${s.bloco}">Fazer o nivelamento: ${esc(nivel.nome)}</a>` : prox ? `<a class="botao primario" href="#${prox.id}">Próximo módulo: ${esc(prox.nome)}</a>` : '<a class="botao primario" href="#relatorio">Ver o relatório do centro de dados</a>';
-    lugar.innerHTML = `<div class="lab-cartao lab-fim"><h3>${esc(s.nome)}: ligado.</h3><p>${fimDoBloco && nivel ? "Esta zona está completa. Para abrir a próxima, faça o nivelamento: uma prova prática curta." : "Mais um equipamento aceso no centro de dados."}${estado.explica[s.id] ? "" : " Antes de seguir, vale escrever a explicação, na última etapa acima."}</p><div class="lab-acoes">${destino}</div></div>`;
+    lugar.innerHTML = `<div class="lab-cartao lab-fim"><h3>${esc(s.nome)}: ligado.</h3><p>${fimDoBloco && nivel ? "Esta zona está completa. Para abrir a próxima, faça o nivelamento: uma prova prática curta." : "Mais um equipamento aceso no centro de dados."}${estado.explica[s.id] || (estado.verificados && estado.verificados[s.id]) ? "" : " Antes de seguir, vale fazer a etapa Explicar, a última acima."}</p><div class="lab-acoes">${destino}</div></div>`;
   }
 
   function passoAPasso(etapas) {

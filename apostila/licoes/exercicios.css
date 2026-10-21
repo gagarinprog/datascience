@@ -1,0 +1,114 @@
+/* Os exercícios do motor (licoes/motor.js): lições, revisão, estudo em 5 passos, trilha e Centro de Dados. */
+.linha-classifica input { font: inherit; font-family: var(--f-codigo); font-size: 13.5px; width: 100%; min-width: 70px; padding: 4px 8px; border: 2px solid var(--linha-forte); border-radius: 10px; min-height: 40px; background: var(--folha); color: var(--texto); }
+.linha-classifica input.ok { border-color: var(--certo); background: var(--certo-suave); }
+.linha-classifica input.nao { border-color: var(--erro); background: var(--erro-suave); }
+
+/* ---- reação do guia no retorno dos exercícios (reacao.js) ---- */
+.retorno:has(> .retorno-guia) { grid-template-columns: 48px minmax(0, 1fr); column-gap: 12px; align-items: start; }
+.retorno:has(> .retorno-guia) > :not(.retorno-guia) { grid-column: 2; }
+.retorno-guia { grid-row: 1 / span 3; width: 48px; height: 55px; border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--cv, var(--tinta)) 14%, var(--folha-2)); }
+.retorno-guia svg { width: 100%; height: 100%; display: block; }
+/* o guia pensando ao lado do desafio e do "preveja antes de ver" */
+.pensa-guia { float: left; width: 40px; height: 46px; margin: 1px 10px 4px 0; border-radius: 9px; overflow: hidden; background: color-mix(in srgb, var(--cv, var(--tinta)) 14%, var(--folha-2)); }
+.pensa-guia svg { width: 100%; height: 100%; display: block; }
+.pensa-guia:not(.retrato) svg { transform: scale(1.12); }
+.retorno-guia:not(.retrato) svg { transform: scale(1.12); }
+.retorno-guia.comemora { animation: guia-pulo 520ms var(--mola) both; }
+.retorno-guia.pondera { animation: guia-inclina 600ms var(--curva) both; transform-origin: 50% 100%; }
+@keyframes guia-pulo { 0% { transform: translateY(8px) scale(0.85); opacity: 0; } 60% { transform: translateY(-4px) scale(1.04); opacity: 1; } 100% { transform: none; } }
+@keyframes guia-inclina { 0% { transform: rotate(0); opacity: 0; } 40% { transform: rotate(-6deg); opacity: 1; } 100% { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .retorno-guia.comemora, .retorno-guia.pondera { animation: none; } }
+
+
+/* =================== motor didático (motor.js) =================== */
+.retorno.revelado .cab { color: var(--aviso, #b26b00); }
+.retorno.aviso { color: var(--texto-2); }
+.tres-partes { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.tres-partes b { font-weight: 700; }
+.saldo-ce { margin: 6px 0 0; font-size: 13.5px; color: var(--texto-2); }
+.saldo-ce b { color: var(--texto); }
+/* confiança antes do Certo/Errado */
+.confianca { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13.5px; color: var(--texto-2); }
+.confianca button { min-height: 36px; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--linha-forte); background: var(--folha); color: var(--texto); font: inherit; cursor: pointer; }
+.confianca button[aria-pressed="true"] { border-color: var(--tinta); background: var(--tinta-suave); font-weight: 700; }
+.confianca button:disabled { cursor: default; opacity: 0.7; }
+/* cartões para arrastar em grupos */
+.cat { display: grid; gap: 10px; }
+.cat-ajuda { margin: 0; font-size: 13px; color: var(--texto-2); }
+.cat-banco { display: flex; flex-wrap: wrap; gap: 8px; min-height: 52px; padding: 8px; border: 1px dashed var(--linha-forte); border-radius: 10px; background: var(--folha-2); }
+.cat-grupos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.cat-grupo { border: 1px solid var(--linha-forte); border-radius: 10px; padding: 6px; display: grid; gap: 6px; align-content: start; min-height: 96px; background: var(--folha); transition: border-color 0.2s, background-color 0.2s; }
+.cat.escolhendo .cat-grupo, .cat.escolhendo .cat-banco { border-color: var(--tinta); }
+.cat.escolhendo .cat-grupo:hover { background: var(--tinta-suave); }
+.cat-nome { min-height: 40px; border: 0; border-radius: 8px; background: var(--folha-2); color: var(--texto); font: 700 14px var(--f-codigo); cursor: pointer; }
+.cat-itens { display: flex; flex-wrap: wrap; gap: 6px; }
+.cat-cartao { min-height: 44px; max-width: 100%; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--linha-forte); background: var(--folha); color: var(--texto); font: inherit; font-size: 14px; text-align: left; cursor: grab; touch-action: none; box-shadow: 0 1px 0 var(--linha-forte); }
+.cat-cartao[aria-pressed="true"] { border-color: var(--tinta); box-shadow: 0 0 0 2px var(--tinta); }
+.cat-cartao.ok { border-color: var(--certo); background: var(--certo-suave); cursor: default; }
+.cat-cartao.nao { border-color: var(--erro); background: var(--erro-suave); }
+.cat-cartao.revelado { border-color: var(--aviso, #b26b00); background: var(--aviso-suave); }
+.cat-cartao.arrastando { opacity: 0.4; }
+.cat-fantasma { position: fixed; z-index: 100; pointer-events: none; transform: translate(-50%, -50%) rotate(-2deg); box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.4); }
+/* Parsons: linhas com recuo */
+.p-item { display: flex; align-items: center; gap: 6px; }
+.p-item .linha { flex: 1; text-align: left; }
+.p-item[data-nivel="1"] .linha { margin-left: 28px; }
+.p-item[data-nivel="2"] .linha { margin-left: 56px; }
+.p-item[data-nivel="3"] .linha { margin-left: 84px; }
+.p-item[data-nivel="4"] .linha { margin-left: 112px; }
+.p-recuo { flex: none; width: 44px; min-height: 44px; border-radius: 8px; border: 1px solid var(--linha-forte); background: var(--folha); color: var(--texto); font: 700 16px var(--f-codigo); cursor: pointer; }
+.p-item.ok .linha { border-color: var(--certo); background: var(--certo-suave); }
+.p-item.revelado .linha { border-color: var(--aviso, #b26b00); background: var(--aviso-suave); }
+.ordenar .linha.nao, .montagem .linha.nao { border-color: var(--erro); background: var(--erro-suave); }
+.linha.falsa-revelada { text-decoration: line-through; opacity: 0.6; }
+/* ache o erro */
+.ache-codigo { list-style: none; margin: 0; padding: 6px; border: 1px solid var(--linha); border-radius: 10px; background: var(--folha-2); display: grid; gap: 2px; }
+.ache-linha { width: 100%; min-height: 40px; display: flex; gap: 10px; align-items: center; padding: 4px 8px; border: 1px solid transparent; border-radius: 8px; background: none; color: var(--texto); font: 14px var(--f-codigo); text-align: left; cursor: pointer; white-space: pre; overflow-x: auto; }
+.ache-linha:hover:not(:disabled) { border-color: var(--linha-forte); background: var(--folha); }
+.ache-linha .n { color: var(--texto-2); width: 1.4em; flex: none; }
+.ache-linha code { background: none; border: 0; padding: 0; font-size: inherit; min-width: 0; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ache-codigo li { min-width: 0; }
+.ache-codigo li.ok .ache-linha { border-color: var(--certo); background: var(--certo-suave); }
+.ache-codigo li.nao .ache-linha { border-color: var(--erro); background: var(--erro-suave); }
+.ache-codigo li.revelado .ache-linha { border-color: var(--aviso, #b26b00); background: var(--aviso-suave); }
+.ache-linha:disabled { cursor: default; }
+/* campos revelados */
+.tabela input.revelado, .tabela select.revelado { border-color: var(--aviso, #b26b00); background: var(--aviso-suave); }
+/* explicar em 3 linhas */
+.explicar { display: grid; gap: 8px; margin: -4px 0 8px; }
+.explicar textarea { font: inherit; font-size: 15px; line-height: 1.5; padding: 10px 12px; border: 1px solid var(--linha-forte); border-radius: 8px; background: var(--folha); color: var(--texto); resize: vertical; }
+.explicar textarea:focus { outline: 2px solid var(--tinta); outline-offset: 0; }
+.explicar-acoes { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.explicar-estado { font-size: 13px; color: var(--texto-2); }
+.explicar-modelo { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--tinta-suave); font-size: 14.5px; }
+/* preveja antes de ver (clip.js) */
+.preveja { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--aviso); border-radius: 10px; background: var(--aviso-suave); }
+.preveja p { margin: 0; font-weight: 600; }
+.preveja .opcoes .botao { min-height: 44px; }
+.preveja-veredito { margin: 0; font-size: 14.5px; }
+.preveja-veredito.ok { color: var(--certo); font-weight: 700; }
+.preveja-veredito.nao { color: var(--erro); font-weight: 700; }
+.montagem .linha { font-family: var(--f-codigo); font-size: 13.5px; font-weight: 600; }
+
+/* ---- completar com palavras (data-lacunas) ---- */
+.lacunas-texto { margin: 0; font-size: 17px; line-height: 2.1; }
+.lacuna { display: inline-flex; align-items: center; justify-content: center; min-width: 6.5em; min-height: 40px; margin: 2px 2px; padding: 2px 10px; vertical-align: baseline; border: 0; border-bottom: 2px solid var(--linha-forte); border-radius: 6px 6px 2px 2px; background: var(--folha-2); color: var(--texto); font: 600 16px var(--f-ui); cursor: pointer; }
+.lacuna:empty::after { content: "\00a0"; }
+.lacuna.alvo { border-bottom-color: var(--tinta); box-shadow: 0 0 0 2px color-mix(in srgb, var(--tinta) 35%, transparent); }
+.lacuna:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+.lacuna.ok { border-bottom-color: var(--certo); background: var(--certo-suave); cursor: default; }
+.lacuna.nao { border-bottom-color: var(--erro); background: var(--erro-suave); }
+.lacuna.revelado { border-bottom-color: var(--aviso, #b26b00); background: var(--aviso-suave); cursor: default; }
+.lacunas-banco { display: flex; flex-wrap: wrap; gap: 8px; }
+.lacunas-banco .chip-l { min-height: 44px; font-weight: 600; }
+.lacunas-banco .chip-l:disabled { opacity: 0.35; }
+/* "ache o erro" com frases, não código */
+.ache-texto .ache-linha { white-space: normal; font: 15px/1.45 var(--f-ui); align-items: flex-start; padding: 8px 10px; min-height: 44px; }
+.ache-texto .ache-linha .n { flex: none; }
+.ache-frase { text-align: left; }
+/* escolher a explicação: alternativas longas, uma por linha */
+.opcoes.opcoes-texto { flex-direction: column; align-items: stretch; }
+.opcoes.opcoes-texto .botao { text-align: left; justify-content: flex-start; white-space: normal; line-height: 1.45; font-weight: 500; text-transform: none; letter-spacing: 0; font-family: var(--f-ui); }
+/* ordenar passos de uma explicação (texto, não código) */
+.exercicio.ex-texto .linha { font: 500 15px/1.4 var(--f-ui); white-space: normal; text-align: left; }
+.explique-opcional { opacity: 0.95; }

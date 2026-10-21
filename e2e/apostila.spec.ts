@@ -104,8 +104,12 @@ test.describe("apostila", () => {
       if (p === 2) for (const b of await page.locator(".c-ok").all()) await b.click();
       await page.locator("[data-continuar]").click();
     }
+    // a pergunta final agora corrige: resolve errando de propósito na primeira tentativa
+    const final = page.locator("[data-verifica] .exercicio");
+    await expect(final).toBeVisible();
+    await final.evaluate((e) => ((e as HTMLElement).dataset.vid = "final"));
+    expect((await resolver(page, "final", true)).estado).toBe("resolvido");
     await page.locator("#resp").fill("Uma sequência finita de passos sem ambiguidade.");
-    await page.locator("[data-comparar]").click();
     await page.locator("[data-acertei]").click();
     await expect(page.locator(".vitoria")).toBeVisible();
     await page.locator("[data-ficar]").click();
@@ -227,6 +231,47 @@ test.describe("apostila", () => {
       expect(erros).toEqual([]);
     });
   }
+
+  test("a ideia da matéria conclui pela pergunta corrigida, com o texto livre opcional", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.addInitScript(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
+    await page.goto(BASE + "index.html#guia-BD");
+    const sub = page.locator('.sub[data-sub="ideia"]');
+    if ((await sub.locator(".sub-cab").getAttribute("aria-expanded")) !== "true")
+      await sub.locator(".sub-cab").click();
+    await expect(sub.locator("[data-concluir]")).toBeDisabled();
+    const ex = sub.locator(".exercicio");
+    await ex.evaluate((e) => ((e as HTMLElement).dataset.vid = "ideia"));
+    expect((await resolver(page, "ideia", false)).estado).toBe("resolvido");
+    await expect(sub.locator("[data-concluir]")).toBeEnabled();
+    await expect(sub.locator('[data-nota="ideia"]')).toBeVisible();
+    expect(erros).toEqual([]);
+  });
+
+  test("a revisão de conceitos simples guarda o método das listas, um item por vez", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.goto(BASE + "licoes/LOGICA-SIMPLES.html");
+    await expect(page.locator("#rl-pontos button")).toHaveCount(8);
+    const campos = page.locator("#rl-palco input");
+    for (const [k, v] of ["5", "2", "2"].entries()) await campos.nth(k).fill(v);
+    await page.locator("#rl-palco [data-verificar]").click();
+    await expect(page.locator("#rl-estado")).toHaveText("Concluído.");
+    await page.locator('#rl-pontos [data-ir="3"]').click();
+    const sel = page.locator("#rl-palco select");
+    for (const v of ["sum", "count", "mean"]) {
+      await sel.selectOption(v);
+      await page.waitForTimeout(750);
+    }
+    await expect(page.locator("[data-tentativas]")).toHaveText("3 de 3 tentativas");
+    await expect(page.locator("#rl-conta")).toHaveText("2 de 8 concluídos");
+    expect(erros).toEqual([]);
+  });
 
   test("a revisão do dia traz o exercício da lição e reagenda", async ({ page }) => {
     await page.goto(BASE + "licoes/LOG.01.html");

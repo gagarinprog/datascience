@@ -2,7 +2,7 @@
    C "Contorno técnico" para as ações (Verificar, Rodar, Começar...) e os secundários (Voltar, Rodar, Pular...);
    D "Progresso no botão" para avançar numa sequência: a barra dentro do botão mostra em que passo você está.
    Os botões de D ganham a classe .b-prog, o --p (de 0 a 1) e o data-passo ("passo 2 de 5") pelo código de
-   cada tela. As respostas dos exercícios (.opcoes) ficam de fora: são texto para ler, não ação.
+   cada tela. As respostas dos exercícios (.opcoes, as linhas de ordenar e as palavras das lacunas) ficam de fora: são texto para ler, não ação.
    Carregado depois das folhas das páginas e antes do tema.css, para o tema Impresso manter os seus botões. */
 
 /* ---------- C · primário: contorno azul que se enche no hover ---------- */
@@ -24,12 +24,12 @@
 :root :is(.btn-3d, .botao.primario) small { font-family: var(--f-ui, inherit); text-transform: none; letter-spacing: 0; font-weight: 500; }
 
 /* ---------- C · secundário: contorno cinza, mesma letra técnica ---------- */
-:root :is(.btn, .botao):not(.btn-3d):not(.primario):not(.btn-fantasma):not(.btn-redondo):not(.b-prog):not(.opcoes .botao):not(.lab-notas .botao):not(.c-ok):not([data-aposta]):not([aria-pressed]):not(.certo):not(.errado) {
+:root :is(.btn, .botao):not(.btn-3d):not(.primario):not(.btn-fantasma):not(.btn-redondo):not(.b-prog):not(.opcoes .botao):not(.lab-notas .botao):not(.linha):not(.chip-l):not(.c-ok):not([data-aposta]):not([aria-pressed]):not(.certo):not(.errado) {
   color: var(--texto-2); font-family: var(--f-codigo); font-size: 13.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
   border: 1.5px solid var(--linha-forte); border-radius: 6px; background: transparent; box-shadow: none;
   transition: border-color 150ms, color 150ms;
 }
-:root :is(.btn, .botao):not(.btn-3d):not(.primario):not(.btn-fantasma):not(.btn-redondo):not(.b-prog):not(.opcoes .botao):not(.lab-notas .botao):not(.c-ok):not([data-aposta]):not([aria-pressed]):not(.certo):not(.errado):hover:not(:disabled) {
+:root :is(.btn, .botao):not(.btn-3d):not(.primario):not(.btn-fantasma):not(.btn-redondo):not(.b-prog):not(.opcoes .botao):not(.lab-notas .botao):not(.linha):not(.chip-l):not(.c-ok):not([data-aposta]):not([aria-pressed]):not(.certo):not(.errado):hover:not(:disabled) {
   color: var(--texto); border-color: var(--texto-2); background: transparent;
 }
 

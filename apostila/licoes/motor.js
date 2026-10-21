@@ -35,7 +35,7 @@
   const reduz = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const flip = (els, mudar) => (window.Clip && window.Clip.flip ? window.Clip.flip(els, mudar) : mudar());
 
-  const TIPOS = ["escolha", "classificar", "preencher", "ordenar", "ache", "codigo"];
+  const TIPOS = ["escolha", "classificar", "preencher", "ordenar", "ache", "lacunas", "codigo"];
   const tipoDe = (ex) => TIPOS.find((t) => ex.hasAttribute("data-" + t));
   function idDe(ex) {
     if (ex.dataset.id) return ex.dataset.id;
@@ -171,7 +171,7 @@
       } else {
         b.classList.add("errado");
         b.disabled = true;
-        mostrarTentativa(ex, { erro: `“${esc(b.textContent.trim())}” não é a resposta.`, passo: pista(ex, ctx, false) });
+        mostrarTentativa(ex, { erro: b.dataset.porque ? esc(b.dataset.porque) : `“${esc(b.textContent.trim())}” não é a resposta.`, passo: pista(ex, ctx, false) });
       }
     }));
   }
@@ -295,6 +295,7 @@
   // Parsons: montar o programa com as linhas, ignorando as falsas e, se pedido, acertando o recuo
   function ordenar(ex, ctx) {
     const banco = ex.querySelector("[data-banco]"), montagem = ex.querySelector("[data-montagem]");
+    if (montagem.hasAttribute("aria-label") && !montagem.hasAttribute("role")) montagem.setAttribute("role", "group");
     const comRecuo = ex.hasAttribute("data-recuo");
     const respostas = [ex.dataset.resposta, ...(ex.dataset.alternativas ? ex.dataset.alternativas.split("||") : [])]
       .map((r) => r.split("|").map((l) => ({ t: l.trim(), n: Math.floor((l.match(/^ */)[0].length) / 4) })));
@@ -349,9 +350,9 @@
       if (falsa) erro = `a linha “${esc(falsa.t)}” não faz parte do programa.`;
       else if (i < feitas.length && i < r.length && feitas[i].t === r[i].t) erro = `o recuo da linha “${esc(feitas[i].t)}” está errado: ela está dentro do bloco certo?`;
       else if (feitas.length < r.length && i === feitas.length) erro = `faltam ${r.length - feitas.length} ${r.length - feitas.length === 1 ? "linha" : "linhas"} no programa.`;
-      else erro = `a linha ${i + 1} (“${esc(feitas[i] ? feitas[i].t : "")}”) não deveria estar nessa posição.`;
+      else erro = `${ex.classList.contains("ex-texto") ? "o passo" : "a linha"} ${i + 1} (“${esc(feitas[i] ? feitas[i].t : "")}”) não deveria estar nessa posição.`;
       if (feitas[i]) feitas[i].el.querySelector(".linha").classList.add("nao");
-      mostrarTentativa(ex, { certo: i > 0 ? `as ${i} primeiras linhas estão no lugar certo.` : "", erro, passo: pista(ex, ctx, true) });
+      mostrarTentativa(ex, { certo: i > 0 ? (ex.classList.contains("ex-texto") ? `os ${i} primeiros passos estão no lugar certo.` : `as ${i} primeiras linhas estão no lugar certo.`) : "", erro, passo: pista(ex, ctx, true) });
     });
   }
 
@@ -359,7 +360,8 @@
     const itens = [...ex.querySelectorAll(".ache-codigo li")];
     let tentativas = 0;
     itens.forEach((li, i) => {
-      li.innerHTML = `<button type="button" class="ache-linha"><span class="n">${i + 1}</span><code>${li.innerHTML}</code></button>`;
+      const texto = li.closest(".ache-texto");
+      li.innerHTML = `<button type="button" class="ache-linha"><span class="n">${i + 1}</span>${texto ? `<span class="ache-frase">${li.innerHTML}</span>` : `<code>${li.innerHTML}</code>`}</button>`;
       li.querySelector("button").addEventListener("click", () => {
         if (ex.dataset.estado === "resolvido") return;
         tentativas++;
@@ -375,16 +377,106 @@
         } else {
           li.classList.add("nao");
           li.querySelector("button").disabled = true;
-          mostrarTentativa(ex, { certo: "", erro: `a linha ${i + 1} está certa.`, passo: pista(ex, ctx, false) });
+          mostrarTentativa(ex, { certo: "", erro: ex.querySelector(".ache-texto") ? `a frase ${i + 1} está certa.` : `a linha ${i + 1} está certa.`, passo: pista(ex, ctx, false) });
         }
       });
     });
   }
 
+
+  // ---------- completar com palavras: lacunas no texto e um banco de palavras (algumas confundem) ----------
+  function lacunas(ex, ctx) {
+    const vagas = [...ex.querySelectorAll("[data-lacuna]")];
+    const banco = ex.querySelector(".lacunas-banco");
+    const chips = [...banco.querySelectorAll("button")];
+    // embaralha o banco a cada montagem, para a ordem das palavras não entregar a resposta
+    for (let i = chips.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); banco.appendChild(chips[j]); [chips[i], chips[j]] = [chips[j], chips[i]]; }
+    const norm = (t) => String(t || "").replace(/\s+/g, " ").trim().toLowerCase();
+    let tentativas = 0, alvo = 0;
+    vagas.forEach((v, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "lacuna"; b.dataset.lacuna = v.dataset.lacuna; b.dataset.i = String(i);
+      v.replaceWith(b);
+      vagas[i] = b;
+    });
+    const rotular = () => vagas.forEach((v, i) => {
+      v.classList.toggle("alvo", i === alvo && ex.dataset.estado !== "resolvido");
+      v.setAttribute("aria-label", `Lacuna ${i + 1}${v.dataset.palavra ? `: ${v.dataset.palavra}. Toque para devolver a palavra` : ", vazia. Escolha uma palavra abaixo"}`);
+      v.textContent = v.dataset.palavra || "";
+    });
+    const proximaVazia = () => { const k = vagas.findIndex((v) => !v.dataset.palavra); return k < 0 ? alvo : k; };
+    function devolver(v) {
+      const chip = chips.find((c) => c.dataset.usado === v.dataset.i);
+      if (chip) { chip.disabled = false; delete chip.dataset.usado; }
+      delete v.dataset.palavra; v.classList.remove("nao");
+    }
+    vagas.forEach((v, i) => v.addEventListener("click", () => {
+      if (ex.dataset.estado === "resolvido") return;
+      if (v.dataset.palavra) devolver(v);
+      alvo = i; rotular();
+    }));
+    chips.forEach((c) => c.addEventListener("click", () => {
+      if (ex.dataset.estado === "resolvido" || c.disabled) return;
+      const v = vagas[alvo];
+      if (v.dataset.palavra) devolver(v);
+      v.dataset.palavra = c.textContent.trim(); c.dataset.usado = String(alvo); c.disabled = true; v.classList.remove("nao");
+      alvo = proximaVazia(); rotular();
+    }));
+    rotular();
+    ex.querySelector("[data-verificar]").addEventListener("click", () => {
+      if (ex.dataset.estado === "resolvido") return;
+      if (vagas.some((v) => !v.dataset.palavra)) { mostrarAviso(ex, "Preencha todas as lacunas antes de verificar: toque numa lacuna e depois numa palavra."); return; }
+      tentativas++;
+      const erradas = vagas.filter((v) => norm(v.dataset.palavra) !== norm(v.dataset.lacuna));
+      const fechar = () => { chips.forEach((c) => { c.disabled = true; }); vagas.forEach((v) => { v.disabled = true; }); };
+      if (!erradas.length) {
+        vagas.forEach((v) => { v.classList.remove("nao"); v.classList.add("ok"); }); fechar(); ex.dataset.estado = "resolvido"; rotular();
+        mostrarCerto(ex); resolver(ex, ctx, tentativas > 1 ? "segunda" : "primeira"); return;
+      }
+      if (tentativas >= 2) {
+        vagas.forEach((v) => { v.classList.remove("nao"); if (norm(v.dataset.palavra) !== norm(v.dataset.lacuna)) { v.dataset.palavra = v.dataset.lacuna; v.classList.add("revelado"); } else v.classList.add("ok"); });
+        fechar(); ex.dataset.estado = "resolvido"; rotular();
+        mostrarRevelado(ex, retornoDe(ex).dataset.naoTexto || semAbertura(retornoDe(ex).dataset.okTexto));
+        resolver(ex, ctx, "revelada"); return;
+      }
+      const certas = vagas.length - erradas.length;
+      const lista = erradas.map((v) => `a lacuna ${Number(v.dataset.i) + 1} não leva “${esc(v.dataset.palavra)}”`);
+      erradas.forEach((v) => { devolver(v); v.classList.add("nao"); });
+      alvo = proximaVazia(); rotular();
+      mostrarTentativa(ex, { certo: certas ? `${certas} de ${vagas.length} ${vagas.length === 1 ? "lacuna está certa" : "lacunas estão certas"} e ficaram no lugar.` : "", erro: lista.join("; ") + ".", passo: pista(ex, ctx, true) });
+    });
+  }
+
+  // ---------- montar um exercício a partir de dados (estudo em 5 passos, trilha, Centro de Dados) ----------
+  // { f: "escolha", p, o: [[texto, certo, porque], ...] } · { f: "lacunas", p, t: "texto com {{palavra}}", x: [palavras que confundem], por }
+  // { f: "erro", p, t: [frase, ...], e: índice da errada, por } · { f: "ordem", p, t: [passos na ordem certa], por }
+  const ROTULOS = { escolha: "Escolha a explicação", lacunas: "Complete a explicação", erro: "Ache o erro", ordem: "Ponha na ordem" };
+  const embaralhar = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+  const at = (t) => esc(t).replace(/"/g, "&quot;");
+  function criar(d) {
+    const cab = `<p class="rotulo">${ROTULOS[d.f] || ""}</p><p class="pergunta">${d.p}</p>`;
+    if (d.f === "escolha") {
+      const certo = d.o.find((o) => o[1]);
+      return `<div class="exercicio" data-escolha>${cab}<div class="opcoes opcoes-texto">${embaralhar(d.o).map(([t, ok, por]) => `<button class="botao" type="button"${ok ? " data-ok" : ""} data-porque="${at(por || "")}">${t}</button>`).join("")}</div><div class="retorno" hidden data-ok-texto="${at(certo[2] || "")}" data-nao-texto="${at(`A certa é: “${certo[0]}”. ${certo[2] || ""}`)}"></div></div>`;
+    }
+    if (d.f === "lacunas") {
+      const palavras = [];
+      const texto = d.t.replace(/\{\{([^}]+)\}\}/g, (_, w) => { palavras.push(w); return `<span data-lacuna="${at(w)}"></span>`; });
+      return `<div class="exercicio" data-lacunas>${cab}<p class="lacunas-texto">${texto}</p><div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas">${[...palavras, ...(d.x || [])].map((w) => `<button class="botao chip-l" type="button">${esc(w)}</button>`).join("")}</div><div><button class="botao primario" type="button" data-verificar>Verificar</button></div><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-pista="${at(d.pista || "leia a frase inteira com a palavra no lugar: ela fica verdadeira?")}"></div></div>`;
+    }
+    if (d.f === "erro") {
+      return `<div class="exercicio" data-ache>${cab}<ol class="ache-codigo ache-texto">${d.t.map((t, i) => `<li${i === d.e ? " data-erro" : ""}>${t}</li>`).join("")}</ol><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-nao-texto="${at(`O trecho errado é o ${d.e + 1}. ${d.por || ""}`)}" data-pista="${at(d.pista || "leia cada trecho e pergunte: isso vale sempre? Um deles afirma algo que não é verdade.")}"></div></div>`;
+    }
+    if (d.f === "ordem") {
+      return `<div class="exercicio ex-texto" data-ordenar data-resposta="${at(d.t.join("|"))}">${cab.replace("</p>", "</p>")}<div class="ordenar" data-banco>${embaralhar(d.t).map((t) => `<button class="botao linha" type="button">${esc(t)}</button>`).join("")}</div><div class="montagem" data-montagem aria-label="Sua ordem"></div><div><button class="botao primario" type="button" data-verificar>Verificar</button></div><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-pista="${at(d.pista || "pergunte de cada passo: ele precisa de algo que outro passo prepara?")}"></div></div>`;
+    }
+    return "";
+  }
+
   // ---------- explicar em 3 linhas, salvo no aparelho ----------
   const CHAVE_EXP = "dominio:explicacoes:v1";
   function explicar(sec, ctx) {
-    const p = [...sec.querySelectorAll(".explique")].find((e) => /Explique em 3 linhas/i.test(e.textContent));
+    const p = [...sec.querySelectorAll(".explique")].find((e) => /Explique em 3 linhas|Com suas palavras/i.test(e.textContent));
     if (!p || p.nextElementSibling && p.nextElementSibling.classList.contains("explicar")) return;
     const todos = ls.ler(CHAVE_EXP, {}), chave = `${ctx.licao}#${sec.id}`;
     p.insertAdjacentHTML("afterend", `<div class="explicar"><label class="visivel-leitor" for="exp-${sec.id}">Sua explicação em até 3 linhas</label>
@@ -409,6 +501,7 @@
     if (tipo === "escolha") escolha(ex, ctx);
     else if (tipo === "classificar") classificar(ex, ctx);
     else if (tipo === "preencher") preencher(ex, ctx);
+    else if (tipo === "lacunas") lacunas(ex, ctx);
     else if (tipo === "ordenar") ordenar(ex, ctx);
     else if (tipo === "ache") ache(ex, ctx);
     else if (tipo === "codigo" && window.Laboratorio) window.Laboratorio.exercicio(ex, ctx, { mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, resolver, pista });
@@ -608,5 +701,5 @@
     ir(atual);
   }
 
-  window.Motor = { licao, montarExercicio, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao };
+  window.Motor = { licao, montarExercicio, criar, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao };
 })();

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="exercicios.css">
 <link rel="stylesheet" href="laboratorio.css">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
@@ -173,8 +174,16 @@ falta = 70 - media.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Média 69.0 e falta 1.0. Repare: a divisão / sempre devolve float, mesmo quando a conta dá exata."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">A objetiva tem peso 2 e a discursiva, peso 1. Qual linha calcula a média ponderada?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="Sem parênteses, só discursiva * 1 é dividido por 3, porque / vem antes de +. A soma precisa estar entre parênteses.">media = objetiva * 2 + discursiva * 1 / 3</button><button class="botao" type="button" data-ok data-porque="Multiplica cada nota pelo peso, soma e divide pela soma dos pesos (2 + 1 = 3). Os parênteses garantem a soma antes da divisão.">media = (objetiva * 2 + discursiva * 1) / 3</button><button class="botao" type="button" data-porque="Essa é a média simples, que dá o mesmo peso às duas notas. Com pesos, cada nota é multiplicada pelo seu peso e a divisão é pela soma dos pesos.">media = (objetiva + discursiva) / 2</button></div>
+          <div class="retorno" hidden data-ok-texto="Multiplica cada nota pelo peso, soma e divide pela soma dos pesos (2 + 1 = 3). Os parênteses garantem a soma antes da divisão." data-nao-texto="A certa é: “media = (objetiva * 2 + discursiva * 1) / 3”. Multiplica cada nota pelo peso, soma e divide pela soma dos pesos (2 + 1 = 3). Os parênteses garantem a soma antes da divisão."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>+ - * / ** fazem as contas; a divisão com / sempre dá decimal.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> como calcular uma nota com pesos usando os operadores do Python.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Como calcular uma nota com pesos usando os operadores do Python. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
 
@@ -265,8 +274,18 @@ par = livre % 2 == 0 (o resto da divisão por 2 é zero?).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Cabem 5 blocos e sobram 5 minutos; 130 é par porque 130 % 2 dá 0."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: 200 minutos em horas e minutos.</p>
+          <p class="lacunas-texto">200 <span data-lacuna="//"></span> 60 dá 3, as horas completas. E 200 <span data-lacuna="%"></span> 60 dá <span data-lacuna="20"></span>, os minutos que sobram. Resultado: 3 h 20 min.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">//</button><button class="botao chip-l" type="button">%</button><button class="botao chip-l" type="button">20</button><button class="botao chip-l" type="button">/</button><button class="botao chip-l" type="button">*</button><button class="botao chip-l" type="button">3,33</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="// conta quantos grupos de 60 cabem; % devolve o que sobra. 3 × 60 = 180, e sobram 20. Com /, sairia 3,33..., que não é hora nem minuto." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>// conta os grupos completos e % devolve o que sobra.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> como você usaria // e % para transformar 200 minutos em horas e minutos.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Como você usaria // e % para transformar 200 minutos em horas e minutos. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
 
@@ -347,8 +366,16 @@ em empatou, troque = por ==: comparar usa dois sinais de igual.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Os dois dão True. E viu o que um = sozinho fazia? Guardava 70 em empatou em vez de comparar."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">Uma destas frases sobre = e == está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>corte = 70 guarda o 70 no nome corte.</li><li>total == corte pergunta se os dois são iguais e responde True ou False.</li><li data-erro>if total = corte: compara os dois valores, do mesmo jeito que o ==.</li><li>total != corte pergunta se os dois são diferentes.</li></ol>
+          <div class="retorno" hidden data-ok-texto="Dentro do if, um = só não compara: o Python para com SyntaxError. Para comparar são dois sinais: if total == corte:." data-nao-texto="O trecho errado é o 3. Dentro do if, um = só não compara: o Python para com SyntaxError. Para comparar são dois sinais: if total == corte:." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Comparações (== != &gt; &lt; &gt;= &lt;=) respondem True ou False; = guarda e == compara.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> a diferença entre <code>=</code> e <code>==</code>, com um exemplo seu.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> A diferença entre <code>=</code> e <code>==</code>, com um exemplo seu. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
 
@@ -424,8 +451,16 @@ junte as duas comparações com and: total &gt;= 70 and discursiva &gt;= 30.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O total passa (78), mas a discursiva não (28): com and, basta uma parte falsa para tudo dar False."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">Qual par de regras usa and e or do jeito certo?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="Com or basta uma condição: quem fez 78 no total e 10 na discursiva passaria. Para exigir as duas, é and.">“Total de pelo menos 70 ou discursiva de pelo menos 30” garante que o candidato cumpriu as duas notas mínimas.</button><button class="botao" type="button" data-porque="Só coincidem quando as duas são verdadeiras ou as duas são falsas. Com uma verdadeira e outra falsa, and dá False e or dá True.">and e or dão sempre o mesmo resultado quando as duas condições são verdadeiras, então tanto faz qual usar.</button><button class="botao" type="button" data-ok data-porque="and só dá True com as duas condições verdadeiras; or dá True com pelo menos uma.">“Total de pelo menos 70 e discursiva de pelo menos 30” pede as duas; “ter diploma ou cinco anos de experiência” se contenta com uma.</button></div>
+          <div class="retorno" hidden data-ok-texto="and só dá True com as duas condições verdadeiras; or dá True com pelo menos uma." data-nao-texto="A certa é: ““Total de pelo menos 70 e discursiva de pelo menos 30” pede as duas; “ter diploma ou cinco anos de experiência” se contenta com uma.”. and só dá True com as duas condições verdadeiras; or dá True com pelo menos uma."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>and exige as duas condições, or se contenta com uma, not inverte.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> uma regra de edital que precise de <code>and</code> e outra que precise de <code>or</code>.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Uma regra de edital que precise de <code>and</code> e outra que precise de <code>or</code>. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
 
@@ -491,8 +526,23 @@ ponha a soma entre parênteses: (n1 + n2) / 2.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Sem parênteses, o Python fazia 9 / 2 primeiro e somava 6: 10.5. Com eles, 7.5."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio ex-texto" data-ordenar data-resposta="Resolve o parêntese: 2 + 3 dá 5|Multiplica: 5 * 4 dá 20|Compara: 20 &gt; 15 dá True|Junta com and: True and True dá True">
+          <p class="rotulo">Para fechar: ponha na ordem</p>
+          <p class="pergunta">Ponha na ordem o que o Python faz em (2 + 3) * 4 &gt; 15 and True.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">Resolve o parêntese: 2 + 3 dá 5</button>
+            <button class="botao linha" type="button">Junta com and: True and True dá True</button>
+            <button class="botao linha" type="button">Multiplica: 5 * 4 dá 20</button>
+            <button class="botao linha" type="button">Compara: 20 &gt; 15 dá True</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Primeiro os parênteses, depois o *, depois a comparação e por último o and. Sem os parênteses, 2 + 3 * 4 daria 14, porque a multiplicação vem antes da soma." data-pista="pergunte de cada passo: ele precisa de algo que outro passo prepara?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>O Python resolve na ordem: parênteses, **, * / // %, + -, comparações, not, and, or.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>2 + 3 * 4</code> dá 14 e como fazer dar 20.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que <code>2 + 3 * 4</code> dá 14 e como fazer dar 20. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
 
@@ -577,8 +627,18 @@ comece a expressão com vagas &gt; 0 and.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. Com vagas 0, a primeira parte dá False e o Python para ali: a divisão nem acontece."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: como o curto-circuito evita a divisão por zero.</p>
+          <p class="lacunas-texto">Em vagas &gt; 0 and inscritos / vagas &gt; 100, se vagas vale 0, a primeira parte dá <span data-lacuna="False"></span>. Com and, o resultado já é False, então o Python <span data-lacuna="não avalia"></span> a segunda parte, e a divisão por zero nunca acontece. Por isso o teste que protege vem <span data-lacuna="antes"></span>.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">False</button><button class="botao chip-l" type="button">não avalia</button><button class="botao chip-l" type="button">antes</button><button class="botao chip-l" type="button">True</button><button class="botao chip-l" type="button">avalia</button><button class="botao chip-l" type="button">depois</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="and para no primeiro False. Com a proteção na frente, a parte perigosa só roda quando é segura." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>and para no primeiro False e or no primeiro True; o resto nem é avaliado.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> como o curto-circuito ajuda a evitar uma divisão por zero.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Como o curto-circuito ajuda a evitar uma divisão por zero. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c6">Marcar este conceito como estudado</button>
       </section>
 

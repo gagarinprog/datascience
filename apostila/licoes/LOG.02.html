@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../trilha.css">
 <link rel="stylesheet" href="../jornada.css">
 <link rel="stylesheet" href="clip.css">
+<link rel="stylesheet" href="exercicios.css">
 <link rel="stylesheet" href="laboratorio.css">
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#0d1017">
@@ -157,8 +158,16 @@ a nova linha é total = total + 6.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O teste de mesa mostra o total passando por 48, 78 e 84: a cada linha o nome aponta para um valor novo."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-ache>
+          <p class="rotulo">Para fechar: ache o erro</p>
+          <p class="pergunta">x valia 5 e o programa executa x = x + 2. Uma das frases está errada. Toque nela.</p>
+          <ol class="ache-codigo ache-texto"><li>O Python calcula primeiro o lado direito: 5 + 2 dá 7.</li><li>Depois, o nome x passa a apontar para o 7.</li><li data-erro>O 5 continua guardado em x, junto com o 7.</li><li>Quem usar x daqui em diante recebe 7.</li></ol>
+          <div class="retorno" hidden data-ok-texto="O nome x larga o 5 e passa a apontar só para o 7. Uma variável aponta para um valor por vez; o antigo não fica junto." data-nao-texto="O trecho errado é o 3. O nome x larga o 5 e passa a apontar só para o 7. Uma variável aponta para um valor por vez; o antigo não fica junto." data-pista="leia cada frase e pergunte: isso vale sempre? Uma delas afirma algo que não é verdade."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Variável é um nome colado num valor; se o valor muda, o nome fica e passa a apontar para o novo.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> com as suas palavras, o que acontece com o 5 quando você escreve <code>x = x + 2</code> e x valia 5.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Com as suas palavras, o que acontece com o 5 quando você escreve <code>x = x + 2</code> e x valia 5. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c1">Marcar este conceito como estudado</button>
       </section>
 
@@ -245,8 +254,18 @@ por último, b = aux (o 3 que estava guardado).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O teste de mesa mostra o 3 passando pela aux antes de chegar ao b."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: o que o sinal = faz em programação.</p>
+          <p class="lacunas-texto">Em programação, o sinal = quer dizer “<span data-lacuna="guarde"></span>”, e não “é igual”. Se a vale 3 e você escreve b = a, o b recebe o valor 3 naquele momento, sem criar <span data-lacuna="ligação"></span> com o a. Depois, a = 10 muda só o <span data-lacuna="a"></span>; o b continua valendo 3.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">guarde</button><button class="botao chip-l" type="button">ligação</button><button class="botao chip-l" type="button">a</button><button class="botao chip-l" type="button">compare</button><button class="botao chip-l" type="button">cópia de a</button><button class="botao chip-l" type="button">b</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Atribuição calcula o lado direito e guarda no nome da esquerda, uma vez. Não cria laço: mudar o a depois não mexe no b." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Atribuição guarda o resultado do lado direito no nome da esquerda; copia o valor, não cria ligação.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> o que significa o sinal = em programação e por que <code>b = a</code> não faz b acompanhar as mudanças de a.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> O que significa o sinal = em programação e por que <code>b = a</code> não faz b acompanhar as mudanças de a. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c2">Marcar este conceito como estudado</button>
       </section>
 
@@ -336,8 +355,16 @@ decimal leva ponto: 39.0. O lógico é True, sem aspas.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso: str, int, float e bool. Repare como &quot;48&quot; entre aspas era texto, mesmo parecendo número."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-escolha>
+          <p class="rotulo">Para fechar: escolha a explicação</p>
+          <p class="pergunta">Por que 70 e "70" são diferentes para o Python?</p>
+          <div class="opcoes opcoes-texto"><button class="botao" type="button" data-porque="O Python não converte sozinho: &quot;70&quot; + 1 para com TypeError. Quem converte é você, com int().">Não são diferentes: o Python converte as aspas sozinho quando precisa.</button><button class="botao" type="button" data-porque="A diferença não é de memória, é de tipo: com texto, o + junta em vez de somar.">"70" ocupa mais memória, mas as contas dão o mesmo resultado.</button><button class="botao" type="button" data-ok data-porque="70 + 1 dá 71; &quot;70&quot; + &quot;1&quot; dá &quot;701&quot;. Mesma aparência, tipos diferentes.">70 é int, um número que entra em conta; "70" é str, um texto de dois caracteres, e o tipo decide o que se pode fazer com cada um.</button></div>
+          <div class="retorno" hidden data-ok-texto="70 + 1 dá 71; &quot;70&quot; + &quot;1&quot; dá &quot;701&quot;. Mesma aparência, tipos diferentes." data-nao-texto="A certa é: “70 é int, um número que entra em conta; &quot;70&quot; é str, um texto de dois caracteres, e o tipo decide o que se pode fazer com cada um.”. 70 + 1 dá 71; &quot;70&quot; + &quot;1&quot; dá &quot;701&quot;. Mesma aparência, tipos diferentes."></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Todo valor tem um tipo (int, float, str ou bool), e o tipo decide o que se pode fazer com ele.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>70</code> e <code>"70"</code> são diferentes para o Python.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que <code>70</code> e <code>"70"</code> são diferentes para o Python. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c3">Marcar este conceito como estudado</button>
       </section>
 
@@ -410,8 +437,23 @@ o erro diz que texto só junta com texto: ponha o total dentro de str( ).
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. str(total) virou &quot;78&quot; e o + juntou os dois textos."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio ex-texto" data-ordenar data-resposta="Ler o erro: TypeError, tipos que não combinam|Ver que &quot;8&quot; é texto e 2 é número|Decidir o que se quer: somar (10) ou juntar (&quot;82&quot;)|Converter o lado certo: int(&quot;8&quot;) + 2 ou &quot;8&quot; + str(2)">
+          <p class="rotulo">Para fechar: ponha na ordem</p>
+          <p class="pergunta">"8" + 2 parou com erro. Ponha na ordem o raciocínio para consertar.</p>
+          <div class="ordenar" data-banco>
+            <button class="botao linha" type="button">Ler o erro: TypeError, tipos que não combinam</button>
+            <button class="botao linha" type="button">Converter o lado certo: int("8") + 2 ou "8" + str(2)</button>
+            <button class="botao linha" type="button">Decidir o que se quer: somar (10) ou juntar ("82")</button>
+            <button class="botao linha" type="button">Ver que "8" é texto e 2 é número</button>
+          </div>
+          <div class="montagem" data-montagem aria-label="Sua ordem"></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="O + não mistura texto e número. Primeiro se entende o erro e os tipos; depois se decide o resultado desejado; só então se converte o lado certo." data-pista="pergunte de cada passo: ele precisa de algo que outro passo prepara?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>int(), float() e str() trocam o tipo de um valor; só funcionam quando o valor faz sentido no novo tipo.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> por que <code>"8" + 2</code> dá erro e como corrigir.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> Por que <code>"8" + 2</code> dá erro e como corrigir. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c4">Marcar este conceito como estudado</button>
       </section>
 
@@ -485,8 +527,18 @@ nas duas regras, troque o 70 por NOTA_DE_CORTE.
           </template>
           <div class="retorno" hidden data-ok-texto="Isso. O número mora num lugar só, com um nome que explica o que ele é."></div>
         </div>
+        <h3>Para fechar</h3>
+        <div class="exercicio" data-lacunas>
+          <p class="rotulo">Para fechar: complete a explicação</p>
+          <p class="pergunta">Complete: o que se ganha com uma constante.</p>
+          <p class="lacunas-texto">Com NOTA_DE_CORTE = 70 no começo do programa, o número mora num lugar <span data-lacuna="só"></span>: se o edital mudar o corte, você troca uma linha. E quem lê entende o que o 70 <span data-lacuna="significa"></span>, em vez de achar um número solto. O nome em <span data-lacuna="maiúsculas"></span> avisa que esse valor não deve mudar enquanto o programa roda.</p>
+          <div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas"><button class="botao chip-l" type="button">só</button><button class="botao chip-l" type="button">significa</button><button class="botao chip-l" type="button">maiúsculas</button><button class="botao chip-l" type="button">vários</button><button class="botao chip-l" type="button">minúsculas</button><button class="botao chip-l" type="button">custa</button></div>
+          <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
+          <div class="retorno" hidden data-ok-texto="Constante dá nome e endereço único a um valor fixo: muda-se num lugar só, e o código se explica sozinho." data-pista="leia a frase inteira com cada palavra no lugar: ela fica verdadeira?"></div>
+        </div>
+
 <p class="resumo"><b>Resumo em uma frase</b>Constante é um valor fixo guardado num nome em MAIÚSCULAS, definido num lugar só.</p>
-        <p class="explique"><strong>Explique em 3 linhas:</strong> o que ganhamos ao trocar um número solto por uma constante com nome.</p>
+        <p class="explique explique-opcional"><strong>Com suas palavras (opcional):</strong> O que ganhamos ao trocar um número solto por uma constante com nome. Fica salvo neste aparelho.</p>
         <button class="botao" type="button" data-marcar="c5">Marcar este conceito como estudado</button>
       </section>
 
