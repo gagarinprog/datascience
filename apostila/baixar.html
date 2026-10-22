@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baixar o curso · Domínio</title>
+<link rel="icon" type="image/png" href="icones/icone-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d1017">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="trilha.css">
+<link rel="stylesheet" href="jornada.css">
+<link rel="stylesheet" href="botoes.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
+<style>
+  body { min-height: 100dvh; margin: 0; display: grid; place-items: center; padding: 24px 16px; box-sizing: border-box; }
+  .baixar { width: min(480px, 100%); display: grid; gap: 18px; }
+  .baixar h1 { margin: 0; font: 700 28px/1.15 var(--f-titulo, "Bricolage Grotesque", sans-serif); }
+  .baixar p { margin: 0; line-height: 1.55; }
+  .baixar .offline-etapas { gap: 14px; font-size: 16px; }
+  .baixar .offline-etapas small { font-size: 14px; }
+  .baixar .estado { padding: 14px 16px; border: 1px solid var(--linha-forte); border-radius: 10px; }
+  .baixar .estado.ok { border-color: var(--certo); }
+  .baixar .acoes { display: grid; gap: 10px; }
+  .baixar .acoes a, .baixar .acoes button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+  .baixar .nota { color: var(--texto-2); font-size: 14.5px; }
+</style>
+</head>
+<body>
+<main class="baixar">
+  <h1>Baixando o Domínio para usar sem internet</h1>
+  <p>Deixe esta tela aberta, de preferência no Wi-Fi. Começa sozinho e leva menos de um minuto numa rede boa (cerca de 50 MB).</p>
+  <ol class="offline-etapas" id="etapas"></ol>
+  <p class="estado" id="estado" role="status" aria-live="polite">Preparando...</p>
+  <div class="acoes">
+    <a class="btn btn-3d" id="abrir" href="index.html" hidden>Abrir o Domínio</a>
+    <button type="button" class="btn" id="denovo" hidden>Tentar de novo</button>
+  </div>
+  <p class="nota" id="nota" hidden>Para testar: ligue o modo avião e abra este mesmo endereço (ou o ícone do Domínio, se você adicionou à tela inicial). Abra sempre pelo mesmo navegador em que baixou.</p>
+</main>
+<script src="offline.js" charset="utf-8"></script>
+<script>
+  // Página de um toque só: registra o app, recarrega uma vez se precisar e baixa tudo sem pedir nada.
+  (function () {
+    const O = window.Offline, lista = document.getElementById("etapas"), estado = document.getElementById("estado");
+    const abrir = document.getElementById("abrir"), denovo = document.getElementById("denovo"), nota = document.getElementById("nota");
+    lista.innerHTML = O.ETAPAS.map((x) => `<li data-etapa="${x.id}"><span class="offline-marca" aria-hidden="true"></span><span><b>${x.nome}</b><small></small></span></li>`).join("");
+    const rotulo = { andamento: "baixando...", ok: "pronto", falhou: "não deu" };
+    const dizer = (t, ok) => { estado.textContent = t; estado.className = "estado" + (ok ? " ok" : ""); };
+
+    async function comecar() {
+      denovo.hidden = true;
+      if (!("serviceWorker" in navigator) || !window.caches) { dizer("Este navegador não guarda sites para usar sem internet. Abra este endereço no Chrome (Android) ou no Safari (iPhone)."); return; }
+      if (!navigator.onLine) { dizer("Sem internet agora. Conecte ao Wi-Fi e toque em Tentar de novo."); denovo.hidden = false; return; }
+      try { await navigator.serviceWorker.register("sw.js"); } catch (e) { dizer("O navegador não deixou instalar o app. Confira se não está numa aba anônima e tente de novo."); denovo.hidden = false; return; }
+      if (!navigator.serviceWorker.controller) {
+        dizer("Instalando o app no aparelho...");
+        await navigator.serviceWorker.ready;
+        // o app acabou de se instalar: uma recarga coloca esta página sob ele (só uma vez, para não ficar em laço)
+        let ja = false; try { ja = sessionStorage.getItem("baixar-recarregou") === "1"; sessionStorage.setItem("baixar-recarregou", "1"); } catch (e) { ja = true; }
+        if (!navigator.serviceWorker.controller && !ja) { location.reload(); return; }
+      }
+      dizer("Baixando. Não feche esta tela.");
+      const ok = await O.baixarTudo((id, est, texto) => {
+        const li = lista.querySelector(`[data-etapa="${id}"]`);
+        if (!li) return;
+        li.className = est;
+        li.querySelector("small").textContent = texto || rotulo[est] || "";
+      });
+      try { sessionStorage.removeItem("baixar-recarregou"); } catch (e) { /* sem armazenamento */ }
+      if (ok) { dizer("Pronto. O curso inteiro está neste aparelho, inclusive o Python e o Centro de Dados.", true); abrir.hidden = false; nota.hidden = false; abrir.focus(); }
+      else { dizer("Parou no item marcado. O que já veio fica guardado: toque em Tentar de novo."); denovo.hidden = false; }
+    }
+    denovo.addEventListener("click", comecar);
+    comecar();
+  })();
+</script>
+</body>
+</html>
