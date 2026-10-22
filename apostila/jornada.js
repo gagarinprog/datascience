@@ -1255,6 +1255,43 @@
     });
     entrada.click();
   }
+  // baixar o curso inteiro: o Python, o PostgreSQL e tudo o que o site usa ficam guardados no aparelho
+  function dialogoOffline(depois) {
+    const O = window.Offline;
+    if (!O) return;
+    const dlg = document.createElement("dialog");
+    dlg.className = "trajeto-dlg offline-dlg";
+    dlg.setAttribute("aria-labelledby", "offline-t");
+    const feito = O.ultimo();
+    dlg.innerHTML = `<h2 id="offline-t">Baixar o curso inteiro</h2>
+      <p>${feito ? `Já baixado em ${esc(dataBR(feito))}. Baixar de novo confere tudo e completa o que faltar.` : "Guarda neste aparelho tudo o que o curso usa, inclusive o Python e o PostgreSQL. São cerca de 50 MB: prefira o Wi-Fi."}</p>
+      <ol class="offline-etapas">${O.ETAPAS.map((x) => `<li data-etapa="${x.id}"><span class="offline-marca" aria-hidden="true"></span><span><b>${esc(x.nome)}</b><small></small></span></li>`).join("")}</ol>
+      <p class="offline-fim" role="status" aria-live="polite"></p>
+      <div class="trajeto-acoes"><button type="button" class="btn" data-fechar>Fechar</button><button type="button" class="btn btn-3d" data-baixar>${feito ? "Conferir e completar" : "Baixar agora"}</button></div>`;
+    document.body.appendChild(dlg);
+    let rodando = false;
+    const sair = () => { if (rodando) return; dlg.close(); dlg.remove(); if (depois) depois(); };
+    dlg.querySelector("[data-fechar]").addEventListener("click", sair);
+    dlg.addEventListener("cancel", (e) => { e.preventDefault(); sair(); });
+    const bt = dlg.querySelector("[data-baixar]"), fim = dlg.querySelector(".offline-fim");
+    bt.addEventListener("click", async () => {
+      rodando = true; bt.disabled = true; dlg.querySelector("[data-fechar]").disabled = true; fim.textContent = "Baixando. Deixe esta tela aberta: o Python leva alguns minutos numa rede lenta.";
+      dlg.querySelectorAll("[data-etapa]").forEach((li) => { li.className = ""; li.querySelector("small").textContent = ""; });
+      const rotulo = { andamento: "baixando...", ok: "pronto", falhou: "não deu" };
+      const ok = await O.baixarTudo((id, estado, texto) => {
+        const li = dlg.querySelector(`[data-etapa="${id}"]`);
+        if (!li) return;
+        li.className = estado;
+        li.querySelector("small").textContent = texto || rotulo[estado] || "";
+      });
+      rodando = false; bt.disabled = false; dlg.querySelector("[data-fechar]").disabled = false;
+      fim.textContent = ok ? "Pronto. O curso inteiro está neste aparelho: pode estudar sem internet, inclusive o Python e o Centro de Dados." : "Parou no item marcado. O que já veio fica guardado: toque de novo para continuar.";
+      bt.textContent = ok ? "Conferir de novo" : "Tentar de novo";
+      if (ok) { toast("Curso baixado: pode estudar sem internet.", "check-circle-duotone"); dlg.querySelector("[data-fechar]").focus(); }
+    });
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+    bt.focus();
+  }
   function dialogoTrajeto(texto) {
     const T = window.Trajeto;
     let pacote = null, erro = "";
@@ -1293,7 +1330,7 @@
       mini.innerHTML = guia().expr.padrao;
       mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
       const tema = window.Tema ? window.Tema.atual() : "grafite";
-      menu.innerHTML = (window.Trajeto ? `<p>Seu trajeto</p><button type="button" data-trajeto="salvar"><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Salvar meu trajeto</b><small>${window.Trajeto.ultimoSalvo() ? "último arquivo em " + dataBR(window.Trajeto.ultimoSalvo()) : "baixa um arquivo com tudo"}</small></span><span></span></button><button type="button" data-trajeto="carregar"><span class="trajeto-ic">${ic("upload-duotone")}</span><span><b>Carregar trajeto</b><small>de um arquivo salvo antes</small></span><span></span></button>${window.Trajeto.temAnterior() ? `<button type="button" data-trajeto="desfazer"><span class="trajeto-ic">${ic("history-duotone")}</span><span><b>Desfazer o carregamento</b><small>volta ao trajeto de antes</small></span><span></span></button>` : ""}` : "") + `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
+      menu.innerHTML = (window.Offline && window.Offline.disponivel() ? `<p>Sem internet</p><button type="button" data-offline><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Baixar o curso inteiro</b><small>${window.Offline.ultimo() ? "baixado em " + dataBR(window.Offline.ultimo()) + "; toque para conferir" : "para estudar tudo sem internet"}</small></span><span></span></button>` : "") + (window.Trajeto ? `<p>Seu trajeto</p><button type="button" data-trajeto="salvar"><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Salvar meu trajeto</b><small>${window.Trajeto.ultimoSalvo() ? "último arquivo em " + dataBR(window.Trajeto.ultimoSalvo()) : "baixa um arquivo com tudo"}</small></span><span></span></button><button type="button" data-trajeto="carregar"><span class="trajeto-ic">${ic("upload-duotone")}</span><span><b>Carregar trajeto</b><small>de um arquivo salvo antes</small></span><span></span></button>${window.Trajeto.temAnterior() ? `<button type="button" data-trajeto="desfazer"><span class="trajeto-ic">${ic("history-duotone")}</span><span><b>Desfazer o carregamento</b><small>volta ao trajeto de antes</small></span><span></span></button>` : ""}` : "") + `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
     };
     const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });
@@ -1302,6 +1339,7 @@
       if (t && window.Tema) { window.Tema.definir(t.dataset.temaOpcao); atualizar(); return; }
       const tj = e.target.closest("[data-trajeto]");
       if (tj) { fechar(); acaoTrajeto(tj.dataset.trajeto); return; }
+      if (e.target.closest("[data-offline]")) { fechar(); dialogoOffline(atualizar); return; }
       const tr = e.target.closest("[data-traco-opcao]");
       if (tr && window.Tracos) { window.Tracos.definir(tr.dataset.tracoOpcao); atualizar(); render(); return; }
       const b = e.target.closest("[data-guia]");

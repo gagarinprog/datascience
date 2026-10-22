@@ -985,3 +985,16 @@ body.no-inicio .palco { padding-top: 12px; padding-bottom: 12px; }
 @media (max-width: 560px) {
   .tut.com-foco .tut-texto { max-height: max(120px, calc(52dvh - 190px)); overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; }
 }
+/* baixar o curso inteiro (offline.js) */
+.offline-etapas { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.offline-etapas li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.offline-etapas li > span:last-child { display: grid; gap: 2px; }
+.offline-etapas small { color: var(--texto-2); font-size: 13.5px; line-height: 1.4; }
+.offline-marca { width: 16px; height: 16px; margin-top: 3px; border-radius: 50%; border: 2px solid var(--linha-forte); }
+.offline-etapas .andamento .offline-marca { border-color: var(--azul-500, var(--tinta)); border-right-color: transparent; animation: offline-gira 0.9s linear infinite; }
+.offline-etapas .ok .offline-marca { border-color: var(--certo); background: var(--certo); }
+.offline-etapas .falhou .offline-marca { border-color: var(--erro, #c2410c); background: var(--erro, #c2410c); }
+.offline-etapas .falhou small { color: var(--texto); }
+.offline-fim:empty { display: none; }
+@keyframes offline-gira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .offline-etapas .andamento .offline-marca { animation: none; border-right-color: var(--azul-500, var(--tinta)); border-style: dotted; } }

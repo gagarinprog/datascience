@@ -8,7 +8,7 @@ Plataforma pessoal de estudo de Ciência de Dados: lições curtas, revisão esp
 
 O lugar principal é o site: https://gagarinprog.github.io/datascience/
 
-1. **Abra no celular ou no computador e instale.** No Chrome do celular, menu e "Adicionar à tela inicial"; no computador, o ícone de instalar na barra de endereço. Depois da primeira visita, tudo funciona sem internet (o Python e o banco do laboratório baixam uma vez, no primeiro uso).
+1. **Abra no celular ou no computador e instale.** No Chrome do celular, menu e "Adicionar à tela inicial"; no computador, o ícone de instalar na barra de endereço. Para estudar sem internet, ainda com Wi-Fi, abra o menu do guia (o rosto no canto de cima) e toque em **Baixar o curso inteiro** (cerca de 50 MB, com o Python e o PostgreSQL). Quando os quatro itens ficarem prontos, o curso todo roda sem internet.
 2. **Primeira visita:** o Início apresenta o programa e o botão abre o tutorial (sete paradas pela tela real). Escolha o guia e o traço no topo.
 3. **Comece por "Comece por aqui: a lista de aprovados"**, no cartão do mapa. Depois siga a ordem do mapa: Lógica (LOG), Python (PY), Banco de dados (BD) e assim por diante. Cada matéria tem a trilha de como funciona, os módulos em estudo de 5 passos e, quando existe, a lição ilustrada.
 4. **No dia a dia:** abra o Início e toque em **Continuar de onde parou**. Se o Início avisar que há revisão para hoje, faça a revisão primeiro (5 a 10 minutos).

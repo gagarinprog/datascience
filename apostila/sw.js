@@ -3,7 +3,7 @@
 // Fontes e bibliotecas de CDN: cópia guardada primeiro, porque não mudam. As grandes (o PostgreSQL e o Python
 // do laboratório) não entram na instalação: ficam guardadas no primeiro uso, e daí em diante abrem sem internet.
 // Toda lição ou arquivo novo em apostila/ entra em ARQUIVOS; o teste tests/apostila-pwa.test.ts confere.
-const CACHE = "dominio-v18";
+const CACHE = "dominio-v19";
 const ARQUIVOS = [
   "./",
   "./index.html",
@@ -74,6 +74,7 @@ const ARQUIVOS = [
   "./avatares-manga.js",
   "./tracos.js",
   "./trajeto.js",
+  "./offline.js",
   "./guia-mov.js",
   "./guia-mov.css",
   "./passo/passo.js",
@@ -86,6 +87,8 @@ const CDN = [
   "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js",
   "https://cdn.jsdelivr.net/npm/animejs@4.4.1/dist/bundles/anime.umd.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js",
+  "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js",
+  "https://cdn.jsdelivr.net/npm/ts-fsrs@5.4.2/dist/index.umd.js",
 ];
 
 self.addEventListener("install", (e) => {
@@ -133,4 +136,29 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   e.respondWith(caches.match(req).then((r) => r || fetch(req).then((resp) => guardar(req, resp))));
+});
+
+// "Baixar o curso inteiro" (offline.js): confere cada arquivo do site e das bibliotecas e baixa o que faltar
+self.addEventListener("message", (e) => {
+  if (!e.data || e.data.tipo !== "conferir" || !e.ports[0]) return;
+  const porta = e.ports[0];
+  e.waitUntil(
+    caches.open(CACHE).then(async (c) => {
+      const falhas = [];
+      let baixados = 0;
+      const lista = [...ARQUIVOS.map((u) => new URL(u, self.location.href).href), ...CDN];
+      for (const u of lista) {
+        if (await c.match(u, { ignoreSearch: !u.startsWith("https://fonts") })) continue;
+        try {
+          const r = await fetch(u, u.startsWith(self.location.origin) ? {} : { mode: "cors" });
+          if (!r.ok) throw new Error(String(r.status));
+          await c.put(u, r);
+          baixados++;
+        } catch (err) {
+          falhas.push(u);
+        }
+      }
+      porta.postMessage({ total: lista.length, baixados, falhas });
+    }),
+  );
 });
