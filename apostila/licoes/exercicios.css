@@ -136,3 +136,8 @@
 :root .explique { border-radius: 10px; }
 /* dentro da cascata, quem fecha o conceito é o botão de seguir; o marcar fica só fora dela */
 .cx-corpo [data-marcar] { display: none; }
+
+/* a etapa aberta pela cascata não fica escondida atrás da barra de passos fixa no topo */
+.cx-item, .secao { scroll-margin-top: 104px; }
+/* a resposta certa (e a escolhida errada) ficam legíveis depois que o exercício trava */
+:root .exercicio .certo:disabled, :root .exercicio .errado:disabled, :root .exercicio .revelado button:disabled, :root .exercicio .ok button:disabled { opacity: 1; cursor: default; }

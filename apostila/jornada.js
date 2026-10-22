@@ -380,7 +380,7 @@
       ? `<div class="ini-acao"><p class="ini-meta">Começo</p><h1 class="ini-titulo">Conheça o Domínio em um minuto</h1>
           <ol class="ini-pilares"><li>O mapa com as ${MATERIAS.length} matérias, na ordem em que uma prepara a outra</li><li>Lições de 5 minutos, com exercício corrigido na hora</li><li>O laboratório: um banco de dados que você constrói e apresenta</li></ol>
           <button type="button" class="btn btn-3d b-prog ini-botao" data-ini-tutorial style="--p:0" data-passo="7 paradas">Começar o tutorial</button>
-          <a class="ini-pular" href="#estudo-${prox.codigo}">Pular e ir direto para a primeira lição</a></div>`
+          <a class="ini-pular" href="licoes/INICIO.html" data-pular-tutorial>Pular e ir direto para a primeira lição</a></div>`
       : `<div class="ini-acao"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
           <a class="btn btn-3d b-prog ini-botao" href="#estudo-${prox.codigo}" style="--p:${passo / 5}" data-passo="passo ${passo + 1} de 5">${passo ? "Continuar" : "Começar"}</a></div>`;
     const atalho = (href, icone, titulo, sub, num) => `<a class="ini-atalho" href="${href}"><span class="ini-ic">${ic(icone)}</span><b>${titulo}</b><small>${sub}</small><span class="ini-num">${num}</span></a>`;
@@ -402,6 +402,9 @@
     if (btT) btT.addEventListener("click", () => acaoTrajeto("salvar"));
     const bt = document.querySelector("[data-ini-tutorial]");
     if (bt) bt.addEventListener("click", () => abrirTutorial(0));
+    // quem pula o tutorial não o recebe de novo ao abrir o mapa (fica no botão Tutorial do topo)
+    const pl = document.querySelector("[data-pular-tutorial]");
+    if (pl) pl.addEventListener("click", () => gravarTut(Object.assign(lerTut(), { visto: true })));
     teclas = null;
   }
 
@@ -821,7 +824,7 @@
       <ol class="conceito-cards" ${iv()}>${mod.conceitos.map((c, j) => `<li style="--j:${j}" class="${marcados.has(j) ? "entendido" : ""}"><span class="glossavel">${esc(c.charAt(0).toUpperCase() + c.slice(1))}</span><button type="button" class="c-ok" data-c="${j}" aria-pressed="${marcados.has(j)}">${ic("check-bold")}<span>${marcados.has(j) ? "entendi" : "marcar"}</span></button></li>`).join("")}</ol>
       ${LICOES[cod] ? `<a class="cartao-link" href="${LICOES[cod]}" ${iv()}><span class="ic-a">${ic("play-duotone")}</span><span><b>Lição ilustrada deste módulo</b><small>exercícios com correção na hora, um conceito por vez</small></span>${ic("arrow-right-bold")}</a>` : ""}
       <a class="cartao-link" href="#guia-${m.sigla}" ${iv()}><span class="ic-a">${ic("film-strip-duotone")}</span><span><b>Ver o desenho, o clipe e a caixa interativa</b><small>${esc(m.nome)}: como funciona</small></span>${ic("arrow-right-bold")}</a>
-      <p class="passo-sub" ${iv()}>A aula de cada conceito, com exercícios corrigidos, também está no tutor: no Claude Code, digite <code>/aula</code>.</p>`;
+      <p class="passo-sub" ${iv()}>Opcional: para tirar dúvidas com um tutor, abra o Claude e digite <code>/aula</code>.</p>`;
     if (p === 3) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Cuidado com</h1>
       <div class="cuidado" ${iv()}><span class="ic-a">${ic("warning-duotone")}</span><p class="glossavel">${esc(mod.tropeco)}</p></div>
       <div class="fala" ${iv()}>${mascote("pensa", "", "pensar")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
@@ -1138,10 +1141,10 @@
       { alvo: null, expr: "feliz", t: `Oi, eu sou ${esc(guia().nome)}`, h: `<p>Vou acompanhar você do primeiro algoritmo ao primeiro modelo. Antes, o que faz um cientista de dados: ele percorre este ciclo, de novo e de novo, em cada projeto.</p>${lista(CICLO_CD, true)}<p>Cada matéria do Domínio treina uma ou mais etapas desse ciclo, e eu sempre aviso qual.</p>` },
       { alvo: ".legenda-linhas", expr: "explica", t: "O mapa: 16 matérias em 6 linhas", h: `<p>Cada linha junta matérias que treinam as mesmas etapas do trabalho:</p>${lista(MUNDOS.map((w) => `<b>${esc(w.nome)}</b>: ${w.siglas.map((sg) => esc((POR_SIGLA[sg].etapa || "").toLowerCase())).join(", ")}`))}<p>Passe o mouse ou toque numa estação: eu digo o que ela usa, o que ela prepara e onde ela entra no trabalho.</p>` },
       { alvo: "[data-principal]", expr: "explica", t: "Um botão para seguir", h: `<p>O Continuar leva sempre ao próximo módulo da sequência, agora <b>${esc(prox.nome)}</b>. Não precisa escolher nada: a ordem já respeita o que cada matéria pede antes.</p>` },
-      { alvo: null, expr: "explica", t: "Cada módulo em 5 passos", h: `${lista(PASSOS.map(([n]) => esc(n)), true)}<p>No passo “Para que serve” eu conto onde aquilo aparece no trabalho. No último, você responde com as suas palavras, compara com a resposta e o módulo fica dominado.</p>` },
+      { alvo: null, expr: "explica", t: "Cada módulo em 5 passos", h: `${lista(PASSOS.map(([n]) => esc(n)), true)}<p>No passo “Para que serve” eu conto onde aquilo aparece no trabalho. No último, você responde uma pergunta que se corrige na hora (escolher, completar, achar o erro ou pôr na ordem); acertou, o módulo fica dominado.</p>` },
       { alvo: 'a[href="licoes/INICIO.html"]', expr: "uau", t: "Lições com animação e prática", h: "<p>Nas lições ilustradas, cada conceito abre em etapas, uma de cada vez: um desafio antes de ler, a animação passo a passo, os exercícios e a sua explicação. Errou? Na primeira vez vem a dica; na segunda, a resposta comentada. O melhor começo é a lista de aprovados.</p>" },
       { alvo: 'a[href="castelo/index.html"]', expr: "feliz", t: "O laboratório: a prática que fixa", h: "<p>No Centro de Dados você monta um banco PostgreSQL do zero, como num projeto real: cria as tabelas, carrega os dados, consulta, analisa com Python, administra o banco e apresenta os resultados. Cada módulo começa dizendo em que momento do trabalho aquilo acontece.</p>" },
-      { alvo: "#guia-btn", expr: "padrao", t: "Seu guia, o tema e este tutorial", h: "<p>Aqui você troca o guia e o tema. O tutorial fica no botão ao lado, para rever quando quiser. O que você errar volta para revisão em 1, 3, 7, 14 e 30 dias, e o mapa avisa quando há revisão.</p>" },
+      { alvo: "#guia-btn", expr: "padrao", t: "Seu guia, o tema e este tutorial", h: "<p>Aqui você troca o guia e o tema e salva o seu trajeto num arquivo, para levar a outro aparelho. O tutorial fica no botão ao lado, para rever quando quiser. O que você errar volta para revisão em 1, 3, 7, 14 e 30 dias, e o mapa avisa quando há revisão.</p>" },
     ];
   }
   let tutAberto = null;
@@ -1181,8 +1184,11 @@
       bp.textContent = k === n - 1 ? "Começar a estudar" : "Próximo";
       bp.style.setProperty("--p", (k + 1) / n); bp.dataset.passo = `${k + 1} de ${n}`;
       if (alvo) {
-        // o alvo fica na metade de cima da tela; o cartão do guia fica embaixo
-        const topo = alvo.getBoundingClientRect().top + window.scrollY - 110;
+        // o alvo fica no espaço entre o topo e o cartão do guia, centrado quando cabe (no celular o cartão ocupa a metade de baixo)
+        const ra = alvo.getBoundingClientRect(), cartao = el.querySelector(".tut-cartao").getBoundingClientRect();
+        const cabeca = 70, livre = (cartao.top > cabeca ? cartao.top : window.innerHeight) - cabeca;
+        const folga = ra.height < livre ? Math.min(40, (livre - ra.height) / 2) : 0;
+        const topo = ra.top + window.scrollY - cabeca - folga;
         window.scrollTo({ top: Math.max(0, topo), behavior: semMovimento() ? "auto" : "smooth" });
       }
       posicionar();
@@ -1193,7 +1199,10 @@
       gravarTut(Object.assign(lerTut(), feito ? { feito: true, parada: 0 } : { visto: true }));
       window.removeEventListener("scroll", posicionar); window.removeEventListener("resize", posicionar);
       el.remove(); tutAberto = null;
-      if (voltarFoco && voltarFoco.focus) voltarFoco.focus();
+      if (voltarFoco && voltarFoco.focus) voltarFoco.focus({ preventScroll: true });
+      // ao terminar, a ação principal do mapa fica à vista
+      const principal = document.querySelector("[data-principal]");
+      if (principal && principal.scrollIntoView) principal.scrollIntoView({ block: "center", behavior: semMovimento() ? "auto" : "smooth" });
     };
     el.addEventListener("click", (e) => {
       const b = e.target.closest("[data-tut]");

@@ -119,6 +119,7 @@
         const p = b.querySelector(`[data-p="${id}"]`);
         p.querySelector(".ed-trilho i").style.width = `${Math.max(2, (v / N) * 100)}%`;
         await contar(p.querySelector("[data-c]"), v, id === "lista" ? 1400 : 700);
+        p.querySelector(".ed-passos small").textContent = v === 1 ? "passo" : "passos";
         p.classList.add("chegou");
       }));
       nota.textContent = N >= 100000

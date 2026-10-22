@@ -286,6 +286,25 @@
     el.className = "retorno " + tipo;
     el.innerHTML = `<span class="cab">${cab}</span>${corpo}`;
   }
+  // nas tarefas que conferem as colunas de uma tabela, diz qual coluna está diferente e como
+  function detalheColunas(v, achado) {
+    if (!/information_schema\.columns/.test(v.consulta) || !Array.isArray(achado)) return "";
+    const linhas = achado.map((r) => (Array.isArray(r) ? r : Object.values(r)).map(String));
+    const tabela = (/table_name = '(\w+)'/.exec(v.consulta) || [])[1] || "a tabela";
+    if (!linhas.length) return `A tabela ${tabela} ainda não existe. Crie com CREATE TABLE ${tabela} (...).`;
+    const achou = new Map(linhas.map((r) => [r[0], r])), ditos = [];
+    for (const [n, tipo, nulo] of v.esperado.map((r) => r.map(String))) {
+      const a = achou.get(n);
+      if (!a) ditos.push(`falta a coluna ${n}`);
+      else if (a[1] !== tipo) ditos.push(`a coluna ${n} está como ${a[1]}, e o pedido é ${tipo}`);
+      else if (a[2] !== nulo) ditos.push(nulo === "NO" ? `a coluna ${n} precisa de NOT NULL` : `a coluna ${n} não deveria ter NOT NULL`);
+    }
+    const pedidas = new Set(v.esperado.map((r) => String(r[0])));
+    linhas.filter((r) => !pedidas.has(r[0])).forEach((r) => ditos.push(`a coluna ${r[0]} não foi pedida`));
+    if (!ditos.length) return `As colunas de ${tabela} estão certas, mas numa ordem diferente da pedida (${v.esperado.map((r) => r[0]).join(", ")}).`;
+    const t = ditos.slice(0, 2).join("; ");
+    return `Na tabela ${tabela}, ${t}.`;
+  }
   const tresPartes = (p) => `<ul class="tres-partes">${p.certo ? `<li><b>Certo até aqui:</b> ${p.certo}</li>` : ""}<li><b>O erro:</b> ${p.erro}</li>${p.passo ? `<li><b>Próximo passo:</b> ${p.passo}</li>` : ""}</ul>`;
 
   // a dica de um exercício de código vai para dentro do editor, como comentário abaixo do código da pessoa
@@ -365,7 +384,7 @@
       const exec = await rodar();
       const problemas = [];
       for (const v of t.verificar || []) {
-        try { const c = Cmp.comparar(await consultar(v.consulta), v.esperado, { ordem: true }); if (!c.ok) problemas.push(v.msg); }
+        try { const achado = await consultar(v.consulta); const c = Cmp.comparar(achado, v.esperado, { ordem: true }); if (!c.ok) problemas.push(detalheColunas(v, achado) || v.msg); }
         catch (e) { problemas.push(v.msg); }
       }
       if (t.gabarito) {
@@ -386,7 +405,7 @@
       }
       // na prova não há segunda chance nem solução: quem refaz a prova corrige o próprio código
       if (modo === "teste") { el.dataset.feita = "1"; retorno(ret, "nao", "Errado.", `<span>${esc(problemas[0])}</span>`); aoConcluir("errada"); return; }
-      if (tentativas === 1) { const foi = dicaNoEditor(ta, t.pista, "SQL"); guardar(); retorno(ret, "nao tentativa", "Ainda não. Tente de novo.", tresPartes({ erro: esc(problemas[0]), passo: foi ? AVISO_DICA : t.pista })); }
+      if (tentativas === 1) { const foi = dicaNoEditor(ta, t.pista, "SQL"); guardar(); retorno(ret, "nao tentativa", "Ainda não. Tente de novo.", tresPartes({ certo: exec.ok ? "o comando roda sem erro no PostgreSQL." : "", erro: esc(problemas[0]), passo: foi ? AVISO_DICA : t.pista })); }
       else {
         el.dataset.solucao = "1";
         const sol = tabela ? `DROP TABLE ${tabela[1]};\n\n${t.solucao}` : t.solucao;
@@ -441,7 +460,7 @@
       }
       const motivo = r.x ? (r.x.teste ? `um teste falhou: ${r.x.texto}` : r.x.texto) : "o Python não carregou.";
       if (modo === "teste") { el.dataset.feita = "1"; retorno(ret, "nao", "Errado.", `<span>${esc(motivo)}</span>`); aoConcluir("errada"); return; }
-      if (tentativas === 1) { const foi = dicaNoEditor(ta, t.pista, "Python"); guardar(); retorno(ret, "nao tentativa", "Ainda não. Tente de novo.", tresPartes({ erro: esc(motivo), passo: foi ? AVISO_DICA : t.pista })); }
+      if (tentativas === 1) { const foi = dicaNoEditor(ta, t.pista, "Python"); guardar(); retorno(ret, "nao tentativa", "Ainda não. Tente de novo.", tresPartes({ certo: r.x && r.x.teste ? "o código roda sem erro; falta o resultado bater com o pedido." : "", erro: esc(motivo), passo: foi ? AVISO_DICA : t.pista })); }
       else {
         el.dataset.solucao = "1";
         retorno(ret, "revelado", "Veja uma solução.", `<span>${esc(motivo)}</span><pre class="lab-slide-cod"><code>${esc(t.solucao)}</code></pre><p><button type="button" class="botao" data-a="usar">Usar esta solução no editor</button></p>`);
@@ -473,7 +492,7 @@
       if (ok) { fechar(); retorno(ret, "ok", "Certo.", `<span>${t.ok}</span>`); aoConcluir(tentativas === 1 ? "primeira" : "segunda"); }
       else if (modo === "teste") { el.dataset.feita = "1"; bs.forEach((x) => { x.disabled = true; }); b.classList.add("errado"); retorno(ret, "nao", "Errado.", "<span>Na prova, a resposta certa não aparece: reveja a fase e refaça.</span>"); aoConcluir("errada"); }
       else if (tentativas >= 2 || bs.length <= 2) { fechar(); b.classList.add("errado"); retorno(ret, "revelado", "Veja a resposta.", `<span>${t.nao}</span>`); aoConcluir("revelada"); }
-      else { b.classList.add("errado"); b.disabled = true; retorno(ret, "nao tentativa", "Ainda não. Você tem mais uma tentativa.", tresPartes({ erro: `“${b.textContent}” não é a resposta.`, passo: "releia a apresentação da sala; a resposta está lá." })); }
+      else { b.classList.add("errado"); b.disabled = true; retorno(ret, "nao tentativa", "Ainda não. Você tem mais uma tentativa.", tresPartes({ certo: `uma alternativa a menos: sobram ${bs.filter((x) => !x.disabled).length} para escolher.`, erro: `“${esc(b.textContent)}” não responde ao que a tarefa pede.`, passo: "releia a apresentação da sala e compare cada alternativa com ela." })); }
     }));
   }
 

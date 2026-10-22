@@ -44,7 +44,7 @@
         layout: (W) => junta(fileira("b", c3(W), 112), { b0: { c: "ruim" }, nota: { html: "<b>Recusada pela chave primária.</b>O PostgreSQL diz: <code>duplicate key value violates unique constraint</code>." } }) },
       { t: "Uma linha sem nome", d: "Agora o id é novo, mas o nome veio vazio. A regra NOT NULL barra a linha.", feitos: ["c", "id", "nome", "banca", "fim"], escalonar: 60,
         layout: (W) => junta(fileira("n", c3(W), 148), { n1: { c: "ruim" }, b0: { c: "ruim apagado" }, b1: { c: "apagado" }, b2: { c: "apagado" },
-          nota: { html: "<b>Recusada pelo NOT NULL.</b><code>null value in column \"nome\" violates not-null constraint</code>. No fim, só a linha 1 ficou na tabela." } }) },
+          nota: { html: "<b>Recusada pelo NOT NULL.</b> O PostgreSQL avisa, em inglês, <code>null value in column \"nome\" violates not-null constraint</code>: a coluna nome não aceita valor vazio. No fim, só a linha 1 ficou na tabela." } }) },
     ],
   };
 

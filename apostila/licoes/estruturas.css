@@ -162,3 +162,12 @@
 /* código dos exemplos desta lição quebra a linha, em vez de rolar de lado */
 .secao pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .ed-vetor:focus-visible, .ed-lista:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; border-radius: 6px; }
+
+/* a vaga é fina no desenho, mas o alvo de toque tem 44 px de largura */
+.ed-vaga::before { content: ""; position: absolute; top: 0; bottom: 0; left: -14px; right: -14px; z-index: 1; }
+/* no celular, vetor e lista quebram em linhas em vez de esconder o fim numa rolagem lateral */
+@media (max-width: 480px) {
+  .ed-vetor, .ed-lista { flex-wrap: wrap; row-gap: 8px; overflow-x: visible; }
+  .ed-cel { min-width: 44px; padding: 6px 4px; font-size: 14px; }
+  .ed-no { min-width: 44px; padding: 4px 6px; }
+}

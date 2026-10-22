@@ -137,6 +137,25 @@
   const tpls = (ex, nome) => [...ex.querySelectorAll(`:scope > template[data-${nome}]`)].map((t) => t.innerHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").trim());
   const lista = (s) => String(s || "").split(/\s+/).filter(Boolean);
 
+  // o código do "Como se faz" que já é quase a solução fica recolhido: primeiro se tenta com o que se leu,
+  // e o exemplo abre com um toque (a solução inteira continua só depois da segunda tentativa)
+  function esconderExemplo(ex, solucao) {
+    const limpa = (s) => String(s).split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+    const sol = limpa(solucao);
+    if (!sol.length) return;
+    ex.querySelectorAll(":scope > .como-se-faz pre").forEach((pre) => {
+      const ex2 = new Set(limpa(pre.textContent));
+      if (sol.filter((l) => ex2.has(l)).length / sol.length < 0.6) return;
+      const d = document.createElement("details");
+      d.className = "cf-exemplo";
+      d.innerHTML = "<summary>Ver o código de exemplo</summary>";
+      pre.before(d);
+      d.appendChild(pre);
+    });
+    const p = ex.querySelector(":scope > .como-se-faz details.cf-exemplo");
+    if (p) p.insertAdjacentHTML("beforebegin", `<p class="cf-tente">Tente primeiro com o que você leu. Se travar, abra o exemplo.</p>`);
+  }
+
   function exercicio(ex, ctx, h) {
     const pacotes = lista(ex.dataset.pacotes);
     const preparo = tpl(ex, "preparo"), inicial = tpl(ex, "inicial"), solucao = tpl(ex, "solucao"), testes = tpl(ex, "testes");
@@ -147,6 +166,7 @@
     const rastro = ex.hasAttribute("data-rastro");
     const idc = "py-" + Math.random().toString(36).slice(2, 8);
     const retorno = ex.querySelector(":scope > .retorno");
+    esconderExemplo(ex, solucao);
     const bloco = document.createElement("div");
     bloco.className = "py-lab";
     bloco.innerHTML = `

@@ -79,7 +79,7 @@
       const t = r.dataset.naoTexto.replace(/^(Os campos em vermelho[^.]*|Confira os campos em vermelho[^.]*|Ainda não[^.]*)\.\s*/, "");
       if (t) return t;
     }
-    return ctx.resumo ? `releia a ideia central: ${ctx.resumo}` : "releia a explicação logo acima e tente de novo.";
+    return "releia o bloco de leitura logo acima e compare cada alternativa com ele.";
   }
 
   // ---------- revisão espaçada ----------
@@ -171,7 +171,7 @@
       } else {
         b.classList.add("errado");
         b.disabled = true;
-        mostrarTentativa(ex, { erro: b.dataset.porque ? esc(b.dataset.porque) : `“${esc(b.textContent.trim())}” não é a resposta.`, passo: pista(ex, ctx, false) });
+        mostrarTentativa(ex, { certo: `uma alternativa a menos: sobram ${botoes.filter((x) => !x.disabled).length} para escolher.`, erro: b.dataset.porque ? esc(b.dataset.porque) : `“${esc(b.textContent.trim())}” não responde ao que a pergunta pede.`, passo: pista(ex, ctx, false) });
       }
     }));
   }
@@ -379,7 +379,7 @@
         } else {
           li.classList.add("nao");
           li.querySelector("button").disabled = true;
-          mostrarTentativa(ex, { certo: "", erro: ex.querySelector(".ache-texto") ? `a frase ${i + 1} está certa.` : `a linha ${i + 1} está certa.`, passo: pista(ex, ctx, false) });
+          mostrarTentativa(ex, { certo: `${ex.querySelector(".ache-texto") ? "a frase" : "a linha"} ${i + 1} está certa: uma a menos para conferir.`, erro: "o trecho com problema é outro.", passo: pista(ex, ctx, false) });
         }
       });
     });
@@ -468,7 +468,7 @@
       return `<div class="exercicio" data-lacunas>${cab}<p class="lacunas-texto">${texto}</p><div class="lacunas-banco" role="group" aria-label="Palavras para as lacunas">${[...palavras, ...(d.x || [])].map((w) => `<button class="botao chip-l" type="button">${esc(w)}</button>`).join("")}</div><div><button class="botao primario" type="button" data-verificar>Verificar</button></div><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-pista="${at(d.pista || "leia a frase inteira com a palavra no lugar: ela fica verdadeira?")}"></div></div>`;
     }
     if (d.f === "erro") {
-      return `<div class="exercicio" data-ache>${cab}<ol class="ache-codigo ache-texto">${d.t.map((t, i) => `<li${i === d.e ? " data-erro" : ""}>${t}</li>`).join("")}</ol><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-nao-texto="${at(`O trecho errado é o ${d.e + 1}. ${d.por || ""}`)}" data-pista="${at(d.pista || "leia cada trecho e pergunte: isso vale sempre? Um deles afirma algo que não é verdade.")}"></div></div>`;
+      return `<div class="exercicio" data-ache>${cab}<ol class="ache-codigo ache-texto">${d.t.map((t, i) => `<li${i === d.e ? " data-erro" : ""}>${t}</li>`).join("")}</ol><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-nao-texto="${at(`O trecho errado é o ${d.e + 1}. ${d.por || ""}`)}" data-pista="${at(d.pista || "leia cada trecho e compare com o que o enunciado pede: só um deles não cumpre.")}"></div></div>`;
     }
     if (d.f === "ordem") {
       return `<div class="exercicio ex-texto" data-ordenar data-resposta="${at(d.t.join("|"))}">${cab.replace("</p>", "</p>")}<div class="ordenar" data-banco>${embaralhar(d.t).map((t) => `<button class="botao linha" type="button">${esc(t)}</button>`).join("")}</div><div class="montagem" data-montagem aria-label="Sua ordem"></div><div><button class="botao primario" type="button" data-verificar>Verificar</button></div><div class="retorno" hidden data-ok-texto="${at(d.por || "")}" data-pista="${at(d.pista || "pergunte de cada passo: ele precisa de algo que outro passo prepara?")}"></div></div>`;
@@ -535,7 +535,9 @@
       }
       if (el.matches("figure[data-clip]")) {
         const cap = el.querySelector("figcaption");
-        novo({ tipo: "animacao", rotulo: "Ver o passo a passo", titulo: curto(cap ? cap.textContent : "A animação", 90) }); atual.nos.push(el); atual = null; return;
+        // o título vem do clipe (neutro); a legenda costuma trazer a conclusão, que o "preveja" pede para apostar antes
+        const tc = window.Clip && window.Clip.tituloDe ? window.Clip.tituloDe(el.dataset.clip) : "";
+        novo({ tipo: "animacao", rotulo: "Ver o passo a passo", titulo: curto(tc || (el.hasAttribute("data-preveja") ? "Aposte antes e depois veja" : cap ? cap.textContent : "A animação"), 90) }); atual.nos.push(el); atual = null; return;
       }
       if (el.matches(".resumo, .explique, .explicar, [data-marcar]")) {
         if (!atual || atual.tipo !== "fecho") novo({ tipo: "fecho", rotulo: "Fechar o conceito", titulo: "Resumo e explicação com as suas palavras" });
@@ -670,13 +672,13 @@
       barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" aria-label="Conceito ${i + 1}: ${esc(n)}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${esc(n)}</span></button>`).join("");
       barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
     }
-    function ir(i) {
+    function ir(i, rolar = true) {
       const fazer = () => {
         atual = Math.max(0, Math.min(secoes.length - 1, i));
         secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
         secoes.forEach((s) => { delete s.querySelector(".estado-licao").dataset.fixo; });
         atualizar();
-        if (secoes[atual].scrollIntoView) secoes[atual].scrollIntoView({ block: "start" });
+        if (rolar && secoes[atual].scrollIntoView) secoes[atual].scrollIntoView({ block: "start" });
       };
       if (document.startViewTransition && !reduz() && !verTudo.checked) {
         // se o navegador adiar a transição (troca vinda de temporizador), a tela troca sem animação
@@ -705,7 +707,8 @@
     }
     window.addEventListener("hashchange", () => { const k = secoes.findIndex((s) => "#" + s.id === location.hash); if (k >= 0) ir(k); });
     verTudo.addEventListener("change", () => ir(atual));
-    ir(atual);
+    // na primeira abertura a página fica no topo (Como usar e Voltar ao mapa); só rola quem volta no meio da lição
+    ir(atual, atual > 0 || secoes.some((s) => "#" + s.id === location.hash));
   }
 
   window.Motor = { licao, montarExercicio, criar, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao };

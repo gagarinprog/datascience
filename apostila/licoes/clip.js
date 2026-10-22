@@ -264,5 +264,5 @@
     };
   }
 
-  window.Clip = { registrar, iniciar, flip, fluxo, execucao, tabela, reducao, antesDepois, gavetas, barras, esc, reduz };
+  window.Clip = { tituloDe: (id) => (defs[id] && defs[id].titulo) || "", registrar, iniciar, flip, fluxo, execucao, tabela, reducao, antesDepois, gavetas, barras, esc, reduz };
 })();

@@ -17,7 +17,7 @@
 @keyframes clip-entra { from { opacity: 0; transform: translateY(5px); } }
 .clip-passo { font: 600 12px/1 var(--f-codigo); color: var(--texto); background: color-mix(in srgb, var(--cv, var(--tinta)) 14%, var(--folha)); padding: 3px 9px; border-radius: 99px; margin-right: 6px; white-space: nowrap; display: inline-block; vertical-align: 1px; }
 .clip-controles { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.botao.mini { min-height: 40px; padding: 6px 14px; font-size: 14.5px; border-radius: 12px; box-shadow: 0 2px 0 var(--linha-forte); }
+.botao.mini { min-height: 44px; padding: 6px 14px; font-size: 14.5px; border-radius: 12px; box-shadow: 0 2px 0 var(--linha-forte); }
 .botao.mini:disabled { opacity: 0.45; }
 .clip-pontos { margin-left: auto; display: flex; gap: 0; }
 /* o alvo de toque é o botão inteiro (28 × 36 px); o ponto visível fica no meio */

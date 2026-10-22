@@ -102,7 +102,7 @@
           <div class="linha-classifica"><span>Desses, quantos são Técnicos? (duas regras juntas)</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos técnicos passaram"></div>
           <div class="linha-classifica"><span>Se o corte subisse para 80, quantos passariam?</span><input data-resposta="2" inputmode="numeric" aria-label="Quantos passariam com corte 80"></div>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
-          <div class="retorno" hidden data-ok-texto="Tudo certo. 5 passam do corte 70; entre eles, Diego e Felipe são Técnicos; com corte 80 só Carla (85) e Felipe (84) passam." data-nao-texto="Confira os campos em vermelho. Passe a regra linha por linha: total ≥ 70 (Ana, Carla, Diego, Felipe e Gabriela). Depois olhe o cargo de cada um. Para o corte de 80, só valem os totais de 80 para cima."></div>
+          <div class="retorno" hidden data-pista="passe a regra linha por linha: compare o total de cada candidato com o corte, sem pular ninguém; depois olhe o cargo só de quem passou." data-ok-texto="Tudo certo. 5 passam do corte 70; entre eles, Diego e Felipe são Técnicos; com corte 80 só Carla (85) e Felipe (84) passam." data-nao-texto="Confira os campos em vermelho. Passe a regra linha por linha: total ≥ 70 (Ana, Carla, Diego, Felipe e Gabriela). Depois olhe o cargo de cada um. Para o corte de 80, só valem os totais de 80 para cima."></div>
         </div>
 </template>
 <template id="rl-calcular">
@@ -111,7 +111,7 @@
           <div class="linha-classifica"><span>Média dos totais dos Analistas (Ana 78, Carla 85, Elisa 66, Gabriela 73)</span><input data-resposta="75.5" inputmode="decimal" aria-label="Média dos Analistas"></div>
           <div class="linha-classifica"><span>Maior total menos o menor total (85 e 58)</span><input data-resposta="27" inputmode="numeric" aria-label="Diferença entre maior e menor"></div>
           <div><button class="botao primario" type="button" data-verificar>Verificar</button></div>
-          <div class="retorno" hidden data-ok-texto="Certo. Analistas: (78 + 85 + 66 + 73) ÷ 4 = 302 ÷ 4 = 75,5. E 85 − 58 = 27, que mostra o quanto as notas se espalham." data-nao-texto="Confira os campos em vermelho. Para a média: some as quatro notas e divida por 4. Para a diferença: maior menos menor, 85 − 58."></div>
+          <div class="retorno" hidden data-pista="para a média, some as notas só dos Analistas e divida pela quantidade deles; para a diferença, ache a maior e a menor nota da tabela." data-ok-texto="Certo. Analistas: (78 + 85 + 66 + 73) ÷ 4 = 302 ÷ 4 = 75,5. E 85 − 58 = 27, que mostra o quanto as notas se espalham." data-nao-texto="Confira os campos em vermelho. Para a média: some as quatro notas e divida por 4. Para a diferença: maior menos menor, 85 − 58."></div>
         </div>
 </template>
 
