@@ -6,10 +6,13 @@
   HTMLAnchorElement.prototype.click = function () {
     if (this.download && /^blob:/.test(this.href)) {
       const nome = this.download;
-      fetch(this.href).then((r) => r.text()).then((texto) => {
-        const onde = window.DominioAndroid.salvar(nome, texto);
-        alert(onde ? "Arquivo salvo em " + onde + "." : "Não consegui salvar o arquivo.");
-      }).catch(() => alert("Não consegui salvar o arquivo."));
+      fetch(this.href)
+        .then((r) => r.text())
+        .then((texto) => {
+          const onde = window.DominioAndroid.salvar(nome, texto);
+          alert(onde ? "Arquivo salvo em " + onde + "." : "Não consegui salvar o arquivo.");
+        })
+        .catch(() => alert("Não consegui salvar o arquivo."));
       return;
     }
     return clicar.call(this);

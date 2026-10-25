@@ -1,0 +1,10 @@
+DOMINIO NO COMPUTADOR (funciona sem internet)
+
+Para estudar: de dois cliques em "Abrir Dominio.bat".
+Abre uma janela preta (o servidor) e o navegador com o Dominio em http://localhost:8765.
+Deixe a janela preta aberta enquanto estuda. Para sair, feche a janela preta.
+
+Se o Windows mostrar "O Windows protegeu o computador", clique em "Mais informacoes" e depois em "Executar assim mesmo".
+
+Seu progresso fica neste navegador, neste computador. Para levar ao celular ou ao site, use no Dominio o menu do guia: Salvar meu trajeto e, no outro lugar, Carregar trajeto.
+Nao apague nem mova a pasta app: tudo o que o curso usa esta nela.
