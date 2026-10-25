@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="borda" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5ef0ff"/><stop offset="0.5" stop-color="#2f8cff"/><stop offset="1" stop-color="#1f5bff"/>
+    </linearGradient>
+    <linearGradient id="barra" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#1f5bff"/><stop offset="1" stop-color="#5ef0ff"/>
+    </linearGradient>
+    <filter id="brilho" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="brilhoForte" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="22" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g transform="translate(512 512) scale(1.16) translate(-512 -512)">
+  <!-- o D: contorno espesso com cantos técnicos, dentro da zona segura do ícone adaptável -->
+  <g filter="url(#brilho)">
+    <path d="M330 300 H520 C640 300 716 384 716 512 C716 640 640 724 520 724 H330 Z"
+          fill="none" stroke="url(#borda)" stroke-width="46" stroke-linejoin="round"/>
+    <!-- marcas de circuito saindo do D -->
+    <path d="M330 380 H282 M330 644 H282" stroke="#5ef0ff" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="270" cy="380" r="16" fill="#5ef0ff"/>
+    <circle cx="270" cy="644" r="16" fill="#5ef0ff"/>
+  </g>
+  <!-- barras de dados crescendo -->
+  <g>
+    <rect x="392" y="560" width="46" height="96" rx="8" fill="url(#barra)"/>
+    <rect x="462" y="500" width="46" height="156" rx="8" fill="url(#barra)"/>
+    <rect x="532" y="430" width="46" height="226" rx="8" fill="url(#barra)"/>
+  </g>
+  <!-- linha de tendência com nós -->
+  <g filter="url(#brilho)">
+    <polyline points="415,520 485,456 555,384 628,330" fill="none" stroke="#e8fbff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="415" cy="520" r="13" fill="#e8fbff"/>
+    <circle cx="485" cy="456" r="13" fill="#e8fbff"/>
+    <circle cx="555" cy="384" r="13" fill="#e8fbff"/>
+  </g>
+  <circle cx="628" cy="330" r="24" fill="#ffffff" filter="url(#brilhoForte)"/>
+  <circle cx="628" cy="330" r="38" fill="none" stroke="#5ef0ff" stroke-width="6" stroke-opacity="0.8"/>
+  </g>
+</svg>
