@@ -52,3 +52,10 @@ next-env.d.ts
 /data/apostila-viva/apostila.db
 /estudo/
 __pycache__/
+
+# pacotes sem internet (ferramentas/empacotar_offline.py e android/)
+build-offline/
+android/app/build/
+android/app/src/main/assets/
+android/.gradle/
+android/local.properties
