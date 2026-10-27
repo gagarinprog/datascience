@@ -3,6 +3,12 @@
 Fonte única para tutor/percurso.txt e apostila/materias.js (gerados por tutor/gerar_percurso.py).
 A pesquisa que justifica cada decisão está em docs/06_SEQUENCIA_E_PRE_REQUISITOS.md.
 
+Campos de cada matéria (além de nome, logos, etapa, trabalho, porque e modulos):
+  peso         quanto a matéria vale na formação de um cientista de dados, em %; as 16 somam 100. Base: frequência
+               nas vagas (365 Data Science, 1.000 vagas de 2026) e o papel de base de cada matéria. O peso de cada
+               módulo sai daqui, proporcional ao número de conceitos, com 1,5x para os pontos de virada.
+  peso_porque  uma frase que justifica o peso, mostrada na apostila
+
 Campos de cada módulo:
   antes  módulos que precisam estar dominados antes (pré-requisito duro)
   p, r   pergunta de prontidão e resposta: "estou pronto para avançar?"
@@ -20,6 +26,8 @@ def M(antes, p, r, t, d, v=False):
 MATERIAS = [
     {
         "sigla": "LOG",
+        "peso": 5,
+        "peso_porque": "É a base de tudo, mas ocupa pouco tempo da formação: em semanas você já pensa em passos.",
         "nome": "Lógica de programação",
         "logos": ["python"],
         "etapa": "Pensar em passos",
@@ -29,6 +37,8 @@ MATERIAS = [
     },
     {
         "sigla": "PY",
+        "peso": 12,
+        "peso_porque": "A linguagem de trabalho: aparece em 57% das vagas de cientista de dados (365 Data Science, 1.000 vagas analisadas).",
         "nome": "Python",
         "logos": ["python", "jupyter", "vscode"],
         "etapa": "Automatizar",
@@ -38,6 +48,8 @@ MATERIAS = [
     },
     {
         "sigla": "BD",
+        "peso": 10,
+        "peso_porque": "SQL aparece em 30% das vagas e está em quase todo dia de trabalho: os dados moram em bancos.",
         "nome": "Banco de dados e SQL",
         "logos": ["postgresql", "sqlite", "mysql", "microsoftsqlserver", "oracle"],
         "etapa": "Guardar e consultar",
@@ -47,6 +59,8 @@ MATERIAS = [
     },
     {
         "sigla": "CMP",
+        "peso": 1,
+        "peso_porque": "Ajuda a entender desempenho e memória, mas raramente é cobrado direto.",
         "nome": "Como o computador funciona",
         "logos": ["linux", "windows11", "apple", "android", "ubuntu"],
         "etapa": "Entender a máquina",
@@ -56,6 +70,8 @@ MATERIAS = [
     },
     {
         "sigla": "MAT",
+        "peso": 5,
+        "peso_porque": "A matemática que sustenta estatística e modelos; vale pelo que destrava.",
         "nome": "Matemática básica e lógica",
         "logos": [],
         "etapa": "Raciocinar",
@@ -65,6 +81,8 @@ MATERIAS = [
     },
     {
         "sigla": "EST",
+        "peso": 12,
+        "peso_porque": "O núcleo do ofício: medir, comparar, testar hipóteses e saber quando confiar num número.",
         "nome": "Probabilidade e estatística",
         "logos": ["python", "r"],
         "etapa": "Medir a incerteza",
@@ -74,6 +92,8 @@ MATERIAS = [
     },
     {
         "sigla": "ED",
+        "peso": 4,
+        "peso_porque": "Escolher a estrutura certa muda o custo do código; pesa mais em entrevistas técnicas.",
         "nome": "Estruturas de dados e algoritmos",
         "logos": ["python", "java"],
         "etapa": "Fazer rápido",
@@ -83,6 +103,8 @@ MATERIAS = [
     },
     {
         "sigla": "POO",
+        "peso": 2,
+        "peso_porque": "Útil para organizar projetos maiores; pouco pedido para quem analisa dados.",
         "nome": "Orientação a objetos",
         "logos": ["java", "python"],
         "etapa": "Organizar o código",
@@ -92,6 +114,8 @@ MATERIAS = [
     },
     {
         "sigla": "ENG",
+        "peso": 5,
+        "peso_porque": "Git, ambientes, nuvem e pipelines: AWS em 20% das vagas, Azure em 14%, Docker em 7%.",
         "nome": "Ferramentas do ofício",
         "logos": ["bash", "git", "github", "vscode", "jupyter", "docker", "anaconda"],
         "etapa": "Entregar e manter",
@@ -101,6 +125,8 @@ MATERIAS = [
     },
     {
         "sigla": "FMT",
+        "peso": 4,
+        "peso_porque": "Coletar e ler dados de arquivos, APIs e da web: é por onde todo projeto começa.",
         "nome": "Formatos e coleta de dados",
         "logos": ["json", "html5", "markdown"],
         "etapa": "Coletar",
@@ -110,6 +136,8 @@ MATERIAS = [
     },
     {
         "sigla": "AD",
+        "peso": 10,
+        "peso_porque": "Limpar e analisar com pandas é a maior parte do tempo de trabalho de quem lida com dados.",
         "nome": "Análise de dados",
         "logos": ["pandas", "numpy", "jupyter", "duckdb", "polars"],
         "etapa": "Limpar e analisar",
@@ -119,6 +147,8 @@ MATERIAS = [
     },
     {
         "sigla": "VIS",
+        "peso": 7,
+        "peso_porque": "Comunicar o resultado: visualização em 10% das vagas, Tableau em 12%, Power BI em 9%.",
         "nome": "Visualização e comunicação",
         "logos": ["matplotlib", "plotly"],
         "etapa": "Comunicar",
@@ -128,6 +158,8 @@ MATERIAS = [
     },
     {
         "sigla": "ALC",
+        "peso": 5,
+        "peso_porque": "Vetores, matrizes e derivadas explicam como os modelos aprendem.",
         "nome": "Álgebra linear e cálculo para dados",
         "logos": ["numpy"],
         "etapa": "Entender os modelos",
@@ -137,6 +169,8 @@ MATERIAS = [
     },
     {
         "sigla": "ML",
+        "peso": 13,
+        "peso_porque": "Aprendizado de máquina aparece em 69% das vagas: é o que mais diferencia o cientista de dados.",
         "nome": "Aprendizado de máquina",
         "logos": ["scikitlearn", "tensorflow", "pytorch", "kaggle"],
         "etapa": "Prever",
@@ -146,6 +180,8 @@ MATERIAS = [
     },
     {
         "sigla": "NSQ",
+        "peso": 3,
+        "peso_porque": "Bancos não relacionais e grandes volumes (Spark em 12% das vagas) entram em empresas maiores.",
         "nome": "Dados além do relacional",
         "logos": ["mongodb", "redis", "cassandra", "neo4j", "apachespark", "apachekafka"],
         "etapa": "Escalar",
@@ -155,6 +191,8 @@ MATERIAS = [
     },
     {
         "sigla": "ETI",
+        "peso": 2,
+        "peso_porque": "Privacidade e uso justo dos dados: pouco cobrado como técnica, obrigatório como postura.",
         "nome": "Ética, privacidade e governança",
         "logos": [],
         "etapa": "Cuidar dos dados",

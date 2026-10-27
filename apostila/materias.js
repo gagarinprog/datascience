@@ -9,6 +9,8 @@ window.MATERIAS = [
   "logos": [
    "python"
   ],
+  "peso": 5,
+  "peso_porque": "É a base de tudo, mas ocupa pouco tempo da formação: em semanas você já pensa em passos.",
   "modulos": [
    {
     "codigo": "LOG.01",
@@ -27,7 +29,8 @@ window.MATERIAS = [
     "tropeco": "Escrever passos que dependem de bom senso, como “escolha um restaurante bom”. O computador não tem bom senso.",
     "dia": "O passo a passo de um Pix: abrir o app, escolher Pix, digitar a chave, o valor, confirmar. Se faltar um passo, o dinheiro não sai.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.485
    },
    {
     "codigo": "PY.01",
@@ -53,7 +56,8 @@ window.MATERIAS = [
     "tropeco": "Achar que o espaço no começo da linha é só estética. No Python, o recuo decide o que pertence a cada bloco.",
     "dia": "É como digitar uma fórmula numa planilha: você escreve a instrução e o resultado aparece na hora.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.583
    },
    {
     "codigo": "LOG.02",
@@ -78,7 +82,8 @@ window.MATERIAS = [
     "tropeco": "Ler x = x + 2 como equação (que não tem solução). Em programação o sinal = quer dizer “recebe”. Outro erro comum: achar que a variável guarda os dois valores (Hermans e colegas, 2018).",
     "dia": "Um contato salvo no celular: o nome “Mãe” aponta para um número. Se ela troca de número, você atualiza o contato e o nome continua o mesmo.",
     "virada": true,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.728
    },
    {
     "codigo": "LOG.03",
@@ -104,7 +109,8 @@ window.MATERIAS = [
     "tropeco": "Confundir = (guardar) com == (comparar), e esquecer a precedência: 2 + 3 * 4 dá 14, não 20.",
     "dia": "Dividir a conta do bar no Pix: total // pessoas dá o valor inteiro de cada um; total % pessoas, o que sobra.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.583
    },
    {
     "codigo": "LOG.04",
@@ -128,7 +134,8 @@ window.MATERIAS = [
     "tropeco": "Negar errado: o contrário de “tem 18 anos e tem CNH” é “não tem 18 anos OU não tem CNH” (lei de De Morgan).",
     "dia": "Os filtros da loja online: “frete grátis” E “chega amanhã” mostra menos produtos que “frete grátis” OU “chega amanhã”.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.388
    },
    {
     "codigo": "LOG.05",
@@ -152,7 +159,8 @@ window.MATERIAS = [
     "tropeco": "Achar que o programa executa todas as condições verdadeiras de um if/elif. Ele para na primeira verdadeira.",
     "dia": "O app do banco: tem saldo? Faz o Pix. Não tem? Mostra “saldo insuficiente”. Um caminho ou outro, nunca os dois.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.388
    },
    {
     "codigo": "LOG.06",
@@ -179,7 +187,8 @@ window.MATERIAS = [
     "tropeco": "Laço que nunca para (a condição do while nunca fica falsa) e erro por um (uma volta a mais ou a menos).",
     "dia": "O Spotify toca cada música da playlist até acabar; a retrospectiva do ano soma os minutos de cada uma.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 0.68
    },
    {
     "codigo": "LOG.09",
@@ -203,7 +212,8 @@ window.MATERIAS = [
     "tropeco": "Ler só a última linha do erro e mudar o código no chute. A mensagem diz o tipo do erro e a linha: comece por elas.",
     "dia": "Quando um app trava, o suporte pede o print da mensagem de erro, porque ela diz o que aconteceu e onde.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.388
    },
    {
     "codigo": "LOG.07",
@@ -228,7 +238,8 @@ window.MATERIAS = [
     "tropeco": "Confundir print com return e achar que uma variável criada dentro da função existe fora dela.",
     "dia": "O botão “pedir de novo” do app de delivery: um conjunto de passos com nome, que você aciona com um toque e com outros dados (endereço, pagamento).",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.485
    },
    {
     "codigo": "LOG.08",
@@ -251,7 +262,8 @@ window.MATERIAS = [
     "tropeco": "Tentar escrever tudo de uma vez num bloco só. Resolva e teste a parte menor antes de juntar.",
     "dia": "Montar um móvel por etapas do manual: base, laterais, portas. Ninguém parafusa tudo ao mesmo tempo.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.291
    }
   ]
  },
@@ -266,6 +278,8 @@ window.MATERIAS = [
    "jupyter",
    "vscode"
   ],
+  "peso": 12,
+  "peso_porque": "A linguagem de trabalho: aparece em 57% das vagas de cientista de dados (365 Data Science, 1.000 vagas analisadas).",
   "modulos": [
    {
     "codigo": "PY.02",
@@ -291,7 +305,8 @@ window.MATERIAS = [
     "tropeco": "Somar texto com número (\"Total: \" + 10) dá erro. Converta com str() ou use f-string.",
     "dia": "No carrinho, o nome do produto é texto e o preço é número. Juntar os dois numa frase pede conversão: f\"{nome}: R$ {preco:.2f}\".",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.021
    },
    {
     "codigo": "PY.03",
@@ -323,7 +338,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer que o primeiro índice é 0 e pedir musicas[3] numa lista de 3 itens (IndexError).",
     "dia": "Uma playlist: tem ordem, dá para pegar a primeira e a última, pôr uma música no fim e embaralhar.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 1.191
    },
    {
     "codigo": "PY.04",
@@ -349,7 +365,8 @@ window.MATERIAS = [
     "tropeco": "Procurar pelo valor em vez da chave, ou esperar uma ordem fixa num conjunto.",
     "dia": "Dicionário é a agenda do celular: você busca pelo nome (a chave) e acha o número (o valor). Conjunto é a lista de seguidores: ninguém aparece duas vezes.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.021
    },
    {
     "codigo": "PY.05",
@@ -374,7 +391,8 @@ window.MATERIAS = [
     "tropeco": "Achar que b = a cria uma cópia. É o mesmo objeto com dois nomes, um dos erros mais registrados entre iniciantes (lista de Sorva).",
     "dia": "Um álbum compartilhado de fotos: se outra pessoa apaga uma foto, ela some para você também, porque é o mesmo álbum. Baixar as fotos é fazer uma cópia.",
     "virada": true,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.277
    },
    {
     "codigo": "PY.06",
@@ -405,7 +423,8 @@ window.MATERIAS = [
     "tropeco": "Usar lista como valor padrão de parâmetro (def f(x=[])): ela é criada uma vez só e vai acumulando entre as chamadas.",
     "dia": "O “ordenar por: menor preço” da loja online é uma função de ordenação com um critério, a key.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.021
    },
    {
     "codigo": "PY.08",
@@ -434,7 +453,8 @@ window.MATERIAS = [
     "tropeco": "Usar um except genérico que esconde todos os erros, inclusive os seus bugs.",
     "dia": "Digitar o CPF errado num formulário: o app não fecha; mostra “CPF inválido” e pede de novo.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.681
    },
    {
     "codigo": "PY.09",
@@ -460,7 +480,8 @@ window.MATERIAS = [
     "tropeco": "Ler arquivo com acento sem dizer a codificação. Informe encoding=\"utf-8\".",
     "dia": "Baixar o extrato do banco em arquivo e processar linha por linha, como quem rola o extrato no app.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.021
    },
    {
     "codigo": "PY.10",
@@ -484,7 +505,8 @@ window.MATERIAS = [
     "tropeco": "Dar ao seu arquivo o nome de um módulo (random.py): o Python importa o seu no lugar do original.",
     "dia": "Instalar um app pronto em vez de programar do zero: você usa o que já existe e foi testado.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.681
    },
    {
     "codigo": "PY.13",
@@ -513,7 +535,8 @@ window.MATERIAS = [
     "tropeco": "Testar só o caso feliz. Os bugs moram nas bordas: zero, vazio, negativo, o maior valor.",
     "dia": "Mandar R$ 1 antes de um Pix grande para conferir a chave: é um teste.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.681
    },
    {
     "codigo": "PY.07",
@@ -538,7 +561,8 @@ window.MATERIAS = [
     "tropeco": "Usar compreensão antes de saber escrever o laço normal. Se ela ficar longa, o laço é mais legível.",
     "dia": "Aplicar o mesmo filtro em todas as fotos de um álbum de uma vez, em vez de editar uma por uma.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.851
    },
    {
     "codigo": "PY.11",
@@ -563,7 +587,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer o self nos métodos ou confundir a classe (o molde) com o objeto (o pedido de verdade).",
     "dia": "Todo pedido do delivery tem a mesma estrutura (restaurante, itens, status), mas cada pedido é um objeto diferente.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.851
    },
    {
     "codigo": "PY.14",
@@ -588,7 +613,8 @@ window.MATERIAS = [
     "tropeco": "Escrever um padrão amplo demais, que pega mais do que devia. Teste também com exemplos que não deveriam casar.",
     "dia": "O campo de CPF que só aceita o formato certo usa um padrão assim para validar.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.851
    },
    {
     "codigo": "PY.12",
@@ -613,7 +639,8 @@ window.MATERIAS = [
     "tropeco": "Achar que a anotação faz o Python conferir os tipos na hora de rodar.",
     "dia": "O aviso “somente números” num formulário: documenta e evita erro antes de enviar.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.851
    }
   ]
  },
@@ -630,6 +657,8 @@ window.MATERIAS = [
    "microsoftsqlserver",
    "oracle"
   ],
+  "peso": 10,
+  "peso_porque": "SQL aparece em 30% das vagas e está em quase todo dia de trabalho: os dados moram em bancos.",
   "modulos": [
    {
     "codigo": "BD.01",
@@ -647,7 +676,8 @@ window.MATERIAS = [
     "tropeco": "Achar que banco de dados é só uma planilha grande.",
     "dia": "Seu histórico de pedidos, suas conversas e seu extrato vivem em bancos de dados.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.02",
@@ -672,7 +702,8 @@ window.MATERIAS = [
     "tropeco": "Repetir o nome do aluno em cada resposta, em vez de guardar só o id dele.",
     "dia": "Seu CPF identifica você em qualquer sistema: ninguém copia seu nome inteiro, só o número.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    },
    {
     "codigo": "BD.03",
@@ -697,7 +728,8 @@ window.MATERIAS = [
     "tropeco": "Usar SELECT * por hábito: traz colunas demais e esconde o que você realmente quer.",
     "dia": "Escolher quais colunas aparecem numa planilha: você não precisa ver todas.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    },
    {
     "codigo": "BD.04",
@@ -729,7 +761,8 @@ window.MATERIAS = [
     "tropeco": "Texto entre aspas duplas (\"C\") em vez de simples ('C'). No PostgreSQL, aspas duplas são nome de coluna. É o seu erro recorrente.",
     "dia": "O filtro do e-mail: “de: banco” e “com anexo” ao mesmo tempo.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 0.787
    },
    {
     "codigo": "BD.05",
@@ -754,7 +787,8 @@ window.MATERIAS = [
     "tropeco": "Tratar NULL como zero ou texto vazio. NULL quer dizer “não informado”.",
     "dia": "O campo “telefone (opcional)” que a pessoa deixou em branco no cadastro: não é zero, é desconhecido.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    },
    {
     "codigo": "BD.06",
@@ -778,7 +812,8 @@ window.MATERIAS = [
     "tropeco": "Esperar que o banco devolva as linhas em alguma ordem sem ORDER BY. Sem ele, a ordem não é garantida.",
     "dia": "Ordenar por “mais recentes” no YouTube e olhar só o começo da lista.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.11",
@@ -802,7 +837,8 @@ window.MATERIAS = [
     "tropeco": "Comparar datas guardadas como texto em formatos diferentes. Padronize para AAAA-MM-DD.",
     "dia": "As fórmulas SE, MAIÚSCULA e TEXTO da planilha, só que dentro da consulta.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.07",
@@ -832,7 +868,8 @@ window.MATERIAS = [
     "tropeco": "Pôr no SELECT uma coluna que não está no GROUP BY nem dentro de uma agregação (coluna solta).",
     "dia": "O resumo do app do cartão: gastos agrupados por categoria, com o total de cada uma.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    },
    {
     "codigo": "BD.08",
@@ -864,7 +901,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer a condição ON e gerar todas as combinações (produto cartesiano), ou duplicar linhas sem perceber.",
     "dia": "O PROCV da planilha: trazer o nome do restaurante para cada pedido pela coluna em comum.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 0.787
    },
    {
     "codigo": "BD.09",
@@ -888,7 +926,8 @@ window.MATERIAS = [
     "tropeco": "Usar = com uma subconsulta que devolve várias linhas. Use IN ou EXISTS.",
     "dia": "“Mostre os produtos mais caros que a média”: primeiro a média, depois a comparação. Uma pergunta dentro da outra.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.10",
@@ -912,7 +951,8 @@ window.MATERIAS = [
     "tropeco": "Juntar consultas com colunas em ordem ou tipos diferentes.",
     "dia": "Juntar os participantes de dois grupos de mensagens sem repetir quem está nos dois.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.18",
@@ -939,7 +979,8 @@ window.MATERIAS = [
     "tropeco": "Confundir seleção com projeção: o nome SELECT do SQL atrapalha.",
     "dia": "É a matemática por trás do filtro e do recorte de colunas da planilha. Concurso adora perguntar.",
     "virada": false,
-    "passos": 3
+    "passos": 3,
+    "peso": 0.225
    },
    {
     "codigo": "BD.12",
@@ -964,7 +1005,8 @@ window.MATERIAS = [
     "tropeco": "Pôr uma lista de matérias dentro de uma coluna do aluno (\"BD, EST, LOG\").",
     "dia": "Seguidores numa rede social: cada pessoa segue várias e é seguida por várias. Isso pede uma tabela de “quem segue quem”.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    },
    {
     "codigo": "BD.13",
@@ -988,7 +1030,8 @@ window.MATERIAS = [
     "tropeco": "Decorar 1FN, 2FN e 3FN sem entender o problema que elas resolvem: dado repetido que se desencontra.",
     "dia": "A planilha compartilhada em que cada pessoa escreve o nome do cliente de um jeito: “Kaio”, “kaio M.”, “Kaio Mendes”.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.14",
@@ -1013,7 +1056,8 @@ window.MATERIAS = [
     "tropeco": "Rodar UPDATE ou DELETE sem WHERE: muda ou apaga a tabela inteira.",
     "dia": "As regras do formulário de cadastro: campo obrigatório, e-mail único, idade maior que zero.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    },
    {
     "codigo": "BD.15",
@@ -1041,7 +1085,8 @@ window.MATERIAS = [
     "tropeco": "Confundir GROUP BY (resume as linhas) com PARTITION BY (calcula por grupo e mantém todas as linhas).",
     "dia": "O ranking das músicas mais tocadas de cada país, calculado sem perder nenhuma música.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.337
    },
    {
     "codigo": "BD.16",
@@ -1065,7 +1110,8 @@ window.MATERIAS = [
     "tropeco": "Achar que cada comando é independente. Sem transação, uma falha no meio deixa o banco pela metade.",
     "dia": "Pix e transferência: ou o dinheiro sai e chega, ou nada acontece.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.17",
@@ -1089,7 +1135,8 @@ window.MATERIAS = [
     "tropeco": "Criar índice em tudo: cada índice deixa as gravações mais lentas e ocupa espaço.",
     "dia": "A busca de contatos do celular acha um nome na hora entre milhares.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.449
    },
    {
     "codigo": "BD.19",
@@ -1112,7 +1159,8 @@ window.MATERIAS = [
     "tropeco": "Achar que a view copia os dados. Ela guarda a consulta e roda de novo a cada uso.",
     "dia": "Um filtro salvo numa planilha compartilhada: cada um vê só o que precisa.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.337
    },
    {
     "codigo": "BD.20",
@@ -1142,7 +1190,8 @@ window.MATERIAS = [
     "tropeco": "Normalizar o data warehouse como o banco transacional. No modelo estrela, a repetição é proposital, para consultar rápido.",
     "dia": "O app do banco registra seu Pix na hora; o resumo de gastos do ano vem de outro lugar, montado à noite.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.562
    }
   ]
  },
@@ -1159,6 +1208,8 @@ window.MATERIAS = [
    "android",
    "ubuntu"
   ],
+  "peso": 1,
+  "peso_porque": "Ajuda a entender desempenho e memória, mas raramente é cobrado direto.",
   "modulos": [
    {
     "codigo": "CMP.01",
@@ -1184,7 +1235,8 @@ window.MATERIAS = [
     "tropeco": "Comparar dinheiro com == em float. Use centavos inteiros ou Decimal.",
     "dia": "Apps de banco guardam R$ 10,50 como 1050 centavos justamente para não errar centavo.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.188
    },
    {
     "codigo": "CMP.02",
@@ -1210,7 +1262,8 @@ window.MATERIAS = [
     "tropeco": "Achar que cada caractere ocupa um byte. Letras acentuadas e emojis ocupam mais.",
     "dia": "A mensagem que chega com símbolos estranhos quando vem de um sistema antigo.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.188
    },
    {
     "codigo": "CMP.03",
@@ -1234,7 +1287,8 @@ window.MATERIAS = [
     "tropeco": "Confundir o OU comum (1 ou 1 = 1) com o OU exclusivo (1 xou 1 = 0).",
     "dia": "Os dois interruptores da escada que acendem a mesma lâmpada funcionam como um OU exclusivo.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.125
    },
    {
     "codigo": "CMP.04",
@@ -1258,7 +1312,8 @@ window.MATERIAS = [
     "tropeco": "Achar que mais armazenamento deixa o celular mais rápido. Quem segura muitos apps abertos é a RAM.",
     "dia": "Celular com 8 GB de RAM e 256 GB de armazenamento: duas memórias com papéis diferentes.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.125
    },
    {
     "codigo": "CMP.05",
@@ -1283,7 +1338,8 @@ window.MATERIAS = [
     "tropeco": "Rodar o script de outra pasta e o arquivo “sumir”: o caminho relativo depende de onde você está.",
     "dia": "O gerenciador de tarefas mostra os processos abertos e quanta memória cada um usa.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.156
    },
    {
     "codigo": "CMP.06",
@@ -1308,7 +1364,8 @@ window.MATERIAS = [
     "tropeco": "Achar que a internet é uma nuvem abstrata. São computadores trocando mensagens por regras combinadas (protocolos).",
     "dia": "Abrir um site é pedir uma página a um servidor; o DNS é a agenda que troca o nome do site pelo endereço numérico.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.156
    },
    {
     "codigo": "CMP.07",
@@ -1335,7 +1392,8 @@ window.MATERIAS = [
     "tropeco": "Achar que o Python não tem etapa de tradução. Ele gera bytecode, só que escondido.",
     "dia": "Legenda pronta de um filme (compilado) versus um intérprete traduzindo ao vivo (interpretado).",
     "virada": false,
-    "passos": 3
+    "passos": 3,
+    "peso": 0.062
    }
   ]
  },
@@ -1346,6 +1404,8 @@ window.MATERIAS = [
   "trabalho": "Conjuntos e lógica estão em cada filtro que você escreve: “clientes que compraram e não voltaram” é uma diferença de conjuntos. A contagem diz quantos casos um teste precisa cobrir.",
   "porque": "Só o que a estatística e o raciocínio lógico de concurso pedem logo: conjuntos, lógica proposicional e contagem. A álgebra linear e o cálculo ficam numa matéria própria, perto do aprendizado de máquina, que é onde eles são usados (diretrizes do grupo do PCMI, De Veaux e colegas, 2017).",
   "logos": [],
+  "peso": 5,
+  "peso_porque": "A matemática que sustenta estatística e modelos; vale pelo que destrava.",
   "modulos": [
    {
     "codigo": "MAT.01",
@@ -1364,7 +1424,8 @@ window.MATERIAS = [
     "tropeco": "Confundir união (está em pelo menos um) com interseção (está nos dois).",
     "dia": "Os “seguidores em comum” de dois perfis são a interseção de dois conjuntos.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.471
    },
    {
     "codigo": "MAT.02",
@@ -1396,7 +1457,8 @@ window.MATERIAS = [
     "tropeco": "Negar “todo” com “nenhum”. O contrário de “todo” é “pelo menos um não”.",
     "dia": "“Se compartilhar a senha, a conta pode ser bloqueada” não diz que quem não compartilha nunca será bloqueado.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 2.059
    },
    {
     "codigo": "MAT.03",
@@ -1421,7 +1483,8 @@ window.MATERIAS = [
     "tropeco": "Usar combinação quando a ordem importa (senha) ou arranjo quando não importa (escolher 2 sabores de pizza).",
     "dia": "Por que a senha de 4 números é fraca e a de 8 caracteres com letras é forte: as possibilidades se multiplicam.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.471
    }
   ]
  },
@@ -1435,6 +1498,8 @@ window.MATERIAS = [
    "python",
    "r"
   ],
+  "peso": 12,
+  "peso_porque": "O núcleo do ofício: medir, comparar, testar hipóteses e saber quando confiar num número.",
   "modulos": [
    {
     "codigo": "EST.01",
@@ -1452,7 +1517,8 @@ window.MATERIAS = [
     "tropeco": "Calcular média de categorias ordenadas (pequeno, médio, grande) como se fossem números.",
     "dia": "A nota de 1 a 5 estrelas de um app é ordinal: a distância entre 4 e 5 não é igual à entre 1 e 2.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.716
    },
    {
     "codigo": "EST.02",
@@ -1483,7 +1549,8 @@ window.MATERIAS = [
     "tropeco": "Usar a média para tudo, mesmo com valores extremos.",
     "dia": "O “tempo médio de entrega” do app engana se poucos pedidos atrasam horas.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.075
    },
    {
     "codigo": "EST.03",
@@ -1519,7 +1586,8 @@ window.MATERIAS = [
     "tropeco": "Confundir a chance de dar positivo estando doente com a chance de estar doente dado que deu positivo.",
     "dia": "O alerta de “compra suspeita” do cartão: a maioria é alarme falso, porque fraude é rara.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.075
    },
    {
     "codigo": "EST.04",
@@ -1544,7 +1612,8 @@ window.MATERIAS = [
     "tropeco": "Achar que o valor esperado é o que vai acontecer numa jogada. Ele é a média de muitas.",
     "dia": "A promoção “ganhe até R$ 50 de cashback” com sorteio: o ganho esperado costuma ser bem menor que o anunciado.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.896
    },
    {
     "codigo": "EST.05",
@@ -1571,7 +1640,8 @@ window.MATERIAS = [
     "tropeco": "Supor que tudo é normal. Renda, tempo de espera e contagens costumam ser assimétricos.",
     "dia": "Altura das pessoas parece normal; curtidas por post têm cauda longa: poucos posts com muitíssimas.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 1.254
    },
    {
     "codigo": "EST.06",
@@ -1602,7 +1672,8 @@ window.MATERIAS = [
     "tropeco": "Achar que amostra boa é amostra grande. Uma amostra grande e enviesada continua enviesada.",
     "dia": "A pesquisa eleitoral com margem de erro de 2 pontos para mais ou para menos.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.075
    },
    {
     "codigo": "EST.09",
@@ -1630,7 +1701,8 @@ window.MATERIAS = [
     "tropeco": "Achar que o bootstrap cria dados novos. Ele só reaproveita a amostra que você tem.",
     "dia": "Simular mil vezes no computador o resultado de um teste de duas versões de um site, em vez de decorar fórmula.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.537
    },
    {
     "codigo": "EST.07",
@@ -1654,7 +1726,8 @@ window.MATERIAS = [
     "tropeco": "Ler o intervalo como a probabilidade de o valor verdadeiro estar dentro dele.",
     "dia": "A margem de erro da pesquisa eleitoral é metade da largura do intervalo de confiança.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.716
    },
    {
     "codigo": "EST.08",
@@ -1683,7 +1756,8 @@ window.MATERIAS = [
     "tropeco": "Ler o p-valor como a probabilidade da hipótese, e confundir “significativo” com “importante”.",
     "dia": "Teste A/B do botão de comprar verde contra o azul: a diferença foi real ou sorte?",
     "virada": false,
-    "passos": 10
+    "passos": 10,
+    "peso": 1.612
    },
    {
     "codigo": "EST.10",
@@ -1709,7 +1783,8 @@ window.MATERIAS = [
     "tropeco": "Concluir causa a partir de correlação.",
     "dia": "Quem assina o plano premium gasta mais. O premium faz gastar, ou quem já gasta muito assina o premium?",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.075
    },
    {
     "codigo": "EST.11",
@@ -1741,7 +1816,8 @@ window.MATERIAS = [
     "tropeco": "Ler o coeficiente como causa e prever fora da faixa dos dados (40 anos de estudo).",
     "dia": "Os sites de imóveis estimam o preço de um apartamento pelo tamanho e pelo bairro.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 1.254
    },
    {
     "codigo": "EST.12",
@@ -1765,7 +1841,8 @@ window.MATERIAS = [
     "tropeco": "Usar regressão linear para prever probabilidade e obter valores acima de 1.",
     "dia": "O “risco de inadimplência” que o banco calcula antes de liberar crédito.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.716
    }
   ]
  },
@@ -1779,6 +1856,8 @@ window.MATERIAS = [
    "python",
    "java"
   ],
+  "peso": 4,
+  "peso_porque": "Escolher a estrutura certa muda o custo do código; pesa mais em entrevistas técnicas.",
   "modulos": [
    {
     "codigo": "ALG.01",
@@ -1808,7 +1887,8 @@ window.MATERIAS = [
     "tropeco": "Achar que O(n) mede segundos. Mede como o tempo cresce quando a entrada cresce.",
     "dia": "Procurar um contato rolando a lista cresce com o número de contatos; digitar o nome na busca é quase instantâneo.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.238
    },
    {
     "codigo": "ED.01",
@@ -1836,7 +1916,8 @@ window.MATERIAS = [
     "tropeco": "Confundir a ideia (o que a estrutura faz) com a implementação (como é feita por dentro).",
     "dia": "Você usa o carrinho de qualquer loja sem saber como foi programado: sabe o que ele faz.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ED.02",
@@ -1865,7 +1946,8 @@ window.MATERIAS = [
     "tropeco": "Achar que dá para acessar posições que não existem, como lista[10] numa lista de 10 itens (vai de 0 a 9).",
     "dia": "Cadeiras numeradas no cinema: achar a 7 é direto; pôr alguém na cadeira 1 obriga todo mundo a mudar de lugar.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ED.04",
@@ -1890,7 +1972,8 @@ window.MATERIAS = [
     "tropeco": "Trocar o comportamento da pilha (o último que entra sai primeiro) com o da fila.",
     "dia": "O Ctrl+Z desfaz a última coisa que você fez; o botão voltar do navegador volta para a última página.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.238
    },
    {
     "codigo": "ED.05",
@@ -1914,7 +1997,8 @@ window.MATERIAS = [
     "tropeco": "Usar lista.pop(0) numa fila grande e deixar o programa lento.",
     "dia": "A fila de pedidos de um restaurante no app de delivery: primeiro pedido, primeiro a sair da cozinha.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ED.03",
@@ -1948,7 +2032,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer de atualizar o tail ao inserir: 16% dos estudantes erraram exatamente isso (Zingaro e colegas, 2018).",
     "dia": "Uma caça ao tesouro: cada pista diz onde está a próxima. Para chegar à quinta, você passa pelas quatro anteriores.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ALG.04",
@@ -1977,7 +2062,8 @@ window.MATERIAS = [
     "tropeco": "Entender a ida (as chamadas) e não a volta: o resultado é montado quando cada chamada retorna (Kahney; Götschi e colegas, 2003).",
     "dia": "Pastas dentro de pastas na nuvem: para contar os arquivos, você conta os da pasta e repete o processo em cada subpasta.",
     "virada": true,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.286
    },
    {
     "codigo": "ALG.02",
@@ -2005,7 +2091,8 @@ window.MATERIAS = [
     "tropeco": "Usar busca binária em lista desordenada, ou em lista ligada, onde não dá para pular para o meio (Zingaro e colegas, 2018).",
     "dia": "Adivinhar um número de 1 a 100 ouvindo “maior” ou “menor”: chutando sempre o meio, você acerta em no máximo 7 tentativas.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ED.06",
@@ -2036,7 +2123,8 @@ window.MATERIAS = [
     "tropeco": "Achar que, ao aumentar a tabela, as chaves ficam nas mesmas posições. É preciso recalcular a posição de todas (Karpierz e Wolfman, 2014).",
     "dia": "O banco acha a dona de uma chave Pix na hora, entre centenas de milhões de chaves.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.286
    },
    {
     "codigo": "ALG.03",
@@ -2065,7 +2153,8 @@ window.MATERIAS = [
     "tropeco": "Achar que todos os métodos simples se equivalem. A inserção é rápida para listas quase ordenadas.",
     "dia": "Arrumar as cartas na mão numa partida de truco, uma de cada vez.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ALG.05",
@@ -2093,7 +2182,8 @@ window.MATERIAS = [
     "tropeco": "Achar que o quicksort é sempre rápido: com pivô ruim numa lista já ordenada, ele vira O(n²).",
     "dia": "Organizar mil provas: dividir entre 10 pessoas, cada uma ordena a sua pilha, e depois juntar as pilhas em ordem.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ALG.06",
@@ -2115,7 +2205,8 @@ window.MATERIAS = [
     "tropeco": "Usar contagem com valores muito espalhados (de 0 a 1 bilhão): a tabela de contagem fica gigante.",
     "dia": "Separar as cédulas da carteira por valor: uma pilha para cada nota.",
     "virada": false,
-    "passos": 3
+    "passos": 3,
+    "peso": 0.095
    },
    {
     "codigo": "ED.07",
@@ -2144,7 +2235,8 @@ window.MATERIAS = [
     "tropeco": "Confundir os percursos. O nome diz quando a raiz é visitada: antes (pré), no meio (em) ou depois (pós).",
     "dia": "As pastas do seu computador e o organograma de uma empresa são árvores.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ED.10",
@@ -2173,7 +2265,8 @@ window.MATERIAS = [
     "tropeco": "Confundir heap com árvore de busca: no heap o pai é menor que os filhos, mas a esquerda não é menor que a direita.",
     "dia": "O pronto-socorro atende pela gravidade, não pela ordem de chegada: é uma fila de prioridade.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ED.08",
@@ -2201,7 +2294,8 @@ window.MATERIAS = [
     "tropeco": "Achar que a árvore de busca é balanceada por padrão (Karpierz e Wolfman, 2014).",
     "dia": "O jogo de adivinhar o número guardado em forma de árvore: cada “maior ou menor” desce um nível.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ED.09",
@@ -2224,7 +2318,8 @@ window.MATERIAS = [
     "tropeco": "Decorar as rotações sem entender o objetivo: manter a altura perto de log n.",
     "dia": "O índice de um banco de dados é uma árvore sempre equilibrada; por isso a busca continua rápida com bilhões de linhas.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ED.11",
@@ -2252,7 +2347,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer que seguir alguém tem direção (grafo dirigido) e amizade mútua não tem.",
     "dia": "Redes sociais e o mapa do aplicativo de trânsito são grafos: pontos ligados por linhas.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ALG.09",
@@ -2286,7 +2382,8 @@ window.MATERIAS = [
     "tropeco": "Usar busca em largura quando as ligações têm pesos (distância, tempo). Aí o certo é Dijkstra.",
     "dia": "O app de trânsito escolhendo a rota mais rápida (Dijkstra) e a rede profissional mostrando “conexão de 2º grau” (largura).",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ALG.07",
@@ -2310,7 +2407,8 @@ window.MATERIAS = [
     "tropeco": "Achar que escolher sempre o melhor agora dá o melhor no fim.",
     "dia": "Pegar sempre a fila do caixa que parece menor nem sempre faz você sair mais cedo.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ALG.08",
@@ -2334,7 +2432,8 @@ window.MATERIAS = [
     "tropeco": "Não perceber que os subproblemas se repetem.",
     "dia": "Guardar trechos de rota já calculados para não recalcular a viagem inteira a cada desvio.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.19
    },
    {
     "codigo": "ED.12",
@@ -2357,7 +2456,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer que NumPy e pandas guardam por coluna, e por isso operar a coluna inteira é rápido.",
     "dia": "A tabela “usuário × filme” de um streaming: quase ninguém viu quase nada, então ela é quase toda vazia.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    },
    {
     "codigo": "ALG.10",
@@ -2385,7 +2485,8 @@ window.MATERIAS = [
     "tropeco": "Medir uma vez só, com entrada pequena, e tirar conclusão.",
     "dia": "Testar a velocidade da internet várias vezes, em horários diferentes, antes de reclamar com a operadora.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.143
    }
   ]
  },
@@ -2399,6 +2500,8 @@ window.MATERIAS = [
    "java",
    "python"
   ],
+  "peso": 2,
+  "peso_porque": "Útil para organizar projetos maiores; pouco pedido para quem analisa dados.",
   "modulos": [
    {
     "codigo": "POO.01",
@@ -2428,7 +2531,8 @@ window.MATERIAS = [
     "tropeco": "Achar que escrever a classe já cria um objeto. É preciso criar (instanciar): Conta().",
     "dia": "O modelo do cartão de um banco é um só; cada cliente recebe o seu cartão, com número próprio.",
     "virada": true,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.429
    },
    {
     "codigo": "POO.02",
@@ -2451,7 +2555,8 @@ window.MATERIAS = [
     "tropeco": "Deixar tudo aberto e permitir que qualquer parte do código bagunce o objeto.",
     "dia": "Você não edita o saldo no app do banco: faz operações que o banco valida.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.171
    },
    {
     "codigo": "POO.03",
@@ -2475,7 +2580,8 @@ window.MATERIAS = [
     "tropeco": "Usar herança só para reaproveitar código quando a relação não é “é um”.",
     "dia": "Todo plano de streaming é uma assinatura; o plano família é uma assinatura com mais telas.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.229
    },
    {
     "codigo": "POO.04",
@@ -2498,7 +2604,8 @@ window.MATERIAS = [
     "tropeco": "Encher o código de “se for Pix faça isto, se for boleto faça aquilo”.",
     "dia": "O botão “pagar” do app funciona para Pix, cartão e boleto; cada um paga do seu jeito.",
     "virada": true,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.257
    },
    {
     "codigo": "POO.05",
@@ -2522,7 +2629,8 @@ window.MATERIAS = [
     "tropeco": "Criar hierarquias enormes de herança quando bastaria juntar objetos.",
     "dia": "Um carro tem motor (composição); um carro elétrico é um carro (herança).",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.229
    },
    {
     "codigo": "POO.06",
@@ -2553,7 +2661,8 @@ window.MATERIAS = [
     "tropeco": "Usar == para comparar textos em Java. Cai em prova.",
     "dia": "Dois boletos com o mesmo valor não são o mesmo boleto: ter o mesmo conteúdo não é ser a mesma coisa.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.343
    },
    {
     "codigo": "POO.07",
@@ -2581,7 +2690,8 @@ window.MATERIAS = [
     "tropeco": "Escolher lista quando a busca é por chave. Aí o certo é HashMap (Java) ou dict (Python).",
     "dia": "A mesma agenda de contatos escrita em duas línguas.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.171
    },
    {
     "codigo": "POO.08",
@@ -2604,7 +2714,8 @@ window.MATERIAS = [
     "tropeco": "Criar uma classe que faz tudo e que ninguém consegue mudar sem quebrar alguma coisa.",
     "dia": "No restaurante, quem cozinha não é quem entrega nem quem cobra.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.171
    }
   ]
  },
@@ -2623,6 +2734,8 @@ window.MATERIAS = [
    "docker",
    "anaconda"
   ],
+  "peso": 5,
+  "peso_porque": "Git, ambientes, nuvem e pipelines: AWS em 20% das vagas, Azure em 14%, Docker em 7%.",
   "modulos": [
    {
     "codigo": "ENG.01",
@@ -2647,7 +2760,8 @@ window.MATERIAS = [
     "tropeco": "Usar rm achando que o arquivo vai para a lixeira. No terminal, apagar é para sempre.",
     "dia": "É conversar com o computador por mensagem de texto em vez de clicar.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.532
    },
    {
     "codigo": "ENG.04",
@@ -2676,7 +2790,8 @@ window.MATERIAS = [
     "tropeco": "Instalar tudo no Python do sistema e um projeto parar de funcionar quando outro atualiza uma biblioteca.",
     "dia": "Cada app do celular tem seus próprios dados e permissões; um não bagunça o outro.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.426
    },
    {
     "codigo": "ENG.05",
@@ -2699,7 +2814,8 @@ window.MATERIAS = [
     "tropeco": "Rodar células fora de ordem e achar que o notebook está certo.",
     "dia": "Um documento em que cada parágrafo pode rodar um cálculo e mostrar o resultado logo abaixo.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.319
    },
    {
     "codigo": "ENG.02",
@@ -2724,7 +2840,8 @@ window.MATERIAS = [
     "tropeco": "Fazer um commit gigante, com tudo misturado e a mensagem “ajustes”.",
     "dia": "O histórico de versões de um documento na nuvem, só que você decide quando salvar e escreve o que mudou.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.532
    },
    {
     "codigo": "ENG.03",
@@ -2750,7 +2867,8 @@ window.MATERIAS = [
     "tropeco": "Ter medo de conflito. Ele só pede uma decisão sua.",
     "dia": "Duas pessoas editando a mesma célula de uma planilha compartilhada ao mesmo tempo.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.638
    },
    {
     "codigo": "ENG.06",
@@ -2779,7 +2897,8 @@ window.MATERIAS = [
     "tropeco": "Corrigir dados à mão na planilha original e perder o rastro do que mudou.",
     "dia": "Guardar a foto original e editar uma cópia.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.426
    },
    {
     "codigo": "ENG.07",
@@ -2808,7 +2927,8 @@ window.MATERIAS = [
     "tropeco": "Confiar que o dado sempre chega certo.",
     "dia": "O app do banco recusa um Pix de valor negativo antes de processar.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.426
    },
    {
     "codigo": "ENG.08",
@@ -2839,7 +2959,8 @@ window.MATERIAS = [
     "tropeco": "Um pipeline que duplica linhas quando roda de novo depois de uma falha.",
     "dia": "Apertar “pagar” duas vezes não pode cobrar duas vezes.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.638
    },
    {
     "codigo": "ENG.09",
@@ -2864,7 +2985,8 @@ window.MATERIAS = [
     "tropeco": "Achar que a nuvem é de graça: armazenamento e processamento são cobrados por uso.",
     "dia": "Uma marmita: a comida vai pronta e igual para qualquer lugar.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.532
    },
    {
     "codigo": "ENG.10",
@@ -2889,7 +3011,8 @@ window.MATERIAS = [
     "tropeco": "Achar que ágil é trabalhar sem planejamento. O plano é feito em ciclos curtos.",
     "dia": "Um quadro com colunas “a fazer”, “fazendo” e “feito” é um Kanban.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.532
    }
   ]
  },
@@ -2904,6 +3027,8 @@ window.MATERIAS = [
    "html5",
    "markdown"
   ],
+  "peso": 4,
+  "peso_porque": "Coletar e ler dados de arquivos, APIs e da web: é por onde todo projeto começa.",
   "modulos": [
    {
     "codigo": "FMT.01",
@@ -2933,7 +3058,8 @@ window.MATERIAS = [
     "tropeco": "Ler “7,5” como texto porque a vírgula é a casa decimal. Informe decimal=\",\".",
     "dia": "Exportar o extrato do banco ou a fatura do cartão em CSV e abrir na planilha.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.37
    },
    {
     "codigo": "FMT.02",
@@ -2957,7 +3083,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer que um JSON aninhado precisa ser achatado antes de virar tabela.",
     "dia": "Consultar um CEP numa API pública devolve um JSON com rua, bairro e cidade.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.296
    },
    {
     "codigo": "FMT.06",
@@ -2982,7 +3109,8 @@ window.MATERIAS = [
     "tropeco": "Misturar o formato americano (mês/dia) com o brasileiro (dia/mês) na mesma coluna.",
     "dia": "O lembrete que dispara uma hora antes porque o servidor está em outro fuso horário.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.37
    },
    {
     "codigo": "FMT.03",
@@ -3006,7 +3134,8 @@ window.MATERIAS = [
     "tropeco": "Ler células mescladas e cabeçalhos em várias linhas sem limpar antes.",
     "dia": "A planilha do financeiro, cheia de cores, totais no meio e várias abas.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.296
    },
    {
     "codigo": "FMT.05",
@@ -3035,7 +3164,8 @@ window.MATERIAS = [
     "tropeco": "Abrir um Parquet num editor de texto e achar que está corrompido. Ele é binário.",
     "dia": "Um vídeo comprimido ocupa menos e abre rápido: o Parquet faz isso com tabelas.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.296
    },
    {
     "codigo": "FMT.07",
@@ -3066,7 +3196,8 @@ window.MATERIAS = [
     "tropeco": "Pôr a chave da API dentro do código que vai para o GitHub.",
     "dia": "O app do clima pede os dados a um servidor e recebe um JSON pronto.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.444
    },
    {
     "codigo": "FMT.09",
@@ -3097,7 +3228,8 @@ window.MATERIAS = [
     "tropeco": "Usar a base sem ler o dicionário de dados e interpretar um código errado.",
     "dia": "Os gráficos de inflação dos jornais usam essas mesmas fontes oficiais.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.444
    },
    {
     "codigo": "FMT.04",
@@ -3121,7 +3253,8 @@ window.MATERIAS = [
     "tropeco": "Cortar HTML com split em vez de usar um leitor de HTML.",
     "dia": "A nota fiscal eletrônica (NF-e) é um XML.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.296
    },
    {
     "codigo": "FMT.08",
@@ -3150,7 +3283,8 @@ window.MATERIAS = [
     "tropeco": "Disparar milhares de requisições por segundo e ser bloqueado.",
     "dia": "Os comparadores de preço coletam dados de lojas automaticamente.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.296
    },
    {
     "codigo": "FMT.10",
@@ -3180,7 +3314,8 @@ window.MATERIAS = [
     "tropeco": "Contar palavras sem tirar as muito comuns (de, a, que).",
     "dia": "O resumo automático das avaliações de um produto: “os clientes falam de entrega e tamanho”.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.37
    },
    {
     "codigo": "FMT.11",
@@ -3204,7 +3339,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer os canais de cor e tratar a imagem como uma tabela simples.",
     "dia": "Os filtros de foto das redes sociais mudam os números de cada pixel.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.296
    },
    {
     "codigo": "FMT.12",
@@ -3227,7 +3363,8 @@ window.MATERIAS = [
     "tropeco": "Usar pickle para trocar dados entre sistemas. Prefira JSON ou Parquet.",
     "dia": "Não abrir anexo executável de e-mail desconhecido: mesmo princípio.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.222
    }
   ]
  },
@@ -3244,6 +3381,8 @@ window.MATERIAS = [
    "duckdb",
    "polars"
   ],
+  "peso": 10,
+  "peso_porque": "Limpar e analisar com pandas é a maior parte do tempo de trabalho de quem lida com dados.",
   "modulos": [
    {
     "codigo": "AD.01",
@@ -3276,7 +3415,8 @@ window.MATERIAS = [
     "tropeco": "Escrever um laço for sobre um array grande. A operação vetorizada é dezenas de vezes mais rápida.",
     "dia": "Aplicar um reajuste de 5% em todos os preços da loja de uma vez.",
     "virada": false,
-    "passos": 9
+    "passos": 9,
+    "peso": 1.818
    },
    {
     "codigo": "AD.02",
@@ -3305,7 +3445,8 @@ window.MATERIAS = [
     "tropeco": "Começar a analisar sem olhar tipos e valores ausentes.",
     "dia": "Abrir uma planilha nova e olhar o cabeçalho e o tamanho antes de mexer.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.909
    },
    {
     "codigo": "AD.03",
@@ -3335,7 +3476,8 @@ window.MATERIAS = [
     "tropeco": "Usar and e or em vez de & e | nas condições do pandas, e esquecer os parênteses.",
     "dia": "O filtro de uma coluna na planilha.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.136
    },
    {
     "codigo": "AD.04",
@@ -3365,7 +3507,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer que o groupby sozinho não calcula nada: precisa da conta (mean, sum, count).",
     "dia": "A tabela dinâmica da planilha.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.136
    },
    {
     "codigo": "AD.05",
@@ -3394,7 +3537,8 @@ window.MATERIAS = [
     "tropeco": "Juntar por uma chave que se repete dos dois lados e multiplicar as linhas.",
     "dia": "O PROCV que, com nome repetido, traz o valor errado sem avisar.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.909
    },
    {
     "codigo": "AD.06",
@@ -3417,7 +3561,8 @@ window.MATERIAS = [
     "tropeco": "Analisar a tabela larga como está e escrever uma conta para cada coluna.",
     "dia": "O relatório que chega com um mês por coluna.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.682
    },
    {
     "codigo": "AD.07",
@@ -3448,7 +3593,8 @@ window.MATERIAS = [
     "tropeco": "Apagar todas as linhas com valor ausente sem pensar no viés que isso cria. Valores ausentes estão entre os erros mais comuns (Singh e colegas, 2024).",
     "dia": "Um cadastro em que cada atendente escreveu o nome da cidade de um jeito.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.364
    },
    {
     "codigo": "AD.08",
@@ -3478,7 +3624,8 @@ window.MATERIAS = [
     "tropeco": "Somar as variações mensais em vez de compor.",
     "dia": "O IPCA acumulado em 12 meses que aparece no noticiário.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.136
    },
    {
     "codigo": "AD.10",
@@ -3507,7 +3654,8 @@ window.MATERIAS = [
     "tropeco": "Carregar tudo de uma vez e travar o computador.",
     "dia": "Assistir a uma série por streaming em vez de baixar a temporada inteira antes.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.909
    }
   ]
  },
@@ -3521,6 +3669,8 @@ window.MATERIAS = [
    "matplotlib",
    "plotly"
   ],
+  "peso": 7,
+  "peso_porque": "Comunicar o resultado: visualização em 10% das vagas, Tableau em 12%, Power BI em 9%.",
   "modulos": [
    {
     "codigo": "VIS.01",
@@ -3536,7 +3686,8 @@ window.MATERIAS = [
     "tropeco": "Usar pizza com muitas fatias parecidas.",
     "dia": "O gráfico de pizza da fatura do cartão em que ninguém consegue comparar as fatias.",
     "virada": false,
-    "passos": 3
+    "passos": 3,
+    "peso": 0.483
    },
    {
     "codigo": "VIS.02",
@@ -3566,7 +3717,8 @@ window.MATERIAS = [
     "tropeco": "Usar barras para uma série longa no tempo, ou linha para categorias sem ordem.",
     "dia": "O gráfico de linha da cotação do dólar no app do banco.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.207
    },
    {
     "codigo": "VIS.03",
@@ -3595,7 +3747,8 @@ window.MATERIAS = [
     "tropeco": "Deixar os rótulos automáticos (col_1, valor) e a legenda cobrindo os dados.",
     "dia": "O gráfico da planilha, só que feito com código que você roda de novo quando os dados mudam.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.966
    },
    {
     "codigo": "VIS.04",
@@ -3619,7 +3772,8 @@ window.MATERIAS = [
     "tropeco": "Cortar o eixo para “dar destaque” e enganar o leitor.",
     "dia": "Gráficos de propaganda com a escala esticada.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.966
    },
    {
     "codigo": "VIS.05",
@@ -3642,7 +3796,8 @@ window.MATERIAS = [
     "tropeco": "Mandar para o chefe o gráfico do jeito que saiu da análise.",
     "dia": "O gráfico de jornal com o título “Inflação desacelera pelo terceiro mês”.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.724
    },
    {
     "codigo": "AD.09",
@@ -3677,7 +3832,8 @@ window.MATERIAS = [
     "tropeco": "Gerar dezenas de gráficos sem pergunta e não concluir nada.",
     "dia": "Olhar os gastos do ano e perguntar: onde foi a maior parte do dinheiro? Em que mês gastei mais?",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.207
    },
    {
     "codigo": "VIS.06",
@@ -3710,7 +3866,8 @@ window.MATERIAS = [
     "tropeco": "Esconder as limitações. São elas que dão credibilidade ao resultado.",
     "dia": "O resumo de uma página que você manda antes da reunião.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.724
    },
    {
     "codigo": "VIS.07",
@@ -3733,7 +3890,8 @@ window.MATERIAS = [
     "tropeco": "Pôr todos os números possíveis e ninguém saber para onde olhar.",
     "dia": "O painel do app de corrida: ritmo, distância e tempo, sem mais nada.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.724
    }
   ]
  },
@@ -3746,6 +3904,8 @@ window.MATERIAS = [
   "logos": [
    "numpy"
   ],
+  "peso": 5,
+  "peso_porque": "Vetores, matrizes e derivadas explicam como os modelos aprendem.",
   "modulos": [
    {
     "codigo": "MAT.04",
@@ -3777,7 +3937,8 @@ window.MATERIAS = [
     "tropeco": "Achar que vetor é só seta da física. Em dados, um vetor é uma linha da tabela.",
     "dia": "O streaming representa cada pessoa como um vetor de gostos e recomenda o que vetores parecidos assistiram.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 0.972
    },
    {
     "codigo": "MAT.05",
@@ -3803,7 +3964,8 @@ window.MATERIAS = [
     "tropeco": "Achar que multiplicar matrizes é multiplicar elemento por elemento. É linha vezes coluna.",
     "dia": "Calcular o valor de todos os carrinhos de uma vez: quantidades vezes preços.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.833
    },
    {
     "codigo": "MAT.06",
@@ -3827,7 +3989,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer que um sistema pode ter infinitas soluções ou nenhuma.",
     "dia": "Descobrir o preço do lanche e do refrigerante a partir de duas notas de pedidos diferentes.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.556
    },
    {
     "codigo": "MAT.07",
@@ -3852,7 +4015,8 @@ window.MATERIAS = [
     "tropeco": "Pôr no modelo colunas que são combinação de outras, como o preço em reais e em centavos.",
     "dia": "O preço em reais e o preço em dólares do mesmo produto contam a mesma história.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.694
    },
    {
     "codigo": "MAT.08",
@@ -3880,7 +4044,8 @@ window.MATERIAS = [
     "tropeco": "Achar que a reta precisa passar por algum dos pontos.",
     "dia": "A “linha de tendência” que a planilha desenha no gráfico de dispersão.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.417
    },
    {
     "codigo": "MAT.09",
@@ -3904,7 +4069,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer de padronizar as colunas antes do PCA: a de maior escala domina.",
     "dia": "Resumir dezenas de perguntas de uma pesquisa de satisfação em dois ou três fatores.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.556
    },
    {
     "codigo": "MAT.10",
@@ -3931,7 +4097,8 @@ window.MATERIAS = [
     "tropeco": "Passo grande demais (taxa de aprendizado) faz o erro pular e nunca cair.",
     "dia": "Descer uma montanha no escuro tateando o chão: cada passo vai para onde o chão desce mais.",
     "virada": false,
-    "passos": 8
+    "passos": 8,
+    "peso": 0.972
    }
   ]
  },
@@ -3947,6 +4114,8 @@ window.MATERIAS = [
    "pytorch",
    "kaggle"
   ],
+  "peso": 13,
+  "peso_porque": "Aprendizado de máquina aparece em 69% das vagas: é o que mais diferencia o cientista de dados.",
   "modulos": [
    {
     "codigo": "ML.01",
@@ -3975,7 +4144,8 @@ window.MATERIAS = [
     "tropeco": "Escolher o algoritmo antes de definir o que se quer prever e com quais dados.",
     "dia": "O “você também pode gostar” das lojas é um modelo treinado com compras passadas.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.912
    },
    {
     "codigo": "ML.02",
@@ -4005,7 +4175,8 @@ window.MATERIAS = [
     "tropeco": "Vazamento de dados: usar no treino uma informação que só existiria depois do resultado.",
     "dia": "Estudar com a prova antiga e tirar 10 nela não prova que você sabe a matéria.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.14
    },
    {
     "codigo": "ML.03",
@@ -4033,7 +4204,8 @@ window.MATERIAS = [
     "tropeco": "Usar acurácia quando as classes são desbalanceadas.",
     "dia": "No filtro de spam, deixar passar spam e mandar um e-mail importante para o spam são erros com custos diferentes.",
     "virada": false,
-    "passos": 9
+    "passos": 9,
+    "peso": 1.825
    },
    {
     "codigo": "ML.04",
@@ -4066,7 +4238,8 @@ window.MATERIAS = [
     "tropeco": "Comparar coeficientes de variáveis em escalas diferentes sem padronizar.",
     "dia": "Estimar o preço de um imóvel pelo tamanho, pelos quartos e pelo bairro.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.684
    },
    {
     "codigo": "ML.05",
@@ -4094,7 +4267,8 @@ window.MATERIAS = [
     "tropeco": "Usar kNN com dezenas de colunas sem pensar que, com muitas dimensões, tudo fica longe de tudo.",
     "dia": "“Pessoas parecidas com você também ouviram” no app de música.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.684
    },
    {
     "codigo": "ML.07",
@@ -4124,7 +4298,8 @@ window.MATERIAS = [
     "tropeco": "Ajustar a padronização com todos os dados antes de separar treino e teste: é vazamento.",
     "dia": "Transformar “dia da semana” em “é fim de semana?” pode ajudar a prever vendas.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.14
    },
    {
     "codigo": "ML.06",
@@ -4150,7 +4325,8 @@ window.MATERIAS = [
     "tropeco": "Deixar a árvore crescer sem limite até decorar o treino.",
     "dia": "Pedir a opinião de vários amigos antes de escolher um restaurante, em vez de seguir um só.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 1.368
    },
    {
     "codigo": "ML.08",
@@ -4180,7 +4356,8 @@ window.MATERIAS = [
     "tropeco": "Tratar os grupos como verdade. Eles dependem das colunas e da escala escolhidas.",
     "dia": "Separar clientes em perfis (econômico, frequente, ocasional) sem ninguém ter dito antes quais existem.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.14
    },
    {
     "codigo": "ML.09",
@@ -4208,7 +4385,8 @@ window.MATERIAS = [
     "tropeco": "Testar dezenas de combinações no teste e relatar a melhor.",
     "dia": "Ajustar o tempero provando sempre a mesma colherada: no fim, a receita só fica boa para aquela colherada.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.684
    },
    {
     "codigo": "ML.10",
@@ -4232,7 +4410,8 @@ window.MATERIAS = [
     "tropeco": "Treinar uma vez e nunca mais acompanhar o modelo em uso.",
     "dia": "Modelos de compra que pararam de funcionar quando a pandemia mudou os hábitos das pessoas.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.912
    },
    {
     "codigo": "ML.11",
@@ -4256,7 +4435,8 @@ window.MATERIAS = [
     "tropeco": "Ler a importância de um atributo como causa.",
     "dia": "O app do banco explicando por que o seu limite não aumentou.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.912
    },
    {
     "codigo": "ML.13",
@@ -4288,7 +4468,8 @@ window.MATERIAS = [
     "tropeco": "Não comparar o modelo com uma previsão ingênua, como repetir o último valor.",
     "dia": "A previsão de demanda do supermercado para o fim de semana.",
     "virada": false,
-    "passos": 3
+    "passos": 3,
+    "peso": 0.456
    },
    {
     "codigo": "ML.12",
@@ -4318,7 +4499,8 @@ window.MATERIAS = [
     "tropeco": "Usar rede neural numa tabela pequena em que uma regressão ou uma árvore resolve melhor, e explica.",
     "dia": "O reconhecimento facial que desbloqueia o celular.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 1.14
    }
   ]
  },
@@ -4336,6 +4518,8 @@ window.MATERIAS = [
    "apachespark",
    "apachekafka"
   ],
+  "peso": 3,
+  "peso_porque": "Bancos não relacionais e grandes volumes (Spark em 12% das vagas) entram em empresas maiores.",
   "modulos": [
    {
     "codigo": "NSQ.01",
@@ -4361,7 +4545,8 @@ window.MATERIAS = [
     "tropeco": "Achar que NoSQL substitui o banco relacional em tudo.",
     "dia": "A contagem de visualizações de um vídeo que demora a atualizar.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.643
    },
    {
     "codigo": "NSQ.02",
@@ -4390,7 +4575,8 @@ window.MATERIAS = [
     "tropeco": "Embutir dados que mudam e precisar atualizar mil documentos.",
     "dia": "O perfil completo de um usuário num app, com preferências e endereços, guardado de uma vez.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.429
    },
    {
     "codigo": "NSQ.03",
@@ -4424,7 +4610,8 @@ window.MATERIAS = [
     "tropeco": "Usar banco colunar para muitas gravações pequenas, como cada clique de um site.",
     "dia": "As retrospectivas de fim de ano das plataformas de música, calculadas sobre bilhões de reproduções.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.429
    },
    {
     "codigo": "NSQ.04",
@@ -4448,7 +4635,8 @@ window.MATERIAS = [
     "tropeco": "Esquecer de expirar o cache e mostrar dado velho.",
     "dia": "O navegador guarda as imagens de um site para abrir mais rápido na próxima vez.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.429
    },
    {
     "codigo": "NSQ.05",
@@ -4475,7 +4663,8 @@ window.MATERIAS = [
     "tropeco": "Fazer consultas de muitos saltos com muitas junções no relacional e tudo ficar lento.",
     "dia": "“Pessoas que você talvez conheça” das redes sociais.",
     "virada": false,
-    "passos": 3
+    "passos": 3,
+    "peso": 0.214
    },
    {
     "codigo": "NSQ.06",
@@ -4505,7 +4694,8 @@ window.MATERIAS = [
     "tropeco": "Usar Spark para dados que cabem numa planilha.",
     "dia": "Os assuntos do momento de uma rede social, calculados sobre milhões de posts por minuto.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.536
    },
    {
     "codigo": "NSQ.07",
@@ -4528,7 +4718,8 @@ window.MATERIAS = [
     "tropeco": "Montar processamento em tempo real quando um relatório diário bastaria.",
     "dia": "O alerta de compra do cartão chega na hora (fluxo); a fatura fecha uma vez por mês (lote).",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.321
    }
   ]
  },
@@ -4539,6 +4730,8 @@ window.MATERIAS = [
   "trabalho": "Todo projeto com dados pessoais passa pela LGPD: o que pode ser coletado, por quanto tempo e com que base legal. Um modelo que discrimina ou vaza dados é um risco para a empresa e para as pessoas.",
   "porque": "Fecha o percurso porque usa tudo: dados pessoais, modelos e pipelines. A LGPD é estudada sempre pelo texto oficial.",
   "logos": [],
+  "peso": 2,
+  "peso_porque": "Privacidade e uso justo dos dados: pouco cobrado como técnica, obrigatório como postura.",
   "modulos": [
    {
     "codigo": "ETI.01",
@@ -4562,7 +4755,8 @@ window.MATERIAS = [
     "tropeco": "Estudar LGPD por resumo de internet. Em prova, o que se cobra é o texto da lei.",
     "dia": "O aviso de cookies dos sites e o pedido para uma loja apagar seus dados.",
     "virada": false,
-    "passos": 5
+    "passos": 5,
+    "peso": 0.333
    },
    {
     "codigo": "ETI.02",
@@ -4590,7 +4784,8 @@ window.MATERIAS = [
     "tropeco": "Confundir pseudonimizar (trocar por um código, ainda dá para voltar) com anonimizar.",
     "dia": "Dados de localização “anônimos” do celular que, cruzados com outros, revelam onde a pessoa mora.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.25
    },
    {
     "codigo": "ETI.03",
@@ -4620,7 +4815,8 @@ window.MATERIAS = [
     "tropeco": "Pôr senha ou chave de API no código e subir para o GitHub.",
     "dia": "A verificação em duas etapas do app do banco e a criptografia de ponta a ponta dos mensageiros.",
     "virada": false,
-    "passos": 6
+    "passos": 6,
+    "peso": 0.417
    },
    {
     "codigo": "ETI.04",
@@ -4648,7 +4844,8 @@ window.MATERIAS = [
     "tropeco": "Olhar só a métrica geral.",
     "dia": "Reconhecimento facial que funciona pior para grupos pouco representados nas fotos de treino.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.25
    },
    {
     "codigo": "ETI.05",
@@ -4674,7 +4871,8 @@ window.MATERIAS = [
     "tropeco": "Ninguém saber de onde veio um número do relatório.",
     "dia": "A bula do remédio, só que para uma tabela.",
     "virada": false,
-    "passos": 7
+    "passos": 7,
+    "peso": 0.5
    },
    {
     "codigo": "ETI.06",
@@ -4697,7 +4895,8 @@ window.MATERIAS = [
     "tropeco": "Sortear sem semente e cada execução dar um resultado diferente.",
     "dia": "Uma receita com quantidades exatas: qualquer um faz o mesmo bolo.",
     "virada": false,
-    "passos": 4
+    "passos": 4,
+    "peso": 0.25
    }
   ]
  }

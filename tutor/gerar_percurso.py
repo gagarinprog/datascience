@@ -121,8 +121,15 @@ def main():
                 "passos": len(conceitos) + 1,
             })
         total += passo
-        guia.append({"sigla": sigla, "nome": mat["nome"], "etapa": mat["etapa"], "trabalho": mat["trabalho"], "porque": mat["porque"], "logos": mat["logos"], "modulos": mods})
+        # peso de cada módulo na formação: a parte da matéria, proporcional aos conceitos, com 1,5x no ponto de virada
+        cotas = [len(m["conceitos"]) * (1.5 if m["virada"] else 1) for m in mods]
+        for m, cota in zip(mods, cotas):
+            m["peso"] = round(mat["peso"] * cota / sum(cotas), 3)
+        guia.append({"sigla": sigla, "nome": mat["nome"], "etapa": mat["etapa"], "trabalho": mat["trabalho"], "porque": mat["porque"], "logos": mat["logos"], "peso": mat["peso"], "peso_porque": mat["peso_porque"], "modulos": mods})
 
+    soma = sum(m["peso"] for m in materias)
+    if soma != 100:
+        raise SystemExit(f"os pesos das matérias somam {soma}, e precisam somar 100")
     PERCURSO.write_text("\n".join(linhas) + "\n", encoding="utf-8", newline="\n")
     DADOS_GUIA.write_text(
         "// Gerado por tutor/gerar_percurso.py a partir do docs/05 e de tutor/sequencia_dados.py. Não edite à mão.\n"
