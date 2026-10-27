@@ -87,13 +87,13 @@ describe("Certo/Errado com confiança", () => {
     <div class="opcoes"><button class="botao" type="button">Certo</button><button class="botao" type="button" data-ok>Errado</button></div>
     <div class="retorno" hidden data-ok-texto="Isso." data-nao-texto="Errado: = guarda."></div></div>`;
 
-  it("pede a confiança, não dá segunda tentativa e mostra o saldo", () => {
+  it("pede a confiança, não dá segunda tentativa e não mostra saldo", () => {
     const { ex, retorno, resultados } = montar(CE);
     expect(ex.querySelectorAll("[data-conf]")).toHaveLength(3);
     clicar(ex.querySelector('[data-conf="chute"]'));
     clicar(ex.querySelector(".opcoes .botao[data-ok]"));
     expect(resultados).toEqual(["chute"]);
-    expect(retorno.textContent).toContain("Saldo Cebraspe nesta lição: +1");
+    expect(retorno.textContent).not.toContain("Saldo");
   });
 
   it("um erro no C/E já mostra a justificativa", () => {
@@ -101,7 +101,7 @@ describe("Certo/Errado com confiança", () => {
     clicar(ex.querySelector(".opcoes .botao:not([data-ok])"));
     expect(resultados).toEqual(["revelada"]);
     expect(retorno.textContent).toContain("= guarda");
-    expect(retorno.textContent).toContain("Saldo Cebraspe nesta lição: -1");
+    expect(retorno.textContent).not.toContain("Saldo");
   });
 });
 

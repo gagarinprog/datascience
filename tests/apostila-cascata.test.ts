@@ -48,7 +48,7 @@ describe("cascata do conceito", () => {
     ).length;
     const cx = M.cascataSecao(sec)!;
     const rotulos = [...sec.querySelectorAll(".cx-tit small")].map((s) => s.textContent);
-    expect(rotulos).toEqual([
+    const nomes = [
       "Desafio",
       "Leitura",
       "Ver o passo a passo",
@@ -57,7 +57,12 @@ describe("cascata do conceito", () => {
       "Pratique · 1 de 2",
       "Pratique · 2 de 2",
       "Fechar o conceito",
-    ]);
+    ];
+    expect(rotulos).toEqual(nomes.map((n, i) => `Etapa ${i + 1} de ${nomes.length} · ${n}`));
+    // o mapa das etapas: um ponto por etapa, a primeira aberta, as seguintes trancadas
+    const pontos = [...sec.querySelectorAll<HTMLButtonElement>(".cx-mapa .cx-ponto")];
+    expect(pontos).toHaveLength(nomes.length);
+    expect(pontos[0]!.getAttribute("aria-current")).toBe("step");
     expect(
       sec.querySelectorAll(
         ".cx .exercicio, .cx figure, .cx .resumo, .cx .explique, .cx .so-corpo, .cx .simples",

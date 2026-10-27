@@ -118,16 +118,14 @@
     INTERVALOS,
   };
 
-  // ---------- Certo/Errado com confiança ----------
+  // ---------- Certo/Errado com confiança (guarda a confiança de cada resposta; não mostra saldo) ----------
   const CHAVE_CE = "dominio:ce:v1";
   function registrarCE(ctx, id, acertou, conf) {
     const todos = ls.ler(CHAVE_CE, {});
     todos[id] = { licao: ctx.licao, acertou, conf: conf || "sem", em: hoje() };
     ls.gravar(CHAVE_CE, todos);
-    const daqui = Object.values(todos).filter((x) => x.licao === ctx.licao);
-    const saldo = daqui.reduce((a, x) => a + (x.acertou ? 1 : -1), 0);
-    const porConf = ["certeza", "acho", "chute"].map((k) => { const g = daqui.filter((x) => x.conf === k); return g.length ? `${{ certeza: "certeza", acho: "acho que sim", chute: "chute" }[k]}: ${g.filter((x) => x.acertou).length} de ${g.length}` : ""; }).filter(Boolean);
-    return `<p class="saldo-ce"><b>Saldo Cebraspe nesta lição: ${saldo > 0 ? "+" : ""}${saldo}</b> em ${daqui.length} ${daqui.length === 1 ? "item" : "itens"} (+1 no acerto, −1 no erro).${porConf.length ? ` Acertos por confiança: ${porConf.join(" · ")}.` : ""}</p>`;
+    // o saldo (+1 no acerto, -1 no erro) saiu da tela em 27/10/2026: confundia mais do que ajudava no estudo
+    return "";
   }
 
   // ---------- tipos de exercício ----------
@@ -698,10 +696,10 @@
         if (fecho && i === atual && completo(i)) { const est = secoes[i].querySelector(".estado-licao"); est.textContent = "Exercícios concluídos. Falta fechar o conceito, na última etapa."; est.dataset.fixo = "1"; return; }
         if (!verTudo.checked && i === atual && completo(i) && resultado !== "revelada" && i < secoes.length - 1) {
           const est = secoes[i].querySelector(".estado-licao");
-          est.textContent = "Tudo certo. Indo para o próximo conceito...";
+          est.textContent = "Tudo certo neste conceito. Quando quiser, siga para o próximo.";
           est.dataset.fixo = "1";
-          clearTimeout(espera);
-          espera = setTimeout(() => ir(i + 1), 2200);
+          const prox = secoes[i].querySelector("[data-proximo]");
+          if (prox) prox.classList.add("chama");
         }
       }, 0);
     }

@@ -93,3 +93,16 @@
   .cx-seta { grid-column: 3; grid-row: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .cx-seta { transition: none; } }
+
+/* mapa das etapas da cascata: número e tipo de cada etapa; a atual acesa, as feitas com marca, as trancadas apagadas */
+.cx-mapa { list-style: none; margin: 0 0 4px; padding: 2px 2px 8px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+.cx-mapa li { flex: none; }
+.cx-ponto { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px 0 6px; border: 1px solid var(--linha-forte); border-radius: 22px; background: var(--folha); color: var(--texto-2); font: 600 12.5px/1.1 var(--f-ui); cursor: pointer; white-space: nowrap; }
+.cx-ponto b { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--linha-hover); font: 700 12px var(--f-codigo); color: var(--texto-2); }
+.cx-ponto:hover:not(:disabled) { border-color: var(--linha-hover); color: var(--texto); }
+.cx-ponto.atual { border-color: var(--tinta); color: var(--texto); box-shadow: 0 0 0 2px color-mix(in srgb, var(--tinta) 30%, transparent); }
+.cx-ponto.atual b { background: var(--tinta); border-color: var(--tinta); color: var(--sobre-tinta); }
+.cx-ponto.feito b { background: var(--certo); border-color: var(--certo); color: var(--sobre-cor); }
+.cx-ponto.trancado { border-style: dashed; cursor: not-allowed; }
+.cx-ponto:disabled { opacity: 1; }
+.cx-ponto:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }

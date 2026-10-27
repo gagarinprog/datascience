@@ -1,6 +1,7 @@
 // Cascata: as etapas de uma tela abrem no lugar, uma de cada vez, para não empilhar tudo numa rolagem só.
 // Usada no Centro de Dados (cada módulo) e nas lições (cada conceito). O que já foi feito fecha numa linha
-// de resumo; o que ainda não pode ser feito fica trancado. Cada corpo é montado na primeira vez que abre e
+// de resumo; o que ainda não pode ser feito fica trancado. No topo, o mapa das etapas (número e tipo de cada uma)
+// mostra onde você está; cada cabeçalho diz "Etapa N de T". Nada abre sozinho: cada etapa abre no botão Seguir. Cada corpo é montado na primeira vez que abre e
 // nunca é refeito: o retorno, o gráfico e o código continuam lá quando a pessoa volta.
 //
 // const cx = Cascata(raiz)
@@ -21,6 +22,21 @@
 
   function Cascata(raiz, opcoes) {
     const o = opcoes || {}, itens = [];
+    // o mapa das etapas, no topo: mostra quantas são, em qual você está e quais já fez (e abre a que tocar)
+    const mapa = document.createElement("ol");
+    mapa.className = "cx-mapa";
+    mapa.setAttribute("aria-label", "Etapas");
+    raiz.prepend(mapa);
+    const pintarMapa = () => {
+      itens.forEach((x, k) => {
+        x.el.querySelector(".cx-tit small").textContent = `Etapa ${k + 1} de ${itens.length} · ${x.rotulo}`;
+        const b = x.ponto;
+        b.className = "cx-ponto" + (x.feito ? " feito" : "") + (x.aberto ? " atual" : "") + (x.trancado ? " trancado" : "");
+        b.disabled = !!x.trancado;
+        b.setAttribute("aria-current", x.aberto ? "step" : "false");
+        b.setAttribute("aria-label", `Etapa ${k + 1}: ${x.rotulo}${x.feito ? ", feita" : x.trancado ? ", trancada" : ""}`);
+      });
+    };
     const c = {
       itens,
       add(d) {
@@ -33,6 +49,11 @@
         it.el = el; it.cab = el.querySelector(".cx-cab"); it.corpo = el.querySelector(".cx-corpo"); it.n = itens.length + 1;
         if (d.nos) { d.nos.forEach((n) => it.corpo.appendChild(n)); it.montado = !d.montar; }
         it.cab.addEventListener("click", () => { if (it.aberto) c.fechar(it); else if (!it.trancado) c.abrir(it, false); });
+        const li = document.createElement("li");
+        li.innerHTML = `<button type="button" class="cx-ponto"><b>${itens.length + 1}</b><span>${esc(d.rotulo)}</span></button>`;
+        it.ponto = li.firstChild;
+        it.ponto.addEventListener("click", () => { if (!it.trancado) c.abrir(it, true); });
+        mapa.appendChild(li);
         itens.push(it);
         c.marcar(it, {});
         return it;
@@ -44,15 +65,17 @@
         if (!it.montado) { it.montado = true; it.montar(it); }
         if (rolar && it.el.scrollIntoView) it.el.scrollIntoView({ block: "start", behavior: reduz() ? "auto" : "smooth" });
         if (!reduz() && window.anime) window.anime.animate(it.corpo, { opacity: [0, 1], y: [-6, 0], duration: 320, ease: "outQuad" });
+        pintarMapa();
         if (o.aoAbrir) o.aoAbrir(it);
       },
-      fechar(it) { it.aberto = false; it.corpo.hidden = true; it.el.classList.remove("aberto"); it.cab.setAttribute("aria-expanded", "false"); },
+      fechar(it) { it.aberto = false; it.corpo.hidden = true; it.el.classList.remove("aberto"); it.cab.setAttribute("aria-expanded", "false"); pintarMapa(); },
       marcar(it, m) {
         Object.assign(it, m);
         it.el.classList.toggle("feito", it.feito); it.el.classList.toggle("trancado", it.trancado);
         it.cab.setAttribute("aria-disabled", String(it.trancado));
         it.el.querySelector(".cx-marca").innerHTML = it.feito ? ICONE.feito : it.trancado ? ICONE.trancado : String(it.n);
         it.el.querySelector(".cx-resumo").textContent = it.trancado ? "abre depois da anterior" : it.resumo || "";
+        pintarMapa();
       },
       proxima(depois) { const i = itens.indexOf(depois); return itens.slice(i + 1).find((x) => !x.feito && !x.trancado) || itens.slice(i + 1).find((x) => !x.trancado); },
       seguir(it, texto, aoSeguir) {

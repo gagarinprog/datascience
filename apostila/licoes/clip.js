@@ -47,9 +47,9 @@
         if (aposta !== null) return;
         aposta = ops[Number(b.dataset.aposta)];
         fig.querySelectorAll("[data-aposta]").forEach((x) => { x.disabled = true; x.setAttribute("aria-pressed", String(x === b)); });
-        fig.querySelector(".preveja-veredito").textContent = `Sua aposta: ${aposta.t}. Agora veja a animação até o fim.`;
+        fig.querySelector(".preveja-veredito").textContent = `Sua aposta: ${aposta.t}. Agora toque em Passo para ver cada etapa, ou em Tocar para ver tudo.`;
         fig.querySelectorAll(".clip-controles button").forEach((x) => { x.disabled = false; });
-        ir(0); tocar();
+        ir(0);
       }));
     }
     function julgar() {
@@ -104,12 +104,9 @@
     fig.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => { parar(); ir(Number(b.dataset.p)); }));
     ir(0);
 
+    // a animação não toca sozinha (pedido do Kaio em 27/10/2026): começa no Tocar ou anda no Passo; sai da tela, para
     if ("IntersectionObserver" in window) {
-      let jaTocou = false;
-      new IntersectionObserver((es) => es.forEach((e) => {
-        if (e.isIntersecting && !jaTocou && !reduz() && fig.offsetParent !== null && !(prev && aposta === null)) { jaTocou = true; setTimeout(() => { if (i === 0 && !tocando) tocar(); }, 500); }
-        if (!e.isIntersecting && tocando) parar();
-      }), { threshold: 0.55 }).observe(fig);
+      new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting && tocando) parar(); }), { threshold: 0.2 }).observe(fig);
     }
   }
 

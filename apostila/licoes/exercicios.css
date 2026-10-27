@@ -141,3 +141,6 @@
 .cx-item, .secao { scroll-margin-top: 104px; }
 /* a resposta certa (e a escolhida errada) ficam legíveis depois que o exercício trava */
 :root .exercicio .certo:disabled, :root .exercicio .errado:disabled, :root .exercicio .revelado button:disabled, :root .exercicio .ok button:disabled { opacity: 1; cursor: default; }
+
+/* o botão de seguir para o próximo conceito ganha destaque quando o conceito termina (sem avanço automático) */
+.secao [data-proximo].chama { box-shadow: 0 0 0 3px color-mix(in srgb, var(--tinta) 40%, transparent); }
