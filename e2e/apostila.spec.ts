@@ -432,6 +432,32 @@ test.describe("apostila", () => {
     expect(erros).toEqual([]);
   });
 
+  test("os pesos da formação: o mapa mostra o total, a janela explica cada matéria", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.addInitScript(() => {
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true }));
+      localStorage.setItem(
+        "dominio:progresso:v1",
+        JSON.stringify({ modulos: { "LOG.01": { estado: "dominado" } } }),
+      );
+    });
+    await page.goto(BASE + "index.html#mapa");
+    await expect(page.locator(".metricas")).toContainText("Formação de cientista de dados");
+    await expect(page.locator(".metricas")).toContainText("1 de 167 módulos");
+    await expect(page.locator('.estacao[data-s="PY"] .est-meta')).toContainText("vale 12%");
+    await page.locator("[data-pesos]").click();
+    const jn = page.locator("dialog.jn");
+    await expect(jn.locator(".peso-linha")).toHaveCount(16);
+    await expect(jn.locator(".peso-linha").first()).toContainText("13%");
+    await page.keyboard.press("Escape");
+    await expect(jn).toHaveCount(0);
+    await page.goto(BASE + "index.html#trilha-LOG");
+    await expect(page.locator('.mod[data-cod="LOG.01"] .etq-peso')).toHaveText(/vale \d,\d\d%/);
+    expect(erros).toEqual([]);
+  });
+
   test("os cinco temas aparecem no menu e o Planta é o padrão", async ({ page }) => {
     await page.addInitScript(() =>
       localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),

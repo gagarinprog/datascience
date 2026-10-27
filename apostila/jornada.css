@@ -1137,3 +1137,20 @@ body.no-inicio .palco { padding-top: 12px; padding-bottom: 12px; }
 .etq-lab { color: var(--r-p); border-color: color-mix(in srgb, var(--r-p) 40%, var(--linha)); }
 .mod-corpo .formas { margin: 14px 0 4px; }
 .conceitos-ol small { display: block; color: var(--texto-2); font-size: 13px; }
+
+/* pesos na formação (27/10/2026): cada matéria vale uma parte; a janela "Como os pesos são contados" */
+.link-pesos { margin-top: 6px; padding: 0; min-height: 44px; border: 0; background: none; color: var(--tinta); font: 600 13px var(--f-ui); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.capa-dado { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-align: left; }
+button.capa-dado { cursor: pointer; min-height: 44px; }
+button.capa-dado small { text-decoration: underline; text-underline-offset: 3px; }
+.etq-peso { color: var(--texto); }
+.pesos { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.peso-linha { display: grid; gap: 5px; }
+.peso-cab { display: flex; justify-content: space-between; gap: 10px; }
+.peso-cab span { font: 700 15px var(--f-codigo); color: var(--destaque, var(--tinta)); }
+.peso-barra { position: relative; height: 10px; border-radius: 5px; background: var(--folha-2); overflow: hidden; }
+.peso-barra i, .peso-barra em { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
+.peso-barra i { background: color-mix(in srgb, var(--cv, var(--tinta)) 35%, transparent); }
+.peso-barra em { background: var(--certo); }
+.peso-linha p { margin: 0; font-size: 14px; color: var(--texto-2); line-height: 1.45; }
+.peso-linha small { font: 12px var(--f-codigo); color: var(--texto-2); }

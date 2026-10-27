@@ -20,6 +20,9 @@ const eslintConfig = defineConfig([
     "blob-report/**",
     // Apostila: páginas estáticas, fora do app Next.
     "apostila/**",
+    // Pacotes gerados por ferramentas/empacotar_offline.py e pelo build do Android (fora do git):
+    "build-offline/**",
+    "android/**/build/**",
   ]),
 ]);
 

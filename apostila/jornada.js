@@ -124,6 +124,11 @@
   const proximoModulo = (m) => m.modulos.find((mod) => estadoDe(mod.codigo) !== "dominado") || m.modulos[m.modulos.length - 1];
   const xpDe = (cod) => (MODULO[cod].mod.virada ? 30 : 20);
   const xpTotal = () => ORDEM.reduce((a, c) => a + (estadoDe(c) === "dominado" ? xpDe(c) : 0), 0);
+  // peso na formação de cientista de dados (materias.js, de tutor/sequencia_dados.py): as 16 matérias somam 100%
+  const pesoDe = (cod) => MODULO[cod].mod.peso || 0;
+  const pesoFeito = (m) => m.modulos.reduce((a, mod) => a + (estadoDe(mod.codigo) === "dominado" ? mod.peso || 0 : 0), 0);
+  const formacao = () => Math.min(100, MATERIAS.reduce((a, m) => a + pesoFeito(m), 0));
+  const pct = (x, casas) => { const c = casas != null ? casas : x > 0 && x < 10 ? 1 : 0; return x.toLocaleString("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c }) + "%"; };
   const nivelDe = (xp) => ({ n: Math.floor(xp / 100) + 1, resto: xp % 100 });
   function ofensiva() {
     const dias = new Set(Object.values(progresso.modulos).map((x) => x.em).filter(Boolean));
@@ -260,13 +265,13 @@
       const col = linha % 2 === 0 ? pos : cols - 1 - pos;
       const situacao = { feita: "concluída", atual: "em curso", iniciada: "iniciada", futura: "a estudar" }[est];
       return `<li class="estacao ${est}" data-s="${s}" data-w="${MUNDO_DE[s]}" style="${coresDe(s)};grid-row:${linha + 1};grid-column:${col + 1}">
-        <a class="est-link" href="#trilha-${s}" aria-label="${doisDig(i + 1)}. ${esc(m.nome)}: ${d} de ${n} módulos, ${situacao}">
+        <a class="est-link" href="#trilha-${s}" aria-label="${doisDig(i + 1)}. ${esc(m.nome)}: ${d} de ${n} módulos, ${situacao}, vale ${m.peso}% da formação">
           ${est === "atual" ? `<span class="aqui-tag">Você está aqui</span>` : ""}
           <span class="marcador" aria-hidden="true">${est === "feita" ? ic("check-bold") : ""}</span>
           <span class="est-cod">${doisDig(i + 1)} · ${s}</span>
           <span class="est-nome">${esc(m.nome)}</span>
-          <span class="est-meta">${d}/${n} módulos</span>
-          <span class="est-barra" aria-hidden="true"><i style="width:${(d / n) * 100}%"></i></span>
+          <span class="est-meta">${d}/${n} módulos · vale ${m.peso}%</span>
+          <span class="est-barra" aria-hidden="true"><i style="width:${(pesoFeito(m) / m.peso) * 100}%"></i></span>
         </a>
       </li>`;
     }).join("");
@@ -297,7 +302,7 @@
           <figcaption><b>${esc(g.nome)}</b><span>${esc(g.funcao)}</span><p>${esc(fala)}</p></figcaption>
         </figure>
         <dl class="metricas">
-          <div><dt>Módulos dominados</dt><dd>${total}<small> / ${TOTAL}</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${(total / TOTAL) * 100}%"></i></span></dd></div>
+          <div><dt>Formação de cientista de dados</dt><dd>${pct(formacao())}<small> · ${total} de ${TOTAL} módulos</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${formacao()}%"></i></span><button type="button" class="link-pesos" data-pesos>Como os pesos são contados</button></dd></div>
           <div><dt>Nível</dt><dd>${nv.n}<small> · ${xp} XP</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${nv.resto}%"></i></span></dd></div>
           <div><dt>Ofensiva</dt><dd>${of}<small> ${of === 1 ? "dia" : "dias"}</small></dd><dd class="m-extra"><span class="nota">${of ? "estudando em dias seguidos" : "domine um módulo hoje"}</span></dd></div>
         </dl>
@@ -342,7 +347,23 @@
       lis.forEach((l) => l.classList.toggle("da-linha", l.dataset.w === linhaAtiva));
       metro.querySelectorAll(".trecho").forEach((p) => p.classList.toggle("da-linha", p.dataset.w === linhaAtiva));
     }));
+    document.querySelector("[data-pesos]").addEventListener("click", (e) => abrirPesos(e.currentTarget));
     teclas = (e) => { if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click(); };
+  }
+  // a janela que explica os pesos: cada matéria, quanto vale, por quê, e quanto você já fez dela
+  function abrirPesos(origem) {
+    const ordem = [...MATERIAS].sort((a, b) => b.peso - a.peso);
+    const max = ordem[0].peso;
+    const linhas = ordem.map((m) => `<li class="peso-linha" style="${coresDe(m.sigla)}"><div class="peso-cab"><b>${esc(m.nome)}</b><span>${m.peso}%</span></div><span class="peso-barra" aria-hidden="true"><i style="width:${(m.peso / max) * 100}%"></i><em style="width:${(pesoFeito(m) / max) * 100}%"></em></span><p>${esc(m.peso_porque || "")}</p><small>${pct(pesoFeito(m), 1)} de ${m.peso}% já feitos · ${m.modulos.length} módulos</small></li>`).join("");
+    window.Janela.abrir({
+      origem, rotulo: "Formação de cientista de dados", titulo: `Você está em ${pct(formacao(), 1)}`,
+      carimbo: "Pesos <b>16 matérias</b><br>somam 100%",
+      abas: [
+        { nome: "Pesos", html: `<p class="jn-def">Cada matéria vale uma parte da formação, pela importância no trabalho de um cientista de dados. Ao dominar um módulo, a parte dele soma ao seu total.</p><ol class="pesos">${linhas}</ol>` },
+        { nome: "Como contamos", html: `<div class="jn-dia"><span class="ic-d" aria-hidden="true">${ic("target-duotone")}</span><p><b>Matérias</b>A base é a frequência de cada habilidade nas vagas de cientista de dados (365 Data Science analisou 1.000 vagas de 2026: aprendizado de máquina em 69%, Python em 57%, SQL em 30%, nuvem AWS em 20%, Tableau em 12%), somada ao papel de base de matérias como Lógica, Matemática e Estatística, que quase não aparecem nas vagas mas sustentam todas as outras.</p></div><div class="jn-dia"><span class="ic-d" aria-hidden="true">${ic("stack-duotone")}</span><p><b>Módulos</b>Dentro de cada matéria, o peso se divide pelo número de conceitos do módulo; os pontos de virada valem uma vez e meia, porque destravam o resto.</p></div><p class="jn-vazio">Fonte: <a href="https://365datascience.com/career-advice/data-scientist-job-market/" target="_blank" rel="noopener">The Data Scientist Job Market in 2026, 365 Data Science</a>.</p>` },
+      ],
+      acoes: [{ texto: "Fechar", classe: "so", aoClicar: (fechar) => fechar() }],
+    });
   }
 
   // ---------- INÍCIO: uma tela, sem rolagem, uma ação principal ----------
@@ -369,7 +390,6 @@
     const nRev = Object.values(lerLocal("dominio:revisao:v1", {})).filter((x) => x && x.proxima <= hojeLocal).length;
     const lab = lerLocal("dominio:castelo:v1", null);
     const labFeitas = lab && lab.feitas ? lab.feitas : 0;
-    const pct = Math.round((total / TOTAL) * 100);
     const passo = estadoDe(prox.codigo) === "dominado" ? 0 : Math.min(4, progresso.passos[prox.codigo] || 0);
     const saudacao = d.getHours() < 12 ? "Bom dia" : d.getHours() < 18 ? "Boa tarde" : "Boa noite";
     const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
@@ -381,7 +401,7 @@
           <ol class="ini-pilares"><li>O mapa com as ${MATERIAS.length} matérias, na ordem em que uma prepara a outra</li><li>Lições de 5 minutos, com exercício corrigido na hora</li><li>O laboratório: um banco de dados que você constrói e apresenta</li></ol>
           <button type="button" class="btn btn-3d b-prog ini-botao" data-ini-tutorial style="--p:0" data-passo="7 paradas">Começar o tutorial</button>
           <a class="ini-pular" href="licoes/INICIO.html" data-pular-tutorial>Pular e ir direto para a primeira lição</a></div>`
-      : `<div class="ini-acao"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
+      : `<div class="ini-acao"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length} · vale ${pct(pesoDe(prox.codigo), 2)} da formação</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
           <a class="btn btn-3d b-prog ini-botao" href="#estudo-${prox.codigo}" style="--p:${passo / 5}" data-passo="passo ${passo + 1} de 5">${passo ? "Continuar" : "Começar"}</a></div>`;
     const atalho = (href, icone, titulo, sub, num) => `<a class="ini-atalho" href="${href}"><span class="ini-ic">${ic(icone)}</span><b>${titulo}</b><small>${sub}</small><span class="ini-num">${num}</span></a>`;
     const terceiro = primeira
@@ -391,7 +411,7 @@
       <div class="ini-guia">${mascote(primeira ? "explica" : "padrao", "ini-rosto", "chegar falar")}<p class="balao cor ini-fala"><small>${esc(g.nome)}</small>${esc(fala)}</p></div>
       <div class="ini-lado">${acao}
         <nav class="ini-atalhos" aria-label="Atalhos">
-          ${atalho("#mapa", "map-trifold-duotone", "Mapa de formação", `${MATERIAS.length} matérias`, `${pct}%`)}
+          ${atalho("#mapa", "map-trifold-duotone", "Mapa de formação", "sua formação", pct(formacao()))}
           ${atalho("castelo/index.html", "database-duotone", "Centro de Dados", "laboratório", labFeitas ? `${labFeitas} de 17` : "17 módulos")}
           ${terceiro}
         </nav>
@@ -441,10 +461,11 @@
           <div class="capa-motivo" aria-hidden="true">${window.motivoSVG ? window.motivoSVG(sigla) : ""}</div>
         </div>
         <div class="capa-rodape">
-          <div class="capa-anel" aria-label="${d} de ${n} módulos dominados">
-            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${raio}" class="anel-fundo"/><circle cx="32" cy="32" r="${raio}" class="anel-cheio" stroke-dasharray="${volta.toFixed(1)}" stroke-dashoffset="${(volta * (1 - d / n)).toFixed(1)}"/></svg>
-            <span><b>${d}/${n}</b><small>módulos dominados</small></span>
+          <div class="capa-anel" aria-label="${d} de ${n} módulos dominados, ${pct((pesoFeito(m) / m.peso) * 100)} da matéria">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${raio}" class="anel-fundo"/><circle cx="32" cy="32" r="${raio}" class="anel-cheio" stroke-dasharray="${volta.toFixed(1)}" stroke-dashoffset="${(volta * (1 - pesoFeito(m) / m.peso)).toFixed(1)}"/></svg>
+            <span><b>${pct((pesoFeito(m) / m.peso) * 100)}</b><small>da matéria · ${d}/${n} módulos</small></span>
           </div>
+          <button type="button" class="capa-dado" data-pesos><b>${m.peso}%</b><small>da formação · ver pesos</small></button>
           <span class="capa-dado"><b>${xpM}</b><small>XP nesta matéria</small></span>
           ${m.logos.length ? `<span class="logos-mini">${logosMini(m.logos)}</span>` : ""}
           <div class="mat-cta"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" data-principal>${ic("play-bold")}<span>${d === n ? "Revisar" : d ? "Continuar" : "Começar"}: ${esc(prox.nome)}<small>módulo ${MODULO[prox.codigo].indice + 1} de ${n} · +${xpDe(prox.codigo)} XP</small></span></a></div>
@@ -459,6 +480,7 @@
     else if (aba === "guia") abaGuia(m);
     else abaFontes(m);
     glossar(document.querySelector(".capa-frase"), sigla, 2);
+    document.querySelector(".capa [data-pesos]").addEventListener("click", (e) => abrirPesos(e.currentTarget));
     teclas = (e) => {
       if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click();
     };
@@ -467,11 +489,11 @@
   // etiquetas do que existe em cada módulo: aula ilustrada, exercícios das ideias, Python
   function etiquetas(cod) {
     const info = (window.LICOES_INFO || {})[cod], ex = ((CONC()[cod] || {}).ideias || []).length;
-    const t = [];
+    const t = [`<i class="etq etq-peso" title="peso do módulo na formação">vale ${pct(pesoDe(cod), 2)}</i>`];
     if (LICOES[cod]) t.push(`<i class="etq etq-aula">${ic("play-bold")}Aula</i>`);
     if (ex) t.push(`<i class="etq etq-ex">${ic("check-bold")}${ex} exercícios</i>`);
     if (info && info.python) t.push(`<i class="etq etq-lab">${ic("code-duotone")}Python</i>`);
-    return t.length ? `<span class="etqs">${t.join("")}</span>` : "";
+    return `<span class="etqs">${t.join("")}</span>`;
   }
   // módulos: linha do tempo vertical; um módulo aberto por vez
   function htmlModulo(cod) {
@@ -925,7 +947,7 @@
       corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>${esc(mod.nome)}</h1><p class="passo-sub" ${iv()}>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}${estadoDe(cod) === "dominado" ? " · já dominado" : ""}</p>
         <div class="rede" ${iv()}>
           <div class="rede-col"><p class="rede-rot">${ic("caret-down-bold")}Usa o que veio antes</p>${mod.antes.length ? `<ul>${mod.antes.map((a) => no(a.codigo)).join("")}</ul>` : `<p class="rede-vazio">Nada: é um começo.</p>`}</div>
-          <div class="rede-este"><span class="rede-cota">este módulo</span><b>${esc(mod.nome)}</b><span class="rede-numeros"><i>${mod.conceitos.length} ideias</i><i>+${xpDe(cod)} XP</i>${mod.virada ? `<i class="virada">ponto de virada</i>` : ""}${LICOES[cod] ? "<i>aula ilustrada</i>" : ""}</span></div>
+          <div class="rede-este"><span class="rede-cota">este módulo</span><b>${esc(mod.nome)}</b><span class="rede-numeros"><i>${mod.conceitos.length} ideias</i><i>vale ${pct(pesoDe(cod), 2)} da formação</i><i>+${xpDe(cod)} XP</i>${mod.virada ? `<i class="virada">ponto de virada</i>` : ""}${LICOES[cod] ? "<i>aula ilustrada</i>" : ""}</span></div>
           <div class="rede-col"><p class="rede-rot">${ic("caret-down-bold")}Prepara para</p>${prep.length ? `<ul>${prep.slice(0, 4).map((c) => no(c, "depois")).join("")}${prep.length > 4 ? `<li class="rede-mais">e mais ${prep.length - 4}</li>` : ""}</ul>` : `<p class="rede-vazio">O fim desta linha.</p>`}</div>
         </div>
         <div class="fala fala-curta" ${iv()}>${mascote(mod.antes.length ? "explica" : "feliz", "", "chegar falar")}<p class="balao">${mod.antes.length ? (falta.length ? `Falta dominar ${falta.length === 1 ? "um pré-requisito" : falta.length + " pré-requisitos"}. Pode seguir; se travar, volte ${falta.length === 1 ? "nele" : "neles"}.` : "Você já domina tudo o que este módulo usa. Bora!") : "Este módulo não exige nada antes. Bora!"}${mod.virada ? " <b>Ponto de virada:</b> demora a fazer sentido, e depois muda tudo." : ""}</p></div>`;
@@ -1103,7 +1125,6 @@
     const depois = nivelDe(xpTotal());
     const { materia: m } = MODULO[cod];
     const fimMateria = MODULO[cod].indice === m.modulos.length - 1;
-    const dur = 2.8;
     const el = document.createElement("div");
     el.className = "vitoria";
     el.setAttribute("role", "dialog");
@@ -1115,8 +1136,9 @@
       ${mascote(fimMateria ? "uau" : "feliz", "", "concluir")}
       <h2>${fimMateria ? "Matéria concluída!" : "Módulo dominado!"}</h2>
       <span class="ganho-xp">${ic("lightning-duotone")}<span>+<span data-xp>0</span> XP</span></span>
-      <p>${jaEra ? "Revisão feita. " : ""}Nível ${depois.n} · ${depois.resto} de 100 XP${depois.n > antes ? ". Você subiu de nível!" : ""}</p>
-      ${seguinte ? `<p>Próximo: <b>${esc(MODULO[seguinte].mod.nome)}</b></p><div class="contagem" style="--dur:${dur}s"><i></i></div>` : "<p>Você terminou a jornada inteira.</p>"}
+      <p>${jaEra ? "Revisão feita. " : `+${pct(pesoDe(cod), 2)} na formação. `}Você está em <b>${pct(formacao(), 1)}</b> da formação de cientista de dados.</p>
+      <p>Nível ${depois.n} · ${depois.resto} de 100 XP${depois.n > antes ? ". Você subiu de nível!" : ""}</p>
+      ${seguinte ? `<p>Próximo: <b>${esc(MODULO[seguinte].mod.nome)}</b></p>` : "<p>Você terminou a jornada inteira.</p>"}
       <div class="vitoria-acoes">${seguinte ? `<button type="button" class="btn btn-3d" data-seguir>${ic("arrow-right-bold")}Seguir agora</button><button type="button" class="btn" data-ficar>Ficar aqui</button>` : `<a class="btn btn-3d" href="#mapa">${ic("map-trifold-duotone")}Ver o mapa</a>`}</div>
     </div>`;
     document.body.appendChild(el);
@@ -1131,7 +1153,6 @@
       el.querySelector("[data-seguir]").addEventListener("click", seguir);
       el.querySelector("[data-ficar]").addEventListener("click", () => { fechar(); render(); });
       el.querySelector("[data-seguir]").focus();
-      autoAvanco = setTimeout(() => { if (document.body.contains(el)) seguir(); }, dur * 1000);
     } else el.querySelector("a").addEventListener("click", fechar);
     el.addEventListener("keydown", (e) => { if (e.key === "Escape") { fechar(); render(); } });
   }

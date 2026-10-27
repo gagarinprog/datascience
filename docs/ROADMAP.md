@@ -112,6 +112,8 @@ Depois, uma passada de olhos novos, de iniciante, no celular e no computador, ac
 
 Redesenho visual (27/10/2026, pedido do Kaio: "bagunçado e com poucos recursos visuais"; proposta 2 aprovada): temas Planta (padrão), Caderno e Terminal; estudo em 5 passos refeito com a rede de pré-requisitos, o rumo do módulo, a grade de ideias que abre a janela de explicação (desenho que anda por etapas, dia a dia, código que roda e teste corrigido) e as fichas "Pratique do seu jeito" com textura por tipo; o tropeço ao lado do jeito certo; a capa da matéria com desenho próprio, anel e etiquetas nos módulos; o rodapé da lição opaco. Janelas escritas para LOG e PY (117 ideias, todo código conferido no Python); as outras matérias seguem uma por vez. axe sem violações nas telas novas em cinco temas, 390 e 1280 px.
 
+Etapas e pesos (27/10/2026, pedido do Kaio): as etapas da cascata ganharam um mapa numerado ("Etapa N de T") e nada avança sozinho (animações, conceito concluído e vitória esperam o clique); o saldo Cebraspe saiu das lições; cada matéria ganhou um peso na formação de cientista de dados (16 somam 100%, com o porquê e a fonte), dividido entre os módulos, e a apostila mostra quanto da formação já foi feito no mapa, no Início, na matéria, em cada módulo e na vitória.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---
