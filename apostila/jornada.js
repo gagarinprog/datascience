@@ -427,20 +427,29 @@
     const g = GUIA[sigla] || {};
     const gd = guia();
     const abas = [["jornada", "trilha", "Módulos", "path-duotone"], ["guia", "guia", "Como funciona", "lightbulb-duotone"], ["fontes", "fontes", "Fontes", "books-duotone"]];
+    const raio = 26, volta = 2 * Math.PI * raio;
     centro().innerHTML = `
-      <section class="mat-cab tema-exp" style="${coresExp()}">
+      <section class="mat-cab capa tema-exp" style="${coresExp()}">
         <a class="voltar" href="#mapa">${ic("arrow-left-bold")}Mapa de formação</a>
-        <div class="mat-linha">
-          <span class="mat-icone" aria-hidden="true">${ic(EMBLEMA[sigla])}</span>
-          <div class="mat-titulo">
-            <p class="eyebrow">Linha ${MUNDO_DE[sigla] + 1} · estação ${i + 1} de ${MATERIAS.length}</p>
-            <h1>${esc(m.nome)}</h1>
-            <div class="mat-meta"><span class="barra-fina"><i style="width:${(d / n) * 100}%"></i></span><span><b>${d}/${n}</b> módulos</span><span><b>${xpM}</b> XP</span>${m.logos.length ? `<span class="logos-mini">${logosMini(m.logos)}</span>` : ""}</div>
+        <div class="capa-grade">
+          <div class="capa-txt">
+            <p class="capa-pill">Linha ${MUNDO_DE[sigla] + 1} · estação ${i + 1} de ${MATERIAS.length}</p>
+            <div class="mat-titulo"><h1>${esc(m.nome)}</h1></div>
+            ${m.etapa ? `<p class="capa-etapa">${esc(m.etapa)}</p>` : ""}
+            ${g.frase ? `<p class="capa-frase glossavel">${esc(g.frase)}</p>` : ""}
           </div>
+          <div class="capa-motivo" aria-hidden="true">${window.motivoSVG ? window.motivoSVG(sigla) : ""}</div>
+        </div>
+        <div class="capa-rodape">
+          <div class="capa-anel" aria-label="${d} de ${n} módulos dominados">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${raio}" class="anel-fundo"/><circle cx="32" cy="32" r="${raio}" class="anel-cheio" stroke-dasharray="${volta.toFixed(1)}" stroke-dashoffset="${(volta * (1 - d / n)).toFixed(1)}"/></svg>
+            <span><b>${d}/${n}</b><small>módulos dominados</small></span>
+          </div>
+          <span class="capa-dado"><b>${xpM}</b><small>XP nesta matéria</small></span>
+          ${m.logos.length ? `<span class="logos-mini">${logosMini(m.logos)}</span>` : ""}
           <div class="mat-cta"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" data-principal>${ic("play-bold")}<span>${d === n ? "Revisar" : d ? "Continuar" : "Começar"}: ${esc(prox.nome)}<small>módulo ${MODULO[prox.codigo].indice + 1} de ${n} · +${xpDe(prox.codigo)} XP</small></span></a></div>
         </div>
-        ${g.frase ? `<figure class="resumo"><div class="mascote retrato">${gd.expr.explica}</div><p class="glossavel">${esc(g.frase)}</p></figure>` : ""}
-        ${m.trabalho ? `<div class="alvo no-trabalho"><span class="ic-a">${ic("graduation-cap-duotone")}</span><div><small>No trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></div>` : ""}
+        ${m.trabalho ? `<details class="capa-trabalho"><summary>${ic("graduation-cap-duotone")}Onde ${esc(m.nome)} entra no trabalho do cientista de dados</summary><p class="glossavel">${esc(m.trabalho)}</p></details>` : ""}
       </section>
       <nav class="abas tema-exp" aria-label="Partes da matéria" style="${coresExp()}">
         ${abas.map(([id, rotaAba, nome, icone]) => `<a class="aba" href="#${rotaAba}-${sigla}"${id === aba ? ' aria-current="page"' : ""}>${ic(icone)}${nome}${id === "guia" ? `<small class="aba-n">${concluidas(sigla).length}/${secoesDe(m).length}</small>` : ""}</a>`).join("")}
@@ -449,12 +458,21 @@
     if (aba === "jornada") abaJornada(m);
     else if (aba === "guia") abaGuia(m);
     else abaFontes(m);
-    glossar(document.querySelector(".resumo"), sigla, 2);
+    glossar(document.querySelector(".capa-frase"), sigla, 2);
     teclas = (e) => {
       if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click();
     };
   }
 
+  // etiquetas do que existe em cada módulo: aula ilustrada, exercícios das ideias, Python
+  function etiquetas(cod) {
+    const info = (window.LICOES_INFO || {})[cod], ex = ((CONC()[cod] || {}).ideias || []).length;
+    const t = [];
+    if (LICOES[cod]) t.push(`<i class="etq etq-aula">${ic("play-bold")}Aula</i>`);
+    if (ex) t.push(`<i class="etq etq-ex">${ic("check-bold")}${ex} exercícios</i>`);
+    if (info && info.python) t.push(`<i class="etq etq-lab">${ic("code-duotone")}Python</i>`);
+    return t.length ? `<span class="etqs">${t.join("")}</span>` : "";
+  }
   // módulos: linha do tempo vertical; um módulo aberto por vez
   function htmlModulo(cod) {
     const { mod, materia: m } = MODULO[cod];
@@ -465,12 +483,13 @@
         <h4>Ao final, você consegue</h4><p class="glossavel">${esc(mod.dominio)}.</p>
       </div>
       <div class="mod-col">
-        <h4>Conceitos, em ordem</h4>
-        <ol class="conceitos-ol">${mod.conceitos.map((c) => `<li>${esc(c)}</li>`).join("")}</ol>
+        <h4>Ideias, em ordem</h4>
+        <ol class="conceitos-ol">${mod.conceitos.map((c, j) => `<li><span>${esc(c)}${ideiaDe(cod, j) ? `<small>${esc(ideiaDe(cod, j).r)}</small>` : ""}</span></li>`).join("")}</ol>
         <h4>Antes deste</h4>
         ${mod.antes.length ? `<ul class="lista-antes">${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}">${ic(estadoDe(a.codigo) === "dominado" ? "check-circle-duotone" : "question-duotone")}<a href="#estudo-${a.codigo}">${esc(a.nome)}</a>${a.materia !== m.sigla ? `<small>${esc(POR_SIGLA[a.materia].nome)}</small>` : ""}</li>`).join("")}</ul>` : "<p>Nada: dá para começar direto.</p>"}
       </div>
     </div>
+    ${formasDoModulo(cod)}
     <div class="mod-pe"><span class="chip ouro">${ic("lightning-duotone")}+${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</span><a class="btn btn-3d" href="#estudo-${cod}">${ic("play-bold")}${est === "dominado" ? "Revisar a lição" : progresso.passos[cod] ? `Continuar do passo ${progresso.passos[cod] + 1}` : "Começar a lição"}</a></div>`;
   }
   function abaJornada(m) {
@@ -485,7 +504,7 @@
         <button type="button" class="mod-cab" aria-expanded="false" aria-controls="mod-${mod.codigo}">
           <span class="mod-marca" aria-hidden="true">${est === "dominado" ? ic("check-bold") : mod.virada ? ic("lightning-duotone") : ""}</span>
           <span class="mod-num">${doisDig(k + 1)}</span>
-          <span class="mod-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} conceitos${mod.virada ? " · ponto de virada" : ""}${est !== "dominado" && progresso.passos[mod.codigo] ? ` · parou no passo ${progresso.passos[mod.codigo] + 1} de 5` : ""}</small></span>
+          <span class="mod-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} ideias${mod.virada ? " · ponto de virada" : ""}${est !== "dominado" && progresso.passos[mod.codigo] ? ` · parou no passo ${progresso.passos[mod.codigo] + 1} de 5` : ""}</small>${etiquetas(mod.codigo)}</span>
           <span class="mod-estado">${rotulo}</span>
           ${ic("caret-down-bold", "ic seta")}
         </button>
@@ -510,7 +529,11 @@
       const corpo = li.querySelector(".mod-corpo");
       if (aberto && !corpo.firstChild) { corpo.innerHTML = htmlModulo(li.dataset.cod); glossar(corpo, m.sigla, 3); }
     };
-    lista.addEventListener("click", (e) => { const b = e.target.closest(".mod-cab"); if (b) alternar(b.closest(".mod")); });
+    lista.addEventListener("click", (e) => {
+      const x = e.target.closest("[data-exercicios]");
+      if (x && window.Janela) { abrirExercicios(x.dataset.exercicios, x); return; }
+      const b = e.target.closest(".mod-cab"); if (b) alternar(b.closest(".mod"));
+    });
     const inicial = lista.querySelector(`.mod[data-cod="${prox.codigo}"]`);
     if (inicial) alternar(inicial, true);
     teclas = (e) => {
@@ -791,6 +814,94 @@
     teclas = null;
   }
 
+  // ---------- ideias do módulo: cartões, janela de explicação e exercícios (conceitos-*.js, planta.js, janela.js) ----------
+  const CONC = () => window.CONCEITOS || {};
+  const ideiaDe = (cod, j) => ((CONC()[cod] || {}).ideias || [])[j] || null;
+  const prepara = (cod) => ORDEM.filter((c) => MODULO[c].mod.antes.some((a) => a.codigo === cod));
+  const termoDe = (texto) => { const t = normal(texto); return TERMOS.find((x) => x.formas.some((f) => normal(f).length >= 4 && t.includes(normal(f)))); };
+  const maiusc = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  const pyHL = (codigo) => window.hljs ? window.hljs.highlight(codigo, { language: "python" }).value : esc(codigo);
+  // a ficha de cada forma de praticar, com a textura do tipo (Aula, Exercícios, Laboratório, Visual)
+  function formaPratica(tipo, href, titulo, desc, numeros, extra = "") {
+    const ICO = { aula: "play-bold", ex: "check-bold", lab: "code-duotone", vis: "film-strip-duotone" };
+    const ROT = { aula: "Aula ilustrada", ex: "Exercícios", lab: "Laboratório", vis: "Visual da matéria" };
+    const tag = href ? `a href="${href}"` : `button type="button"`;
+    return `<${tag} class="forma forma-${tipo}" ${extra}><span class="forma-ic" aria-hidden="true">${ic(ICO[tipo])}</span><span class="forma-txt"><small>${ROT[tipo]}</small><b>${titulo}</b><span>${desc}</span></span><span class="forma-num">${numeros.map((n) => `<i>${n}</i>`).join("")}</span></${href ? "a" : "button"}>`;
+  }
+  function formasDoModulo(cod, comExercicios = true) {
+    const { mod, materia: m } = MODULO[cod];
+    const info = (window.LICOES_INFO || {})[cod];
+    const testes = (CONC()[cod] || {}).ideias;
+    const formas = [];
+    if (LICOES[cod]) formas.push(formaPratica("aula", LICOES[cod], `${esc(mod.nome)}, passo a passo`, "Desafio, animação e exercício em cada ideia, com o guia reagindo.", [`${mod.conceitos.length} ideias`, info ? `${info.minutos} min` : ""].filter(Boolean)));
+    if (comExercicios && testes) formas.push(formaPratica("ex", "", "Exercícios das ideias", "Uma pergunta por ideia, corrigida na hora, com o porquê de cada resposta.", [`${testes.length} itens`, "2 tentativas"], `data-exercicios="${cod}"`));
+    if (info && info.python) formas.push(formaPratica("lab", LICOES[cod], "Faça no Python", "O código roda enquanto você digita; a correção é pelos testes.", [`${info.python} tarefas`, "sem instalar"]));
+    else if (["BD", "AD"].includes(m.sigla)) formas.push(formaPratica("lab", "castelo/index.html", "Centro de Dados", "Um PostgreSQL de verdade, montado e consultado por você.", ["17 módulos", "no navegador"]));
+    formas.push(formaPratica("vis", `#guia-${m.sigla}`, `Como funciona ${esc(m.nome)}`, "O desenho, o clipe animado e a caixa para mexer da matéria.", [`${secoesDe(m).length} partes`]));
+    return `<div class="formas">${formas.join("")}</div>`;
+  }
+  function cartaoIdeia(cod, j, feito) {
+    const { mod } = MODULO[cod];
+    const d = ideiaDe(cod, j);
+    const g = d ? d.g : "ideia";
+    return `<li><button type="button" class="ideia${feito ? " feita" : ""}" data-ideia="${j}" aria-label="Ideia ${j + 1}: ${esc(maiusc(mod.conceitos[j]))}${feito ? ", entendida" : ""}. Abrir a explicação">
+      <span class="ideia-n">${feito ? ic("check-bold") : doisDig(j + 1)}</span>${window.Planta ? window.Planta.glifo(g) : ""}
+      <b>${esc(maiusc(mod.conceitos[j]))}</b>${d ? `<small>${esc(d.r)}</small>` : ""}<span class="ideia-abrir" aria-hidden="true">abrir</span></button></li>`;
+  }
+  // a janela de uma ideia: Ideia (com o desenho que anda), Dia a dia, Código e Teste
+  function abrirIdeia(cod, j, aoEntender, origem) {
+    const { mod, materia: m } = MODULO[cod];
+    const d = ideiaDe(cod, j);
+    const nome = maiusc(mod.conceitos[j]);
+    const termo = termoDe(mod.conceitos[j]);
+    const n = mod.conceitos.length;
+    const carimbo = `Prancha <b>${doisDig(j + 1)}/${doisDig(n)}</b><br>${esc(cod)} · ${esc(mod.nome)}`;
+    const marcado = new Set(progresso.conceitos[cod] || []).has(j);
+    const aula = LICOES[cod] ? `${LICOES[cod]}#c${j + 1}` : `#guia-${m.sigla}`;
+    let abas;
+    if (d) {
+      abas = [
+        { nome: "Ideia", html: `<p class="jn-def glossavel">${esc(d.ideia)}</p><div class="jn-fig"></div>`, aoAbrir: (el) => { window.Planta.montar(el.querySelector(".jn-fig"), d.fig); glossar(el, m.sigla, 3); } },
+        { nome: "Dia a dia", html: `<div class="jn-dia"><span class="ic-d" aria-hidden="true">${ic("sparkle-duotone")}</span><p><b>${esc(d.dia.titulo)}</b>${esc(d.dia.texto)}</p></div>${termo ? `<p class="jn-vazio"><b>${esc(termo.formas[0])}</b>${termo.en ? ` (em inglês, ${esc(termo.en)})` : ""}: ${esc(termo.def)}</p>` : ""}` },
+        { nome: "Código", html: d.codigo ? `<div class="jn-codigo"></div><p class="jn-vazio">Este código roda de verdade; a saída é a que o Python mostra.</p>` : `<p class="jn-vazio">Esta ideia não tem código próprio: ela aparece nos exemplos das outras ideias.</p>`, aoAbrir: (el) => { if (d.codigo) window.Planta.montar(el.querySelector(".jn-codigo"), { t: "codigo", titulo: "em Python", linhas: d.codigo.linhas, saida: d.codigo.saida }); } },
+        { nome: "Teste", html: `<div class="jn-teste"></div>`, aoAbrir: (el) => montarTeste(el.querySelector(".jn-teste"), cod, j) },
+      ];
+    } else {
+      abas = [{ nome: "Ideia", html: `${termo ? `<p class="jn-def"><b>${esc(termo.formas[0])}</b>${termo.en ? ` (${esc(termo.en)})` : ""}: ${esc(termo.def)}</p>` : ""}<div class="jn-dia"><span class="ic-d" aria-hidden="true">${ic("target-duotone")}</span><p><b>Onde esta ideia entra</b>${esc(mod.dia)}</p></div><p class="jn-vazio">A janela completa desta ideia, com desenho, código e teste, chega na próxima etapa do curso. Por enquanto, a explicação da matéria está em Como funciona.</p>` }];
+    }
+    window.Janela.abrir({
+      rotulo: `Ideia ${j + 1} de ${n}`, titulo: nome, carimbo, abas, origem,
+      acoes: [
+        { texto: `${ic(LICOES[cod] ? "play-bold" : "film-strip-duotone")}${LICOES[cod] ? "Ver na aula" : "Como funciona"}`, href: aula },
+        { texto: `${ic("check-bold")}${marcado ? "Entendida" : "Entendi"}`, classe: "primario", aoClicar: (fechar) => { aoEntender(j, true); fechar(); } },
+      ],
+    });
+  }
+  // a pergunta corrigida de uma ideia, dentro da janela ou na lista de exercícios
+  function montarTeste(alvo, cod, j, aoResolver) {
+    const d = ideiaDe(cod, j);
+    if (!d || !window.Motor) return;
+    alvo.innerHTML = window.Motor.criar(Object.assign({ r: "Teste rápido" }, d.teste));
+    const ex = alvo.querySelector(".exercicio");
+    window.Motor.montarExercicio(ex, { licao: cod, titulo: MODULO[cod].mod.nome, conceito: MODULO[cod].mod.conceitos[j], resumo: d.ideia, aoResolver: (e, r) => { if (aoResolver) aoResolver(r); } });
+  }
+  // os exercícios do módulo, um por ideia, numa janela só
+  function abrirExercicios(cod, origem) {
+    const { mod } = MODULO[cod];
+    const ideias = (CONC()[cod] || {}).ideias || [];
+    let certos = 0, feitos = 0;
+    window.Janela.abrir({
+      rotulo: `${esc(mod.nome)} · exercícios`, titulo: `${ideias.length} perguntas, uma por ideia`, origem,
+      carimbo: `Lista <b>${esc(cod)}</b><br>corrigida na hora`,
+      abas: [{ nome: "Exercícios", html: `<p class="jn-vazio">Duas tentativas em cada uma; o erro vem explicado. O placar aparece no fim.</p>${ideias.map((d, j) => `<section class="jn-ex"><p class="jn-rotulo">Ideia ${j + 1} · ${esc(maiusc(mod.conceitos[j]))}</p><div data-ex="${j}"></div></section>`).join("")}<p class="jn-placar" role="status" aria-live="polite"></p>`,
+        aoAbrir: (el) => ideias.forEach((d, j) => montarTeste(el.querySelector(`[data-ex="${j}"]`), cod, j, (r) => {
+          feitos++; if (r === "primeira" || r === "segunda") certos++;
+          if (feitos === ideias.length) el.querySelector(".jn-placar").textContent = `Placar: ${certos} de ${ideias.length} certas.${certos === ideias.length ? " Tudo certo." : " Reveja as ideias que errou."}`;
+        })) }],
+      acoes: [{ texto: "Fechar", classe: "so", aoClicar: (fechar) => fechar() }],
+    });
+  }
+
   // ---------- LIÇÃO ----------
   let estudo = { cod: null, passo: 0, liberado: [true, true, true, false, false], direcao: 1 };
   let autoAvanco = 0;
@@ -809,25 +920,36 @@
     let corpo = "";
     if (p === 0) {
       const falta = mod.antes.filter((a) => estadoDe(a.codigo) !== "dominado");
+      const prep = prepara(cod);
+      const no = (c, cls = "") => `<li class="no ${cls} ${estadoDe(c) === "dominado" ? "ok" : ""}"><a href="#estudo-${c}"><span class="no-marca" aria-hidden="true">${estadoDe(c) === "dominado" ? ic("check-bold") : ""}</span><span><b>${esc(MODULO[c].mod.nome)}</b><small>${esc(MODULO[c].materia.nome)}${estadoDe(c) === "dominado" ? " · dominado" : ""}</small></span></a></li>`;
       corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>${esc(mod.nome)}</h1><p class="passo-sub" ${iv()}>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}${estadoDe(cod) === "dominado" ? " · já dominado" : ""}</p>
-        <div class="fala" ${iv()}>${mascote(mod.antes.length ? "explica" : "feliz", "flutua", "chegar falar")}<p class="balao cor">${mod.antes.length ? `Este módulo usa ${mod.antes.length === 1 ? "uma coisa" : mod.antes.length + " coisas"} que vieram antes. ${falta.length ? "Se travar, volte nelas." : "Você já dominou tudo. Bora!"}` : "Este módulo não exige nada antes. É um começo. Bora!"}${mod.virada ? " <b>É um ponto de virada:</b> demora um pouco a fazer sentido, e depois muda tudo." : ""}</p></div>
-        ${mod.antes.length ? `<ul class="lista-pre-j" ${iv()}>${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}"><a href="#estudo-${a.codigo}"><span class="bolinha">${ic(estadoDe(a.codigo) === "dominado" ? "check-bold" : "question-duotone")}</span><span><b>${esc(a.nome)}</b><br><small>${esc(POR_SIGLA[a.materia].nome)}</small></span><small>${estadoDe(a.codigo) === "dominado" ? "dominado" : "não marcado"}</small></a></li>`).join("")}</ul>` : ""}
-        ${falta.length ? `<p class="aviso-j" ${iv()}>Você ainda não marcou ${falta.length === 1 ? "esse pré-requisito" : "esses pré-requisitos"} como dominado. Pode seguir; se travar, volte ${falta.length === 1 ? "nele" : "neles"} primeiro.</p>` : ""}`;
+        <div class="rede" ${iv()}>
+          <div class="rede-col"><p class="rede-rot">${ic("caret-down-bold")}Usa o que veio antes</p>${mod.antes.length ? `<ul>${mod.antes.map((a) => no(a.codigo)).join("")}</ul>` : `<p class="rede-vazio">Nada: é um começo.</p>`}</div>
+          <div class="rede-este"><span class="rede-cota">este módulo</span><b>${esc(mod.nome)}</b><span class="rede-numeros"><i>${mod.conceitos.length} ideias</i><i>+${xpDe(cod)} XP</i>${mod.virada ? `<i class="virada">ponto de virada</i>` : ""}${LICOES[cod] ? "<i>aula ilustrada</i>" : ""}</span></div>
+          <div class="rede-col"><p class="rede-rot">${ic("caret-down-bold")}Prepara para</p>${prep.length ? `<ul>${prep.slice(0, 4).map((c) => no(c, "depois")).join("")}${prep.length > 4 ? `<li class="rede-mais">e mais ${prep.length - 4}</li>` : ""}</ul>` : `<p class="rede-vazio">O fim desta linha.</p>`}</div>
+        </div>
+        <div class="fala fala-curta" ${iv()}>${mascote(mod.antes.length ? "explica" : "feliz", "", "chegar falar")}<p class="balao">${mod.antes.length ? (falta.length ? `Falta dominar ${falta.length === 1 ? "um pré-requisito" : falta.length + " pré-requisitos"}. Pode seguir; se travar, volte ${falta.length === 1 ? "nele" : "neles"}.` : "Você já domina tudo o que este módulo usa. Bora!") : "Este módulo não exige nada antes. Bora!"}${mod.virada ? " <b>Ponto de virada:</b> demora a fazer sentido, e depois muda tudo." : ""}</p></div>`;
     }
     if (p === 1) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Para que serve</h1>
-      <div class="fala" ${iv()}>${mascote("explica", "flutua", "falar")}<p class="balao cor texto-grande glossavel">${esc(mod.dia)}</p></div>
-      <div class="alvo" ${iv()}><span class="ic-a">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></div>
-      ${m.trabalho ? `<div class="alvo no-trabalho" ${iv()}><span class="ic-a">${ic("graduation-cap-duotone")}</span><div><small>${esc(m.nome)} no trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></div>` : ""}`;
+      <ol class="rumo" ${iv()}>
+        <li class="rumo-e"><span class="rumo-ic" aria-hidden="true">${ic("sparkle-duotone")}</span><div><small>no dia a dia</small><p class="glossavel">${esc(mod.dia)}</p></div></li>
+        <li class="rumo-p"><span class="rumo-ic" aria-hidden="true">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></li>
+        ${m.trabalho ? `<li class="rumo-s"><span class="rumo-ic" aria-hidden="true">${ic("graduation-cap-duotone")}</span><div><small>no trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></li>` : ""}
+      </ol>`;
     const marcados = new Set(progresso.conceitos[cod] || []);
-    if (p === 2) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>O que você aprende</h1><p class="passo-sub" ${iv()}>${mod.conceitos.length} conceitos, nesta ordem. Marque cada um quando sentir que entendeu; a marcação fica salva. Toque nos termos sublinhados para ver o que significam.</p>
-      <p class="conta-conceitos" id="conta-conceitos" ${iv()}>${marcados.size} de ${mod.conceitos.length} marcados como entendidos</p>
-      <ol class="conceito-cards" ${iv()}>${mod.conceitos.map((c, j) => `<li style="--j:${j}" class="${marcados.has(j) ? "entendido" : ""}"><span class="glossavel">${esc(c.charAt(0).toUpperCase() + c.slice(1))}</span><button type="button" class="c-ok" data-c="${j}" aria-pressed="${marcados.has(j)}">${ic("check-bold")}<span>${marcados.has(j) ? "entendi" : "marcar"}</span></button></li>`).join("")}</ol>
-      ${LICOES[cod] ? `<a class="cartao-link" href="${LICOES[cod]}" ${iv()}><span class="ic-a">${ic("play-duotone")}</span><span><b>Lição ilustrada deste módulo</b><small>exercícios com correção na hora, um conceito por vez</small></span>${ic("arrow-right-bold")}</a>` : ""}
-      <a class="cartao-link" href="#guia-${m.sigla}" ${iv()}><span class="ic-a">${ic("film-strip-duotone")}</span><span><b>Ver o desenho, o clipe e a caixa interativa</b><small>${esc(m.nome)}: como funciona</small></span>${ic("arrow-right-bold")}</a>
-      <p class="passo-sub" ${iv()}>Opcional: para tirar dúvidas com um tutor, abra o Claude e digite <code>/aula</code>.</p>`;
-    if (p === 3) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Cuidado com</h1>
+    if (p === 2) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>${mod.conceitos.length} ideias de ${esc(mod.nome)}</h1><p class="passo-sub" ${iv()}>Toque numa ideia para abrir a explicação${ideiaDe(cod, 0) ? " com desenho, exemplo, código e teste" : ""}. Ao terminar, marque <b>Entendi</b> dentro dela.</p>
+      <p class="conta-conceitos" id="conta-conceitos" ${iv()}>${marcados.size} de ${mod.conceitos.length} ideias entendidas</p>
+      <ol class="ideias" ${iv()}>${mod.conceitos.map((c, j) => cartaoIdeia(cod, j, marcados.has(j))).join("")}</ol>
+      <h2 class="secao-rot" ${iv()}>Pratique do seu jeito</h2>
+      <div ${iv()}>${formasDoModulo(cod)}</div>
+      <p class="passo-sub nota-aula" ${iv()}>Dúvida fora daqui? No Claude, digite <code>/aula</code>.</p>`;
+    if (p === 3) {
+      const ev = (CONC()[cod] || {}).evitar;
+      corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Cuidado com</h1>
       <div class="cuidado" ${iv()}><span class="ic-a">${ic("warning-duotone")}</span><p class="glossavel">${esc(mod.tropeco)}</p></div>
-      <div class="fala" ${iv()}>${mascote("pensa", "", "pensar")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
+      ${ev ? `<div class="pl-figura" ${iv()}><p class="pl-cota"><span>o tropeço e o jeito certo</span></p><div class="pl-comparar">${["errado", "certo"].map((k) => `<div class="pl-lado ${k === "errado" ? "pl-x" : "pl-s"}"><small>${k === "errado" ? "assim, não" : "assim, sim"}</small><b>${esc(ev[k].titulo)}</b>${ev[k].codigo ? `<pre><code>${pyHL(ev[k].codigo)}</code></pre>` : `<p>${esc(ev[k].texto)}</p>`}</div>`).join("")}</div></div>` : ""}
+      <div class="fala fala-curta" ${iv()}>${mascote("pensa", "", "pensar")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
+    }
     if (p === 4) corpo = (window.VERIFICA_MODULOS || {})[cod] && window.Motor
       ? `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
       <div class="fala" ${iv()}>${mascote("pensa", "flutua", "pensar")}<p class="balao cor">Confira se entendeu. Tem duas tentativas, e o erro vem explicado.</p></div>
@@ -883,18 +1005,26 @@
       cont.classList.add("b-prog"); cont.style.setProperty("--p", (p + 1) / PASSOS.length); cont.dataset.passo = `passo ${p + 1} de ${PASSOS.length}`;
     }
     if (p === 4) montarPergunta(cod, mod, seguinte);
-    if (p === 2) document.querySelectorAll(".c-ok").forEach((b) => b.addEventListener("click", () => {
-      const j = Number(b.dataset.c);
-      const set = new Set(progresso.conceitos[cod] || []);
-      if (set.has(j)) set.delete(j); else set.add(j);
-      progresso.conceitos[cod] = [...set].sort((a, c) => a - c);
-      salvar();
-      const on = set.has(j);
-      b.setAttribute("aria-pressed", String(on));
-      b.querySelector("span").textContent = on ? "entendi" : "marcar";
-      b.closest("li").classList.toggle("entendido", on);
-      document.getElementById("conta-conceitos").textContent = `${set.size} de ${mod.conceitos.length} marcados como entendidos`;
-    }));
+    if (p === 2) {
+      const entender = (j, on) => {
+        const set = new Set(progresso.conceitos[cod] || []);
+        if (on) set.add(j); else set.delete(j);
+        progresso.conceitos[cod] = [...set].sort((a, c) => a - c);
+        salvar();
+        const li = document.querySelector(`[data-ideia="${j}"]`).closest("li");
+        li.outerHTML = cartaoIdeia(cod, j, on);
+        document.getElementById("conta-conceitos").textContent = `${set.size} de ${mod.conceitos.length} ideias entendidas`;
+        const novo = document.querySelector(`[data-ideia="${j}"]`);
+        if (novo) novo.focus({ preventScroll: true });
+      };
+      const palco = document.querySelector(".cartao-passo");
+      palco.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-ideia]");
+        if (b && window.Janela) { abrirIdeia(cod, Number(b.dataset.ideia), entender, b); return; }
+        const x = e.target.closest("[data-exercicios]");
+        if (x && window.Janela) abrirExercicios(x.dataset.exercicios, x);
+      });
+    }
     teclas = (e) => {
       if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       if (e.key === "Escape") { location.hash = `#trilha-${m.sigla}`; return; }
@@ -1107,6 +1237,8 @@
   let teclas = null;
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !balao.hidden) { esconderBalao(); return; }
+    // com uma janela aberta (explicação, trajeto), as teclas são dela: Esc fecha a janela, não sai da tela
+    if (document.querySelector("dialog[open]")) return;
     if (teclas && !e.ctrlKey && !e.metaKey && !e.altKey) teclas(e);
   });
   function render() {
@@ -1329,8 +1461,8 @@
     const atualizar = () => {
       mini.innerHTML = guia().expr.padrao;
       mini.className = "guia-mini" + (guia().id === "panda" ? "" : " retrato");
-      const tema = window.Tema ? window.Tema.atual() : "grafite";
-      menu.innerHTML = (window.Offline && window.Offline.disponivel() ? `<p>Sem internet</p><button type="button" data-offline><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Baixar o curso inteiro</b><small>${window.Offline.ultimo() ? "baixado em " + dataBR(window.Offline.ultimo()) + "; toque para conferir" : "para estudar tudo sem internet"}</small></span><span></span></button>` : "") + (window.Trajeto ? `<p>Seu trajeto</p><button type="button" data-trajeto="salvar"><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Salvar meu trajeto</b><small>${window.Trajeto.ultimoSalvo() ? "último arquivo em " + dataBR(window.Trajeto.ultimoSalvo()) : "baixa um arquivo com tudo"}</small></span><span></span></button><button type="button" data-trajeto="carregar"><span class="trajeto-ic">${ic("upload-duotone")}</span><span><b>Carregar trajeto</b><small>de um arquivo salvo antes</small></span><span></span></button>${window.Trajeto.temAnterior() ? `<button type="button" data-trajeto="desfazer"><span class="trajeto-ic">${ic("history-duotone")}</span><span><b>Desfazer o carregamento</b><small>volta ao trajeto de antes</small></span><span></span></button>` : ""}` : "") + `<p>Tema</p>` + [["grafite", "Grafite", "o padrão, claro ou escuro como o aparelho"], ["impresso", "Impresso", "papel, duas tintas e grão"]].map(([id, nome, desc]) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
+      const tema = window.Tema ? window.Tema.atual() : "planta";
+      menu.innerHTML = (window.Offline && window.Offline.disponivel() ? `<p>Sem internet</p><button type="button" data-offline><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Baixar o curso inteiro</b><small>${window.Offline.ultimo() ? "baixado em " + dataBR(window.Offline.ultimo()) + "; toque para conferir" : "para estudar tudo sem internet"}</small></span><span></span></button>` : "") + (window.Trajeto ? `<p>Seu trajeto</p><button type="button" data-trajeto="salvar"><span class="trajeto-ic">${ic("download-duotone")}</span><span><b>Salvar meu trajeto</b><small>${window.Trajeto.ultimoSalvo() ? "último arquivo em " + dataBR(window.Trajeto.ultimoSalvo()) : "baixa um arquivo com tudo"}</small></span><span></span></button><button type="button" data-trajeto="carregar"><span class="trajeto-ic">${ic("upload-duotone")}</span><span><b>Carregar trajeto</b><small>de um arquivo salvo antes</small></span><span></span></button>${window.Trajeto.temAnterior() ? `<button type="button" data-trajeto="desfazer"><span class="trajeto-ic">${ic("history-duotone")}</span><span><b>Desfazer o carregamento</b><small>volta ao trajeto de antes</small></span><span></span></button>` : ""}` : "") + `<p>Tema</p>` + (window.Tema ? window.Tema.LISTA : []).map(({ id, nome, desc }) => `<button type="button" aria-pressed="${id === tema}" data-tema-opcao="${id}"><span class="tema-amostra tema-amostra-${id}" aria-hidden="true"></span><span><b>${nome}</b><small>${desc}</small></span>${id === tema ? ic("check-bold") : ""}</button>`).join("") + (window.Tracos ? `<p>Traço dos guias</p>` + window.Tracos.LISTA.map((t) => `<button type="button" aria-pressed="${t.id === window.Tracos.atual()}" data-traco-opcao="${t.id}"><span class="guia-mini retrato">${(window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos || {})[t.id] ? window.GUIAS[guia().id === "panda" ? "rin" : guia().id].tracos[t.id].padrao : ""}</span><span><b>${esc(t.nome)}</b><small>${esc(t.desc)}</small></span>${t.id === window.Tracos.atual() ? ic("check-bold") : ""}</button>`).join("") : "") + `<p>Seu guia</p>` + ordem.map((id) => { const g = window.GUIAS[id]; return `<button type="button" aria-pressed="${id === guia().id}" data-guia="${id}"><span class="guia-mini${id === "panda" ? "" : " retrato"}">${g.expr.padrao}</span><span><b>${esc(g.nome)}</b><small>${esc(g.funcao)}</small></span>${id === guia().id ? ic("check-bold") : ""}</button>`; }).join("") + `<a class="guia-galeria" href="licoes/GALERIA.html">Ver todos os guias e animações</a>`;
     };
     const fechar = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const abrir = menu.hidden; menu.hidden = !abrir; btn.setAttribute("aria-expanded", String(abrir)); });

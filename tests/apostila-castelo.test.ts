@@ -127,7 +127,8 @@ describe("erros do PostgreSQL em português", () => {
     const erro2 = await db.query(apostrofo).catch((e: unknown) => e);
     expect(Cmp.traduzirErro(erro2, apostrofo)).toMatch(/duas aspas simples/);
     await db.close();
-  });
+    // criar um PostgreSQL novo leva alguns segundos quando a suíte inteira roda junto
+  }, 30_000);
 });
 
 describe("roteiro das salas", () => {

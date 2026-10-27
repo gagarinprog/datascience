@@ -101,7 +101,13 @@ test.describe("apostila", () => {
     );
     await page.goto(BASE + "index.html#estudo-LOG.01");
     for (let p = 0; p < 4; p++) {
-      if (p === 2) for (const b of await page.locator(".c-ok").all()) await b.click();
+      // passo 3: cada ideia abre a janela de explicação, e "Entendi" fecha e marca
+      if (p === 2)
+        for (let j = 0; j < (await page.locator("[data-ideia]").count()); j++) {
+          await page.locator(`[data-ideia="${j}"]`).click();
+          await page.locator("dialog.jn .jn-acoes .primario").click();
+          await expect(page.locator("dialog.jn")).toHaveCount(0);
+        }
       await page.locator("[data-continuar]").click();
     }
     // a pergunta final agora corrige: resolve errando de propósito na primeira tentativa
@@ -365,6 +371,79 @@ test.describe("apostila", () => {
       await page.locator("#r-proximo").click();
     }
     await expect(page.locator("#r-palco")).toContainText("Revisão concluída");
+  });
+
+  test("a janela da ideia: desenho por etapas, abas pelo teclado, teste corrigido e Esc", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.addInitScript(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
+    await page.goto(BASE + "index.html#estudo-LOG.03");
+    await page.locator('[data-ir="2"]').click();
+    await expect(page.locator("[data-ideia]")).toHaveCount(6);
+    const cartao = page.locator('[data-ideia="1"]');
+    await cartao.click();
+    const jn = page.locator("dialog.jn");
+    await expect(jn).toBeVisible();
+    await expect(jn.locator("h2")).toHaveText("Divisão inteira e resto");
+    // o desenho anda por etapas
+    await expect(jn.locator(".pl-nota b")).toHaveText("1/3");
+    await jn.locator('[data-pl="passo"]').click();
+    await expect(jn.locator(".pl-nota b")).toHaveText("2/3");
+    // abas pelo teclado: seta para a direita até o Teste
+    await jn.locator('[role="tab"]').first().focus();
+    for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
+    await expect(jn.locator('[role="tab"][aria-selected="true"]')).toHaveText("Teste");
+    await jn.locator(".jn-teste .opcoes [data-ok]").click();
+    await expect(jn.locator(".jn-teste .retorno.ok")).toBeVisible();
+    // Esc fecha e o foco volta ao cartão
+    await page.keyboard.press("Escape");
+    await expect(jn).toHaveCount(0);
+    await expect(cartao).toBeFocused();
+    // os exercícios das ideias numa janela só, com placar no fim
+    await page.locator("[data-exercicios]").click();
+    const itens = page.locator("dialog.jn .jn-ex");
+    await expect(itens).toHaveCount(6);
+    for (let i = 0; i < 6; i++) {
+      const ex = itens.nth(i).locator(".exercicio");
+      await ex.evaluate((e, k) => ((e as HTMLElement).dataset.vid = "x" + k), i);
+      expect((await resolver(page, "x" + i, false)).estado).toBe("resolvido");
+    }
+    await expect(page.locator(".jn-placar")).toContainText("6 de 6");
+    expect(erros).toEqual([]);
+  });
+
+  test("a matéria abre com a capa, o anel de progresso e as etiquetas dos módulos", async ({
+    page,
+  }) => {
+    const erros = vigiarErros(page);
+    await page.addInitScript(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
+    await page.goto(BASE + "index.html#trilha-PY");
+    await expect(page.locator(".capa .motivo")).toBeVisible();
+    await expect(page.locator(".capa-anel")).toHaveAttribute("aria-label", /de 13 módulos/);
+    await expect(page.locator('.mod[data-cod="PY.02"] .etq-ex')).toHaveText(/6 exercícios/);
+    await expect(page.locator(".mod.aberto .formas .forma")).not.toHaveCount(0);
+    const largura = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    expect(largura).toBeLessThanOrEqual(0);
+    expect(erros).toEqual([]);
+  });
+
+  test("os cinco temas aparecem no menu e o Planta é o padrão", async ({ page }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
+    );
+    await page.goto(BASE + "index.html#mapa");
+    await expect(page.locator("html")).toHaveAttribute("data-tema", "planta");
+    await page.locator("#guia-btn").click();
+    await expect(page.locator("[data-tema-opcao]")).toHaveCount(5);
+    await page.locator('[data-tema-opcao="caderno"]').click();
+    await expect(page.locator("html")).toHaveAttribute("data-tema", "caderno");
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("data-tema", "caderno");
   });
 
   test("o trajeto vai para um arquivo e volta em outro aparelho", async ({ page, browser }) => {

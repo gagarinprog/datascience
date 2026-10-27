@@ -86,7 +86,71 @@
 :root[data-tema="impresso"] .cd-numeros { border-radius: 4px; }
 :root[data-tema="impresso"] .lab-salas li.lab-nivel-item { background: var(--folha); }
 
-/* amostras no menu de tema (valem nos dois temas) */
+
+/* =====================================================================
+   Temas Planta, Caderno e Terminal (27/10/2026). As cores vêm por tokens; a textura fica no fundo da página
+   (os cartões são opacos, então a grade aparece só entre eles e nunca atrás do texto).
+   ===================================================================== */
+:root[data-tema="planta"] {
+  --fundo: #08111f; --folha: #0e1a2e; --folha-2: #13223b; --linha: #22375a; --linha-forte: #2f4c7a; --linha-hover: #44679e;
+  --texto: #e6eefb; --texto-2: #a3b4cf; --tinta: #6aa3ff; --tinta-suave: #16294a; --sobre-tinta: #061024; --sobre-cor: #061024; --tinta-hover: #9cc2ff;
+  --certo: #3ddc97; --certo-suave: #0f2e24; --erro: #ff7a8f; --erro-suave: #3a1524; --aviso: #ffc14d; --aviso-suave: #33260b;
+  --ouro: #ffc14d; --ouro-texto: #ffc14d; --chama: #ff9142;
+  --azul-cor: #8db8ff; --azul-cv: #4c8dff; --metal-aresta: #2f6be0;
+  --metal: linear-gradient(110deg, #1a4fc0 0%, #2f6be0 40%, #5b97ff 52%, #2f6be0 64%, #1a4fc0 100%);
+  --metal-barra: linear-gradient(90deg, #2f6be0 0%, #62e3ff 50%, #2f6be0 100%);
+  --metal-suave: linear-gradient(145deg, #10203a 0%, #16294a 50%, #0f1c33 100%);
+  --leito: #22375a; --faixa: rgb(98 227 255 / 0.25);
+  --destaque: #62e3ff;
+  --sombra: 0 1px 2px rgb(0 0 0 / 0.45), 0 14px 34px -16px rgb(0 0 0 / 0.8);
+  --textura: linear-gradient(rgb(76 141 255 / 0.07) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgb(76 141 255 / 0.07) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(rgb(76 141 255 / 0.13) 1px, transparent 1px) 0 0 / 120px 120px,
+    linear-gradient(90deg, rgb(76 141 255 / 0.13) 1px, transparent 1px) 0 0 / 120px 120px;
+  color-scheme: dark;
+}
+:root[data-tema="caderno"] {
+  --fundo: #f5f3ec; --folha: #fffdf8; --folha-2: #f1eee5; --linha: #ddd7c8; --linha-forte: #bfb6a0; --linha-hover: #8f866f;
+  --texto: #1c2333; --texto-2: #4f5868; --tinta: #1d4ed8; --tinta-suave: #e3e9fb; --sobre-tinta: #ffffff; --sobre-cor: #ffffff; --tinta-hover: #173fae;
+  --certo: #13724a; --certo-suave: #dff1e6; --erro: #b4233a; --erro-suave: #f8e1e4; --aviso: #8a4f00; --aviso-suave: #f8ead1;
+  --ouro: #b7791f; --ouro-texto: #7a4f00; --chama: #c2410c;
+  --azul-cor: #1d4ed8; --azul-cv: #3b6fe6; --metal-aresta: #173fae;
+  --metal: #1d4ed8; --metal-barra: #1d4ed8; --metal-suave: #f1eee5;
+  --leito: #e4dfd2; --faixa: #fffdf8;
+  --destaque: #1d4ed8;
+  --sombra: 0 1px 0 rgb(28 35 51 / 0.06), 0 10px 24px -16px rgb(28 35 51 / 0.25);
+  --textura: linear-gradient(rgb(30 58 95 / 0.09) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgb(30 58 95 / 0.09) 1px, transparent 1px) 0 0 / 22px 22px;
+  color-scheme: light;
+}
+:root[data-tema="terminal"] {
+  --fundo: #070c09; --folha: #0d1510; --folha-2: #122018; --linha: #1f3328; --linha-forte: #2e4d3c; --linha-hover: #467a5e;
+  --texto: #d9f7e6; --texto-2: #94bfa6; --tinta: #3ddc97; --tinta-suave: #123224; --sobre-tinta: #03140b; --sobre-cor: #03140b; --tinta-hover: #7cf0bf;
+  --certo: #3ddc97; --certo-suave: #0f2e20; --erro: #ff7a8f; --erro-suave: #3a1520; --aviso: #ffc14d; --aviso-suave: #33260b;
+  --ouro: #ffc14d; --ouro-texto: #ffc14d; --chama: #ffc14d;
+  --azul-cor: #3ddc97; --azul-cv: #3ddc97; --metal-aresta: #2bb87c;
+  --metal: #3ddc97; --metal-barra: linear-gradient(90deg, #3ddc97, #ffc14d); --metal-suave: #102519;
+  --leito: #1f3328; --faixa: rgb(61 220 151 / 0.25);
+  --destaque: #ffc14d;
+  --sombra: 0 0 0 1px rgb(61 220 151 / 0.06), 0 14px 30px -18px rgb(0 0 0 / 0.9);
+  --textura: repeating-linear-gradient(rgb(255 255 255 / 0) 0 3px, rgb(61 220 151 / 0.035) 3px 4px);
+  color-scheme: dark;
+}
+:root[data-tema="planta"] body, :root[data-tema="caderno"] body, :root[data-tema="terminal"] body { background: var(--textura), var(--fundo); background-attachment: fixed; }
+/* sem metal no caderno e no terminal: tinta chapada */
+:root[data-tema="caderno"] .titulo-pagina, :root[data-tema="caderno"] .tema-exp .mat-titulo h1, :root[data-tema="caderno"] .tema-exp .passo-titulo,
+:root[data-tema="terminal"] .titulo-pagina, :root[data-tema="terminal"] .tema-exp .mat-titulo h1, :root[data-tema="terminal"] .tema-exp .passo-titulo {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--texto);
+}
+:root[data-tema="caderno"] .tema-exp .btn-3d, :root[data-tema="terminal"] .tema-exp .btn-3d { background: var(--tinta); color: var(--sobre-tinta); text-shadow: none; box-shadow: none; }
+:root[data-tema="caderno"] .tema-exp .btn-3d:hover:not(:disabled), :root[data-tema="terminal"] .tema-exp .btn-3d:hover:not(:disabled) { background: var(--tinta-hover); }
+:root[data-tema="terminal"] h1, :root[data-tema="terminal"] h2, :root[data-tema="terminal"] .passo-titulo, :root[data-tema="terminal"] .mat-titulo h1 { font-family: var(--f-codigo); letter-spacing: -0.02em; }
+:root[data-tema="terminal"] .tema-exp .mat-icone, :root[data-tema="terminal"] .tema-exp .cartao-link .ic-a, :root[data-tema="terminal"] .tema-exp .alvo .ic-a { color: var(--sobre-tinta); }
+.tema-amostra-planta { background: linear-gradient(rgb(76 141 255 / 0.35) 1px, transparent 1px) 0 0 / 8px 8px, linear-gradient(90deg, rgb(76 141 255 / 0.35) 1px, transparent 1px) 0 0 / 8px 8px, linear-gradient(135deg, #08111f 0 60%, #4c8dff 60% 100%); }
+.tema-amostra-caderno { background: linear-gradient(rgb(30 58 95 / 0.25) 1px, transparent 1px) 0 0 / 8px 8px, linear-gradient(90deg, rgb(30 58 95 / 0.25) 1px, transparent 1px) 0 0 / 8px 8px, linear-gradient(135deg, #f5f3ec 0 60%, #1d4ed8 60% 100%); border-color: #bfb6a0; }
+.tema-amostra-terminal { background: repeating-linear-gradient(#070c09 0 2px, #12291c 2px 3px), #070c09; box-shadow: inset -14px -14px 0 -6px #3ddc97; }
+
+/* amostras no menu de tema (valem em todos os temas) */
 .tema-amostra { width: 40px; height: 40px; border-radius: 8px; flex: none; border: 1px solid var(--linha-forte); }
 .tema-amostra-grafite { background: linear-gradient(135deg, #0d1017 0 55%, #2457d4 55% 100%); }
 .tema-amostra-impresso { background: linear-gradient(135deg, #eceef2 0 55%, #2f4fa8 55% 78%, #ff7a3d 78% 100%); border-color: #1b2131; }

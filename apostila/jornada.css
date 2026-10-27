@@ -998,3 +998,142 @@ body.no-inicio .palco { padding-top: 12px; padding-bottom: 12px; }
 .offline-fim:empty { display: none; }
 @keyframes offline-gira { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .offline-etapas .andamento .offline-marca { animation: none; border-right-color: var(--azul-500, var(--tinta)); border-style: dotted; } }
+
+/* =====================================================================
+   Redesenho de 27/10/2026 (proposta 2): estudo em 5 passos com rede de pré-requisitos, rumo do módulo,
+   grade de ideias que abre a janela de explicação, formas de praticar com textura por tipo e a capa da matéria.
+   ===================================================================== */
+/* o rodapé da lição fica opaco: o conteúdo rola por baixo sem embaralhar com os botões */
+.licao-pe { background: var(--folha); backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.5); }
+.licao-palco { padding-bottom: 140px; }
+:root[data-tema="planta"] .licao, :root[data-tema="caderno"] .licao, :root[data-tema="terminal"] .licao { background: transparent; }
+.secao-rot { margin: 10px 0 0; font: 700 12px/1.2 var(--f-codigo); letter-spacing: 0.1em; text-transform: uppercase; color: var(--texto-2); }
+.fala-curta .mascote { --tam: 64px; }
+.fala-curta .balao { font-size: 15px; }
+.nota-aula { font-size: 13.5px; }
+
+/* passo 1: a rede do que o módulo usa e do que ele prepara */
+.rede { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: 0; align-items: center; }
+.rede-col { display: grid; gap: 8px; align-content: start; }
+.rede-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rede-rot { margin: 0; display: flex; align-items: center; gap: 6px; font: 700 11px/1.2 var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
+.rede-rot .ic { width: 14px; height: 14px; }
+.rede-vazio { margin: 0; padding: 12px; border: 1px dashed var(--linha-forte); border-radius: 10px; color: var(--texto-2); font-size: 14px; }
+.rede .no a { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: center; min-height: 52px; padding: 8px 10px; border: 1px solid var(--linha-forte); border-radius: 10px; background: var(--folha); color: var(--texto); text-decoration: none; }
+.rede .no a:hover { border-color: var(--linha-hover); }
+.rede .no b { display: block; font-size: 14.5px; line-height: 1.25; }
+.rede .no small { color: var(--texto-2); font-size: 12.5px; }
+.no-marca { width: 26px; height: 26px; border-radius: 50%; border: 2px dashed var(--linha-hover); display: grid; place-items: center; }
+.rede .no.ok .no-marca { border: 0; background: var(--certo); color: var(--sobre-cor); }
+.rede .no.ok .no-marca .ic { width: 14px; height: 14px; }
+.rede .no.depois a { border-style: dashed; }
+.rede-mais { color: var(--texto-2); font-size: 13px; padding-left: 4px; }
+.rede-este { position: relative; margin: 0 18px; padding: 18px 16px; border: 2px solid var(--tinta); border-radius: 14px; background: var(--tinta-suave); display: grid; gap: 8px; text-align: center; justify-items: center; }
+.rede-este::before, .rede-este::after { content: ""; position: absolute; top: 50%; width: 18px; border-top: 2px dashed var(--linha-hover); }
+.rede-este::before { right: 100%; } .rede-este::after { left: 100%; }
+.rede-cota { font: 700 10.5px/1 var(--f-codigo); letter-spacing: 0.1em; text-transform: uppercase; color: var(--tinta); }
+.rede-este b { font: 800 20px/1.15 var(--f-titulo); }
+.rede-numeros { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.rede-numeros i, .etq { font-style: normal; display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 6px; background: var(--folha); border: 1px solid var(--linha); font: 700 11.5px/1.3 var(--f-codigo); color: var(--texto-2); }
+.rede-numeros i.virada { color: var(--aviso); border-color: color-mix(in srgb, var(--aviso) 40%, var(--linha)); }
+@media (max-width: 720px) {
+  .rede { grid-template-columns: 1fr; gap: 0; }
+  .rede-este { margin: 16px 0; }
+  .rede-este::before, .rede-este::after { left: 50%; right: auto; top: auto; width: 0; height: 16px; border-top: 0; border-left: 2px dashed var(--linha-hover); }
+  .rede-este::before { bottom: 100%; } .rede-este::after { top: 100%; }
+}
+
+/* passo 2: o rumo do módulo, do dia a dia ao trabalho */
+.rumo { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.rumo li { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; padding: 14px 16px; border: 1px solid var(--c); border-radius: 12px; background: var(--folha); }
+.rumo li + li { margin-top: 22px; }
+.rumo li + li::before { content: ""; position: absolute; left: 39px; top: -23px; height: 22px; border-left: 2px dashed var(--linha-hover); }
+.rumo li small { display: block; font: 700 11px/1.3 var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); margin-bottom: 4px; }
+.rumo li p { margin: 0; font-size: 16.5px; line-height: 1.5; }
+.rumo-ic { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; background: var(--cf); color: var(--c); }
+.rumo-ic .ic { width: 24px; height: 24px; }
+.rumo-e { --c: var(--r-e); --cf: var(--r-e-f); } .rumo-p { --c: var(--r-p); --cf: var(--r-p-f); } .rumo-s { --c: var(--r-s); --cf: var(--r-s-f); }
+
+/* passo 3: a grade de ideias */
+.ideias { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+@media (max-width: 560px) { .ideias { grid-template-columns: 1fr 1fr; } .ideia { min-height: 136px; padding: 10px 10px 32px; } .ideia b { font-size: 14.5px; } .ideia small { font-size: 12.5px; } .ideia .pl-glifo { height: 40px; } }
+.ideia { position: relative; width: 100%; min-height: 150px; display: grid; align-content: start; gap: 6px; padding: 12px 12px 34px; text-align: left; border: 1px solid var(--linha-forte); border-radius: 12px; background: var(--folha); color: var(--texto); font: inherit; cursor: pointer; transition: border-color 160ms, transform 160ms var(--curva); }
+.ideia:hover { border-color: var(--tinta); transform: translateY(-2px); }
+.ideia b { font-size: 15.5px; line-height: 1.25; }
+.ideia small { color: var(--texto-2); font-size: 13px; line-height: 1.35; }
+.ideia .pl-glifo { height: 48px; margin-bottom: 2px; }
+.ideia-n { position: absolute; top: 10px; right: 10px; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 13px; display: grid; place-items: center; font: 700 11.5px var(--f-codigo); color: var(--texto-2); border: 1px solid var(--linha); background: var(--folha-2); }
+.ideia-n .ic { width: 14px; height: 14px; }
+.ideia.feita { border-color: color-mix(in srgb, var(--certo) 60%, var(--linha)); }
+.ideia.feita .ideia-n { background: var(--certo); border-color: var(--certo); color: var(--sobre-cor); }
+.ideia-abrir { position: absolute; left: 12px; bottom: 10px; font: 700 11px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta); }
+.ideia-abrir::after { content: " +"; }
+@media (prefers-reduced-motion: reduce) { .ideia, .ideia:hover { transition: none; transform: none; } }
+
+/* formas de praticar: a textura diz o tipo */
+.formas { display: grid; gap: 10px; }
+.forma { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 14px; align-items: center; width: 100%; min-height: 76px; padding: 12px 14px; border: 1px solid var(--c); border-radius: 12px; color: var(--texto); text-decoration: none; font: inherit; text-align: left; cursor: pointer; background-color: var(--folha); transition: transform 160ms var(--curva); }
+.forma:hover { transform: translateY(-2px); }
+.forma-ic { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; background: var(--cf); color: var(--c); }
+.forma-ic .ic { width: 22px; height: 22px; }
+.forma-txt { display: grid; gap: 2px; min-width: 0; }
+.forma-txt small { font: 700 11px/1.2 var(--f-codigo); letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); }
+.forma-txt b { font-size: 16px; line-height: 1.25; }
+.forma-txt span { font-size: 13.5px; color: var(--texto-2); line-height: 1.4; }
+.forma-num { display: grid; gap: 4px; justify-items: end; }
+.forma-num i { font-style: normal; font: 700 12px/1.2 var(--f-codigo); color: var(--texto-2); white-space: nowrap; }
+.forma-aula { --c: var(--r-e); --cf: var(--r-e-f); background-image: linear-gradient(color-mix(in srgb, var(--r-e) 9%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--r-e) 9%, transparent) 1px, transparent 1px); background-size: 12px 12px; }
+.forma-ex { --c: var(--r-s); --cf: var(--r-s-f); background-image: repeating-linear-gradient(transparent 0 21px, color-mix(in srgb, var(--r-s) 14%, transparent) 21px 22px); }
+.forma-lab { --c: var(--r-p); --cf: var(--r-p-f); background-image: repeating-linear-gradient(transparent 0 3px, color-mix(in srgb, var(--r-p) 8%, transparent) 3px 4px); }
+.forma-vis { --c: var(--r-x); --cf: var(--r-x-f); background-image: radial-gradient(color-mix(in srgb, var(--r-x) 16%, transparent) 1px, transparent 1.5px); background-size: 10px 10px; }
+@media (max-width: 480px) { .forma { grid-template-columns: 44px minmax(0, 1fr); } .forma-ic { width: 44px; height: 44px; } .forma-num { grid-column: 2; display: flex; gap: 10px; justify-items: start; } }
+@media (prefers-reduced-motion: reduce) { .forma, .forma:hover { transition: none; transform: none; } }
+
+/* exercícios das ideias, dentro da janela */
+.jn-ex { display: grid; gap: 6px; padding-top: 10px; border-top: 1px dashed var(--linha-forte); }
+.jn-ex .jn-rotulo { color: var(--texto-2); }
+.jn-placar { margin: 4px 0 0; font: 700 15px var(--f-ui); color: var(--certo); }
+.jn-placar:empty { display: none; }
+.jn-teste .exercicio { margin: 0; }
+.jn-fig .pl-figura, .jn-codigo.pl-figura { margin: 0; }
+
+/* capa da matéria */
+.capa { gap: 16px; }
+.capa-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 16px; align-items: center; }
+.capa-txt { display: grid; gap: 10px; min-width: 0; }
+.capa-pill { justify-self: start; margin: 0; padding: 5px 12px; border: 1px solid var(--linha-forte); border-radius: 20px; background: var(--folha); font: 700 11px/1.2 var(--f-codigo); letter-spacing: 0.1em; text-transform: uppercase; color: var(--destaque, var(--tinta)); }
+.capa-etapa { margin: 0; font: 700 12px/1.3 var(--f-codigo); letter-spacing: 0.1em; text-transform: uppercase; color: var(--destaque, var(--tinta)); }
+.capa-frase { margin: 0; font-size: 17px; line-height: 1.5; color: var(--texto); max-width: 52ch; }
+.capa-motivo { min-width: 0; }
+.capa-motivo .motivo { width: 100%; height: auto; display: block; }
+.motivo .m-l { stroke: var(--linha-hover); } .motivo .m-a { stroke: var(--destaque, var(--tinta)); } .motivo .m-c { stroke: var(--linha-forte); stroke-dasharray: 3 4; }
+.motivo .m-t { fill: var(--texto-2); stroke: none; font: 600 11px var(--f-codigo); } .motivo .m-ta { fill: var(--destaque, var(--tinta)); }
+.capa-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; padding: 14px 16px; border: 1px solid var(--linha-forte); border-radius: 14px; background: var(--folha); }
+.capa-anel { display: flex; align-items: center; gap: 10px; }
+.capa-anel svg { width: 56px; height: 56px; transform: rotate(-90deg); }
+.anel-fundo { fill: none; stroke: var(--linha); stroke-width: 7; }
+.anel-cheio { fill: none; stroke: var(--destaque, var(--tinta)); stroke-width: 7; stroke-linecap: round; }
+.capa-anel span, .capa-dado { display: grid; line-height: 1.2; }
+.capa-anel b, .capa-dado b { font: 800 20px/1.1 var(--f-titulo); }
+.capa-anel small, .capa-dado small { font-size: 12.5px; color: var(--texto-2); }
+.capa-rodape .mat-cta { margin-left: auto; }
+.capa-trabalho { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); }
+.capa-trabalho summary { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; cursor: pointer; font-weight: 700; list-style: none; }
+.capa-trabalho summary::-webkit-details-marker { display: none; }
+.capa-trabalho summary::after { content: "+"; margin-left: auto; font: 700 18px var(--f-codigo); color: var(--texto-2); }
+.capa-trabalho[open] summary::after { content: "−"; }
+.capa-trabalho p { margin: 0; padding: 0 14px 14px; line-height: 1.55; }
+@media (max-width: 720px) {
+  .capa-grade { grid-template-columns: 1fr; }
+  .capa-motivo { order: -1; max-width: 240px; justify-self: end; margin-bottom: -40px; opacity: 0.8; }
+  .capa-rodape .mat-cta { margin-left: 0; width: 100%; }
+}
+/* etiquetas dos módulos */
+.etqs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.etq { padding: 2px 8px; }
+.etq .ic { width: 12px; height: 12px; }
+.etq-aula { color: var(--r-e); border-color: color-mix(in srgb, var(--r-e) 40%, var(--linha)); }
+.etq-ex { color: var(--r-s); border-color: color-mix(in srgb, var(--r-s) 40%, var(--linha)); }
+.etq-lab { color: var(--r-p); border-color: color-mix(in srgb, var(--r-p) 40%, var(--linha)); }
+.mod-corpo .formas { margin: 14px 0 4px; }
+.conceitos-ol small { display: block; color: var(--texto-2); font-size: 13px; }

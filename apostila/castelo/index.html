@@ -29,7 +29,7 @@
   <nav class="lab-trilha" aria-label="Navegação">
     <a href="../index.html#mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Mapa de formação</a>
     <a href="#">Centro de Dados</a>
-    <button type="button" class="lab-tema" id="lab-tema" aria-pressed="false">Tema impresso</button>
+    <button type="button" class="lab-tema" id="lab-tema">Tema</button>
   </nav>
   <div class="lab-cab">
     <div class="lab-cab-txt">
@@ -69,11 +69,13 @@
 <script src="verifica.js" charset="utf-8"></script>
 <script src="castelo.js" charset="utf-8"></script>
 <script>
-  // alterna entre o tema padrão (grafite) e o impresso; a escolha vale para toda a apostila
+  // troca para o próximo tema da lista (Planta, Caderno, Terminal, Grafite, Impresso); a escolha vale para toda a apostila
   (function () {
     const b = document.getElementById("lab-tema");
-    const pintar = () => { const imp = window.Tema && window.Tema.atual() === "impresso"; b.setAttribute("aria-pressed", String(imp)); };
-    b.addEventListener("click", () => { if (window.Tema) window.Tema.definir(window.Tema.atual() === "impresso" ? "grafite" : "impresso"); pintar(); });
+    if (!window.Tema) { b.hidden = true; return; }
+    const L = window.Tema.LISTA;
+    const pintar = () => { const t = L.find((x) => x.id === window.Tema.atual()) || L[0]; b.textContent = "Tema: " + t.nome; b.setAttribute("aria-label", "Tema: " + t.nome + ". Toque para trocar"); };
+    b.addEventListener("click", () => { const k = L.findIndex((x) => x.id === window.Tema.atual()); window.Tema.definir(L[(k + 1) % L.length].id); pintar(); });
     pintar();
   })();
 </script>
