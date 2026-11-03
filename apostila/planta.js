@@ -44,7 +44,7 @@
   function codigo(f, k) {
     const linhaAcesa = k >= 0 && f.passos && f.passos[k] ? f.passos[k].l : -1;
     const ate = k >= 0 && f.passos && f.passos[k] && f.passos[k].saida != null ? f.passos[k].saida : null;
-    return `<div class="pl-codigo"><pre><code>${f.linhas.map((l, i) => `<span class="pl-linha${(Array.isArray(linhaAcesa) ? linhaAcesa.includes(i) : i === linhaAcesa) ? " acesa" : ""}"><i>${i + 1}</i>${esc(l) || " "}</span>`).join("")}</code></pre>${f.saida != null || ate != null ? `<div class="pl-saida"><small>saída</small><pre>${esc(ate != null ? ate : f.saida)}</pre></div>` : ""}</div>`;
+    return `<div class="pl-codigo"><pre tabindex="0" aria-label="Código em Python"><code>${f.linhas.map((l, i) => `<span class="pl-linha${(Array.isArray(linhaAcesa) ? linhaAcesa.includes(i) : i === linhaAcesa) ? " acesa" : ""}"><i>${i + 1}</i>${esc(l) || " "}</span>`).join("")}</code></pre>${f.saida != null || ate != null ? `<div class="pl-saida"><small>saída</small><pre>${esc(ate != null ? ate : f.saida)}</pre></div>` : ""}</div>`;
   }
   function tabela(f, k) {
     const acesa = k >= 0 && f.passos && f.passos[k] ? f.passos[k].l : -1;
@@ -62,7 +62,7 @@
     return `<div class="pl-lista-rolagem"><ol class="pl-lista">${f.itens.map((v, i) => `<li class="${sel.includes(i) ? "acesa" : ""}"><span class="pl-item">${esc(v)}</span><small>${neg ? i - f.itens.length : i}</small></li>`).join("")}</ol></div>`;
   }
   function comparar(f) {
-    const lado = (x, cls, rot) => `<div class="pl-lado ${cls}"><small>${rot}</small><b>${esc(x.titulo || "")}</b>${x.codigo ? `<pre><code>${esc(x.codigo)}</code></pre>` : ""}${x.texto ? `<p>${esc(x.texto)}</p>` : ""}</div>`;
+    const lado = (x, cls, rot) => `<div class="pl-lado ${cls}"><small>${rot}</small><b>${esc(x.titulo || "")}</b>${x.codigo ? `<pre tabindex="0"><code>${esc(x.codigo)}</code></pre>` : ""}${x.texto ? `<p>${esc(x.texto)}</p>` : ""}</div>`;
     return `<div class="pl-comparar">${lado(f.errado, "pl-x", "assim, não")}${lado(f.certo, "pl-s", "assim, sim")}</div>`;
   }
   const MODELOS = { fluxo, decisao, codigo, tabela, memoria, lista, comparar };

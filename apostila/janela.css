@@ -131,3 +131,6 @@ dialog.jn::backdrop { background: rgb(2 6 13 / 0.7); }
 .pl-glifo { width: 100%; height: 52px; display: block; }
 .pl-glifo .g-e { stroke: var(--r-e); } .pl-glifo .g-p { stroke: var(--r-p); } .pl-glifo .g-s { stroke: var(--r-s); } .pl-glifo .g-erro { stroke: var(--r-x); }
 .pl-glifo .g-l { stroke: var(--linha-hover); } .pl-glifo .g-acesa { fill: var(--r-p-f); stroke: var(--r-p); } .pl-glifo .g-acesa-b { stroke: var(--r-p); fill: var(--r-p-f); }
+/* o desenho nunca passa da largura da tela: código longo rola dentro do próprio quadro */
+.pl-figura { grid-template-columns: minmax(0, 1fr); max-width: 100%; }
+.pl-figura > *, .pl-codigo, .pl-palco { min-width: 0; }
