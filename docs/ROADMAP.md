@@ -114,6 +114,8 @@ Redesenho visual (27/10/2026, pedido do Kaio: "bagunçado e com poucos recursos 
 
 Etapas e pesos (27/10/2026, pedido do Kaio): as etapas da cascata ganharam um mapa numerado ("Etapa N de T") e nada avança sozinho (animações, conceito concluído e vitória esperam o clique); o saldo Cebraspe saiu das lições; cada matéria ganhou um peso na formação de cientista de dados (16 somam 100%, com o porquê e a fonte), dividido entre os módulos, e a apostila mostra quanto da formação já foi feito no mapa, no Início, na matéria, em cada módulo e na vitória.
 
+Aula linear (03/11/2026, pedido do Kaio: "bagunçado demais", "siga uma linearidade, não confunda os espaços"; proposta aprovada): um caminho só. Mapa em 6 grupos suspensos (o diagrama num botão), matéria com os módulos em menus suspensos e um botão Continuar, e a aula de cada módulo, um conceito por vez em Entenda, Pratique (um exercício por vez) e Avance, com o menu dos conceitos no alto e uma ação embaixo, terminando na pergunta final que domina o módulo. Os módulos sem lição ilustrada ganharam a aula montada pelos dados (`licoes/AULA.html`): os de LOG e PY com desenho, código e teste; os das outras matérias, com o glossário e o aviso de aula em produção, até o conteúdo de cada uma ser escrito. Sai o estudo em 5 passos. axe sem violações em três temas, 390 e 1280 px.
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---

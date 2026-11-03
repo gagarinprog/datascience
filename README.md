@@ -10,7 +10,7 @@ O lugar principal é o site: https://gagarinprog.github.io/datascience/
 
 1. **Abra no celular ou no computador e instale.** No Chrome do celular, menu e "Adicionar à tela inicial"; no computador, o ícone de instalar na barra de endereço. Para estudar sem internet, ainda com Wi-Fi, abra o menu do guia (o rosto no canto de cima) e toque em **Baixar o curso inteiro** (cerca de 50 MB, com o Python e o PostgreSQL). Quando os quatro itens ficarem prontos, o curso todo roda sem internet.
 2. **Primeira visita:** o Início apresenta o programa e o botão abre o tutorial (sete paradas pela tela real). Escolha o guia e o traço no topo.
-3. **Comece por "Comece por aqui: a lista de aprovados"**, no cartão do mapa. Depois siga a ordem do mapa: Lógica (LOG), Python (PY), Banco de dados (BD) e assim por diante. Cada matéria tem a trilha de como funciona, os módulos em estudo de 5 passos e, quando existe, a lição ilustrada.
+3. **Comece por "Comece por aqui: a lista de aprovados"**, em "Outras formas de estudar" no mapa. Depois aperte Continuar e siga a ordem: Lógica (LOG), Python (PY), Banco de dados (BD) e assim por diante. Cada módulo é uma aula, um conceito por vez em três etapas (Entenda, Pratique e Avance), e termina numa pergunta final que, acertada, domina o módulo.
 4. **No dia a dia:** abra o Início e toque em **Continuar de onde parou**. Se o Início avisar que há revisão para hoje, faça a revisão primeiro (5 a 10 minutos).
 5. **Centro de Dados:** quando terminar o começo de BD, abra o cartão do Centro de Dados no mapa. Lá se monta e administra um PostgreSQL de verdade, zona por zona.
 6. **Revisão de conceitos simples:** o cartão de mesmo nome no mapa guarda os exercícios de contar e calcular com a tabela, para aquecer.
