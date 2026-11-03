@@ -144,3 +144,81 @@
 
 /* o botão de seguir para o próximo conceito ganha destaque quando o conceito termina (sem avanço automático) */
 .secao [data-proximo].chama { box-shadow: 0 0 0 3px color-mix(in srgb, var(--tinta) 40%, transparent); }
+
+/* ---------- aula linear (03/11/2026): um conceito por vez, em Entenda, Pratique e Avance ---------- */
+body.aula-modo { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.aula-modo .casca { display: block; }
+.aula-modo .lateral, .aula-modo #passos-licao, .aula-modo .secao > .rotulo, .aula-modo .nav-licao { display: none !important; }
+.aula-modo .conteudo { padding: 0; }
+.aula-modo .coluna { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+.aula-modo .secao { border: 0; padding: 8px 0 24px; margin: 0; background: none; box-shadow: none; }
+.aula-modo .secao > h2 { font-family: var(--f-titulo); font-size: clamp(26px, 6vw, 34px); line-height: 1.12; letter-spacing: -0.02em; margin: 18px 0 14px; }
+.etapa-painel { display: grid; gap: 16px; }
+.etapa-painel[hidden], .ex-passo[hidden] { display: none; }
+.etapa-painel > * { margin: 0; }
+.ex-passo { display: grid; gap: 14px; }
+.ex-conta { font: 700 12px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); margin: 0; }
+.ex-passo > h3 { margin: 0; font-size: 19px; }
+
+/* barra de cima: sair, o conceito (menu suspenso) e as três etapas */
+.aula-topo { position: sticky; top: 0; z-index: 20; margin: 0 -16px; padding: 12px 16px 10px; background: color-mix(in srgb, var(--fundo) 94%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); }
+.aula-linha { display: flex; gap: 10px; align-items: flex-start; }
+.aula-sair { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: 10px; color: var(--texto-2); }
+.aula-sair:hover { color: var(--texto); border-color: var(--linha-hover); }
+.aula-sair svg, .aula-menu > summary svg, .aula-voltar svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.aula-menu { position: relative; flex: 1; min-width: 0; }
+.aula-menu > summary { list-style: none; min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border: 1px solid var(--linha); border-radius: 10px; cursor: pointer; background: var(--folha); }
+.aula-menu > summary::-webkit-details-marker { display: none; }
+.aula-menu[open] > summary { border-color: var(--tinta); }
+.aula-menu[open] > summary svg { transform: rotate(180deg); }
+.aula-nome { flex: 1; min-width: 0; display: grid; }
+.aula-nome b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aula-nome small { font-size: 12.5px; color: var(--texto-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aula-menu-corpo { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--folha); border: 1px solid var(--linha-forte, var(--linha)); border-radius: 12px; padding: 10px; box-shadow: var(--sombra); max-height: min(70vh, 520px); overflow: auto; display: grid; gap: 6px; }
+.aula-menu-rot { margin: 2px 6px 4px; font: 700 12px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
+.aula-conceitos { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.aula-conceitos button { width: 100%; min-height: 44px; display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; text-align: left; padding: 6px 8px; border: 0; border-radius: 8px; background: none; color: var(--texto); font: 15px var(--f-ui); cursor: pointer; }
+.aula-conceitos button:hover:not(:disabled) { background: var(--folha-2); }
+.aula-conceitos button:disabled { color: var(--texto-2); cursor: not-allowed; }
+.aula-conceitos i { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--linha); display: grid; place-items: center; font: 700 11px var(--f-codigo); font-style: normal; color: var(--texto-2); }
+.aula-conceitos .feito i { background: var(--certo); border-color: var(--certo); }
+.aula-conceitos .atual i { border-color: var(--tinta); color: var(--tinta); }
+.aula-conceitos .atual { background: var(--tinta-suave); }
+.aula-conceitos small { font-size: 12px; color: var(--texto-2); }
+.aula-sobre { border-top: 1px solid var(--linha); padding-top: 6px; }
+.aula-sobre summary { min-height: 44px; display: flex; align-items: center; padding: 0 8px; cursor: pointer; font-size: 14px; color: var(--texto-2); }
+.aula-sobre > div { padding: 0 8px 8px; display: grid; gap: 10px; font-size: 14.5px; }
+.aula-etapas { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.aula-etapas button { width: 100%; min-height: 44px; display: grid; gap: 6px; align-content: center; padding: 4px 0; border: 0; background: none; color: var(--texto-2); font: 700 12px var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; text-align: left; cursor: pointer; }
+.aula-etapas button:disabled { cursor: default; opacity: 0.75; }
+.aula-etapas i { display: block; height: 4px; border-radius: 2px; background: var(--linha); }
+.aula-etapas .atual { color: var(--tinta); }
+.aula-etapas .atual i { background: var(--tinta); }
+.aula-etapas .feita { color: var(--certo); }
+.aula-etapas .feita i { background: var(--certo); }
+
+/* barra de baixo: voltar e uma ação só */
+.aula-pe { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--fundo) 96%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--linha); }
+.aula-pe > div { max-width: 760px; margin: 0 auto; display: grid; grid-template-columns: 52px 1fr; gap: 10px; align-items: center; }
+.aula-voltar { width: 52px; height: 52px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: 12px; background: none; color: var(--texto); cursor: pointer; }
+.aula-voltar:disabled { opacity: 0.4; cursor: default; }
+.aula-ir { --p: 0; position: relative; overflow: hidden; min-height: 52px; border: 0; border-radius: 12px; background: var(--tinta); color: var(--sobre-tinta); font: 700 14px var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.aula-ir::after { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; width: calc(var(--p) * 100%); background: color-mix(in srgb, var(--sobre-tinta) 45%, transparent); }
+.aula-ir:hover:not(:disabled) { background: var(--tinta-hover); }
+.aula-ir:disabled { background: var(--folha-2); color: var(--texto-2); cursor: not-allowed; }
+.aula-aviso { grid-column: 1 / -1; font-size: 13px; color: var(--texto-2); text-align: center; min-height: 0; }
+.aula-aviso:empty { display: none; }
+.aula-sair:focus-visible, .aula-menu > summary:focus-visible, .aula-etapas button:focus-visible, .aula-conceitos button:focus-visible, .aula-voltar:focus-visible, .aula-ir:focus-visible { outline: 3px solid var(--destaque, var(--tinta)); outline-offset: 2px; }
+
+/* Avance: o selo, o resumo e o que vem a seguir */
+.etapa-avance { text-align: center; }
+.avance-selo { width: 84px; height: 84px; margin: 10px auto 0; border-radius: 50%; border: 2px solid var(--certo); display: grid; place-items: center; color: var(--certo); font: 700 26px var(--f-titulo); }
+.avance-tit { margin: 0; font-size: 22px; }
+.etapa-avance > .resumo, .etapa-avance > .explique, .a-seguir { text-align: left; }
+.a-seguir { display: grid; gap: 4px; padding: 16px; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); }
+.a-seguir span { font: 700 12px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
+.a-seguir b { font-size: 17px; }
+.avance-rev { font-size: 14px; color: var(--texto-2); }
+/* grade de uma coluna que nunca cresce além da tela (linhas de código longas rolam dentro do próprio quadro) */
+.etapa-painel, .ex-passo { grid-template-columns: minmax(0, 1fr); }
+.etapa-painel > *, .ex-passo > * { min-width: 0; }

@@ -613,10 +613,9 @@
     const secoes = [...document.querySelectorAll(".secao")];
     const nomes = cfg.nomes;
     secoes.forEach((sec, i) => {
-      const ctx = { licao: licaoId, titulo, url, sec: sec.id, conceito: nomes[i] || sec.id, resumo: resumoDe(sec), aoResolver: (ex, r) => { Revisao.daLicao(ctx, ex, r); marcarNaCascata(ex, r); depois(ex, r); } };
+      const ctx = { licao: licaoId, titulo, url, sec: sec.id, conceito: nomes[i] || sec.id, resumo: resumoDe(sec), aoResolver: (ex, r) => { Revisao.daLicao(ctx, ex, r); if (aula.depois) aula.depois(ex, r); } };
       sec.querySelectorAll(".exercicio").forEach((ex) => montarExercicio(ex, ctx));
       explicar(sec, ctx);
-      sec._cx = cascataSecao(sec);
     });
 
     // marcar como estudado
@@ -632,81 +631,187 @@
     }));
     pintar();
 
-    const links = [...document.querySelectorAll("[data-conceito]")];
-    if ("IntersectionObserver" in window) {
-      const obs = new IntersectionObserver((es) => es.forEach((e) => {
-        if (e.isIntersecting) links.forEach((a) => a.classList.toggle("ativo", a.getAttribute("href") === "#" + e.target.id));
-      }), { rootMargin: "-20% 0px -70% 0px" });
-      secoes.forEach((s) => obs.observe(s));
-    }
+    aula(cfg, secoes, licaoId, () => feitos, (id) => { if (!feitos.includes(id)) { feitos.push(id); ls.gravar(cfg.chave, feitos); pintar(); } });
+  }
 
-    // passo a passo: um conceito por vez
+  // ---------- a aula linear (pedido do Kaio em 03/11/2026: "siga uma linearidade, sem perder o fio") ----------
+  // Um conceito por vez, sempre em três etapas: Entenda (aquecimento, explicação, animação, exemplo), Pratique (um
+  // exercício por vez) e Avance (o resumo e o próximo conceito). No alto, o menu suspenso dos conceitos; embaixo,
+  // uma ação só. A posição fica em dominio:aula:v1 (conceito e etapa de cada lição).
+  const CHAVE_POS = "dominio:aula:v1";
+  const PRATICA = /^(Pratique|Faça no Python|Para fechar)/i;
+  const ETAPAS = ["Entenda", "Pratique", "Avance"];
+  const resolvido = (ex) => ex.dataset.estado === "resolvido";
+  function etapasDe(sec) {
+    const h2 = sec.querySelector(":scope > h2");
+    const todos = [...sec.children], depoisH2 = h2 ? todos.indexOf(h2) + 1 : 0;
+    const filhos = todos.slice(depoisH2).filter((el) => !(el.tagName === "P" && el.classList.contains("rotulo")));
+    const fecho = filhos.filter((el) => el.matches(".resumo, .explique, .explicar, [data-marcar]"));
+    const resto = filhos.filter((el) => !fecho.includes(el));
+    let corte = resto.findIndex((el) => el.tagName === "H3" && PRATICA.test(el.textContent.trim()));
+    if (corte < 0) corte = resto.findIndex((el) => el.matches(".exercicio:not(.desafio)"));
+    if (corte < 0) corte = resto.length;
+    const entenda = resto.slice(0, corte), pratica = resto.slice(corte);
+    // a prática vira passos: cada exercício leva junto o título e o texto que vêm antes dele
+    const passos = [];
+    let junto = [];
+    pratica.forEach((el) => { junto.push(el); if (el.matches(".exercicio")) { passos.push(junto); junto = []; } });
+    if (junto.length) { if (passos.length) passos[passos.length - 1].push(...junto); else entenda.push(...junto); }
+    return { h2, entenda, passos, fecho };
+  }
+  function aula(cfg, secoes, licaoId, lerFeitos, marcarFeito) {
+    const nomes = cfg.nomes;
+    const modulo = /^[A-Z]+\.\d\d$/.test(licaoId);
+    const raiz = cfg.raiz || "../index.html";
+    document.body.classList.add("aula-modo");
     const verTudo = document.getElementById("ver-tudo");
-    const barra = document.getElementById("passos-licao");
-    let atual = Math.max(0, secoes.findIndex((s) => "#" + s.id === location.hash));
-    const feito = (ex) => ex.dataset.estado === "resolvido";
-    const completo = (i) => [...secoes[i].querySelectorAll(".exercicio")].every(feito);
-    secoes.forEach((s, i) => {
-      s.insertAdjacentHTML("beforeend", `<div class="nav-licao"><button type="button" class="botao" data-anterior${i === 0 ? " disabled" : ""}>Conceito anterior</button><span class="estado-licao" aria-live="polite"></span>${i < secoes.length - 1 ? '<button type="button" class="botao primario" data-proximo>Próximo: ' + esc(nomes[i + 1] || "") + "</button>" : `<a class="botao primario" href="../index.html#trilha-${esc(cfg.trilha || "LOG")}">Voltar para a trilha</a>`}</div>`);
-      s.querySelector("[data-anterior]").addEventListener("click", () => ir(i - 1));
-      const prox = s.querySelector("[data-proximo]");
-      if (prox) {
-        prox.addEventListener("click", () => ir(i + 1));
-        prox.classList.add("b-prog"); prox.style.setProperty("--p", (i + 1) / secoes.length); prox.dataset.passo = `conceito ${i + 1} de ${secoes.length}`;
-      }
-    });
-    function atualizar() {
-      secoes.forEach((s, i) => {
-        const ok = completo(i);
-        const prox = s.querySelector("[data-proximo]");
-        if (prox) prox.disabled = !ok && !verTudo.checked;
-        const est = s.querySelector(".estado-licao");
-        const exs = [...s.querySelectorAll(".exercicio")];
-        const prontos = exs.filter(feito).length;
-        if (!est.dataset.fixo) est.textContent = exs.length ? (ok ? "Exercícios concluídos" : `Exercícios: ${prontos} de ${exs.length}`) : "";
-        est.classList.toggle("ok", ok && exs.length > 0);
+    if (verTudo) verTudo.checked = false;
+    const cab = document.querySelector(".coluna > header.bloco");
+    const marca = document.querySelector(".lateral .marca");
+    const modNome = cfg.modulo || (cab && cab.querySelector("h1") ? cab.querySelector("h1").textContent : document.title);
+    // cada seção vira três painéis
+    const est = secoes.map((sec) => {
+      const e = etapasDe(sec);
+      const painel = (cls) => { const d = document.createElement("div"); d.className = "etapa-painel " + cls; return d; };
+      const pE = painel("etapa-entenda"), pP = painel("etapa-pratique"), pA = painel("etapa-avance");
+      e.entenda.forEach((el) => pE.appendChild(el));
+      const passos = e.passos.map((nos, k) => {
+        const d = document.createElement("div"); d.className = "ex-passo";
+        d.innerHTML = `<p class="ex-conta">Exercício ${k + 1} de ${e.passos.length}</p>`;
+        nos.forEach((el) => { if (el.tagName === "H3" && /^pratique$/i.test(el.textContent.trim())) el.remove(); else d.appendChild(el); });
+        pP.appendChild(d);
+        return d;
       });
-      if (!barra) return;
-      barra.innerHTML = nomes.map((n, i) => `<button type="button" data-passo="${i}" aria-label="Conceito ${i + 1}: ${esc(n)}" class="${i < atual ? "feito" : ""}${i === atual ? " atual" : ""}"${i > atual && !secoes.slice(0, i).every((_, k) => completo(k)) && !verTudo.checked ? " disabled" : ""}><i></i><span>${i + 1}. ${esc(n)}</span></button>`).join("");
-      barra.querySelectorAll("[data-passo]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.passo))));
+      const resumo = e.fecho.find((el) => el.matches(".resumo"));
+      if (resumo) resumo.classList.add("leve");
+      e.fecho.forEach((el) => pA.appendChild(el));
+      const mk = pA.querySelector("[data-marcar]"); if (mk) mk.hidden = true;
+      const i = secoes.indexOf(sec);
+      pA.insertAdjacentHTML("afterbegin", `<div class="avance-selo" aria-hidden="true"></div><h3 class="avance-tit">Conceito feito</h3>`);
+      pA.insertAdjacentHTML("beforeend", i < secoes.length - 1
+        ? `<div class="a-seguir"><span>A seguir · conceito ${i + 2} de ${secoes.length}</span><b>${esc(nomes[i + 1] || "")}</b></div>`
+        : `<div class="a-seguir"><span>${modulo ? "Falta uma pergunta" : "Fim da lição"}</span><b>${modulo ? "A pergunta final do módulo" : "Volte ao mapa para seguir"}</b></div>`);
+      pA.insertAdjacentHTML("beforeend", `<p class="avance-rev">O que você errou volta na revisão, em 1, 3 e 7 dias.</p>`);
+      (e.h2 || sec.firstChild).after(pE, pP, pA);
+      return { sec, pE, pP, pA, passos, exE: [...pE.querySelectorAll(".exercicio")] };
+    });
+    // barra de cima: sair, o menu dos conceitos e as três etapas
+    const sigla = cfg.trilha || "LOG";
+    const topo = document.createElement("header");
+    topo.className = "aula-topo";
+    topo.innerHTML = `<div class="aula-linha">
+        <a class="aula-sair" href="${raiz}#trilha-${esc(sigla)}" aria-label="Sair da aula e voltar para a matéria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></a>
+        <details class="aula-menu"><summary><span class="aula-nome"><b></b><small></small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="aula-menu-corpo"><p class="aula-menu-rot">${esc(modNome)}</p><ol class="aula-conceitos"></ol>${cab ? `<details class="aula-sobre"><summary>Sobre este módulo</summary><div></div></details>` : ""}</div>
+        </details>
+      </div>
+      <ol class="aula-etapas" aria-label="Etapas do conceito">${ETAPAS.map((n, k) => `<li><button type="button" data-etapa="${k}"><i></i><span>${k + 1} ${n}</span></button></li>`).join("")}</ol>`;
+    const col = document.querySelector(".coluna") || document.body;
+    col.prepend(topo);
+    if (cab) { const alvo = topo.querySelector(".aula-sobre div"); [...cab.children].forEach((el) => { if (!el.matches("h1, .campo.marcar")) alvo.appendChild(el); }); cab.hidden = true; }
+    if (marca) marca.closest(".lateral").hidden = true;
+    const barraVelha = document.getElementById("passos-licao"); if (barraVelha) barraVelha.hidden = true;
+    const pe = document.createElement("footer");
+    pe.className = "aula-pe";
+    pe.innerHTML = `<div><button type="button" class="aula-voltar" aria-label="Voltar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" class="aula-ir"></button><span class="aula-aviso" aria-live="polite"></span></div>`;
+    document.body.appendChild(pe);
+    const ir = pe.querySelector(".aula-ir"), voltar = pe.querySelector(".aula-voltar"), aviso = pe.querySelector(".aula-aviso");
+    const menu = topo.querySelector(".aula-menu");
+
+    const todas = ls.ler(CHAVE_POS, {});
+    const salvo = todas[licaoId] || {};
+    let pos = { c: 0, e: 0, x: 0, max: salvo.max || 0 };
+    const pedido = secoes.findIndex((s) => "#" + s.id === location.hash || location.hash === "#" + licaoId + "-" + s.id);
+    if (pedido >= 0) pos.c = pedido;
+    else if (cfg.inicio != null) pos.c = cfg.inicio;
+    else if (salvo.c != null) pos = Object.assign(pos, { c: salvo.c, e: salvo.e || 0, x: salvo.x || 0 });
+    pos.c = Math.max(0, Math.min(secoes.length - 1, pos.c));
+    const guardar = () => { const t = ls.ler(CHAVE_POS, {}); t[licaoId] = { c: pos.c, e: pos.e, x: pos.x, max: pos.max, em: hoje() }; ls.gravar(CHAVE_POS, t); };
+    const prontoE = (k) => est[k].exE.every(resolvido);
+    const prontoP = (k, x) => !est[k].passos[x] || [...est[k].passos[x].querySelectorAll(".exercicio")].every(resolvido);
+
+    function pintarMenu() {
+      const feitos = lerFeitos();
+      topo.querySelector(".aula-nome b").textContent = nomes[pos.c] || "";
+      topo.querySelector(".aula-nome small").textContent = `${modNome} · conceito ${pos.c + 1} de ${secoes.length}`;
+      const ol = topo.querySelector(".aula-conceitos");
+      ol.innerHTML = nomes.slice(0, secoes.length).map((n, k) => {
+        const feito = feitos.includes(secoes[k].id), aberto = k <= pos.max || feito;
+        return `<li><button type="button" data-ir-c="${k}" class="${feito ? "feito" : ""}${k === pos.c ? " atual" : ""}"${aberto ? "" : " disabled"} aria-current="${k === pos.c ? "step" : "false"}"><i aria-hidden="true">${feito ? "" : k + 1}</i><span>${esc(n)}</span><small>${feito ? "feito" : k === pos.c ? "agora" : aberto ? "" : "depois"}</small></button></li>`;
+      }).join("");
+      ol.querySelectorAll("[data-ir-c]").forEach((b) => b.addEventListener("click", () => { menu.open = false; mostrar({ c: Number(b.dataset.irC), e: 0, x: 0 }); }));
+      topo.querySelectorAll("[data-etapa]").forEach((b) => {
+        const k = Number(b.dataset.etapa);
+        const alcancada = k < pos.e || (k === 1 && prontoE(pos.c) && est[pos.c].passos.length) || (k === 2 && est[pos.c].passos.every((_, x) => prontoP(pos.c, x)) && prontoE(pos.c));
+        b.className = k < pos.e ? "feita" : k === pos.e ? "atual" : "";
+        b.disabled = k !== pos.e && !alcancada;
+        b.setAttribute("aria-current", k === pos.e ? "step" : "false");
+        if (k === 1 && !est[pos.c].passos.length) b.disabled = true;
+      });
     }
-    function ir(i, rolar = true) {
-      const fazer = () => {
-        atual = Math.max(0, Math.min(secoes.length - 1, i));
-        secoes.forEach((s, k) => { s.hidden = !verTudo.checked && k !== atual; });
-        secoes.forEach((s) => { delete s.querySelector(".estado-licao").dataset.fixo; });
-        atualizar();
-        if (rolar && secoes[atual].scrollIntoView) secoes[atual].scrollIntoView({ block: "start" });
-      };
-      if (document.startViewTransition && !reduz() && !verTudo.checked) {
-        // se o navegador adiar a transição (troca vinda de temporizador), a tela troca sem animação
-        let feito = false;
-        const uma = () => { if (feito) return; feito = true; fazer(); };
-        const t = document.startViewTransition(uma);
-        [t.ready, t.finished, t.updateCallbackDone].forEach((pr) => pr && pr.catch(() => {}));
-        setTimeout(() => { if (!feito) { if (t.skipTransition) t.skipTransition(); uma(); } }, 350);
-      } else fazer();
+    function pintarPe() {
+      const E = est[pos.c];
+      let texto = "", pode = true, msg = "";
+      voltar.disabled = pos.c === 0 && pos.e === 0;
+      if (pos.e === 0) {
+        pode = prontoE(pos.c);
+        texto = E.passos.length ? "Ir para os exercícios" : "Concluir o conceito";
+        if (!pode) msg = E.exE.length > 1 ? "Responda as perguntas desta etapa para seguir." : "Responda a pergunta desta etapa para seguir.";
+      } else if (pos.e === 1) {
+        pode = prontoP(pos.c, pos.x);
+        texto = pos.x < E.passos.length - 1 ? "Próximo exercício" : "Concluir o conceito";
+        if (!pode) msg = "Resolva o exercício para seguir.";
+      } else {
+        texto = pos.c < secoes.length - 1 ? "Próximo conceito" : modulo ? "Ir para a pergunta final" : "Voltar ao mapa";
+      }
+      ir.textContent = texto;
+      ir.disabled = !pode;
+      aviso.textContent = msg;
+      // a barra do botão mostra o quanto da aula já foi
+      const total = secoes.length * 3, feito = pos.c * 3 + pos.e + (pos.e === 1 && E.passos.length ? pos.x / E.passos.length : 0);
+      ir.style.setProperty("--p", Math.min(1, (feito + 1) / total));
     }
-    let espera = null;
-    function depois(ex, resultado) {
-      setTimeout(() => {
-        atualizar();
-        const i = secoes.indexOf(ex.closest(".secao"));
-        const cx = secoes[i] && secoes[i]._cx, fecho = cx && cx.itens.find((x) => x.tipo === "fecho" && !x.feito);
-        if (fecho && i === atual && completo(i)) { const est = secoes[i].querySelector(".estado-licao"); est.textContent = "Exercícios concluídos. Falta fechar o conceito, na última etapa."; est.dataset.fixo = "1"; return; }
-        if (!verTudo.checked && i === atual && completo(i) && resultado !== "revelada" && i < secoes.length - 1) {
-          const est = secoes[i].querySelector(".estado-licao");
-          est.textContent = "Tudo certo neste conceito. Quando quiser, siga para o próximo.";
-          est.dataset.fixo = "1";
-          const prox = secoes[i].querySelector("[data-proximo]");
-          if (prox) prox.classList.add("chama");
-        }
-      }, 0);
+    function mostrar(novo, rolar = true) {
+      Object.assign(pos, novo);
+      pos.max = Math.max(pos.max, pos.c);
+      const E = est[pos.c];
+      if (pos.e === 1 && !E.passos.length) pos.e = 2;
+      pos.x = Math.max(0, Math.min(E.passos.length - 1, pos.x));
+      secoes.forEach((s, k) => { s.hidden = k !== pos.c; });
+      E.pE.hidden = pos.e !== 0; E.pP.hidden = pos.e !== 1; E.pA.hidden = pos.e !== 2;
+      E.passos.forEach((d, x) => { d.hidden = x !== pos.x; });
+      if (pos.e === 2) {
+        // chegar ao Avance marca o conceito como estudado
+        marcarFeito(E.sec.id);
+        const exs = [...E.sec.querySelectorAll(".exercicio")];
+        const certos = exs.filter((x) => x.dataset.resultado === "primeira" || x.dataset.resultado === "segunda").length;
+        E.pA.querySelector(".avance-selo").textContent = exs.length ? `${certos}/${exs.length}` : "ok";
+      }
+      guardar();
+      pintarMenu();
+      pintarPe();
+      if (rolar) window.scrollTo(0, 0);
     }
-    window.addEventListener("hashchange", () => { const k = secoes.findIndex((s) => "#" + s.id === location.hash); if (k >= 0) ir(k); });
-    verTudo.addEventListener("change", () => ir(atual));
-    // na primeira abertura a página fica no topo (Como usar e Voltar ao mapa); só rola quem volta no meio da lição
-    ir(atual, atual > 0 || secoes.some((s) => "#" + s.id === location.hash));
+    ir.addEventListener("click", () => {
+      const E = est[pos.c];
+      if (pos.e === 0) mostrar({ e: E.passos.length ? 1 : 2, x: 0 });
+      else if (pos.e === 1) { if (pos.x < E.passos.length - 1) mostrar({ x: pos.x + 1 }); else mostrar({ e: 2 }); }
+      else if (pos.c < secoes.length - 1) mostrar({ c: pos.c + 1, e: 0, x: 0 });
+      else location.href = modulo ? `${raiz}#fechar-${licaoId}` : `${raiz}#mapa`;
+    });
+    voltar.addEventListener("click", () => {
+      const E = est[pos.c];
+      if (pos.e === 2) mostrar(E.passos.length ? { e: 1, x: E.passos.length - 1 } : { e: 0 });
+      else if (pos.e === 1) mostrar(pos.x > 0 ? { x: pos.x - 1 } : { e: 0 });
+      else if (pos.c > 0) mostrar({ c: pos.c - 1, e: 2, x: 0 });
+    });
+    topo.querySelectorAll("[data-etapa]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.etapa); mostrar({ e: k, x: k === 1 ? 0 : pos.x }); }));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.open) { menu.open = false; menu.querySelector("summary").focus(); } });
+    document.addEventListener("click", (e) => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
+    window.addEventListener("hashchange", () => { const k = secoes.findIndex((s) => "#" + s.id === location.hash); if (k >= 0) mostrar({ c: k, e: 0, x: 0 }); });
+    // cada exercício resolvido reavalia o botão de baixo (e guarda o resultado para o selo do Avance)
+    aula.depois = (ex, r) => { ex.dataset.resultado = ex.dataset.resultado || r; setTimeout(() => { pintarPe(); pintarMenu(); }, 0); };
+    mostrar(pos, false);
   }
 
   window.Motor = { licao, montarExercicio, criar, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao };
