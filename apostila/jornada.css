@@ -1154,3 +1154,99 @@ button.capa-dado small { text-decoration: underline; text-underline-offset: 3px;
 .peso-barra em { background: var(--certo); }
 .peso-linha p { margin: 0; font-size: 14px; color: var(--texto-2); line-height: 1.45; }
 .peso-linha small { font: 12px var(--f-codigo); color: var(--texto-2); }
+
+/* ---------- reorganização linear (03/11/2026): menus suspensos, uma coisa de cada vez ---------- */
+.mapa-limpo { display: grid; gap: 16px; max-width: 760px; }
+.mapa-limpo h1 { margin: 0; }
+.mapa-formacao { display: grid; gap: 8px; padding: 14px 16px; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); }
+.mapa-formacao > div { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mapa-formacao b { font: 700 26px var(--f-titulo); }
+.mapa-formacao span { color: var(--texto-2); font-size: 14px; }
+.mapa-formacao .link-pesos { justify-self: start; }
+.grupos-mapa, .mapa-dobra, .modulos-sus { max-width: 760px; }
+.grupos-mapa { display: grid; gap: 8px; margin-top: 18px; }
+.grupo-mapa, .mod-sus, .parte-sus, .mapa-dobra { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); }
+.grupo-mapa[open] { border-color: color-mix(in srgb, var(--cv, var(--tinta)) 60%, var(--linha)); }
+.grupo-mapa > summary, .mod-sus > summary, .parte-sus > summary, .mapa-dobra > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 10px 14px; }
+.grupo-mapa > summary::-webkit-details-marker, .mod-sus > summary::-webkit-details-marker, .parte-sus > summary::-webkit-details-marker, .mapa-dobra > summary::-webkit-details-marker { display: none; }
+.grupo-mapa > summary:focus-visible, .mod-sus > summary:focus-visible, .parte-sus > summary:focus-visible, .mapa-dobra > summary:focus-visible { outline: 3px solid var(--destaque, var(--tinta)); outline-offset: 2px; border-radius: 12px; }
+.g-n { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 12px var(--f-codigo); border: 1.5px solid var(--cv, var(--linha)); color: var(--texto); }
+.g-txt, .mod-nome, .parte-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.g-txt b, .mod-nome b, .parte-txt b { font-size: 16px; }
+.g-txt small, .mod-nome small, .parte-txt small { font-size: 13px; color: var(--texto-2); }
+.g-barra { flex: none; width: 56px; height: 6px; border-radius: 3px; background: var(--linha); overflow: hidden; }
+.g-barra i { display: block; height: 100%; background: var(--cv, var(--tinta)); }
+.g-caret, .mod-caret { flex: none; width: 18px; height: 18px; color: var(--texto-2); transition: transform 160ms; }
+details[open] > summary .g-caret, details[open] > summary .mod-caret { transform: rotate(180deg); }
+.g-materias { list-style: none; margin: 0; padding: 0 10px 10px; display: grid; gap: 4px; }
+.g-mat { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 10px; border-radius: 10px; color: var(--texto); text-decoration: none; }
+.g-mat:hover { background: var(--folha-2); }
+.g-mat:focus-visible { outline: 3px solid var(--destaque, var(--tinta)); outline-offset: 1px; }
+.g-marca { flex: none; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font: 700 11px var(--f-codigo); background: color-mix(in srgb, var(--cv) 18%, transparent); color: var(--texto); }
+.g-mat.feita .g-marca { background: var(--certo); color: var(--sobre-tinta); }
+.g-mat.atual { background: color-mix(in srgb, var(--cv) 12%, var(--folha)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cv) 55%, transparent); }
+.g-nome { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.g-nome b { font-size: 15px; }
+.g-nome small { font-size: 12.5px; color: var(--texto-2); }
+.g-aqui { font: 700 11px var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta); }
+.g-seta { width: 16px; height: 16px; color: var(--texto-2); flex: none; }
+.mapa-dobra { margin-top: 10px; }
+.mapa-dobra > summary { font-weight: 700; font-size: 15px; color: var(--texto-2); }
+.mapa-dobra > summary .ic { width: 20px; height: 20px; }
+.mapa-dobra-corpo { padding: 0 14px 14px; display: grid; gap: 10px; }
+.mapa-diagrama .metro-bloco { padding: 0 12px 14px; margin: 0; }
+.mapa-dobra + .mapa-dobra { margin-top: 8px; }
+
+/* matéria: cabeçalho curto, uma ação, o resto em "Mais sobre a matéria" */
+.mat-topo { display: grid; gap: 12px; max-width: 760px; padding-top: 6px; }
+.mat-topo h1 { margin: 0; font-family: var(--f-titulo); font-size: clamp(28px, 6.5vw, 40px); line-height: 1.08; letter-spacing: -0.02em; }
+.mat-topo h1 small { display: block; margin-top: 4px; font: 500 15px var(--f-ui); color: var(--texto-2); letter-spacing: 0; }
+.mat-topo .eyebrow { margin: 0; }
+.mat-prog { display: grid; gap: 6px; }
+.mat-prog small { color: var(--texto-2); font-size: 13.5px; }
+.mat-continuar { justify-self: stretch; }
+.mat-mais { margin-top: 0; }
+.mat-mais p { margin: 0; font-size: 14.5px; line-height: 1.5; }
+.mat-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.modulos-sus { display: grid; gap: 8px; margin-top: 18px; }
+.mod-sus .mod-marca { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--linha); font: 700 12px var(--f-codigo); color: var(--texto-2); }
+.mod-sus.dominado .mod-marca { background: var(--certo); border-color: var(--certo); color: var(--sobre-tinta); }
+.mod-sus.em-curso .mod-marca, .mod-sus[open] .mod-marca { border-color: var(--tinta); color: var(--tinta); }
+.mod-sus.dominado[open] .mod-marca { color: var(--sobre-tinta); }
+.mod-sus.rever .mod-nome small { color: var(--aviso); }
+.mod-sus[open] { border-color: var(--tinta); }
+.mod-sus-corpo { padding: 0 14px 14px 58px; display: grid; gap: 12px; }
+.mod-conceitos { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.mod-conceitos a, .mod-c-tranca { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 4px 6px; border-radius: 8px; color: var(--texto); text-decoration: none; font-size: 15px; }
+.mod-conceitos a:hover { background: var(--folha-2); }
+.mod-c-tranca { color: var(--texto-2); }
+.mod-conceitos i { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--linha); display: grid; place-items: center; font: 700 10.5px var(--f-codigo); font-style: normal; color: var(--texto-2); }
+.mod-conceitos i .ic { width: 12px; height: 12px; }
+.mod-conceitos .feito i { background: var(--certo); border-color: var(--certo); color: var(--sobre-tinta); }
+.mod-conceitos .agora a { background: var(--tinta-suave); }
+.mod-conceitos .agora i { border-color: var(--tinta); color: var(--tinta); }
+.mod-conceitos small { margin-left: auto; font: 700 11px var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta); }
+.mod-ir { justify-self: start; }
+.mod-vale { margin: 0; font-size: 12.5px; color: var(--texto-2); }
+.parte-sus > summary { min-height: 52px; }
+.parte-corpo { padding: 0 8px 8px; display: grid; gap: 8px; }
+.parte-sus .mod-sus { background: var(--fundo); }
+@media (max-width: 520px) { .mod-sus-corpo { padding-left: 14px; } }
+
+/* fechar o módulo: a pergunta final */
+.fechar { max-width: 760px; margin: 0 auto; display: grid; gap: 8px; }
+.fechar-topo { display: flex; align-items: center; gap: 12px; padding: 4px 0 12px; border-bottom: 1px solid var(--linha); }
+.fechar-sair { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: 10px; color: var(--texto); }
+.fechar-topo span { display: grid; }
+.fechar-topo small { color: var(--texto-2); font-size: 13px; }
+.fechar-corpo { display: grid; gap: 14px; padding-top: 8px; }
+.fechar-corpo h1 { margin: 0; font-family: var(--f-titulo); font-size: clamp(26px, 6vw, 34px); line-height: 1.12; }
+.fechar-sub { margin: 0; color: var(--texto-2); }
+.fechar-guia .mascote { width: 72px; height: 72px; }
+.fechar-depois { display: flex; flex-wrap: wrap; gap: 10px; }
+.fechar { padding: 8px 16px 40px; }
+@media (max-width: 440px) { .g-aqui { display: none; } }
+.mapa-cab.mapa-limpo { grid-template-columns: minmax(0, 1fr); grid-template-areas: none; align-items: start; }
+.mapa-cab.mapa-limpo > * { grid-column: 1; grid-row: auto; }
+.mapa-limpo, .grupos-mapa, .mapa-dobra, .mat-topo, .modulos-sus { width: 100%; margin-left: auto; margin-right: auto; }
+.mapa-limpo .mapa-acoes .btn { width: 100%; justify-content: center; }

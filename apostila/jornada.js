@@ -2,7 +2,9 @@
 //   #mapa                      as 16 matérias numa estrada sinuosa, em mundos
 //   #trilha-SIGLA              a matéria: jornada dos módulos (abre em cascata ao selecionar)
 //   #guia-SIGLA, #fontes-SIGLA a matéria: subtópicos de como funciona (um aberto por vez) e fontes
-//   #estudo-COD                a lição em tela cheia, um passo por vez
+//   #fechar-COD                a pergunta final do módulo e a vitória
+// A aula de cada módulo é uma página à parte, sempre no mesmo formato (licoes/<CÓDIGO>.html ou licoes/AULA.html#CÓDIGO):
+// um conceito por vez, em Entenda, Pratique e Avance (licoes/motor.js). #estudo-COD leva direto a ela.
 //   #fontes                    todas as referências
 (function () {
   const MATERIAS = window.MATERIAS;
@@ -33,10 +35,11 @@
   // ondulação da estrada: posição de cada parada em relação ao centro (-1 = esquerda, 1 = direita)
   const ONDA_MAPA = [-0.55, 0.6, -0.7, 0.55, -0.45, 0.75, -0.65, 0.35, 0.8, -0.6, 0.5, -0.8, 0.65, -0.35, 0.7, -0.55];
   const ONDA_MOD = [0, -0.65, -1, -0.65, 0, 0.65, 1, 0.65];
-  const PASSOS = [
-    ["Antes de começar", "flag-checkered-duotone"], ["Para que serve", "target-duotone"], ["O que você aprende", "book-open-text-duotone"],
-    ["Cuidado com", "warning-duotone"], ["Pronto para avançar?", "trophy-duotone"],
-  ];
+  // a aula de cada módulo: a lição ilustrada, quando existe, ou a aula montada pelos dados (licoes/AULA.html)
+  const AULA_POS = "dominio:aula:v1";
+  const urlAula = (cod, j) => (LICOES[cod] ? LICOES[cod] + (j != null ? `#c${j + 1}` : "") : `licoes/AULA.html#${cod}${j != null ? `-c${j + 1}` : ""}`);
+  const posAula = (cod) => lerLocal(AULA_POS, {})[cod] || null;
+  const feitosAula = (cod) => { const f = lerLocal("dominio:licao:" + cod, []); return Array.isArray(f) ? f : []; };
 
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const ic = (n, c) => window.ICONE(n, c);
@@ -114,7 +117,7 @@
         if (JSON.stringify(junto) !== JSON.stringify(nuvem)) enviar();
         if (!mudouAqui) return;
         const digitando = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
-        if (!digitando && rota().v !== "estudo") render(); else desenharHud();
+        if (!digitando && rota().v !== "fechar") render(); else desenharHud();
       }, () => {});
     }).catch(() => {});
   }
@@ -143,8 +146,9 @@
   function rota() {
     const h = decodeURIComponent(location.hash.replace("#", "")) || "inicio";
     const [v, a, b] = h.split("-");
-    if (v === "estudo" && MODULO[a]) return { v: "estudo", cod: a, sigla: MODULO[a].materia.sigla };
-    if (v === "trilha" && POR_SIGLA[a] && MODULO[b]) return { v: "estudo", cod: b, sigla: a };
+    if (v === "estudo" && MODULO[a]) return { v: "aula", cod: a, sigla: MODULO[a].materia.sigla };
+    if (v === "trilha" && POR_SIGLA[a] && MODULO[b]) return { v: "aula", cod: b, sigla: a };
+    if (v === "fechar" && MODULO[a]) return { v: "fechar", cod: a, sigla: MODULO[a].materia.sigla };
     if ((v === "trilha" || v === "guia") && POR_SIGLA[a]) return { v: "materia", aba: v === "trilha" ? "jornada" : "guia", sigla: a };
     if (v === "trilha" || v === "guia") return { v: "materia", aba: v === "trilha" ? "jornada" : "guia", sigla: materiaAtual().sigla };
     if (v === "fontes" && POR_SIGLA[a]) return { v: "materia", aba: "fontes", sigla: a };
@@ -172,7 +176,7 @@
   // ---------- HUD ----------
   function desenharHud() {
     const r = rota();
-    document.body.classList.toggle("foco", r.v === "estudo");
+    document.body.classList.toggle("foco", r.v === "fechar");
     document.body.classList.toggle("no-inicio", r.v === "inicio");
     document.querySelectorAll(".hud-nav a").forEach((a) => {
       const ativo = a.dataset.v === r.v || (a.dataset.v === "materia" && r.v === "materia");
@@ -254,13 +258,12 @@
   function vistaMapa() {
     const aqui = materiaAtual();
     const prox = proximoModulo(aqui);
-    const xp = xpTotal(), nv = nivelDe(xp), of = ofensiva();
     const total = MATERIAS.reduce((a, m) => a + dominados(m), 0);
     const cols = colunasMetro();
-    const g = guia();
+    const estDe = (m) => { const d = dominados(m); return d === m.modulos.length ? "feita" : m === aqui ? "atual" : d > 0 ? "iniciada" : "futura"; };
     const estacoes = MATERIAS.map((m, i) => {
       const s = m.sigla, d = dominados(m), n = m.modulos.length;
-      const est = d === n ? "feita" : m === aqui ? "atual" : d > 0 ? "iniciada" : "futura";
+      const est = estDe(m);
       const linha = Math.floor(i / cols), pos = i % cols;
       const col = linha % 2 === 0 ? pos : cols - 1 - pos;
       const situacao = { feita: "concluída", atual: "em curso", iniciada: "iniciada", futura: "a estudar" }[est];
@@ -275,48 +278,55 @@
         </a>
       </li>`;
     }).join("");
-    const linhas = MUNDOS.map((w, wi) => {
-      const ms = w.siglas.map((s) => POR_SIGLA[s]);
+    // as 16 matérias em 6 grupos suspensos; só o grupo em que você está fica aberto
+    const grupos = MUNDOS.map((w, wi) => {
+      const ms = w.siglas.map((sg) => POR_SIGLA[sg]);
       const dd = ms.reduce((a, mm) => a + dominados(mm), 0), nn = ms.reduce((a, mm) => a + mm.modulos.length, 0);
-      return `<button type="button" class="linha-chip" data-linha="${wi}" aria-pressed="false" style="--cv:var(--mv-${w.siglas[0]})"><i aria-hidden="true"></i><span><b>${esc(w.nome)}</b><small>${dd}/${nn} módulos</small></span></button>`;
+      const peso = ms.reduce((a, mm) => a + mm.peso, 0), feito = ms.reduce((a, mm) => a + pesoFeito(mm), 0);
+      const itens = ms.map((m) => {
+        const est = estDe(m), d = dominados(m), n = m.modulos.length;
+        return `<li><a class="g-mat ${est}" href="#trilha-${m.sigla}" style="${coresDe(m.sigla)}"><span class="g-marca" aria-hidden="true">${est === "feita" ? ic("check-bold") : doisDig(MATERIAS.indexOf(m) + 1)}</span><span class="g-nome"><b>${esc(m.nome)}</b><small>${d} de ${n} módulos · vale ${m.peso}%</small></span>${est === "atual" ? `<span class="g-aqui">você está aqui</span>` : ""}${ic("caret-right-bold", "ic g-seta")}</a></li>`;
+      }).join("");
+      return `<details class="grupo-mapa"${wi === MUNDO_DE[aqui.sigla] ? " open" : ""} style="--cv:var(--mv-${w.siglas[0]})">
+        <summary><span class="g-n">${wi + 1}</span><span class="g-txt"><b>${esc(w.nome)}</b><small>${dd} de ${nn} módulos · vale ${peso}%</small></span><span class="g-barra" aria-hidden="true"><i style="width:${(feito / peso) * 100}%"></i></span>${ic("caret-down-bold", "ic g-caret")}</summary>
+        <ol class="g-materias">${itens}</ol>
+      </details>`;
     }).join("");
     const revisaoHoje = () => { try { const c = JSON.parse(localStorage.getItem("dominio:revisao:v1") || "{}"); const d = new Date(), h = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; return Object.values(c).filter((x) => x.proxima <= h).length; } catch (e) { return 0; } };
     const nRevisao = revisaoHoje();
     const casteloFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:castelo:v1") || "null"); return v && v.feitas ? ` · ${v.feitas} de 17 módulos` : ""; } catch (e) { return ""; } };
     const inicioFeito = () => { try { const v = JSON.parse(localStorage.getItem("dominio:licao:INICIO") || "null"); return !!v && Object.keys(v).length > 0; } catch (e) { return false; } };
-    const fala = total ? `Você domina ${total} de ${TOTAL} módulos. A próxima estação é ${prox.nome}.` : `Vamos começar por ${prox.nome}. São cinco passos curtos.`;
+    const cartao = (href, icone, titulo, sub) => `<a class="cartao-link cartao-inicio" href="${href}" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic(icone)}</span><span><b>${titulo}</b><small>${sub}</small></span>${ic("arrow-right-bold")}</a>`;
+    const pa = posAula(prox.codigo);
     centro().innerHTML = `
-      <section class="mapa-cab">
-        <div class="mapa-cab-txt">
-          <p class="eyebrow">Mapa de formação · Ciência de Dados</p>
-          <h1>Do raciocínio lógico ao aprendizado de máquina</h1>
-          <p class="mapa-sub">${MATERIAS.length} matérias e ${TOTAL} módulos, em sequência. Cada estação só pede o que as anteriores ensinaram.</p>
-          <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
-          <a class="cartao-link cartao-inicio" href="licoes/INICIO.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("sparkle-duotone")}</span><span><b>Comece por aqui: a lista de aprovados${inicioFeito() ? " · concluída" : ""}</b><small>5 passos curtos com animações · dados de um concurso fictício</small></span>${ic("arrow-right-bold")}</a>
-          <a class="cartao-link cartao-inicio" href="castelo/index.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("database-duotone")}</span><span><b>Laboratório: Centro de Dados${casteloFeito()}</b><small>monte um banco PostgreSQL de verdade, módulo por módulo, vendo cada passo acontecer</small></span>${ic("arrow-right-bold")}</a>
-          <a class="cartao-link cartao-inicio" href="licoes/LOGICA-SIMPLES.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("list-numbers-duotone")}</span><span><b>Revisão de conceitos simples</b><small>escolher na lista, digitar valores e contar linhas, sem escrever código</small></span>${ic("arrow-right-bold")}</a>
-          ${nRevisao ? `<a class="cartao-link cartao-inicio" href="licoes/REVISAR.html" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic("brain-duotone")}</span><span><b>Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}</b><small>o que você errou volta em 1, 3, 7, 14 e 30 dias</small></span>${ic("arrow-right-bold")}</a>` : ""}
-        </div>
-        <figure class="mentor" style="${coresDe(aqui.sigla)}">
-          <div class="mascote retrato">${g.expr[total ? "feliz" : "padrao"]}</div>
-          <figcaption><b>${esc(g.nome)}</b><span>${esc(g.funcao)}</span><p>${esc(fala)}</p></figcaption>
-        </figure>
-        <dl class="metricas">
-          <div><dt>Formação de cientista de dados</dt><dd>${pct(formacao())}<small> · ${total} de ${TOTAL} módulos</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${formacao()}%"></i></span><button type="button" class="link-pesos" data-pesos>Como os pesos são contados</button></dd></div>
-          <div><dt>Nível</dt><dd>${nv.n}<small> · ${xp} XP</small></dd><dd class="m-extra"><span class="barra-fina"><i style="width:${nv.resto}%"></i></span></dd></div>
-          <div><dt>Ofensiva</dt><dd>${of}<small> ${of === 1 ? "dia" : "dias"}</small></dd><dd class="m-extra"><span class="nota">${of ? "estudando em dias seguidos" : "domine um módulo hoje"}</span></dd></div>
-        </dl>
+      <section class="mapa-cab mapa-limpo">
+        <p class="eyebrow">Mapa de formação · Ciência de Dados</p>
+        <h1>Do raciocínio lógico ao aprendizado de máquina</h1>
+        <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="${urlAula(prox.codigo, pa && estadoDe(prox.codigo) !== "dominado" ? pa.c : null)}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
+        <div class="mapa-formacao"><div><b>${pct(formacao())}</b><span>da formação de cientista de dados · ${total} de ${TOTAL} módulos</span></div><span class="barra-fina" aria-hidden="true"><i style="width:${formacao()}%"></i></span><button type="button" class="link-pesos" data-pesos>Como os pesos são contados</button></div>
+        ${nRevisao ? cartao("licoes/REVISAR.html", "brain-duotone", `Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}`, "o que você errou volta em 1, 3, 7, 14 e 30 dias") : ""}
       </section>
-      <section class="metro-bloco" aria-label="Diagrama das matérias">
-        <div class="legenda-linhas" role="group" aria-label="Destacar uma linha">${linhas}</div>
-        <p class="metro-dica" id="metro-dica" aria-live="polite">Passe o mouse numa estação para ver o que ela usa e o que ela prepara.</p>
-        <div class="metro" id="metro" data-cols="${cols}">
-          <svg class="metro-linhas" aria-hidden="true"></svg>
-          <ol class="estacoes" style="--cols:${cols}">${estacoes}</ol>
-        </div>
-      </section>`;
+      <section class="grupos-mapa" aria-label="Matérias por grupo">${grupos}</section>
+      <details class="mapa-dobra mapa-mais"><summary>${ic("stack-duotone")}Outras formas de estudar</summary><div class="mapa-dobra-corpo">
+        ${cartao("licoes/INICIO.html", "sparkle-duotone", `Comece por aqui: a lista de aprovados${inicioFeito() ? " · concluída" : ""}`, "5 passos curtos com animações · dados de um concurso fictício")}
+        ${cartao("castelo/index.html", "database-duotone", `Laboratório: Centro de Dados${casteloFeito()}`, "monte um banco PostgreSQL de verdade, módulo por módulo")}
+        ${cartao("licoes/LOGICA-SIMPLES.html", "list-numbers-duotone", "Revisão de conceitos simples", "escolher na lista, digitar valores e contar linhas, sem escrever código")}
+      </div></details>
+      <details class="mapa-dobra mapa-diagrama"><summary>${ic("map-trifold-duotone")}Ver como diagrama</summary>
+        <section class="metro-bloco" aria-label="Diagrama das matérias">
+          <p class="metro-dica" id="metro-dica" aria-live="polite">Passe o mouse numa estação para ver o que ela usa e o que ela prepara.</p>
+          <div class="metro" id="metro" data-cols="${cols}">
+            <svg class="metro-linhas" aria-hidden="true"></svg>
+            <ol class="estacoes" style="--cols:${cols}">${estacoes}</ol>
+          </div>
+        </section>
+      </details>`;
+    // um grupo aberto por vez
+    const gs = [...document.querySelectorAll(".grupo-mapa")];
+    gs.forEach((g) => g.addEventListener("toggle", () => { if (g.open) gs.forEach((o) => { if (o !== g) o.open = false; }); }));
     const metro = document.getElementById("metro");
-    desenharLinhas(metro);
+    const diag = document.querySelector(".mapa-diagrama");
+    diag.addEventListener("toggle", () => { if (diag.open && !metro.dataset.pronto) { metro.dataset.pronto = "1"; desenharLinhas(metro); } });
     const dica = document.getElementById("metro-dica");
     const padrao = dica.textContent;
     const lis = [...metro.querySelectorAll(".estacao")];
@@ -330,7 +340,7 @@
         l.classList.toggle("rel-pre", dep.precisa.includes(l.dataset.s));
         l.classList.toggle("rel-dep", dep.prepara.includes(l.dataset.s));
       });
-      const nomes = (a) => a.map((s) => POR_SIGLA[s].nome).join(", ");
+      const nomes = (a) => a.map((sg) => POR_SIGLA[sg].nome).join(", ");
       dica.textContent = `${m.nome}${m.etapa ? ` (no trabalho: ${m.etapa.toLowerCase()})` : ""}: ${dep.precisa.length ? "usa " + nomes(dep.precisa) : "não usa nenhuma matéria anterior"}. ${dep.prepara.length ? "Prepara " + nomes(dep.prepara) + "." : "Fecha o percurso."}`;
     };
     lis.forEach((li) => {
@@ -339,14 +349,6 @@
       li.querySelector("a").addEventListener("focus", () => relacionar(li));
       li.querySelector("a").addEventListener("blur", limpar);
     });
-    let linhaAtiva = null;
-    document.querySelectorAll(".linha-chip").forEach((b) => b.addEventListener("click", () => {
-      linhaAtiva = linhaAtiva === b.dataset.linha ? null : b.dataset.linha;
-      document.querySelectorAll(".linha-chip").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.linha === linhaAtiva)));
-      metro.classList.toggle("com-linha", linhaAtiva !== null);
-      lis.forEach((l) => l.classList.toggle("da-linha", l.dataset.w === linhaAtiva));
-      metro.querySelectorAll(".trecho").forEach((p) => p.classList.toggle("da-linha", p.dataset.w === linhaAtiva));
-    }));
     document.querySelector("[data-pesos]").addEventListener("click", (e) => abrirPesos(e.currentTarget));
     teclas = (e) => { if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click(); };
   }
@@ -384,25 +386,27 @@
     const aqui = materiaAtual(), prox = proximoModulo(aqui);
     const total = MATERIAS.reduce((a, m) => a + dominados(m), 0);
     const tut = lerTut();
-    const primeira = total === 0 && !Object.keys(progresso.passos).length && !tut.feito && !tut.visto;
+    const comecou = Object.keys(progresso.passos).length || Object.keys(lerLocal(AULA_POS, {})).length;
+    const primeira = total === 0 && !comecou && !tut.feito && !tut.visto;
     const d = new Date();
     const hojeLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const nRev = Object.values(lerLocal("dominio:revisao:v1", {})).filter((x) => x && x.proxima <= hojeLocal).length;
     const lab = lerLocal("dominio:castelo:v1", null);
     const labFeitas = lab && lab.feitas ? lab.feitas : 0;
-    const passo = estadoDe(prox.codigo) === "dominado" ? 0 : Math.min(4, progresso.passos[prox.codigo] || 0);
+    const pa = estadoDe(prox.codigo) === "dominado" ? null : posAula(prox.codigo);
+    const nConc = prox.conceitos.length, cAt = pa ? Math.min(nConc - 1, pa.c || 0) : 0;
     const saudacao = d.getHours() < 12 ? "Bom dia" : d.getHours() < 18 ? "Boa tarde" : "Boa noite";
     const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
     const fala = primeira
       ? `Oi, eu sou ${g.nome}. Vou guiar você do zero até analisar dados de verdade: ${MATERIAS.length} matérias em ordem, lições curtas com exercício corrigido na hora e um laboratório onde você monta um banco de dados.`
-      : `${saudacao}! ${passo ? `Você parou no passo ${passo + 1} de 5 de ${prox.nome}.` : `O próximo módulo é ${prox.nome}.`} ${nRev ? `Depois, ${plural(nRev, "revisão te espera", "revisões te esperam")}.` : total ? `Você já domina ${plural(total, "módulo", "módulos")}.` : "São cinco passos curtos."}`;
+      : `${saudacao}! ${pa ? `Você parou no conceito ${cAt + 1} de ${nConc} de ${prox.nome}.` : `O próximo módulo é ${prox.nome}.`} ${nRev ? `Depois, ${plural(nRev, "revisão te espera", "revisões te esperam")}.` : total ? `Você já domina ${plural(total, "módulo", "módulos")}.` : "Um conceito por vez: entenda, pratique e avance."}`;
     const acao = primeira
       ? `<div class="ini-acao"><p class="ini-meta">Começo</p><h1 class="ini-titulo">Conheça o Domínio em um minuto</h1>
           <ol class="ini-pilares"><li>O mapa com as ${MATERIAS.length} matérias, na ordem em que uma prepara a outra</li><li>Lições de 5 minutos, com exercício corrigido na hora</li><li>O laboratório: um banco de dados que você constrói e apresenta</li></ol>
           <button type="button" class="btn btn-3d b-prog ini-botao" data-ini-tutorial style="--p:0" data-passo="7 paradas">Começar o tutorial</button>
           <a class="ini-pular" href="licoes/INICIO.html" data-pular-tutorial>Pular e ir direto para a primeira lição</a></div>`
       : `<div class="ini-acao"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length} · vale ${pct(pesoDe(prox.codigo), 2)} da formação</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
-          <a class="btn btn-3d b-prog ini-botao" href="#estudo-${prox.codigo}" style="--p:${passo / 5}" data-passo="passo ${passo + 1} de 5">${passo ? "Continuar" : "Começar"}</a></div>`;
+          <a class="btn btn-3d b-prog ini-botao" href="${urlAula(prox.codigo, pa ? cAt : null)}" style="--p:${cAt / nConc}" data-passo="conceito ${cAt + 1} de ${nConc}">${pa ? "Continuar" : "Começar"}</a></div>`;
     const atalho = (href, icone, titulo, sub, num) => `<a class="ini-atalho" href="${href}"><span class="ini-ic">${ic(icone)}</span><b>${titulo}</b><small>${sub}</small><span class="ini-num">${num}</span></a>`;
     const terceiro = primeira
       ? atalho("licoes/INICIO.html", "sparkle-duotone", "Comece por aqui", "a lista de aprovados", "5 passos")
@@ -415,7 +419,7 @@
           ${atalho("castelo/index.html", "database-duotone", "Centro de Dados", "laboratório", labFeitas ? `${labFeitas} de 17` : "17 módulos")}
           ${terceiro}
         </nav>
-        ${lembreteTrajeto(primeira || !(total || Object.keys(progresso.passos).length))}
+        ${lembreteTrajeto(primeira || !(total || comecou))}
       </div>
     </div>`;
     const btT = document.querySelector("[data-ini-trajeto]");
@@ -443,125 +447,87 @@
     const i = MATERIAS.indexOf(m);
     const d = dominados(m), n = m.modulos.length;
     const prox = proximoModulo(m);
-    const xpM = m.modulos.reduce((a, mod) => a + (estadoDe(mod.codigo) === "dominado" ? xpDe(mod.codigo) : 0), 0);
-    const g = GUIA[sigla] || {};
-    const gd = guia();
-    const abas = [["jornada", "trilha", "Módulos", "path-duotone"], ["guia", "guia", "Como funciona", "lightbulb-duotone"], ["fontes", "fontes", "Fontes", "books-duotone"]];
-    const raio = 26, volta = 2 * Math.PI * raio;
+    const pa = estadoDe(prox.codigo) === "dominado" ? null : posAula(prox.codigo);
+    const dep = dependencias(m);
+    const nomesDe = (lista) => lista.map((sg) => `<a href="#trilha-${sg}">${esc(POR_SIGLA[sg].nome)}</a>`).join(", ");
+    if (aba !== "jornada") {
+      // Como funciona e Fontes: telas de consulta, com volta para os módulos
+      centro().innerHTML = `
+        <section class="mat-topo mat-topo-curto tema-exp" style="${coresExp()}">
+          <a class="voltar" href="#trilha-${sigla}">${ic("arrow-left-bold")}Módulos de ${esc(m.nome)}</a>
+          <h1>${aba === "guia" ? "Como funciona" : "Fontes"}<small>${esc(m.nome)}</small></h1>
+        </section>
+        <div id="aba" class="tema-exp" style="${coresExp()}"></div>`;
+      if (aba === "guia") abaGuia(m); else abaFontes(m);
+      teclas = null;
+      return;
+    }
     centro().innerHTML = `
-      <section class="mat-cab capa tema-exp" style="${coresExp()}">
+      <section class="mat-topo tema-exp" style="${coresExp()}">
         <a class="voltar" href="#mapa">${ic("arrow-left-bold")}Mapa de formação</a>
-        <div class="capa-grade">
-          <div class="capa-txt">
-            <p class="capa-pill">Linha ${MUNDO_DE[sigla] + 1} · estação ${i + 1} de ${MATERIAS.length}</p>
-            <div class="mat-titulo"><h1>${esc(m.nome)}</h1></div>
-            ${m.etapa ? `<p class="capa-etapa">${esc(m.etapa)}</p>` : ""}
-            ${g.frase ? `<p class="capa-frase glossavel">${esc(g.frase)}</p>` : ""}
-          </div>
-          <div class="capa-motivo" aria-hidden="true">${window.motivoSVG ? window.motivoSVG(sigla) : ""}</div>
-        </div>
-        <div class="capa-rodape">
-          <div class="capa-anel" aria-label="${d} de ${n} módulos dominados, ${pct((pesoFeito(m) / m.peso) * 100)} da matéria">
-            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${raio}" class="anel-fundo"/><circle cx="32" cy="32" r="${raio}" class="anel-cheio" stroke-dasharray="${volta.toFixed(1)}" stroke-dashoffset="${(volta * (1 - pesoFeito(m) / m.peso)).toFixed(1)}"/></svg>
-            <span><b>${pct((pesoFeito(m) / m.peso) * 100)}</b><small>da matéria · ${d}/${n} módulos</small></span>
-          </div>
-          <button type="button" class="capa-dado" data-pesos><b>${m.peso}%</b><small>da formação · ver pesos</small></button>
-          <span class="capa-dado"><b>${xpM}</b><small>XP nesta matéria</small></span>
-          ${m.logos.length ? `<span class="logos-mini">${logosMini(m.logos)}</span>` : ""}
-          <div class="mat-cta"><a class="btn btn-3d btn-grande" href="#estudo-${prox.codigo}" data-principal>${ic("play-bold")}<span>${d === n ? "Revisar" : d ? "Continuar" : "Começar"}: ${esc(prox.nome)}<small>módulo ${MODULO[prox.codigo].indice + 1} de ${n} · +${xpDe(prox.codigo)} XP</small></span></a></div>
-        </div>
-        ${m.trabalho ? `<details class="capa-trabalho"><summary>${ic("graduation-cap-duotone")}Onde ${esc(m.nome)} entra no trabalho do cientista de dados</summary><p class="glossavel">${esc(m.trabalho)}</p></details>` : ""}
+        <p class="eyebrow">Matéria ${i + 1} de ${MATERIAS.length} · vale ${m.peso}% da formação</p>
+        <h1>${esc(m.nome)}</h1>
+        <div class="mat-prog"><span class="barra-fina" aria-hidden="true"><i style="width:${(pesoFeito(m) / m.peso) * 100}%"></i></span><small>${d} de ${n} módulos · ${pct((pesoFeito(m) / m.peso) * 100)} da matéria</small></div>
+        <a class="btn btn-3d btn-grande mat-continuar" href="${urlAula(prox.codigo, pa ? pa.c : null)}" data-principal>${ic("play-bold")}<span>${d === n ? "Revisar" : pa || d ? "Continuar" : "Começar"}: ${esc(prox.nome)}<small>módulo ${MODULO[prox.codigo].indice + 1} de ${n}${pa ? ` · conceito ${Math.min(prox.conceitos.length, (pa.c || 0) + 1)} de ${prox.conceitos.length}` : ""}</small></span></a>
+        <details class="mapa-dobra mat-mais"><summary>${ic("info-duotone")}Mais sobre a matéria</summary><div class="mapa-dobra-corpo">
+          ${m.trabalho ? `<p class="glossavel"><b>No trabalho do cientista de dados${m.etapa ? ` (${esc(m.etapa.toLowerCase())})` : ""}.</b> ${esc(m.trabalho)}</p>` : ""}
+          <p><b>Usa o que veio de:</b> ${dep.precisa.length ? nomesDe(dep.precisa) : "nada, é um começo"}.<br><b>Prepara para:</b> ${dep.prepara.length ? nomesDe(dep.prepara) : "o fim do percurso"}.</p>
+          <div class="mat-links"><a class="btn" href="#guia-${sigla}">${ic("lightbulb-duotone")}Como funciona</a><a class="btn" href="#fontes-${sigla}">${ic("books-duotone")}Fontes</a><button type="button" class="btn" data-pesos>${ic("chart-bar-duotone")}Pesos da formação</button></div>
+        </div></details>
       </section>
-      <nav class="abas tema-exp" aria-label="Partes da matéria" style="${coresExp()}">
-        ${abas.map(([id, rotaAba, nome, icone]) => `<a class="aba" href="#${rotaAba}-${sigla}"${id === aba ? ' aria-current="page"' : ""}>${ic(icone)}${nome}${id === "guia" ? `<small class="aba-n">${concluidas(sigla).length}/${secoesDe(m).length}</small>` : ""}</a>`).join("")}
-      </nav>
       <div id="aba" class="tema-exp" style="${coresExp()}"></div>`;
-    if (aba === "jornada") abaJornada(m);
-    else if (aba === "guia") abaGuia(m);
-    else abaFontes(m);
-    glossar(document.querySelector(".capa-frase"), sigla, 2);
-    document.querySelector(".capa [data-pesos]").addEventListener("click", (e) => abrirPesos(e.currentTarget));
-    teclas = (e) => {
-      if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click();
-    };
+    abaJornada(m);
+    glossar(document.querySelector(".mat-mais"), sigla, 2);
+    document.querySelector(".mat-mais [data-pesos]").addEventListener("click", (e) => abrirPesos(e.currentTarget));
   }
 
-  // etiquetas do que existe em cada módulo: aula ilustrada, exercícios das ideias, Python
-  function etiquetas(cod) {
-    const info = (window.LICOES_INFO || {})[cod], ex = ((CONC()[cod] || {}).ideias || []).length;
-    const t = [`<i class="etq etq-peso" title="peso do módulo na formação">vale ${pct(pesoDe(cod), 2)}</i>`];
-    if (LICOES[cod]) t.push(`<i class="etq etq-aula">${ic("play-bold")}Aula</i>`);
-    if (ex) t.push(`<i class="etq etq-ex">${ic("check-bold")}${ex} exercícios</i>`);
-    if (info && info.python) t.push(`<i class="etq etq-lab">${ic("code-duotone")}Python</i>`);
-    return `<span class="etqs">${t.join("")}</span>`;
-  }
-  // módulos: linha do tempo vertical; um módulo aberto por vez
-  function htmlModulo(cod) {
-    const { mod, materia: m } = MODULO[cod];
+  // os módulos: menus suspensos, um aberto por vez; nas matérias longas, agrupados em partes de 5
+  function htmlModulo(cod, k) {
+    const { mod } = MODULO[cod];
     const est = estadoDe(cod);
-    return `<div class="mod-detalhe">
-      <div class="mod-col">
-        <h4>Para que serve</h4><p class="glossavel">${esc(mod.dia)}</p>
-        <h4>Ao final, você consegue</h4><p class="glossavel">${esc(mod.dominio)}.</p>
+    const feitos = feitosAula(cod), pa = posAula(cod);
+    const nc = mod.conceitos.length;
+    const nFeitos = mod.conceitos.filter((_, j) => feitos.includes(`c${j + 1}`)).length;
+    const atual = est === "dominado" ? null : pa ? Math.min(nc - 1, pa.c || 0) : nFeitos ? Math.min(nc - 1, nFeitos) : null;
+    const sub = est === "dominado" ? `${nc} conceitos · dominado` : est === "rever" ? `${nc} conceitos · para rever` : atual != null ? `conceito ${atual + 1} de ${nc}` : `${nc} conceitos`;
+    const conceitos = mod.conceitos.map((c, j) => {
+      const feito = feitos.includes(`c${j + 1}`), agora = j === atual;
+      const pode = feito || agora || est === "dominado" || (atual == null && j === 0);
+      const txt = `<i aria-hidden="true">${feito ? ic("check-bold") : j + 1}</i><span>${esc(c.charAt(0).toUpperCase() + c.slice(1))}</span>${agora ? "<small>agora</small>" : ""}`;
+      return `<li class="${feito ? "feito" : ""}${agora ? " agora" : ""}">${pode ? `<a href="${urlAula(cod, j)}">${txt}</a>` : `<span class="mod-c-tranca">${txt}</span>`}</li>`;
+    }).join("");
+    const rotulo = est === "dominado" ? "Revisar a aula" : atual != null ? "Continuar a aula" : "Começar a aula";
+    return `<details class="mod-sus ${est || ""}${atual != null ? " em-curso" : ""}" data-cod="${cod}">
+      <summary><span class="mod-marca" aria-hidden="true">${est === "dominado" ? ic("check-bold") : doisDig(k + 1)}</span><span class="mod-nome"><b>${esc(mod.nome)}</b><small>${sub}</small></span>${ic("caret-down-bold", "ic mod-caret")}</summary>
+      <div class="mod-sus-corpo">
+        <ol class="mod-conceitos">${conceitos}</ol>
+        <a class="btn btn-3d mod-ir" href="${urlAula(cod, est === "dominado" ? null : atual)}">${ic("play-bold")}${rotulo}</a>
+        <p class="mod-vale">vale ${pct(pesoDe(cod), 2)} da formação · +${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</p>
       </div>
-      <div class="mod-col">
-        <h4>Ideias, em ordem</h4>
-        <ol class="conceitos-ol">${mod.conceitos.map((c, j) => `<li><span>${esc(c)}${ideiaDe(cod, j) ? `<small>${esc(ideiaDe(cod, j).r)}</small>` : ""}</span></li>`).join("")}</ol>
-        <h4>Antes deste</h4>
-        ${mod.antes.length ? `<ul class="lista-antes">${mod.antes.map((a) => `<li class="${estadoDe(a.codigo) === "dominado" ? "ok" : ""}">${ic(estadoDe(a.codigo) === "dominado" ? "check-circle-duotone" : "question-duotone")}<a href="#estudo-${a.codigo}">${esc(a.nome)}</a>${a.materia !== m.sigla ? `<small>${esc(POR_SIGLA[a.materia].nome)}</small>` : ""}</li>`).join("")}</ul>` : "<p>Nada: dá para começar direto.</p>"}
-      </div>
-    </div>
-    ${formasDoModulo(cod)}
-    <div class="mod-pe"><span class="chip ouro">${ic("lightning-duotone")}+${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</span><a class="btn btn-3d" href="#estudo-${cod}">${ic("play-bold")}${est === "dominado" ? "Revisar a lição" : progresso.passos[cod] ? `Continuar do passo ${progresso.passos[cod] + 1}` : "Começar a lição"}</a></div>`;
+    </details>`;
   }
   function abaJornada(m) {
     const prox = proximoModulo(m);
-    const dep = dependencias(m);
-    const ant = MATERIAS[MATERIAS.indexOf(m) - 1], seg = MATERIAS[MATERIAS.indexOf(m) + 1];
-    const itens = m.modulos.map((mod, k) => {
-      const est = estadoDe(mod.codigo);
-      const classe = est === "dominado" ? "dominado" : est === "rever" ? "rever" : mod === prox ? "proximo" : "nova";
-      const rotulo = est === "dominado" ? "Dominado" : est === "rever" ? "Rever" : mod === prox ? "Próximo" : "";
-      return `<li class="mod ${classe}${mod.virada ? " virada" : ""}" data-cod="${mod.codigo}">
-        <button type="button" class="mod-cab" aria-expanded="false" aria-controls="mod-${mod.codigo}">
-          <span class="mod-marca" aria-hidden="true">${est === "dominado" ? ic("check-bold") : mod.virada ? ic("lightning-duotone") : ""}</span>
-          <span class="mod-num">${doisDig(k + 1)}</span>
-          <span class="mod-nome"><b>${esc(mod.nome)}</b><small>${mod.conceitos.length} ideias${mod.virada ? " · ponto de virada" : ""}${est !== "dominado" && progresso.passos[mod.codigo] ? ` · parou no passo ${progresso.passos[mod.codigo] + 1} de 5` : ""}</small>${etiquetas(mod.codigo)}</span>
-          <span class="mod-estado">${rotulo}</span>
-          ${ic("caret-down-bold", "ic seta")}
-        </button>
-        <div class="mod-corpo-wrap"><div class="mod-corpo" id="mod-${mod.codigo}" role="region" aria-label="Módulo ${k + 1}: ${esc(mod.nome)}"></div></div>
-      </li>`;
-    }).join("");
-    document.getElementById("aba").innerHTML = `
-      <div class="jornada">
-        <ol class="modulos-lista" id="modulos-lista">${itens}</ol>
-        <aside class="jornada-lado">
-          <div class="painel"><h3>${ic("path-duotone")}Usa o que veio de</h3><ul>${dep.precisa.map((s) => seloMat(s)).join("") || "<li>Nada: é um começo.</li>"}</ul></div>
-          <div class="painel"><h3>${ic("rocket-launch-duotone")}Prepara para</h3><ul>${dep.prepara.map((s) => seloMat(s)).join("") || "<li>O fim do percurso.</li>"}</ul></div>
-          <div class="painel"><h3>${ic("compass-duotone")}Estações vizinhas</h3><ul>${ant ? seloMat(ant.sigla) : ""}${seg ? seloMat(seg.sigla) : ""}</ul></div>
-        </aside>
-      </div>`;
+    const mods = m.modulos.map((mod, k) => htmlModulo(mod.codigo, k));
+    const TAM = 5;
+    let html;
+    if (mods.length <= 6) html = mods.join("");
+    else {
+      const partes = [];
+      for (let a = 0; a < mods.length; a += TAM) partes.push([a, Math.min(mods.length, a + TAM)]);
+      const kProx = m.modulos.indexOf(prox);
+      html = partes.map(([a, b], p) => {
+        const doms = m.modulos.slice(a, b).filter((x) => estadoDe(x.codigo) === "dominado").length;
+        return `<details class="parte-sus"${kProx >= a && kProx < b ? " open" : ""}><summary><span class="parte-txt"><b>Parte ${p + 1}</b><small>módulos ${a + 1} a ${b} · ${doms} de ${b - a} dominados</small></span>${ic("caret-down-bold", "ic mod-caret")}</summary><div class="parte-corpo">${mods.slice(a, b).join("")}</div></details>`;
+      }).join("");
+    }
+    document.getElementById("aba").innerHTML = `<div class="modulos-sus" id="modulos-lista">${html}</div>`;
     const lista = document.getElementById("modulos-lista");
-    const alternar = (li, abrir) => {
-      const aberto = abrir !== undefined ? abrir : !li.classList.contains("aberto");
-      lista.querySelectorAll(".mod.aberto").forEach((o) => { if (o !== li) { o.classList.remove("aberto"); o.querySelector(".mod-cab").setAttribute("aria-expanded", "false"); } });
-      li.classList.toggle("aberto", aberto);
-      li.querySelector(".mod-cab").setAttribute("aria-expanded", String(aberto));
-      const corpo = li.querySelector(".mod-corpo");
-      if (aberto && !corpo.firstChild) { corpo.innerHTML = htmlModulo(li.dataset.cod); glossar(corpo, m.sigla, 3); }
-    };
-    lista.addEventListener("click", (e) => {
-      const x = e.target.closest("[data-exercicios]");
-      if (x && window.Janela) { abrirExercicios(x.dataset.exercicios, x); return; }
-      const b = e.target.closest(".mod-cab"); if (b) alternar(b.closest(".mod"));
-    });
-    const inicial = lista.querySelector(`.mod[data-cod="${prox.codigo}"]`);
-    if (inicial) alternar(inicial, true);
-    teclas = (e) => {
-      if (e.key === "Escape") { const o = lista.querySelector(".mod.aberto"); if (o) { alternar(o, false); o.querySelector(".mod-cab").focus(); } }
-      if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click();
-    };
+    const unico = (sel) => { const ds = [...lista.querySelectorAll(sel)]; ds.forEach((dd) => dd.addEventListener("toggle", () => { if (dd.open) ds.forEach((o) => { if (o !== dd) o.open = false; }); })); };
+    unico(".mod-sus"); unico(".parte-sus");
+    const inicial = lista.querySelector(`.mod-sus[data-cod="${prox.codigo}"]`);
+    if (inicial) inicial.open = true;
+    teclas = (e) => { if (e.key === "Enter" && e.target === document.body) document.querySelector("[data-principal]").click(); };
   }
 
   // ---------- como funciona: a trilha de explicação ----------
@@ -837,286 +803,49 @@
   }
 
   // ---------- ideias do módulo: cartões, janela de explicação e exercícios (conceitos-*.js, planta.js, janela.js) ----------
-  const CONC = () => window.CONCEITOS || {};
-  const ideiaDe = (cod, j) => ((CONC()[cod] || {}).ideias || [])[j] || null;
-  const prepara = (cod) => ORDEM.filter((c) => MODULO[c].mod.antes.some((a) => a.codigo === cod));
-  const termoDe = (texto) => { const t = normal(texto); return TERMOS.find((x) => x.formas.some((f) => normal(f).length >= 4 && t.includes(normal(f)))); };
-  const maiusc = (t) => t.charAt(0).toUpperCase() + t.slice(1);
-  const pyHL = (codigo) => window.hljs ? window.hljs.highlight(codigo, { language: "python" }).value : esc(codigo);
-  // a ficha de cada forma de praticar, com a textura do tipo (Aula, Exercícios, Laboratório, Visual)
-  function formaPratica(tipo, href, titulo, desc, numeros, extra = "") {
-    const ICO = { aula: "play-bold", ex: "check-bold", lab: "code-duotone", vis: "film-strip-duotone" };
-    const ROT = { aula: "Aula ilustrada", ex: "Exercícios", lab: "Laboratório", vis: "Visual da matéria" };
-    const tag = href ? `a href="${href}"` : `button type="button"`;
-    return `<${tag} class="forma forma-${tipo}" ${extra}><span class="forma-ic" aria-hidden="true">${ic(ICO[tipo])}</span><span class="forma-txt"><small>${ROT[tipo]}</small><b>${titulo}</b><span>${desc}</span></span><span class="forma-num">${numeros.map((n) => `<i>${n}</i>`).join("")}</span></${href ? "a" : "button"}>`;
-  }
-  function formasDoModulo(cod, comExercicios = true) {
-    const { mod, materia: m } = MODULO[cod];
-    const info = (window.LICOES_INFO || {})[cod];
-    const testes = (CONC()[cod] || {}).ideias;
-    const formas = [];
-    if (LICOES[cod]) formas.push(formaPratica("aula", LICOES[cod], `${esc(mod.nome)}, passo a passo`, "Desafio, animação e exercício em cada ideia, com o guia reagindo.", [`${mod.conceitos.length} ideias`, info ? `${info.minutos} min` : ""].filter(Boolean)));
-    if (comExercicios && testes) formas.push(formaPratica("ex", "", "Exercícios das ideias", "Uma pergunta por ideia, corrigida na hora, com o porquê de cada resposta.", [`${testes.length} itens`, "2 tentativas"], `data-exercicios="${cod}"`));
-    if (info && info.python) formas.push(formaPratica("lab", LICOES[cod], "Faça no Python", "O código roda enquanto você digita; a correção é pelos testes.", [`${info.python} tarefas`, "sem instalar"]));
-    else if (["BD", "AD"].includes(m.sigla)) formas.push(formaPratica("lab", "castelo/index.html", "Centro de Dados", "Um PostgreSQL de verdade, montado e consultado por você.", ["17 módulos", "no navegador"]));
-    formas.push(formaPratica("vis", `#guia-${m.sigla}`, `Como funciona ${esc(m.nome)}`, "O desenho, o clipe animado e a caixa para mexer da matéria.", [`${secoesDe(m).length} partes`]));
-    return `<div class="formas">${formas.join("")}</div>`;
-  }
-  function cartaoIdeia(cod, j, feito) {
-    const { mod } = MODULO[cod];
-    const d = ideiaDe(cod, j);
-    const g = d ? d.g : "ideia";
-    return `<li><button type="button" class="ideia${feito ? " feita" : ""}" data-ideia="${j}" aria-label="Ideia ${j + 1}: ${esc(maiusc(mod.conceitos[j]))}${feito ? ", entendida" : ""}. Abrir a explicação">
-      <span class="ideia-n">${feito ? ic("check-bold") : doisDig(j + 1)}</span>${window.Planta ? window.Planta.glifo(g) : ""}
-      <b>${esc(maiusc(mod.conceitos[j]))}</b>${d ? `<small>${esc(d.r)}</small>` : ""}<span class="ideia-abrir" aria-hidden="true">abrir</span></button></li>`;
-  }
-  // a janela de uma ideia: Ideia (com o desenho que anda), Dia a dia, Código e Teste
-  function abrirIdeia(cod, j, aoEntender, origem) {
-    const { mod, materia: m } = MODULO[cod];
-    const d = ideiaDe(cod, j);
-    const nome = maiusc(mod.conceitos[j]);
-    const termo = termoDe(mod.conceitos[j]);
-    const n = mod.conceitos.length;
-    const carimbo = `Prancha <b>${doisDig(j + 1)}/${doisDig(n)}</b><br>${esc(cod)} · ${esc(mod.nome)}`;
-    const marcado = new Set(progresso.conceitos[cod] || []).has(j);
-    const aula = LICOES[cod] ? `${LICOES[cod]}#c${j + 1}` : `#guia-${m.sigla}`;
-    let abas;
-    if (d) {
-      abas = [
-        { nome: "Ideia", html: `<p class="jn-def glossavel">${esc(d.ideia)}</p><div class="jn-fig"></div>`, aoAbrir: (el) => { window.Planta.montar(el.querySelector(".jn-fig"), d.fig); glossar(el, m.sigla, 3); } },
-        { nome: "Dia a dia", html: `<div class="jn-dia"><span class="ic-d" aria-hidden="true">${ic("sparkle-duotone")}</span><p><b>${esc(d.dia.titulo)}</b>${esc(d.dia.texto)}</p></div>${termo ? `<p class="jn-vazio"><b>${esc(termo.formas[0])}</b>${termo.en ? ` (em inglês, ${esc(termo.en)})` : ""}: ${esc(termo.def)}</p>` : ""}` },
-        { nome: "Código", html: d.codigo ? `<div class="jn-codigo"></div><p class="jn-vazio">Este código roda de verdade; a saída é a que o Python mostra.</p>` : `<p class="jn-vazio">Esta ideia não tem código próprio: ela aparece nos exemplos das outras ideias.</p>`, aoAbrir: (el) => { if (d.codigo) window.Planta.montar(el.querySelector(".jn-codigo"), { t: "codigo", titulo: "em Python", linhas: d.codigo.linhas, saida: d.codigo.saida }); } },
-        { nome: "Teste", html: `<div class="jn-teste"></div>`, aoAbrir: (el) => montarTeste(el.querySelector(".jn-teste"), cod, j) },
-      ];
-    } else {
-      abas = [{ nome: "Ideia", html: `${termo ? `<p class="jn-def"><b>${esc(termo.formas[0])}</b>${termo.en ? ` (${esc(termo.en)})` : ""}: ${esc(termo.def)}</p>` : ""}<div class="jn-dia"><span class="ic-d" aria-hidden="true">${ic("target-duotone")}</span><p><b>Onde esta ideia entra</b>${esc(mod.dia)}</p></div><p class="jn-vazio">A janela completa desta ideia, com desenho, código e teste, chega na próxima etapa do curso. Por enquanto, a explicação da matéria está em Como funciona.</p>` }];
-    }
-    window.Janela.abrir({
-      rotulo: `Ideia ${j + 1} de ${n}`, titulo: nome, carimbo, abas, origem,
-      acoes: [
-        { texto: `${ic(LICOES[cod] ? "play-bold" : "film-strip-duotone")}${LICOES[cod] ? "Ver na aula" : "Como funciona"}`, href: aula },
-        { texto: `${ic("check-bold")}${marcado ? "Entendida" : "Entendi"}`, classe: "primario", aoClicar: (fechar) => { aoEntender(j, true); fechar(); } },
-      ],
-    });
-  }
-  // a pergunta corrigida de uma ideia, dentro da janela ou na lista de exercícios
-  function montarTeste(alvo, cod, j, aoResolver) {
-    const d = ideiaDe(cod, j);
-    if (!d || !window.Motor) return;
-    alvo.innerHTML = window.Motor.criar(Object.assign({ r: "Teste rápido" }, d.teste));
-    const ex = alvo.querySelector(".exercicio");
-    window.Motor.montarExercicio(ex, { licao: cod, titulo: MODULO[cod].mod.nome, conceito: MODULO[cod].mod.conceitos[j], resumo: d.ideia, aoResolver: (e, r) => { if (aoResolver) aoResolver(r); } });
-  }
-  // os exercícios do módulo, um por ideia, numa janela só
-  function abrirExercicios(cod, origem) {
-    const { mod } = MODULO[cod];
-    const ideias = (CONC()[cod] || {}).ideias || [];
-    let certos = 0, feitos = 0;
-    window.Janela.abrir({
-      rotulo: `${esc(mod.nome)} · exercícios`, titulo: `${ideias.length} perguntas, uma por ideia`, origem,
-      carimbo: `Lista <b>${esc(cod)}</b><br>corrigida na hora`,
-      abas: [{ nome: "Exercícios", html: `<p class="jn-vazio">Duas tentativas em cada uma; o erro vem explicado. O placar aparece no fim.</p>${ideias.map((d, j) => `<section class="jn-ex"><p class="jn-rotulo">Ideia ${j + 1} · ${esc(maiusc(mod.conceitos[j]))}</p><div data-ex="${j}"></div></section>`).join("")}<p class="jn-placar" role="status" aria-live="polite"></p>`,
-        aoAbrir: (el) => ideias.forEach((d, j) => montarTeste(el.querySelector(`[data-ex="${j}"]`), cod, j, (r) => {
-          feitos++; if (r === "primeira" || r === "segunda") certos++;
-          if (feitos === ideias.length) el.querySelector(".jn-placar").textContent = `Placar: ${certos} de ${ideias.length} certas.${certos === ideias.length ? " Tudo certo." : " Reveja as ideias que errou."}`;
-        })) }],
-      acoes: [{ texto: "Fechar", classe: "so", aoClicar: (fechar) => fechar() }],
-    });
-  }
-
-  // ---------- LIÇÃO ----------
-  let estudo = { cod: null, passo: 0, liberado: [true, true, true, false, false], direcao: 1 };
-  let autoAvanco = 0;
-  function vistaEstudo(cod) {
-    if (estudo.cod !== cod) {
-      const salvo = estadoDe(cod) === "dominado" ? 0 : Math.min(4, progresso.passos[cod] || 0);
-      estudo = { cod, passo: salvo, liberado: [0, 1, 2, 3, 4].map((k) => k < 3 || k <= salvo), direcao: 1, retomado: salvo > 0 };
-    }
-    clearTimeout(autoAvanco);
+  // ---------- FECHAR O MÓDULO: a pergunta final, que corrige, e a vitória ----------
+  // A aula termina aqui (licoes/motor.js manda para #fechar-COD). Acertou (de primeira ou na segunda), o módulo fica
+  // dominado; com a resposta revelada, volta para a aula ou tenta de novo. Os itens ficam em verifica-modulos.js.
+  function vistaFechar(cod) {
     const { mod, materia: m, indice } = MODULO[cod];
-    const p = estudo.passo;
     const seguinte = ORDEM[ORDEM.indexOf(cod) + 1];
-    let i = 0;
-    const iv = () => `style="--i:${i++}"`;
-    const rotulo = `<div class="passo-rotulo" ${iv()}><span class="chip">${ic(PASSOS[p][1])}passo ${p + 1} de 5 · ${PASSOS[p][0]}</span>${mod.virada ? `<span class="chip virada">${ic("lightning-duotone")}ponto de virada</span>` : ""}${estudo.retomado ? `<span class="chip">${ic("arrow-counter-clockwise-bold")}continuando de onde parou</span>` : ""}</div>`;
-    let corpo = "";
-    if (p === 0) {
-      const falta = mod.antes.filter((a) => estadoDe(a.codigo) !== "dominado");
-      const prep = prepara(cod);
-      const no = (c, cls = "") => `<li class="no ${cls} ${estadoDe(c) === "dominado" ? "ok" : ""}"><a href="#estudo-${c}"><span class="no-marca" aria-hidden="true">${estadoDe(c) === "dominado" ? ic("check-bold") : ""}</span><span><b>${esc(MODULO[c].mod.nome)}</b><small>${esc(MODULO[c].materia.nome)}${estadoDe(c) === "dominado" ? " · dominado" : ""}</small></span></a></li>`;
-      corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>${esc(mod.nome)}</h1><p class="passo-sub" ${iv()}>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}${estadoDe(cod) === "dominado" ? " · já dominado" : ""}</p>
-        <div class="rede" ${iv()}>
-          <div class="rede-col"><p class="rede-rot">${ic("caret-down-bold")}Usa o que veio antes</p>${mod.antes.length ? `<ul>${mod.antes.map((a) => no(a.codigo)).join("")}</ul>` : `<p class="rede-vazio">Nada: é um começo.</p>`}</div>
-          <div class="rede-este"><span class="rede-cota">este módulo</span><b>${esc(mod.nome)}</b><span class="rede-numeros"><i>${mod.conceitos.length} ideias</i><i>vale ${pct(pesoDe(cod), 2)} da formação</i><i>+${xpDe(cod)} XP</i>${mod.virada ? `<i class="virada">ponto de virada</i>` : ""}${LICOES[cod] ? "<i>aula ilustrada</i>" : ""}</span></div>
-          <div class="rede-col"><p class="rede-rot">${ic("caret-down-bold")}Prepara para</p>${prep.length ? `<ul>${prep.slice(0, 4).map((c) => no(c, "depois")).join("")}${prep.length > 4 ? `<li class="rede-mais">e mais ${prep.length - 4}</li>` : ""}</ul>` : `<p class="rede-vazio">O fim desta linha.</p>`}</div>
-        </div>
-        <div class="fala fala-curta" ${iv()}>${mascote(mod.antes.length ? "explica" : "feliz", "", "chegar falar")}<p class="balao">${mod.antes.length ? (falta.length ? `Falta dominar ${falta.length === 1 ? "um pré-requisito" : falta.length + " pré-requisitos"}. Pode seguir; se travar, volte ${falta.length === 1 ? "nele" : "neles"}.` : "Você já domina tudo o que este módulo usa. Bora!") : "Este módulo não exige nada antes. Bora!"}${mod.virada ? " <b>Ponto de virada:</b> demora a fazer sentido, e depois muda tudo." : ""}</p></div>`;
-    }
-    if (p === 1) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Para que serve</h1>
-      <ol class="rumo" ${iv()}>
-        <li class="rumo-e"><span class="rumo-ic" aria-hidden="true">${ic("sparkle-duotone")}</span><div><small>no dia a dia</small><p class="glossavel">${esc(mod.dia)}</p></div></li>
-        <li class="rumo-p"><span class="rumo-ic" aria-hidden="true">${ic("target-duotone")}</span><div><small>ao final, você consegue</small><p class="glossavel">${esc(mod.dominio)}.</p></div></li>
-        ${m.trabalho ? `<li class="rumo-s"><span class="rumo-ic" aria-hidden="true">${ic("graduation-cap-duotone")}</span><div><small>no trabalho do cientista de dados · ${esc(m.etapa)}</small><p class="glossavel">${esc(m.trabalho)}</p></div></li>` : ""}
-      </ol>`;
-    const marcados = new Set(progresso.conceitos[cod] || []);
-    if (p === 2) corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>${mod.conceitos.length} ideias de ${esc(mod.nome)}</h1><p class="passo-sub" ${iv()}>Toque numa ideia para abrir a explicação${ideiaDe(cod, 0) ? " com desenho, exemplo, código e teste" : ""}. Ao terminar, marque <b>Entendi</b> dentro dela.</p>
-      <p class="conta-conceitos" id="conta-conceitos" ${iv()}>${marcados.size} de ${mod.conceitos.length} ideias entendidas</p>
-      <ol class="ideias" ${iv()}>${mod.conceitos.map((c, j) => cartaoIdeia(cod, j, marcados.has(j))).join("")}</ol>
-      <h2 class="secao-rot" ${iv()}>Pratique do seu jeito</h2>
-      <div ${iv()}>${formasDoModulo(cod)}</div>
-      <p class="passo-sub nota-aula" ${iv()}>Dúvida fora daqui? No Claude, digite <code>/aula</code>.</p>`;
-    if (p === 3) {
-      const ev = (CONC()[cod] || {}).evitar;
-      corpo = `${rotulo}<h1 class="passo-titulo" ${iv()}>Cuidado com</h1>
-      <div class="cuidado" ${iv()}><span class="ic-a">${ic("warning-duotone")}</span><p class="glossavel">${esc(mod.tropeco)}</p></div>
-      ${ev ? `<div class="pl-figura" ${iv()}><p class="pl-cota"><span>o tropeço e o jeito certo</span></p><div class="pl-comparar">${["errado", "certo"].map((k) => `<div class="pl-lado ${k === "errado" ? "pl-x" : "pl-s"}"><small>${k === "errado" ? "assim, não" : "assim, sim"}</small><b>${esc(ev[k].titulo)}</b>${ev[k].codigo ? `<pre><code>${pyHL(ev[k].codigo)}</code></pre>` : `<p>${esc(ev[k].texto)}</p>`}</div>`).join("")}</div></div>` : ""}
-      <div class="fala fala-curta" ${iv()}>${mascote("pensa", "", "pensar")}<p class="balao">É o erro mais comum nesta etapa. Saber dele antes já evita metade das vezes.</p></div>`;
-    }
-    if (p === 4) corpo = (window.VERIFICA_MODULOS || {})[cod] && window.Motor
-      ? `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
-      <div class="fala" ${iv()}>${mascote("pensa", "flutua", "pensar")}<p class="balao cor">Confira se entendeu. Tem duas tentativas, e o erro vem explicado.</p></div>
-      <div class="verifica-estudo" ${iv()} data-verifica></div>
-      <div class="botoes-j" ${iv()}><button type="button" class="btn" data-naosei>Ainda não sei: rever os conceitos</button></div>
-      <div data-resposta hidden></div>`
-      : `${rotulo}<h1 class="passo-titulo" ${iv()}>Pronto para avançar?</h1>
-      <div class="fala" ${iv()}>${mascote("pensa", "flutua", "pensar")}<p class="balao cor texto-grande">${esc(mod.pergunta)}</p></div>
-      <label class="resposta-campo" ${iv()}><span>Escreva a sua resposta antes de ver a nossa. Ela fica salva${progresso.respostas[cod] ? ` (última edição em ${progresso.respostas[cod].em.split("-").reverse().join("/")})` : ""}.</span><textarea id="resp" rows="4">${esc((progresso.respostas[cod] || {}).texto || "")}</textarea></label>
-      <div class="botoes-j" ${iv()}><button type="button" class="btn btn-3d" data-comparar disabled>${ic("check-bold")}Comparar com a resposta</button><button type="button" class="btn" data-naosei>Ainda não sei</button></div>
-      <div data-resposta hidden></div>`;
-    const pe = p < 3
-      ? `<button type="button" class="btn btn-3d btn-grande" data-continuar>Continuar${ic("arrow-right-bold")}</button>`
-      : p === 3
-        ? `<button type="button" class="btn btn-3d btn-grande" data-continuar>${ic("check-bold")}Entendi, seguir</button>`
-        : seguinte ? `<a class="btn btn-fantasma" href="#estudo-${seguinte}">Pular para o próximo módulo</a>` : "";
-    const segs = PASSOS.map(([nome], k) => `<button type="button" class="seg ${k < p ? "feito" : k === p ? "atual" : ""}" data-ir="${k}" aria-label="Passo ${k + 1}: ${nome}${k < p ? ", feito" : k === p ? ", atual" : ""}"${k > p && !estudo.liberado.slice(0, k + 1).every(Boolean) ? " disabled" : ""}></button>`).join("");
+    const item = (window.VERIFICA_MODULOS || {})[cod];
     centro().innerHTML = `
-      <div class="licao tema-exp" style="${coresExp()}">
-        <header class="licao-topo">
-          <a class="btn btn-redondo btn-fantasma" href="#trilha-${m.sigla}" aria-label="Sair da lição e voltar para ${esc(m.nome)}">${ic("x-bold")}</a>
-          <nav class="segmentos" aria-label="Passos da lição">${segs}</nav>
-          <span class="salvo" aria-live="polite">${textoSalvo()}</span>
-          <span class="licao-xp" title="XP ao dominar este módulo">${ic("lightning-duotone")}+${xpDe(cod)}</span>
-        </header>
-        <main class="licao-palco"><div class="cartao-passo ${estudo.direcao < 0 ? "entra-volta" : "entra"}">${corpo}</div></main>
-        <footer class="licao-pe"><div>
-          <button type="button" class="btn btn-fantasma" data-voltar${p === 0 ? " disabled" : ""}>${ic("arrow-left-bold")}Voltar</button>
-          <span class="dica">${p < 3 ? "Enter ou seta para a direita: continuar" : p === 3 ? "Leia o tropeço e confirme para seguir" : "Acertou: o módulo fica dominado e você segue"}</span>
-          ${pe}
-        </div></footer>
+      <div class="fechar tema-exp" style="${coresExp()}">
+        <header class="fechar-topo"><a class="fechar-sair" href="${urlAula(cod)}" aria-label="Voltar para a aula de ${esc(mod.nome)}">${ic("arrow-left-bold")}</a><span><b>Pergunta final</b><small>${esc(m.nome)} · módulo ${indice + 1} de ${m.modulos.length}</small></span></header>
+        <main class="fechar-corpo">
+          <h1>Pronto para fechar ${esc(mod.nome)}?</h1>
+          <p class="fechar-sub">Uma pergunta sobre o módulo inteiro. São duas tentativas, e o erro vem explicado. Acertou, o módulo fica dominado.</p>
+          <div class="fechar-guia">${mascote("pensa", "", "chegar pensar")}</div>
+          <div data-verifica></div>
+          <div class="fechar-depois" data-depois hidden></div>
+        </main>
       </div>`;
-    glossar(document.querySelector(".cartao-passo"), m.sigla, 5);
-
-    const ir = (k) => {
-      estudo.direcao = k >= estudo.passo ? 1 : -1;
-      estudo.passo = Math.max(0, Math.min(4, k));
-      estudo.retomado = false;
-      if ((progresso.passos[cod] || 0) < estudo.passo) { progresso.passos[cod] = estudo.passo; salvar(); }
-      vistaEstudo(cod);
-      window.scrollTo(0, 0);
+    const alvo = document.querySelector("[data-verifica]"), depois = document.querySelector("[data-depois]");
+    const acoes = (acertou) => {
+      depois.hidden = false;
+      depois.innerHTML = acertou
+        ? `<button type="button" class="btn btn-3d btn-grande" data-dominar>${ic("trophy-duotone")}Dominar o módulo</button>`
+        : `<a class="btn btn-3d btn-grande" href="${urlAula(cod, 0)}">${ic("arrow-counter-clockwise-bold")}Rever a aula</a><button type="button" class="btn" data-de-novo>Tentar de novo</button>`;
+      const dm = depois.querySelector("[data-dominar]");
+      if (dm) { dm.addEventListener("click", () => vitoria(cod, seguinte)); dm.focus({ preventScroll: true }); }
+      const dn = depois.querySelector("[data-de-novo]");
+      if (dn) dn.addEventListener("click", () => vistaFechar(cod));
+      depois.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "nearest" });
     };
-    const avancar = () => {
-      if (estudo.passo === 3) { estudo.liberado[3] = true; estudo.liberado[4] = true; ir(4); return; }
-      if (estudo.passo < 3) { estudo.liberado[estudo.passo + 1] = true; ir(estudo.passo + 1); }
-    };
-    document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => ir(Number(b.dataset.ir))));
-    document.querySelector("[data-voltar]").addEventListener("click", () => ir(estudo.passo - 1));
-    const cont = document.querySelector("[data-continuar]");
-    if (cont) {
-      cont.addEventListener("click", avancar);
-      // botão com progresso: a barra mostra em que passo da lição você está
-      cont.classList.add("b-prog"); cont.style.setProperty("--p", (p + 1) / PASSOS.length); cont.dataset.passo = `passo ${p + 1} de ${PASSOS.length}`;
-    }
-    if (p === 4) montarPergunta(cod, mod, seguinte);
-    if (p === 2) {
-      const entender = (j, on) => {
-        const set = new Set(progresso.conceitos[cod] || []);
-        if (on) set.add(j); else set.delete(j);
-        progresso.conceitos[cod] = [...set].sort((a, c) => a - c);
-        salvar();
-        const li = document.querySelector(`[data-ideia="${j}"]`).closest("li");
-        li.outerHTML = cartaoIdeia(cod, j, on);
-        document.getElementById("conta-conceitos").textContent = `${set.size} de ${mod.conceitos.length} ideias entendidas`;
-        const novo = document.querySelector(`[data-ideia="${j}"]`);
-        if (novo) novo.focus({ preventScroll: true });
-      };
-      const palco = document.querySelector(".cartao-passo");
-      palco.addEventListener("click", (e) => {
-        const b = e.target.closest("[data-ideia]");
-        if (b && window.Janela) { abrirIdeia(cod, Number(b.dataset.ideia), entender, b); return; }
-        const x = e.target.closest("[data-exercicios]");
-        if (x && window.Janela) abrirExercicios(x.dataset.exercicios, x);
-      });
-    }
-    teclas = (e) => {
-      if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-      if (e.key === "Escape") { location.hash = `#trilha-${m.sigla}`; return; }
-      if ((e.key === "ArrowRight" || e.key === "Enter") && estudo.passo < 4 && !e.target.closest("a,button:not([data-continuar])")) { e.preventDefault(); avancar(); }
-      if (e.key === "ArrowLeft" && estudo.passo > 0) { e.preventDefault(); ir(estudo.passo - 1); }
-    };
-  }
-  function montarPergunta(cod, mod, seguinte) {
-    const alvo = document.querySelector("[data-verifica]");
-    if (alvo) { montarVerificacao(alvo, cod, mod, seguinte); return; }
-    const area = document.getElementById("resp");
-    const comparar = document.querySelector("[data-comparar]");
-    const caixa = document.querySelector("[data-resposta]");
-    const mostrar = (podeAcertar) => {
-      const pf = document.querySelector(".cartao-passo .mascote");
-      if (pf && window.GuiaMov) window.GuiaMov.mover(pf, "dica", podeAcertar ? "explica" : "padrao");
-      else if (pf) pf.innerHTML = guia().expr[podeAcertar ? "explica" : "padrao"];
-      caixa.hidden = false;
-      caixa.innerHTML = `<div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div>
-        <div class="botoes-j" style="margin-top:14px">${podeAcertar ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Acertei: dominar módulo</button>` : ""}<button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Ainda não: rever os conceitos</button></div>`;
-      const ac = caixa.querySelector("[data-acertei]");
-      if (ac) { ac.addEventListener("click", () => vitoria(cod, seguinte)); ac.focus({ preventScroll: true }); }
-      caixa.querySelector("[data-rever]").addEventListener("click", () => { marcar(cod, "rever"); toast("Marcado para rever. Volte aos conceitos com calma.", "arrow-counter-clockwise-bold"); estudo.direcao = -1; estudo.passo = 2; vistaEstudo(cod); window.scrollTo(0, 0); });
-      caixa.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "nearest" });
-    };
-    area.addEventListener("input", () => {
-      comparar.disabled = area.value.trim().length < 3;
-      progresso.respostas[cod] = { texto: area.value, em: hoje() };
-      salvar();
-    });
-    comparar.disabled = area.value.trim().length < 3;
-    comparar.addEventListener("click", () => mostrar(true));
-    document.querySelector("[data-naosei]").addEventListener("click", () => mostrar(false));
-    area.focus({ preventScroll: true });
-  }
-
-  // a pergunta final que corrige: escolher, completar, achar o erro ou ordenar (window.VERIFICA_MODULOS, verifica-modulos.js).
-  // Acertou (de primeira ou na segunda), pode dominar o módulo; com a resposta revelada, revê os conceitos ou tenta de novo.
-  // A tarefa de domínio continua como prática opcional, com o texto salvo como antes.
-  function montarVerificacao(alvo, cod, mod, seguinte) {
-    const caixa = document.querySelector("[data-resposta]");
-    alvo.innerHTML = window.Motor.criar(window.VERIFICA_MODULOS[cod]);
+    if (!item || !window.Motor) { acoes(true); return; }
+    alvo.innerHTML = window.Motor.criar(item);
     const ex = alvo.querySelector(".exercicio");
-    const rever = () => { marcar(cod, "rever"); toast("Marcado para rever. Volte aos conceitos com calma.", "arrow-counter-clockwise-bold"); estudo.direcao = -1; estudo.passo = 2; vistaEstudo(cod); window.scrollTo(0, 0); };
     window.Motor.montarExercicio(ex, { licao: cod, titulo: mod.nome, conceito: mod.nome, resumo: mod.resposta, aoResolver: (e, r) => {
       progresso.verificados[cod] = { r, em: hoje() }; salvar();
       const acertou = r !== "revelada";
-      const pf = document.querySelector(".cartao-passo .mascote");
+      if (!acertou) marcar(cod, estadoDe(cod) === "dominado" ? "dominado" : "rever");
+      const pf = document.querySelector(".fechar-guia .mascote");
       if (pf && window.GuiaMov) window.GuiaMov.mover(pf, acertou ? "acerto" : "erro", acertou ? "feliz" : "pensa");
-      const resp = progresso.respostas[cod] || {};
-      caixa.hidden = false;
-      const ns0 = document.querySelector("[data-naosei]");
-      if (ns0) ns0.closest(".botoes-j").hidden = true;
-      caixa.innerHTML = `<div class="botoes-j">${acertou ? `<button type="button" class="btn btn-3d sucesso btn-grande" data-acertei>${ic("trophy-duotone")}Dominar o módulo</button><button type="button" class="btn" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button>` : `<button type="button" class="btn btn-3d" data-rever>${ic("arrow-counter-clockwise-bold")}Rever os conceitos</button><button type="button" class="btn" data-de-novo>Tentar de novo</button>`}</div>
-        <details class="pratica-j"><summary>Praticar com a tarefa do módulo (opcional)</summary>
-          <label class="resposta-campo"><span>${esc(mod.pergunta)} O que você escrever fica salvo.</span><textarea id="resp" rows="3">${esc(resp.texto || "")}</textarea></label>
-          <details class="resposta-ver"><summary>Ver a nossa resposta</summary><div class="resposta-j">${ic("check-circle-duotone")}<div><small>a nossa resposta</small><p>${esc(mod.resposta)}</p></div></div></details>
-        </details>`;
-      const t = caixa.querySelector("#resp");
-      t.addEventListener("input", () => { progresso.respostas[cod] = { texto: t.value, em: hoje() }; salvar(); });
-      const ac = caixa.querySelector("[data-acertei]");
-      if (ac) { ac.addEventListener("click", () => vitoria(cod, seguinte)); ac.focus({ preventScroll: true }); }
-      caixa.querySelector("[data-rever]").addEventListener("click", rever);
-      const dn = caixa.querySelector("[data-de-novo]");
-      if (dn) dn.addEventListener("click", () => { caixa.hidden = true; caixa.innerHTML = ""; montarVerificacao(alvo, cod, mod, seguinte); });
-      caixa.scrollIntoView({ behavior: semMovimento() ? "auto" : "smooth", block: "nearest" });
+      acoes(acertou);
     } });
     if (window.Reacao) window.Reacao.observar(ex);
-    const ns = document.querySelector("[data-naosei]");
-    if (ns && !ns.dataset.ligado) { ns.dataset.ligado = "1"; ns.addEventListener("click", rever); }
+    teclas = (e) => { if (e.key === "Escape") location.href = urlAula(cod); };
   }
   function vitoria(cod, seguinte) {
     const antes = nivelDe(xpTotal()).n;
@@ -1139,7 +868,7 @@
       <p>${jaEra ? "Revisão feita. " : `+${pct(pesoDe(cod), 2)} na formação. `}Você está em <b>${pct(formacao(), 1)}</b> da formação de cientista de dados.</p>
       <p>Nível ${depois.n} · ${depois.resto} de 100 XP${depois.n > antes ? ". Você subiu de nível!" : ""}</p>
       ${seguinte ? `<p>Próximo: <b>${esc(MODULO[seguinte].mod.nome)}</b></p>` : "<p>Você terminou a jornada inteira.</p>"}
-      <div class="vitoria-acoes">${seguinte ? `<button type="button" class="btn btn-3d" data-seguir>${ic("arrow-right-bold")}Seguir agora</button><button type="button" class="btn" data-ficar>Ficar aqui</button>` : `<a class="btn btn-3d" href="#mapa">${ic("map-trifold-duotone")}Ver o mapa</a>`}</div>
+      <div class="vitoria-acoes">${seguinte ? `<button type="button" class="btn btn-3d" data-seguir>${ic("arrow-right-bold")}Seguir agora</button><button type="button" class="btn" data-ficar>Ver os módulos</button>` : `<a class="btn btn-3d" href="#mapa">${ic("map-trifold-duotone")}Ver o mapa</a>`}</div>
     </div>`;
     document.body.appendChild(el);
     const ganho = xpDe(cod);
@@ -1147,14 +876,14 @@
     if (semMovimento()) alvoXp.textContent = ganho;
     else { const t0 = performance.now(); const passo = (t) => { const f = Math.min(1, (t - t0) / 700); alvoXp.textContent = Math.round(ganho * (1 - Math.pow(1 - f, 3))); if (f < 1) requestAnimationFrame(passo); }; requestAnimationFrame(passo); }
     if (depois.n > antes) setTimeout(() => toast(`Nível ${depois.n}!`, "crown-duotone"), 600);
-    const fechar = () => { clearTimeout(autoAvanco); el.remove(); };
-    const seguir = () => { fechar(); location.hash = "#estudo-" + seguinte; };
+    const fechar = () => { el.remove(); };
+    const seguir = () => { fechar(); location.href = urlAula(seguinte); };
     if (seguinte) {
       el.querySelector("[data-seguir]").addEventListener("click", seguir);
-      el.querySelector("[data-ficar]").addEventListener("click", () => { fechar(); render(); });
+      el.querySelector("[data-ficar]").addEventListener("click", () => { fechar(); location.hash = "#trilha-" + m.sigla; });
       el.querySelector("[data-seguir]").focus();
     } else el.querySelector("a").addEventListener("click", fechar);
-    el.addEventListener("keydown", (e) => { if (e.key === "Escape") { fechar(); render(); } });
+    el.addEventListener("keydown", (e) => { if (e.key === "Escape") { fechar(); location.hash = "#trilha-" + m.sigla; } });
   }
 
   let tToast = 0;
@@ -1264,10 +993,10 @@
   });
   function render() {
     const r = rota();
+    if (r.v === "aula") { location.replace(urlAula(r.cod)); return; }
     esconderBalao();
     if (observador) { observador.disconnect(); observador = null; }
     observadores.splice(0).forEach((o) => o.disconnect());
-    clearTimeout(autoAvanco);
     document.querySelectorAll(".vitoria").forEach((v) => v.remove());
     desenharHud();
     if (r.v === "inicio") vistaInicio();
@@ -1277,9 +1006,9 @@
       if (!t.feito && !t.visto) setTimeout(() => abrirTutorial(t.parada || 0), 700);
     }
     else if (r.v === "materia") vistaMateria(r.sigla, r.aba);
-    else if (r.v === "estudo") vistaEstudo(r.cod);
+    else if (r.v === "fechar") vistaFechar(r.cod);
     else vistaFontes();
-    const titulo = r.v === "inicio" ? "Início" : r.v === "mapa" ? "Mapa" : r.v === "fontes" ? "Fontes" : r.v === "estudo" ? MODULO[r.cod].mod.nome : POR_SIGLA[r.sigla].nome;
+    const titulo = r.v === "inicio" ? "Início" : r.v === "mapa" ? "Mapa" : r.v === "fontes" ? "Fontes" : r.v === "fechar" ? MODULO[r.cod].mod.nome : POR_SIGLA[r.sigla].nome;
     document.title = `${titulo} · Domínio`;
   }
   // ---------- tutorial: o guia apresenta o Domínio, parando na parte real da tela de que fala ----------
@@ -1292,10 +1021,10 @@
     const lista = (itens, ordem) => `<${ordem ? "ol" : "ul"} class="tut-lista">${itens.map((x) => `<li>${x}</li>`).join("")}</${ordem ? "ol" : "ul"}>`;
     return [
       { alvo: null, expr: "feliz", t: `Oi, eu sou ${esc(guia().nome)}`, h: `<p>Vou acompanhar você do primeiro algoritmo ao primeiro modelo. Antes, o que faz um cientista de dados: ele percorre este ciclo, de novo e de novo, em cada projeto.</p>${lista(CICLO_CD, true)}<p>Cada matéria do Domínio treina uma ou mais etapas desse ciclo, e eu sempre aviso qual.</p>` },
-      { alvo: ".legenda-linhas", expr: "explica", t: "O mapa: 16 matérias em 6 linhas", h: `<p>Cada linha junta matérias que treinam as mesmas etapas do trabalho:</p>${lista(MUNDOS.map((w) => `<b>${esc(w.nome)}</b>: ${w.siglas.map((sg) => esc((POR_SIGLA[sg].etapa || "").toLowerCase())).join(", ")}`))}<p>Passe o mouse ou toque numa estação: eu digo o que ela usa, o que ela prepara e onde ela entra no trabalho.</p>` },
+      { alvo: ".grupos-mapa", expr: "explica", t: "O mapa: 16 matérias em 6 grupos", h: `<p>Cada linha junta matérias que treinam as mesmas etapas do trabalho:</p>${lista(MUNDOS.map((w) => `<b>${esc(w.nome)}</b>: ${w.siglas.map((sg) => esc((POR_SIGLA[sg].etapa || "").toLowerCase())).join(", ")}`))}<p>Passe o mouse ou toque numa estação: eu digo o que ela usa, o que ela prepara e onde ela entra no trabalho.</p>` },
       { alvo: "[data-principal]", expr: "explica", t: "Um botão para seguir", h: `<p>O Continuar leva sempre ao próximo módulo da sequência, agora <b>${esc(prox.nome)}</b>. Não precisa escolher nada: a ordem já respeita o que cada matéria pede antes.</p>` },
-      { alvo: null, expr: "explica", t: "Cada módulo em 5 passos", h: `${lista(PASSOS.map(([n]) => esc(n)), true)}<p>No passo “Para que serve” eu conto onde aquilo aparece no trabalho. No último, você responde uma pergunta que se corrige na hora (escolher, completar, achar o erro ou pôr na ordem); acertou, o módulo fica dominado.</p>` },
-      { alvo: 'a[href="licoes/INICIO.html"]', expr: "uau", t: "Lições com animação e prática", h: "<p>Nas lições ilustradas, cada conceito abre em etapas, uma de cada vez: um desafio antes de ler, a animação passo a passo, os exercícios e a sua explicação. Errou? Na primeira vez vem a dica; na segunda, a resposta comentada. O melhor começo é a lista de aprovados.</p>" },
+      { alvo: null, expr: "explica", t: "Cada conceito em 3 etapas", h: `${lista(["<b>Entenda</b>: uma pergunta de aquecimento, a explicação e a animação que você avança no seu ritmo", "<b>Pratique</b>: os exercícios, um por vez, corrigidos na hora", "<b>Avance</b>: o resumo do conceito e o próximo"], true)}<p>No fim do módulo vem uma pergunta final que se corrige na hora; acertou, o módulo fica dominado.</p>` },
+      { alvo: 'a[href="licoes/INICIO.html"]', expr: "uau", t: "Por onde começar", h: "<p>Errou um exercício? Na primeira vez vem a dica; na segunda, a resposta comentada. Se tudo é novo, o melhor começo é a lista de aprovados, aqui em Outras formas de estudar.</p>" },
       { alvo: 'a[href="castelo/index.html"]', expr: "feliz", t: "O laboratório: a prática que fixa", h: "<p>No Centro de Dados você monta um banco PostgreSQL do zero, como num projeto real: cria as tabelas, carrega os dados, consulta, analisa com Python, administra o banco e apresenta os resultados. Cada módulo começa dizendo em que momento do trabalho aquilo acontece.</p>" },
       { alvo: "#guia-btn", expr: "padrao", t: "Seu guia, o tema e este tutorial", h: "<p>Aqui você troca o guia e o tema e salva o seu trajeto num arquivo, para levar a outro aparelho. O tutorial fica no botão ao lado, para rever quando quiser. O que você errar volta para revisão em 1, 3, 7, 14 e 30 dias, e o mapa avisa quando há revisão.</p>" },
     ];
@@ -1327,6 +1056,7 @@
     };
     const pintar = () => {
       const P = paradas[k], alvo = P.alvo && document.querySelector(P.alvo);
+      if (alvo) { const dobra = alvo.closest("details:not([open])"); if (dobra) dobra.open = true; }
       gravarTut(Object.assign(lerTut(), { parada: k }));
       el.querySelector(".tut-guia").innerHTML = mascote(P.expr, "", k === inicio ? "chegar falar" : "falar");
       el.querySelector(".tut-n").textContent = `Tutorial · ${k + 1} de ${n}`;

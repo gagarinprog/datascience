@@ -4,7 +4,8 @@ import { RESOLVER } from "./apostila-resolver";
 
 /**
  * A apostila (apostila/, site estático no GitHub Pages) testada como o aluno usa: a página inicial, o traço e o
- * movimento dos guias, o estudo em 5 passos, cada lição ilustrada inteira e a revisão do dia. O servidor estático
+ * movimento dos guias, a aula linear (Entenda, Pratique, Avance) de cada lição inteira, a aula gerada até o módulo
+ * dominado, o mapa e a matéria em menus suspensos e a revisão do dia. O servidor estático
  * sobe junto com o do app (playwright.config.ts). Roda no celular (390 px) e no computador (1280 px).
  */
 const BASE = "http://127.0.0.1:3200/apostila/";
@@ -49,7 +50,7 @@ test.describe("apostila", () => {
     await expect(page.locator(".tut-cartao")).toHaveCount(0);
     await page.goto(BASE + "index.html#inicio");
     await expect(page.locator(".inicio:not(.primeira)")).toBeVisible();
-    await expect(page.locator(".ini-botao")).toHaveAttribute("href", /#estudo-LOG\.01$/);
+    await expect(page.locator(".ini-botao")).toHaveAttribute("href", /licoes\/LOG\.01\.html$/);
     expect(erros).toEqual([]);
   });
 
@@ -75,115 +76,127 @@ test.describe("apostila", () => {
     expect(rostos.size).toBe(3);
   });
 
-  test("o guia se mexe no estudo e, com reduzir movimento, só troca a expressão", async ({
+  test("o guia se mexe na pergunta final e, com reduzir movimento, só troca a expressão", async ({
     page,
   }) => {
     await page.addInitScript(() => {
       localStorage.setItem("dominio:traco:v1", "manga");
       localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true }));
     });
-    await page.goto(BASE + "index.html#estudo-LOG.01");
-    const guia = page.locator(".cartao-passo .mascote");
+    await page.goto(BASE + "index.html#fechar-LOG.01");
+    const guia = page.locator(".fechar-guia .mascote");
     await expect(guia).toHaveClass(/gm-chegar/);
-    await expect(guia).toHaveAttribute("data-quadro", "explica");
+    await expect(guia).toHaveAttribute("data-quadro", "pensa");
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto(BASE + "index.html#estudo-LOG.02");
+    await page.goto(BASE + "index.html#fechar-PY.01");
     await page.reload();
-    const parado = page.locator(".cartao-passo .mascote");
-    await expect(parado).toHaveAttribute("data-quadro", "explica");
+    const parado = page.locator(".fechar-guia .mascote");
+    await expect(parado).toHaveAttribute("data-quadro", "pensa");
     await expect(parado).not.toHaveClass(/gm-/);
   });
 
-  test("o estudo em 5 passos vai do começo ao módulo dominado", async ({ page }) => {
+  // percorre a aula linear: em cada etapa resolve o que estiver à vista (errando de propósito um sim, um não),
+  // passa pelas animações e segue pelo botão de baixo, até a última ação (pergunta final ou mapa)
+  async function percorrerAula(page: Page, rotulo: string) {
+    await page.evaluate(() =>
+      document
+        .querySelectorAll<HTMLElement>(".exercicio")
+        .forEach((e, i) => (e.dataset.vid = "x" + i)),
+    );
+    let k = 0;
+    const ir = page.locator(".aula-ir");
+    for (let volta = 0; volta < 400; volta++) {
+      const painel = page.locator(".secao:not([hidden]) .etapa-painel:not([hidden])");
+      const vista = painel.locator(".exercicio:visible");
+      for (let j = 0; j < (await vista.count()); j++) {
+        const ex = vista.nth(j);
+        if ((await ex.getAttribute("data-estado")) === "resolvido") continue;
+        const vid = (await ex.getAttribute("data-vid")) ?? "";
+        const r = await resolver(page, vid, k++ % 2 === 0);
+        expect(r.estado, `${rotulo} ${vid} ${r.tipo}`).toBe("resolvido");
+        expect(r.retorno).not.toBe("");
+      }
+      const figs = painel.locator("figure[data-clip]:visible");
+      for (let f = 0; f < (await figs.count()); f++) {
+        const fig = figs.nth(f);
+        if (await fig.locator("[data-aposta]").count())
+          await fig.locator("[data-aposta]").first().click();
+        const passos = await fig.locator(".clip-pontos button").count();
+        for (let p = 1; p < passos; p++) await fig.locator('[data-a="prox"]').click();
+      }
+      const ta = painel.locator(".explicar textarea:visible");
+      if (await ta.count()) {
+        await ta.first().fill("Explicação com as minhas palavras.");
+        await painel.locator("[data-salvar]:visible").first().click();
+      }
+      await expect(ir, `${rotulo}: o botão de seguir libera`).toBeEnabled();
+      const texto = (await ir.textContent()) ?? "";
+      if (/pergunta final|voltar ao mapa/i.test(texto)) return { k, texto };
+      await ir.click();
+    }
+    throw new Error(rotulo + ": a aula não terminou");
+  }
+
+  test("a aula gerada vai do primeiro conceito ao módulo dominado", async ({ page }) => {
+    test.setTimeout(120_000);
     const erros = vigiarErros(page);
     await page.addInitScript(() =>
       localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
     );
-    await page.goto(BASE + "index.html#estudo-LOG.01");
-    for (let p = 0; p < 4; p++) {
-      // passo 3: cada ideia abre a janela de explicação, e "Entendi" fecha e marca
-      if (p === 2)
-        for (let j = 0; j < (await page.locator("[data-ideia]").count()); j++) {
-          await page.locator(`[data-ideia="${j}"]`).click();
-          await page.locator("dialog.jn .jn-acoes .primario").click();
-          await expect(page.locator("dialog.jn")).toHaveCount(0);
-        }
-      await page.locator("[data-continuar]").click();
-    }
-    // a pergunta final agora corrige: resolve errando de propósito na primeira tentativa
+    await page.goto(BASE + "licoes/AULA.html#LOG.04");
+    await expect(page.locator(".aula-nome small")).toContainText("conceito 1 de");
+    // um conceito por vez e, nele, uma etapa por vez
+    await expect(page.locator(".secao:not([hidden])")).toHaveCount(1);
+    await expect(page.locator(".etapa-painel:visible")).toHaveCount(1);
+    const { k, texto } = await percorrerAula(page, "LOG.04");
+    expect(k).toBeGreaterThan(3);
+    expect(texto).toMatch(/pergunta final/i);
+    await page.locator(".aula-ir").click();
+    await expect(page).toHaveURL(/#fechar-LOG\.04$/);
     const final = page.locator("[data-verifica] .exercicio");
-    await expect(final).toBeVisible();
     await final.evaluate((e) => ((e as HTMLElement).dataset.vid = "final"));
     expect((await resolver(page, "final", true)).estado).toBe("resolvido");
-    // a prática da tarefa do módulo é opcional e vem recolhida
-    await page.locator(".pratica-j > summary").click();
-    await page.locator("#resp").fill("Uma sequência finita de passos sem ambiguidade.");
-    await page.locator("[data-acertei]").click();
+    await page.locator("[data-dominar]").click();
     await expect(page.locator(".vitoria")).toBeVisible();
     await page.locator("[data-ficar]").click();
     await expect(page.locator("#hud-xp")).not.toHaveText("0");
+    await expect(page.locator('.mod-sus[data-cod="LOG.04"] .mod-nome small')).toContainText(
+      "dominado",
+    );
+    expect(erros).toEqual([]);
+  });
+
+  test("a aula guarda onde parou e o menu só abre os conceitos já alcançados", async ({ page }) => {
+    const erros = vigiarErros(page);
+    await page.goto(BASE + "licoes/AULA.html#PY.03");
+    await expect(page.locator(".etapa-entenda:visible [data-fig]")).toHaveCount(1);
+    // o desenho anda por etapas
+    const nota = page.locator(".etapa-entenda:visible [data-fig] .pl-nota b").first();
+    const antes = await nota.textContent();
+    await page.locator('.etapa-entenda:visible [data-pl="passo"]').first().click();
+    await expect(nota).not.toHaveText(antes ?? "");
+    await page.locator(".aula-menu > summary").click();
+    const itens = page.locator(".aula-conceitos button");
+    await expect(itens.first()).toBeEnabled();
+    await expect(itens.nth(1)).toBeDisabled();
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".aula-menu")).not.toHaveAttribute("open", "");
+    // vai até o Pratique e recarrega: volta no mesmo lugar
+    await page.locator(".aula-ir").click();
+    await expect(page.locator('.aula-etapas [data-etapa="1"]')).toHaveClass(/atual/);
+    await page.reload();
+    await expect(page.locator('.aula-etapas [data-etapa="1"]')).toHaveClass(/atual/);
     expect(erros).toEqual([]);
   });
 
   for (const licao of LICOES) {
-    test(`a lição ${licao} é resolvida inteira, etapa por etapa`, async ({ page }) => {
+    test(`a lição ${licao} é resolvida inteira, conceito por conceito`, async ({ page }) => {
       test.setTimeout(240_000);
       const erros = vigiarErros(page);
       await page.goto(BASE + `licoes/${licao}.html`);
-      await page.evaluate(() =>
-        document
-          .querySelectorAll<HTMLElement>(".exercicio")
-          .forEach((e, i) => (e.dataset.vid = "x" + i)),
-      );
-      const secoes = page.locator(".secao");
-      const n = await secoes.count();
-      let k = 0;
-      for (let i = 0; i < n; i++) {
-        const sec = secoes.nth(i);
-        const itens = sec.locator(".cx-item");
-        for (let j = 0; j < (await itens.count()); j++) {
-          const it = itens.nth(j);
-          await expect(it).not.toHaveClass(/trancado/);
-          if ((await it.locator(".cx-cab").getAttribute("aria-expanded")) !== "true")
-            await it.locator(".cx-cab").click();
-          const classe = (await it.getAttribute("class")) ?? "";
-          if (classe.includes("cx-exercicio")) {
-            const vid = (await it.locator(".exercicio").first().getAttribute("data-vid")) ?? "";
-            const r = await resolver(page, vid, k++ % 2 === 0);
-            expect(r.estado, `${licao} ${vid} ${r.tipo}`).toBe("resolvido");
-            expect(r.retorno).not.toBe("");
-            await expect(it.locator(".retorno-guia")).toHaveCount(1);
-          } else if (classe.includes("cx-animacao")) {
-            const fig = it.locator("figure[data-clip]");
-            if (await fig.locator("[data-aposta]").count())
-              await fig.locator("[data-aposta]").first().click();
-            const passos = await fig.locator(".clip-pontos button").count();
-            for (let p = 1; p < passos; p++) await fig.locator('[data-a="prox"]').click();
-            await expect(fig.locator(".clip-legenda")).toContainText(
-              `Passo ${passos} de ${passos}`,
-            );
-            await it.locator(".cx-seguir").click();
-          } else {
-            const ta = it.locator(".explicar textarea");
-            if (await ta.count()) {
-              await ta.fill("Explicação com as minhas palavras.");
-              await it.locator("[data-salvar]").click();
-            }
-            // dentro da cascata o marcar fica escondido: o botão de seguir fecha e marca o conceito
-            if (await it.locator("[data-marcar]").isVisible())
-              await it.locator("[data-marcar]").click();
-            if (await it.locator(".cx-seguir").count()) await it.locator(".cx-seguir").click();
-          }
-        }
-        await expect(sec.locator(".cx-item:not(.feito)")).toHaveCount(0);
-        const prox = sec.locator("[data-proximo]");
-        if (await prox.count()) {
-          await expect(prox).toBeEnabled();
-          await prox.click();
-          await expect(secoes.nth(i + 1)).toBeVisible();
-        }
-      }
+      const { k } = await percorrerAula(page, licao);
       expect(k).toBeGreaterThan(10);
+      await expect(page.locator(".aula-nome small")).toContainText(/conceito (\d+) de \1/);
       expect(erros).toEqual([]);
     });
   }
@@ -287,22 +300,9 @@ test.describe("apostila", () => {
   }) => {
     const erros = vigiarErros(page);
     await page.emulateMedia({ reducedMotion: "reduce" });
+    // as bancadas ficam no Entenda de cada conceito: o endereço #cN abre o conceito
     const abrir = async (sec: string, tipo: string) => {
       await page.goto(BASE + `licoes/ED.01.html#${sec}`);
-      await page.evaluate(
-        ([s, t]) => {
-          const cx = (
-            document.getElementById(s!) as unknown as {
-              _cx: { itens: { el: Element }[]; abrir: (i: unknown, r: boolean) => void };
-            }
-          )._cx;
-          cx.abrir(
-            cx.itens.find((i) => i.el.querySelector(`[data-bancada="${t}"]`)),
-            false,
-          );
-        },
-        [sec, tipo],
-      );
       const b = page.locator(`[data-bancada="${tipo}"]`);
       await expect(b).toBeVisible();
       return b;
@@ -373,60 +373,31 @@ test.describe("apostila", () => {
     await expect(page.locator("#r-palco")).toContainText("Revisão concluída");
   });
 
-  test("a janela da ideia: desenho por etapas, abas pelo teclado, teste corrigido e Esc", async ({
-    page,
-  }) => {
-    const erros = vigiarErros(page);
-    await page.addInitScript(() =>
-      localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
-    );
-    await page.goto(BASE + "index.html#estudo-LOG.03");
-    await page.locator('[data-ir="2"]').click();
-    await expect(page.locator("[data-ideia]")).toHaveCount(6);
-    const cartao = page.locator('[data-ideia="1"]');
-    await cartao.click();
-    const jn = page.locator("dialog.jn");
-    await expect(jn).toBeVisible();
-    await expect(jn.locator("h2")).toHaveText("Divisão inteira e resto");
-    // o desenho anda por etapas
-    await expect(jn.locator(".pl-nota b")).toHaveText("1/3");
-    await jn.locator('[data-pl="passo"]').click();
-    await expect(jn.locator(".pl-nota b")).toHaveText("2/3");
-    // abas pelo teclado: seta para a direita até o Teste
-    await jn.locator('[role="tab"]').first().focus();
-    for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
-    await expect(jn.locator('[role="tab"][aria-selected="true"]')).toHaveText("Teste");
-    await jn.locator(".jn-teste .opcoes [data-ok]").click();
-    await expect(jn.locator(".jn-teste .retorno.ok")).toBeVisible();
-    // Esc fecha e o foco volta ao cartão
-    await page.keyboard.press("Escape");
-    await expect(jn).toHaveCount(0);
-    await expect(cartao).toBeFocused();
-    // os exercícios das ideias numa janela só, com placar no fim
-    await page.locator("[data-exercicios]").click();
-    const itens = page.locator("dialog.jn .jn-ex");
-    await expect(itens).toHaveCount(6);
-    for (let i = 0; i < 6; i++) {
-      const ex = itens.nth(i).locator(".exercicio");
-      await ex.evaluate((e, k) => ((e as HTMLElement).dataset.vid = "x" + k), i);
-      expect((await resolver(page, "x" + i, false)).estado).toBe("resolvido");
-    }
-    await expect(page.locator(".jn-placar")).toContainText("6 de 6");
-    expect(erros).toEqual([]);
-  });
-
-  test("a matéria abre com a capa, o anel de progresso e as etiquetas dos módulos", async ({
-    page,
-  }) => {
+  test("a matéria mostra os módulos em menus suspensos, um aberto por vez", async ({ page }) => {
     const erros = vigiarErros(page);
     await page.addInitScript(() =>
       localStorage.setItem("dominio:tutorial:v1", JSON.stringify({ feito: true })),
     );
     await page.goto(BASE + "index.html#trilha-PY");
-    await expect(page.locator(".capa .motivo")).toBeVisible();
-    await expect(page.locator(".capa-anel")).toHaveAttribute("aria-label", /de 13 módulos/);
-    await expect(page.locator('.mod[data-cod="PY.02"] .etq-ex')).toHaveText(/6 exercícios/);
-    await expect(page.locator(".mod.aberto .formas .forma")).not.toHaveCount(0);
+    // 13 módulos: em partes de 5, só a parte e o módulo atuais abertos
+    await expect(page.locator(".parte-sus")).toHaveCount(3);
+    await expect(page.locator(".parte-sus[open]")).toHaveCount(1);
+    await expect(page.locator(".mod-sus[open]")).toHaveCount(1);
+    await expect(page.locator(".mat-mais")).not.toHaveAttribute("open", "");
+    const segundo = page.locator(".parte-sus[open] .mod-sus").nth(1);
+    await segundo.locator("summary").click();
+    await expect(segundo).toHaveAttribute("open", "");
+    await expect(page.locator(".mod-sus[open]")).toHaveCount(1);
+    await expect(segundo.locator(".mod-ir")).toHaveAttribute(
+      "href",
+      /licoes\/(AULA\.html#PY\.\d\d|PY\.\d\d\.html)/,
+    );
+    // o mapa: 6 grupos, só o atual aberto; o diagrama fica num menu
+    await page.goto(BASE + "index.html#mapa");
+    await expect(page.locator(".grupo-mapa")).toHaveCount(6);
+    await expect(page.locator(".grupo-mapa[open]")).toHaveCount(1);
+    await page.locator(".mapa-diagrama summary").click();
+    await expect(page.locator(".estacao")).toHaveCount(16);
     const largura = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(largura).toBeLessThanOrEqual(0);
     expect(erros).toEqual([]);
@@ -444,9 +415,9 @@ test.describe("apostila", () => {
       );
     });
     await page.goto(BASE + "index.html#mapa");
-    await expect(page.locator(".metricas")).toContainText("Formação de cientista de dados");
-    await expect(page.locator(".metricas")).toContainText("1 de 167 módulos");
-    await expect(page.locator('.estacao[data-s="PY"] .est-meta')).toContainText("vale 12%");
+    await expect(page.locator(".mapa-formacao")).toContainText("da formação de cientista de dados");
+    await expect(page.locator(".mapa-formacao")).toContainText("1 de 167 módulos");
+    await expect(page.locator('.g-mat[href="#trilha-PY"]')).toContainText("vale 12%");
     await page.locator("[data-pesos]").click();
     const jn = page.locator("dialog.jn");
     await expect(jn.locator(".peso-linha")).toHaveCount(16);
@@ -454,7 +425,9 @@ test.describe("apostila", () => {
     await page.keyboard.press("Escape");
     await expect(jn).toHaveCount(0);
     await page.goto(BASE + "index.html#trilha-LOG");
-    await expect(page.locator('.mod[data-cod="LOG.01"] .etq-peso')).toHaveText(/vale \d,\d\d%/);
+    await expect(page.locator('.mod-sus[data-cod="LOG.01"] .mod-vale')).toContainText(
+      /vale \d,\d\d%/,
+    );
     expect(erros).toEqual([]);
   });
 
