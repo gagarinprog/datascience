@@ -119,10 +119,9 @@ test.describe("apostila", () => {
       const figs = painel.locator("figure[data-clip]:visible");
       for (let f = 0; f < (await figs.count()); f++) {
         const fig = figs.nth(f);
-        if (await fig.locator("[data-aposta]").count())
-          await fig.locator("[data-aposta]").first().click();
-        const passos = await fig.locator(".clip-pontos button").count();
-        for (let p = 1; p < passos; p++) await fig.locator('[data-a="prox"]').click();
+        if (await fig.locator("[data-aposta]:enabled").count())
+          await fig.locator("[data-aposta]:enabled").first().click();
+        // os passos da animação andam pelo próprio botão de baixo (.aula-ir), no laço abaixo
       }
       const ta = painel.locator(".explicar textarea:visible");
       if (await ta.count()) {
@@ -181,9 +180,11 @@ test.describe("apostila", () => {
     await expect(itens.nth(1)).toBeDisabled();
     await page.keyboard.press("Escape");
     await expect(page.locator(".aula-menu")).not.toHaveAttribute("open", "");
-    // vai até o Pratique e recarrega: volta no mesmo lugar
-    await page.locator(".aula-ir").click();
-    await expect(page.locator('.aula-etapas [data-etapa="1"]')).toHaveClass(/atual/);
+    // anda as telas da Entenda com o Próximo até o Pratique e recarrega: volta no mesmo lugar
+    const pratique = page.locator('.aula-etapas [data-etapa="1"]');
+    for (let k = 0; k < 10 && !/atual/.test((await pratique.getAttribute("class")) ?? ""); k++)
+      await page.locator(".aula-ir").click();
+    await expect(pratique).toHaveClass(/atual/);
     await page.reload();
     await expect(page.locator('.aula-etapas [data-etapa="1"]')).toHaveClass(/atual/);
     expect(erros).toEqual([]);
@@ -300,10 +301,17 @@ test.describe("apostila", () => {
   }) => {
     const erros = vigiarErros(page);
     await page.emulateMedia({ reducedMotion: "reduce" });
-    // as bancadas ficam no Entenda de cada conceito: o endereço #cN abre o conceito
+    // as bancadas ficam no Entenda de cada conceito, numa das telas: o endereço #cN abre o conceito e o
+    // botão de baixo anda as telas (respondendo o desafio, que trava o Próximo) até a da bancada
     const abrir = async (sec: string, tipo: string) => {
       await page.goto(BASE + `licoes/ED.01.html#${sec}`);
       const b = page.locator(`[data-bancada="${tipo}"]`);
+      for (let k = 0; k < 8 && !(await b.isVisible()); k++) {
+        const ex = page.locator(".secao:not([hidden]) .ent-tela:not([hidden]) .exercicio");
+        if ((await ex.count()) && (await ex.first().getAttribute("data-estado")) !== "resolvido")
+          await ex.first().locator("[data-ok]").first().click();
+        await page.locator(".aula-ir").click();
+      }
       await expect(b).toBeVisible();
       return b;
     };
@@ -361,7 +369,10 @@ test.describe("apostila", () => {
         }
       localStorage.setItem("dominio:revisao:v1", JSON.stringify(cartoes));
     }, ontem);
+    // a página abre no painel da memória, com a revisão do dia como ação principal
     await page.goto(BASE + "licoes/REVISAR.html");
+    await expect(page.locator(".r-painel")).toContainText("Sua memória");
+    await page.locator('[data-iniciar="hoje"]').click();
     for (let i = 0; i < 2; i++) {
       await expect(page.locator("#r-palco .exercicio")).toBeVisible();
       await page.evaluate(() => {
@@ -371,6 +382,11 @@ test.describe("apostila", () => {
       await page.locator("#r-proximo").click();
     }
     await expect(page.locator("#r-palco")).toContainText("Revisão concluída");
+    // os dois foram errados: o treino de erros os traz de volta mesmo sem vencer
+    await page.locator("[data-painel]").click();
+    await page.locator('[data-iniciar="erros"]').click();
+    await expect(page.locator("#r-contagem")).toContainText("Treino de erros");
+    await expect(page.locator("#r-palco .exercicio")).toBeVisible();
   });
 
   test("a matéria mostra os módulos em menus suspensos, um aberto por vez", async ({ page }) => {

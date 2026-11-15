@@ -68,6 +68,14 @@ describe("aula linear", () => {
     clicar(sec(1).querySelector(".desafio [data-ok]"));
     await esperar();
     expect(ir.disabled).toBe(false);
+    // a Entenda anda em telas: o desafio, depois a ideia
+    expect(ir.textContent).toBe("Próximo 1 de 2");
+    const telas = sec(1).querySelectorAll<HTMLElement>(".ent-tela");
+    expect(telas).toHaveLength(2);
+    expect(telas[1]!.hidden).toBe(true);
+    clicar(ir);
+    expect(telas[0]!.hidden).toBe(true);
+    expect(telas[1]!.querySelector(".ent-conta")!.textContent).toContain("Parte 2 de 2");
     expect(ir.textContent).toBe("Ir para os exercícios");
     clicar(ir);
     expect(document.querySelector('[data-etapa="1"]')!.classList.contains("atual")).toBe(true);
@@ -91,7 +99,22 @@ describe("aula linear", () => {
     expect(JSON.parse(localStorage.getItem("dominio:aula:v1")!)["TST.01"]).toMatchObject({
       c: 1,
       e: 0,
+      t: 0,
     });
+  });
+
+  it("o Voltar desfaz uma tela por vez e a posição da tela fica guardada", async () => {
+    const { ir, voltar, sec } = montar();
+    clicar(sec(1).querySelector(".desafio [data-ok]"));
+    await esperar();
+    clicar(ir);
+    expect(JSON.parse(localStorage.getItem("dominio:aula:v1")!)["TST.01"]).toMatchObject({
+      e: 0,
+      t: 1,
+    });
+    clicar(voltar);
+    expect(sec(1).querySelectorAll<HTMLElement>(".ent-tela")[0]!.hidden).toBe(false);
+    expect(ir.textContent).toBe("Próximo 1 de 2");
   });
 
   it("o menu dos conceitos tranca os que ainda não foram alcançados", () => {

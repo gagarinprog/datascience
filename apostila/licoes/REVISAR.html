@@ -61,6 +61,18 @@
   .r-acoes { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .r-vazio, .r-fim { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px; display: grid; gap: 10px; }
   .r-fim ul { margin: 0; padding-left: 18px; }
+  .r-painel, .r-agora { border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px; display: grid; gap: 10px; }
+  .r-painel h2 { margin: 0; font-size: 20px; }
+  .r-painel h3 { margin: 6px 0 0; font-size: 15px; }
+  .r-painel p { margin: 0; }
+  .r-forca { display: flex; height: 14px; border-radius: 99px; overflow: hidden; background: var(--linha); gap: 2px; }
+  .r-forca i, .r-legenda i { display: block; }
+  .r-legenda { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--texto-2); }
+  .r-legenda li { display: inline-flex; align-items: center; gap: 6px; }
+  .r-legenda i { width: 12px; height: 12px; border-radius: 4px; }
+  .fragil { background: var(--erro); }
+  .formando { background: var(--aviso); }
+  .firme { background: var(--certo); }
 </style>
 <link rel="stylesheet" href="../passo/passo.css">
 <link rel="stylesheet" href="../guia-mov.css">
@@ -74,7 +86,7 @@
   <header>
     <p class="sobretitulo">Revisão espaçada</p>
     <h1 class="titulo-pagina">Revisão de hoje</h1>
-    <p class="lede">Os exercícios que você errou, acertou na segunda tentativa ou respondeu no chute voltam aqui. Acertou de primeira, o próximo encontro fica mais longe: 1, 3, 7, 14 e 30 dias. Errou, ele volta amanhã.</p>
+    <p class="lede">Os exercícios que você errou, acertou na segunda tentativa ou acertou no chute voltam aqui, no dia em que você estaria perto de esquecer. Quem calcula é o FSRS, o algoritmo do Anki: cada acerto espaçado afasta o próximo encontro, cada erro o traz de volta.</p>
   </header>
   <div class="r-barra" aria-hidden="true"><i id="r-barra"></i></div>
   <p class="r-origem" id="r-contagem" aria-live="polite"></p>
@@ -90,6 +102,7 @@
 <script src="../passo/cascata.js" charset="utf-8"></script>
 <script src="laboratorio.js" charset="utf-8"></script>
 <script src="motor.js" charset="utf-8"></script>
+<script type="module" src="fsrs.js"></script>
 <script src="reacao.js" charset="utf-8"></script>
 <script src="revisar.js" charset="utf-8"></script>
 <script>

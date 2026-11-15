@@ -222,3 +222,12 @@ body.aula-modo { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); 
 /* grade de uma coluna que nunca cresce além da tela (linhas de código longas rolam dentro do próprio quadro) */
 .etapa-painel, .ex-passo { grid-template-columns: minmax(0, 1fr); }
 .etapa-painel > *, .ex-passo > * { min-width: 0; }
+
+/* a Entenda em telas: "Parte 2 de 6 · A ideia" no alto de cada uma, e a contagem dentro do Próximo */
+.ent-tela { display: grid; gap: 16px; }
+.ent-conta { margin: 0 0 2px; font: 600 12px/1.3 var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); }
+.ent-conta span { color: var(--destaque, var(--tinta)); }
+.aula-ir-conta { margin-left: 10px; font-weight: 500; font-size: 12px; letter-spacing: 0.02em; opacity: 0.85; text-transform: none; }
+/* na aula, a animação anda pelo botão de baixo; os pontos ficam como indicação de onde se está */
+.aula-modo .ent-tela figure.clip .clip-controles [data-a] { display: none; }
+.aula-modo .ent-tela figure.clip .clip-controles { justify-content: center; }

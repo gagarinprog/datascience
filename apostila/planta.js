@@ -87,7 +87,7 @@
     const n = etapasDe(f);
     let k = n ? 0 : -1;
     el.classList.add("pl-figura");
-    el.innerHTML = `${f.titulo ? `<p class="pl-cota"><span>${esc(f.titulo)}</span></p>` : ""}<div class="pl-palco"></div><p class="pl-nota" aria-live="polite"></p>${n > 1 ? `<div class="pl-controles"><button type="button" class="botao" data-pl="voltar">Voltar</button><span class="pl-pontos" aria-hidden="true">${Array.from({ length: n }, () => "<i></i>").join("")}</span><button type="button" class="botao primario b-prog" data-pl="passo">Passo</button></div>` : ""}`;
+    el.innerHTML = `${f.titulo ? `<p class="pl-cota"><span>${esc(f.titulo)}</span></p>` : ""}<div class="pl-palco"></div><p class="pl-nota" aria-live="polite"></p>${n > 1 ? `<div class="pl-controles"><button type="button" class="botao" data-pl="voltar">Anterior</button><span class="pl-pontos" aria-hidden="true">${Array.from({ length: n }, () => "<i></i>").join("")}</span><button type="button" class="botao primario b-prog" data-pl="passo">Próximo</button></div>` : ""}`;
     const palco = el.querySelector(".pl-palco"), nota = el.querySelector(".pl-nota");
     const pintar = () => {
       const html = (MODELOS[f.t] || (() => ""))(f, k);
@@ -98,7 +98,7 @@
       nota.hidden = !t;
       const v = el.querySelector('[data-pl="voltar"]'), p = el.querySelector('[data-pl="passo"]');
       if (v) v.disabled = k <= 0;
-      if (p) { p.disabled = k >= n - 1; p.style.setProperty("--p", (k + 1) / n); p.dataset.passo = `${k + 1} de ${n}`; p.textContent = k >= n - 1 ? "Fim" : "Passo"; }
+      if (p) { p.disabled = k >= n - 1; p.style.setProperty("--p", (k + 1) / n); p.dataset.passo = `${k + 1} de ${n}`; p.textContent = k >= n - 1 ? "Fim" : "Próximo"; }
       el.querySelectorAll(".pl-pontos i").forEach((i, j) => i.classList.toggle("on", j <= k));
     };
     el.addEventListener("click", (e) => {

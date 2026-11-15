@@ -304,7 +304,7 @@
         <h1>Do raciocínio lógico ao aprendizado de máquina</h1>
         <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="${urlAula(prox.codigo, pa && estadoDe(prox.codigo) !== "dominado" ? pa.c : null)}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
         <div class="mapa-formacao"><div><b>${pct(formacao())}</b><span>da formação de cientista de dados · ${total} de ${TOTAL} módulos</span></div><span class="barra-fina" aria-hidden="true"><i style="width:${formacao()}%"></i></span><button type="button" class="link-pesos" data-pesos>Como os pesos são contados</button></div>
-        ${nRevisao ? cartao("licoes/REVISAR.html", "brain-duotone", `Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}`, "o que você errou volta em 1, 3, 7, 14 e 30 dias") : ""}
+        ${nRevisao ? cartao("licoes/REVISAR.html?modo=hoje", "brain-duotone", `Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}`, "o que você errou volta quando estiver perto de ser esquecido") : ""}
       </section>
       <section class="grupos-mapa" aria-label="Matérias por grupo">${grupos}</section>
       <details class="mapa-dobra mapa-mais"><summary>${ic("stack-duotone")}Outras formas de estudar</summary><div class="mapa-dobra-corpo">
@@ -410,7 +410,7 @@
     const atalho = (href, icone, titulo, sub, num) => `<a class="ini-atalho" href="${href}"><span class="ini-ic">${ic(icone)}</span><b>${titulo}</b><small>${sub}</small><span class="ini-num">${num}</span></a>`;
     const terceiro = primeira
       ? atalho("licoes/INICIO.html", "sparkle-duotone", "Comece por aqui", "a lista de aprovados", "5 passos")
-      : atalho("licoes/REVISAR.html", "brain-duotone", "Revisão de hoje", "o que você errou", nRev ? plural(nRev, "item", "itens") : "nada hoje");
+      : atalho(nRev ? "licoes/REVISAR.html?modo=hoje" : "licoes/REVISAR.html", "brain-duotone", nRev ? "Revisão de hoje" : "Sua memória", nRev ? "o que você errou" : "revisão e treino de erros", nRev ? plural(nRev, "item", "itens") : "nada vence hoje");
     centro().innerHTML = `<div class="inicio${primeira ? " primeira" : ""}" style="${coresDe(aqui.sigla)}">
       <div class="ini-guia">${mascote(primeira ? "explica" : "padrao", "ini-rosto", "chegar falar")}<p class="balao cor ini-fala"><small>${esc(g.nome)}</small>${esc(fala)}</p></div>
       <div class="ini-lado">${acao}
@@ -1026,7 +1026,7 @@
       { alvo: null, expr: "explica", t: "Cada conceito em 3 etapas", h: `${lista(["<b>Entenda</b>: uma pergunta de aquecimento, a explicação e a animação que você avança no seu ritmo", "<b>Pratique</b>: os exercícios, um por vez, corrigidos na hora", "<b>Avance</b>: o resumo do conceito e o próximo"], true)}<p>No fim do módulo vem uma pergunta final que se corrige na hora; acertou, o módulo fica dominado.</p>` },
       { alvo: 'a[href="licoes/INICIO.html"]', expr: "uau", t: "Por onde começar", h: "<p>Errou um exercício? Na primeira vez vem a dica; na segunda, a resposta comentada. Se tudo é novo, o melhor começo é a lista de aprovados, aqui em Outras formas de estudar.</p>" },
       { alvo: 'a[href="castelo/index.html"]', expr: "feliz", t: "O laboratório: a prática que fixa", h: "<p>No Centro de Dados você monta um banco PostgreSQL do zero, como num projeto real: cria as tabelas, carrega os dados, consulta, analisa com Python, administra o banco e apresenta os resultados. Cada módulo começa dizendo em que momento do trabalho aquilo acontece.</p>" },
-      { alvo: "#guia-btn", expr: "padrao", t: "Seu guia, o tema e este tutorial", h: "<p>Aqui você troca o guia e o tema e salva o seu trajeto num arquivo, para levar a outro aparelho. O tutorial fica no botão ao lado, para rever quando quiser. O que você errar volta para revisão em 1, 3, 7, 14 e 30 dias, e o mapa avisa quando há revisão.</p>" },
+      { alvo: "#guia-btn", expr: "padrao", t: "Seu guia, o tema e este tutorial", h: "<p>Aqui você troca o guia e o tema e salva o seu trajeto num arquivo, para levar a outro aparelho. O tutorial fica no botão ao lado, para rever quando quiser. O que você errar volta para revisão no dia em que estaria perto de ser esquecido, e o mapa avisa quando há revisão.</p>" },
     ];
   }
   let tutAberto = null;

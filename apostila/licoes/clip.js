@@ -1,6 +1,6 @@
 // Motor de animações passo a passo das lições.
-// Cada animação é uma função do passo atual: aplicar(palco, k). Assim dá para tocar, pausar,
-// voltar e avançar sem se perder. Com "reduzir movimento" ligado, nada anima sozinho.
+// Cada animação é uma função do passo atual: aplicar(palco, k). Anda por Anterior e Próximo, um passo por clique
+// (pedido do Kaio em 15/11/2026: Voltar, Tocar e Passo lado a lado não se entendiam rápido). Nada anima sozinho.
 (function () {
   "use strict";
   const defs = {};
@@ -29,14 +29,14 @@
     fig.classList.add("clip");
     const n = def.passos.length;
     fig.insertAdjacentHTML("afterbegin",
-      `<div class="clip-palco" role="group" aria-label="${esc(def.titulo)}">${def.html()}</div>
-       <p class="clip-legenda" aria-live="polite"></p>
+      `<p class="clip-legenda" aria-live="polite"></p>
+       <div class="clip-palco" role="group" aria-label="${esc(def.titulo)}">${def.html()}</div>
        <div class="clip-controles">
-         <button type="button" class="botao mini" data-a="ant">Voltar</button>
-         <button type="button" class="botao mini primario" data-a="tocar">Tocar</button>
-         <button type="button" class="botao mini" data-a="prox">Passo</button>
-         <span class="clip-pontos">${def.passos.map((_, k) => `<button type="button" data-p="${k}" aria-label="Ir ao passo ${k + 1} de ${n}"></button>`).join("")}</span>
+         <button type="button" class="botao mini" data-a="ant">Anterior</button>
+         <span class="clip-pontos" aria-hidden="true">${def.passos.map(() => "<i></i>").join("")}</span>
+         <button type="button" class="botao mini primario b-prog" data-a="prox">Próximo</button>
        </div>`);
+    fig.dataset.passos = String(n);
     // "preveja antes de ver": data-preveja="Pergunta|opção|*opção certa|opção" trava a animação até a aposta
     const prev = fig.dataset.preveja ? fig.dataset.preveja.split("|") : null;
     let aposta = null, julgado = false;
@@ -47,7 +47,7 @@
         if (aposta !== null) return;
         aposta = ops[Number(b.dataset.aposta)];
         fig.querySelectorAll("[data-aposta]").forEach((x) => { x.disabled = true; x.setAttribute("aria-pressed", String(x === b)); });
-        fig.querySelector(".preveja-veredito").textContent = `Sua aposta: ${aposta.t}. Agora toque em Passo para ver cada etapa, ou em Tocar para ver tudo.`;
+        fig.querySelector(".preveja-veredito").textContent = `Sua aposta: ${aposta.t}. Agora use Próximo para ver cada etapa.`;
         fig.querySelectorAll(".clip-controles button").forEach((x) => { x.disabled = false; });
         ir(0);
       }));
@@ -63,51 +63,29 @@
     }
     const palco = fig.querySelector(".clip-palco");
     const leg = fig.querySelector(".clip-legenda");
-    const bTocar = fig.querySelector('[data-a="tocar"]');
     const bAnt = fig.querySelector('[data-a="ant"]');
     const bProx = fig.querySelector('[data-a="prox"]');
-    let i = -1, t = null, tocando = false;
-
-    const rotulo = () => { bTocar.textContent = tocando ? "Pausar" : (i >= n - 1 ? "Repetir" : "Tocar"); };
-    function parar() { clearTimeout(t); tocando = false; rotulo(); }
+    let i = -1;
     function ir(k) {
       k = Math.max(0, Math.min(n - 1, k));
       const antes = i; i = k;
       leg.innerHTML = `<span class="clip-passo">Passo ${k + 1} de ${n}</span> ${def.passos[k][0]}`;
       leg.classList.remove("troca"); void leg.offsetWidth; leg.classList.add("troca");
-      fig.querySelectorAll("[data-p]").forEach((b, j) => { b.classList.toggle("atual", j === k); b.classList.toggle("feito", j < k); });
+      fig.querySelectorAll(".clip-pontos i").forEach((b, j) => { b.classList.toggle("atual", j === k); b.classList.toggle("feito", j < k); });
       def.aplicar(palco, k, antes);
       bAnt.disabled = k === 0;
-      bProx.disabled = k === n - 1;
-      bProx.classList.add("b-prog"); bProx.style.setProperty("--p", (k + 1) / n); bProx.dataset.passo = `${k + 1} de ${n}`;
-      if (k >= n - 1 && tocando) { clearTimeout(t); tocando = false; }
+      // no último passo, o mesmo botão recomeça a animação
+      bProx.textContent = k >= n - 1 ? "Ver de novo" : "Próximo";
+      bProx.style.setProperty("--p", (k + 1) / n); bProx.dataset.passo = `${k + 1} de ${n}`;
       if (k >= n - 1) julgar();
-      rotulo();
+      fig.dispatchEvent(new CustomEvent("clip-passo", { bubbles: true }));
       if (prev && aposta === null) fig.querySelectorAll(".clip-controles button").forEach((x) => { x.disabled = true; });
     }
-    function tocar() {
-      clearTimeout(t); tocando = true;
-      if (i >= n - 1) ir(0);
-      rotulo();
-      const passo = () => {
-        t = setTimeout(() => {
-          if (!tocando) return;
-          ir(i + 1);
-          if (tocando) passo();
-        }, def.passos[i][1] || 3800);
-      };
-      passo();
-    }
-    bTocar.addEventListener("click", () => (tocando ? parar() : tocar()));
-    bAnt.addEventListener("click", () => { parar(); ir(i - 1); });
-    bProx.addEventListener("click", () => { parar(); ir(i + 1); });
-    fig.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => { parar(); ir(Number(b.dataset.p)); }));
+    // na aula, o botão de baixo conduz a animação: um passo por toque e, no último, a tela seguinte
+    fig.clipe = { n, get passo() { return i; }, travado: () => !!(prev && aposta === null), avancar: () => ir(i + 1), voltar: () => ir(i - 1) };
+    bAnt.addEventListener("click", () => ir(i - 1));
+    bProx.addEventListener("click", () => ir(i >= n - 1 ? 0 : i + 1));
     ir(0);
-
-    // a animação não toca sozinha (pedido do Kaio em 27/10/2026): começa no Tocar ou anda no Passo; sai da tela, para
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting && tocando) parar(); }), { threshold: 0.2 }).observe(fig);
-    }
   }
 
   function iniciar(raiz) { (raiz || document).querySelectorAll("[data-clip]").forEach(montar); }

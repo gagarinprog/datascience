@@ -4,7 +4,7 @@
 //   - Certo/Errado com confiança e saldo no estilo Cebraspe (doc 04, seção 9);
 //   - cartões para arrastar em grupos, Parsons com linha falsa e recuo, "ache o erro";
 //   - explicar em 3 linhas dentro da lição;
-//   - revisão espaçada: o que você errou volta em 1, 3, 7, 14 e 30 dias (doc 04, seção 6);
+//   - revisão espaçada: o que você errou volta pelo FSRS (licoes/fsrs.js), no dia em que estaria perto de ser esquecido (doc 04, seção 6);
 //   - o passo a passo da lição (um conceito por vez, avanço depois dos exercícios);
 //   - a cascata de cada conceito: desafio, leitura, animação, cada exercício e o fechamento abrem um de cada vez.
 // Tipos de exercício (atributo na div .exercicio):
@@ -83,8 +83,32 @@
   }
 
   // ---------- revisão espaçada ----------
+  // Com o FSRS carregado (licoes/fsrs.js, o algoritmo do Anki), cada cartão guarda a estabilidade da memória e o
+  // próximo encontro sai da curva de esquecimento, para lembrar com 90% de chance. Sem ele, valem as caixas fixas.
   const CHAVE_REV = "dominio:revisao:v1";
   const INTERVALOS = [1, 3, 7, 14, 30];
+  // a nota do FSRS sai do que aconteceu: de primeira é Bom; na segunda ou no chute, Difícil; o resto, Errei
+  const NOTA_FSRS = { primeira: "Good", segunda: "Hard", chute: "Hard" };
+  function agendarFSRS(c, resultado) {
+    const F = window.FSRS;
+    if (!F) return false;
+    const agora = new Date();
+    const base = c.fsrs
+      ? Object.assign({}, c.fsrs, { due: new Date(c.fsrs.due), last_review: c.fsrs.last_review ? new Date(c.fsrs.last_review) : undefined })
+      : F.createEmptyCard(agora);
+    const { card } = F.motor.next(base, agora, F.Rating[NOTA_FSRS[resultado] || "Again"]);
+    const dias = Math.max(1, card.scheduled_days || 1);
+    c.fsrs = Object.assign({}, card, { due: card.due.toISOString(), last_review: card.last_review ? card.last_review.toISOString() : null });
+    c.intervalo = dias;
+    c.proxima = somaDias(hoje(), dias);
+    return true;
+  }
+  // chance de lembrar hoje (curva de esquecimento do FSRS-5); sem estabilidade, não há estimativa
+  function lembranca(c) {
+    if (!c.fsrs || !c.fsrs.stability || !c.fsrs.last_review) return null;
+    const t = Math.max(0, (Date.now() - new Date(c.fsrs.last_review).getTime()) / 864e5);
+    return Math.pow(1 + (19 / 81) * (t / c.fsrs.stability), -0.5);
+  }
   const Revisao = {
     todos: () => ls.ler(CHAVE_REV, {}),
     // na lição: o que não saiu de primeira (ou saiu no chute) vira cartão para amanhã
@@ -93,15 +117,18 @@
       if (resultado === "primeira" || ex.classList.contains("desafio")) return;
       const cartoes = this.todos(), id = idDe(ex), antes = cartoes[id] || {};
       cartoes[id] = { id, licao: ctx.licao, titulo: ctx.titulo, url: ctx.url, sec: ctx.sec, conceito: ctx.conceito,
-        caixa: 0, proxima: somaDias(hoje(), 1), erros: (antes.erros || 0) + 1, acertos: antes.acertos || 0, criado: antes.criado || hoje() };
+        caixa: 0, proxima: somaDias(hoje(), 1), erros: (antes.erros || 0) + 1, acertos: antes.acertos || 0, criado: antes.criado || hoje(), fsrs: antes.fsrs };
+      if (!agendarFSRS(cartoes[id], resultado)) delete cartoes[id].fsrs;
       ls.gravar(CHAVE_REV, cartoes);
     },
     // na revisão: acerto de primeira sobe uma caixa; o resto volta para amanhã
     daRevisao(id, resultado) {
       const cartoes = this.todos(), c = cartoes[id];
       if (!c) return null;
-      if (resultado === "primeira") { c.caixa = Math.min(c.caixa + 1, INTERVALOS.length - 1); c.acertos += 1; c.proxima = somaDias(hoje(), INTERVALOS[c.caixa]); }
-      else { c.caixa = 0; c.erros += 1; c.proxima = somaDias(hoje(), 1); }
+      if (resultado === "primeira") { c.caixa = Math.min(c.caixa + 1, INTERVALOS.length - 1); c.acertos += 1; c.proxima = somaDias(hoje(), INTERVALOS[c.caixa]); c.intervalo = INTERVALOS[c.caixa]; }
+      else { c.caixa = 0; c.erros += 1; c.proxima = somaDias(hoje(), 1); c.intervalo = 1; }
+      agendarFSRS(c, resultado);
+      c.ultima = hoje();
       ls.gravar(CHAVE_REV, cartoes);
       return c;
     },
@@ -114,6 +141,23 @@
       while (saida.length < lista.length) filas.forEach((f) => { if (f.length) saida.push(f.shift()); });
       return saida.slice(0, limite || 12);
     },
+    // treino de erros (o caderno de erros dos concurseiros): os que mais erraram primeiro, vencidos ou não
+    erros(limite) {
+      const lista = Object.values(this.todos()).filter((c) => (c.erros || 0) > 0 && c.licao).sort((a, b) => (b.erros || 0) - (a.erros || 0) || (a.proxima < b.proxima ? -1 : 1));
+      return lista.slice(0, limite || 10);
+    },
+    // a força de cada memória: frágil (até 3 dias de estabilidade), em formação (até 3 semanas) ou firme
+    forca() {
+      const t = { fragil: 0, formando: 0, firme: 0, total: 0 };
+      Object.values(this.todos()).forEach((c) => {
+        if (!c || !c.licao) return;
+        t.total += 1;
+        const s = c.fsrs && c.fsrs.stability ? c.fsrs.stability : [1, 3, 7, 14, 30][c.caixa || 0];
+        if (s < 3) t.fragil += 1; else if (s < 21) t.formando += 1; else t.firme += 1;
+      });
+      return t;
+    },
+    lembranca,
     remover(id) { const c = this.todos(); delete c[id]; ls.gravar(CHAVE_REV, c); },
     INTERVALOS,
   };
@@ -659,6 +703,25 @@
     if (junto.length) { if (passos.length) passos[passos.length - 1].push(...junto); else entenda.push(...junto); }
     return { h2, entenda, passos, fecho };
   }
+  // a Entenda em telas (pedido do Kaio em 15/11/2026: "coloque em formato de próximo, próximo"): cada bloco
+  // (desafio, a ideia com o dia a dia, a animação, o comando, a bancada, o exemplo) é uma tela, e o botão de baixo
+  // diz "Próximo" até a última, que leva aos exercícios
+  const NOME_TELA = [
+    [(el) => el.matches(".exercicio.desafio"), "Desafio"],
+    [(el) => el.matches("figure[data-clip], figure.clip"), "Veja passo a passo"],
+  ];
+  function telasDe(nos) {
+    const grupos = [];
+    let atual = null;
+    nos.forEach((el) => {
+      const regra = NOME_TELA.find(([f]) => f(el));
+      const abre = !atual || el.tagName === "H3" || regra;
+      if (abre) { atual = { nos: [], titulo: el.tagName === "H3" ? el.textContent.trim() : regra ? regra[1] : "" }; grupos.push(atual); }
+      atual.nos.push(el);
+    });
+    // um bloco solto antes do primeiro título vai junto com a tela seguinte
+    return grupos.filter((g, k) => !(g.nos.length === 1 && !g.titulo && grupos[k + 1] && grupos[k + 1].nos.unshift(g.nos[0])));
+  }
   function aula(cfg, secoes, licaoId, lerFeitos, marcarFeito) {
     const nomes = cfg.nomes;
     const modulo = /^[A-Z]+\.\d\d$/.test(licaoId);
@@ -674,7 +737,14 @@
       const e = etapasDe(sec);
       const painel = (cls) => { const d = document.createElement("div"); d.className = "etapa-painel " + cls; return d; };
       const pE = painel("etapa-entenda"), pP = painel("etapa-pratique"), pA = painel("etapa-avance");
-      e.entenda.forEach((el) => pE.appendChild(el));
+      const telas = telasDe(e.entenda).map((g, k, todas) => {
+        const d = document.createElement("div"); d.className = "ent-tela";
+        const comTitulo = g.nos[0] && g.nos[0].tagName === "H3";
+        if (todas.length > 1) d.innerHTML = `<p class="ent-conta"><span>Parte ${k + 1} de ${todas.length}</span>${g.titulo && !comTitulo ? ` · ${esc(g.titulo)}` : ""}</p>`;
+        g.nos.forEach((el) => d.appendChild(el));
+        pE.appendChild(d);
+        return d;
+      });
       const passos = e.passos.map((nos, k) => {
         const d = document.createElement("div"); d.className = "ex-passo";
         d.innerHTML = `<p class="ex-conta">Exercício ${k + 1} de ${e.passos.length}</p>`;
@@ -691,9 +761,9 @@
       pA.insertAdjacentHTML("beforeend", i < secoes.length - 1
         ? `<div class="a-seguir"><span>A seguir · conceito ${i + 2} de ${secoes.length}</span><b>${esc(nomes[i + 1] || "")}</b></div>`
         : `<div class="a-seguir"><span>${modulo ? "Falta uma pergunta" : "Fim da lição"}</span><b>${modulo ? "A pergunta final do módulo" : "Volte ao mapa para seguir"}</b></div>`);
-      pA.insertAdjacentHTML("beforeend", `<p class="avance-rev">O que você errou volta na revisão, em 1, 3 e 7 dias.</p>`);
+      pA.insertAdjacentHTML("beforeend", `<p class="avance-rev">O que você errou volta na revisão no dia em que estaria perto de ser esquecido.</p>`);
       (e.h2 || sec.firstChild).after(pE, pP, pA);
-      return { sec, pE, pP, pA, passos, exE: [...pE.querySelectorAll(".exercicio")] };
+      return { sec, pE, pP, pA, passos, telas, exE: [...pE.querySelectorAll(".exercicio")] };
     });
     // barra de cima: sair, o menu dos conceitos e as três etapas
     const sigla = cfg.trilha || "LOG";
@@ -720,14 +790,21 @@
 
     const todas = ls.ler(CHAVE_POS, {});
     const salvo = todas[licaoId] || {};
-    let pos = { c: 0, e: 0, x: 0, max: salvo.max || 0 };
+    let pos = { c: 0, e: 0, x: 0, t: 0, max: salvo.max || 0 };
     const pedido = secoes.findIndex((s) => "#" + s.id === location.hash || location.hash === "#" + licaoId + "-" + s.id);
     if (pedido >= 0) pos.c = pedido;
     else if (cfg.inicio != null) pos.c = cfg.inicio;
-    else if (salvo.c != null) pos = Object.assign(pos, { c: salvo.c, e: salvo.e || 0, x: salvo.x || 0 });
+    else if (salvo.c != null) pos = Object.assign(pos, { c: salvo.c, e: salvo.e || 0, x: salvo.x || 0, t: salvo.t || 0 });
     pos.c = Math.max(0, Math.min(secoes.length - 1, pos.c));
-    const guardar = () => { const t = ls.ler(CHAVE_POS, {}); t[licaoId] = { c: pos.c, e: pos.e, x: pos.x, max: pos.max, em: hoje() }; ls.gravar(CHAVE_POS, t); };
+    const guardar = () => { const t = ls.ler(CHAVE_POS, {}); t[licaoId] = { c: pos.c, e: pos.e, x: pos.x, t: pos.t, max: pos.max, em: hoje() }; ls.gravar(CHAVE_POS, t); };
     const prontoE = (k) => est[k].exE.every(resolvido);
+    const prontoT = (k, t) => !est[k].telas[t] || [...est[k].telas[t].querySelectorAll(".exercicio")].every(resolvido);
+    // a animação da tela atual, se houver (o botão de baixo anda os passos dela antes de mudar de tela)
+    const clipDaTela = () => {
+      if (pos.e !== 0) return null;
+      const fig = est[pos.c].telas[pos.t] && est[pos.c].telas[pos.t].querySelector("figure.clip");
+      return fig && fig.clipe ? fig.clipe : null;
+    };
     const prontoP = (k, x) => !est[k].passos[x] || [...est[k].passos[x].querySelectorAll(".exercicio")].every(resolvido);
 
     function pintarMenu() {
@@ -739,7 +816,7 @@
         const feito = feitos.includes(secoes[k].id), aberto = k <= pos.max || feito;
         return `<li><button type="button" data-ir-c="${k}" class="${feito ? "feito" : ""}${k === pos.c ? " atual" : ""}"${aberto ? "" : " disabled"} aria-current="${k === pos.c ? "step" : "false"}"><i aria-hidden="true">${feito ? "" : k + 1}</i><span>${esc(n)}</span><small>${feito ? "feito" : k === pos.c ? "agora" : aberto ? "" : "depois"}</small></button></li>`;
       }).join("");
-      ol.querySelectorAll("[data-ir-c]").forEach((b) => b.addEventListener("click", () => { menu.open = false; mostrar({ c: Number(b.dataset.irC), e: 0, x: 0 }); }));
+      ol.querySelectorAll("[data-ir-c]").forEach((b) => b.addEventListener("click", () => { menu.open = false; mostrar({ c: Number(b.dataset.irC), e: 0, x: 0, t: 0 }); }));
       topo.querySelectorAll("[data-etapa]").forEach((b) => {
         const k = Number(b.dataset.etapa);
         const alcancada = k < pos.e || (k === 1 && prontoE(pos.c) && est[pos.c].passos.length) || (k === 2 && est[pos.c].passos.every((_, x) => prontoP(pos.c, x)) && prontoE(pos.c));
@@ -752,8 +829,20 @@
     function pintarPe() {
       const E = est[pos.c];
       let texto = "", pode = true, msg = "";
-      voltar.disabled = pos.c === 0 && pos.e === 0;
-      if (pos.e === 0) {
+      voltar.disabled = pos.c === 0 && pos.e === 0 && pos.t === 0;
+      let conta = "";
+      const cl = clipDaTela();
+      if (cl && (cl.travado() || cl.passo < cl.n - 1)) {
+        pode = !cl.travado();
+        texto = "Próximo";
+        conta = `passo ${cl.passo + 1} de ${cl.n}`;
+        if (!pode) msg = "Faça a sua aposta para começar a animação.";
+      } else if (pos.e === 0 && pos.t < E.telas.length - 1) {
+        pode = prontoT(pos.c, pos.t);
+        texto = "Próximo";
+        conta = `${pos.t + 1} de ${E.telas.length}`;
+        if (!pode) msg = "Responda a pergunta desta parte para seguir.";
+      } else if (pos.e === 0) {
         pode = prontoE(pos.c);
         texto = E.passos.length ? "Ir para os exercícios" : "Concluir o conceito";
         if (!pode) msg = E.exE.length > 1 ? "Responda as perguntas desta etapa para seguir." : "Responda a pergunta desta etapa para seguir.";
@@ -765,10 +854,11 @@
         texto = pos.c < secoes.length - 1 ? "Próximo conceito" : modulo ? "Ir para a pergunta final" : "Voltar ao mapa";
       }
       ir.textContent = texto;
+      if (conta) ir.insertAdjacentHTML("beforeend", ` <small class="aula-ir-conta">${conta}</small>`);
       ir.disabled = !pode;
       aviso.textContent = msg;
       // a barra do botão mostra o quanto da aula já foi
-      const total = secoes.length * 3, feito = pos.c * 3 + pos.e + (pos.e === 1 && E.passos.length ? pos.x / E.passos.length : 0);
+      const total = secoes.length * 3, feito = pos.c * 3 + pos.e + (pos.e === 1 && E.passos.length ? pos.x / E.passos.length : 0) + (pos.e === 0 && E.telas.length ? pos.t / E.telas.length : 0);
       ir.style.setProperty("--p", Math.min(1, (feito + 1) / total));
     }
     function mostrar(novo, rolar = true) {
@@ -777,6 +867,8 @@
       const E = est[pos.c];
       if (pos.e === 1 && !E.passos.length) pos.e = 2;
       pos.x = Math.max(0, Math.min(E.passos.length - 1, pos.x));
+      pos.t = Math.max(0, Math.min(E.telas.length - 1, pos.t));
+      E.telas.forEach((d, t) => { d.hidden = t !== pos.t; });
       secoes.forEach((s, k) => { s.hidden = k !== pos.c; });
       E.pE.hidden = pos.e !== 0; E.pP.hidden = pos.e !== 1; E.pA.hidden = pos.e !== 2;
       E.passos.forEach((d, x) => { d.hidden = x !== pos.x; });
@@ -794,22 +886,28 @@
     }
     ir.addEventListener("click", () => {
       const E = est[pos.c];
-      if (pos.e === 0) mostrar({ e: E.passos.length ? 1 : 2, x: 0 });
+      const cl = clipDaTela();
+      if (cl && !cl.travado() && cl.passo < cl.n - 1) { cl.avancar(); return; }
+      if (pos.e === 0 && pos.t < E.telas.length - 1) mostrar({ t: pos.t + 1 });
+      else if (pos.e === 0) mostrar({ e: E.passos.length ? 1 : 2, x: 0 });
       else if (pos.e === 1) { if (pos.x < E.passos.length - 1) mostrar({ x: pos.x + 1 }); else mostrar({ e: 2 }); }
-      else if (pos.c < secoes.length - 1) mostrar({ c: pos.c + 1, e: 0, x: 0 });
+      else if (pos.c < secoes.length - 1) mostrar({ c: pos.c + 1, e: 0, x: 0, t: 0 });
       else location.href = modulo ? `${raiz}#fechar-${licaoId}` : `${raiz}#mapa`;
     });
     voltar.addEventListener("click", () => {
       const E = est[pos.c];
       if (pos.e === 2) mostrar(E.passos.length ? { e: 1, x: E.passos.length - 1 } : { e: 0 });
-      else if (pos.e === 1) mostrar(pos.x > 0 ? { x: pos.x - 1 } : { e: 0 });
+      else if (pos.e === 1) mostrar(pos.x > 0 ? { x: pos.x - 1 } : { e: 0, t: E.telas.length - 1 });
+      else if (clipDaTela() && clipDaTela().passo > 0) clipDaTela().voltar();
+      else if (pos.t > 0) mostrar({ t: pos.t - 1 });
       else if (pos.c > 0) mostrar({ c: pos.c - 1, e: 2, x: 0 });
     });
-    topo.querySelectorAll("[data-etapa]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.etapa); mostrar({ e: k, x: k === 1 ? 0 : pos.x }); }));
+    topo.querySelectorAll("[data-etapa]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.etapa); mostrar({ e: k, x: k === 1 ? 0 : pos.x, t: k === 0 ? 0 : pos.t }); }));
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.open) { menu.open = false; menu.querySelector("summary").focus(); } });
     document.addEventListener("click", (e) => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
-    window.addEventListener("hashchange", () => { const k = secoes.findIndex((s) => "#" + s.id === location.hash); if (k >= 0) mostrar({ c: k, e: 0, x: 0 }); });
+    window.addEventListener("hashchange", () => { const k = secoes.findIndex((s) => "#" + s.id === location.hash); if (k >= 0) mostrar({ c: k, e: 0, x: 0, t: 0 }); });
     // cada exercício resolvido reavalia o botão de baixo (e guarda o resultado para o selo do Avance)
+    document.addEventListener("clip-passo", () => { pintarPe(); });
     aula.depois = (ex, r) => { ex.dataset.resultado = ex.dataset.resultado || r; setTimeout(() => { pintarPe(); pintarMenu(); }, 0); };
     mostrar(pos, false);
   }
