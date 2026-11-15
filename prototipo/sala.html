@@ -1,0 +1,358 @@
+<title>Sala de Programação</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: uma sala de programação vista de cima. Cada matéria é uma estação; cada módulo, um bloco na bancada; cada conceito, uma linha de código que acende. Uma tela, uma ação. */
+:root{
+  --bg:#0b0f1a; --piso:#0f1526; --bancada:#151d33; --borda:#24304f; --borda-forte:#36457a;
+  --fg:#eef2ff; --fg2:#9aa6c8; --fg3:#5f6b8f;
+  --neon:#4cc9ff; --neon2:#8ee3ff; --verde:#39e58c; --ambar:#ffb547; --rosa:#ff6ea8; --roxo:#9d7bff;
+  --f-tit:"Bricolage Grotesque",system-ui,sans-serif; --f-txt:"Atkinson Hyperlegible Next",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--f-txt);
+ background-image:radial-gradient(circle at 20% 0%,rgb(76 201 255/.08),transparent 40%),radial-gradient(circle at 90% 100%,rgb(157 123 255/.08),transparent 45%),linear-gradient(rgb(255 255 255/.025) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255/.025) 1px,transparent 1px);background-size:auto,auto,28px 28px,28px 28px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1040px;margin:0 auto;padding-block:16px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-tit);letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,5.5vw,44px);line-height:1.05;font-weight:800}
+h2{font-size:clamp(20px,3.5vw,26px);font-weight:700}
+.eyebrow{font:600 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--neon)}
+.mono{font-family:var(--f-mono)}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--neon);outline-offset:3px}
+[hidden]{display:none!important}
+
+/* topo */
+.topo{display:flex;align-items:center;gap:14px;padding:6px 0 18px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font:800 18px var(--f-tit);text-decoration:none}
+.logo i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--neon),var(--roxo));display:grid;place-items:center;color:#06101f;font:700 13px var(--f-mono);font-style:normal}
+.nav{margin-left:auto;display:flex;gap:4px;background:var(--bancada);border:1px solid var(--borda);border-radius:999px;padding:4px}
+.nav a{padding:8px 14px;border-radius:999px;text-decoration:none;font:600 13px var(--f-txt);color:var(--fg2);min-height:36px;display:flex;align-items:center}
+.nav a.on{background:var(--neon);color:#06101f}
+@media(max-width:560px){.nav{margin-left:0;width:100%;justify-content:space-between}.nav a{padding:8px 10px;font-size:12px;flex:1;justify-content:center}}
+
+/* painel de status */
+.status{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:22px}
+@media(max-width:720px){.status{grid-template-columns:1fr}}
+.card{background:var(--bancada);border:1px solid var(--borda);border-radius:16px;padding:18px}
+.card.neon{border-color:rgb(76 201 255/.45);box-shadow:0 0 0 1px rgb(76 201 255/.15),0 20px 60px -30px rgb(76 201 255/.5)}
+.prog-big{display:flex;align-items:baseline;gap:10px;margin:10px 0 8px}
+.prog-big b{font:800 56px/1 var(--f-tit);color:var(--neon2);font-variant-numeric:tabular-nums}
+.prog-big span{color:var(--fg2)}
+.trilho{height:10px;border-radius:5px;background:#0a0f1d;border:1px solid var(--borda);overflow:hidden;position:relative}
+.trilho i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--neon),var(--verde));box-shadow:0 0 14px var(--neon)}
+.continuar{display:flex;align-items:center;gap:14px;text-decoration:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,#0d3a55,#13223f);border:1px solid rgb(76 201 255/.5)}
+.continuar .play{width:44px;height:44px;border-radius:50%;background:var(--neon);color:#06101f;display:grid;place-items:center;flex:none}
+.continuar b{display:block;font:700 17px var(--f-tit)}
+.continuar small{color:var(--fg2)}
+.continuar .seta{margin-left:auto;color:var(--neon2)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{background:#0a0f1d;border:1px solid var(--borda);border-radius:12px;padding:12px;display:grid;gap:4px}
+.kpi b{font:700 24px/1 var(--f-tit);font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--fg2)}
+.kpi.verde b{color:var(--verde)}.kpi.ambar b{color:var(--ambar)}.kpi.rosa b{color:var(--rosa)}
+.led{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--verde);box-shadow:0 0 8px var(--verde);margin-right:6px;vertical-align:middle}
+
+/* a sala */
+.sala{display:grid;gap:14px}
+.zona{border:1px dashed var(--borda-forte);border-radius:18px;padding:16px;position:relative;background:linear-gradient(180deg,rgb(255 255 255/.02),transparent)}
+.zona-cab{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.zona-cab .eyebrow{color:var(--fg3)}
+.zona-cab h2{font-size:18px}
+.zona-cab small{margin-left:auto;color:var(--fg2);font:500 12px var(--f-mono)}
+.estacoes{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.est{position:relative;text-align:left;display:grid;gap:10px;padding:14px;border-radius:14px;background:var(--piso);border:1px solid var(--borda);transition:transform .18s,border-color .18s,box-shadow .18s;--c:var(--neon)}
+.est:hover{transform:translateY(-3px);border-color:var(--c);box-shadow:0 14px 40px -20px var(--c)}
+.est.atual{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 0 30px -10px var(--c)}
+.est.tranc{opacity:.55}
+.monitor{aspect-ratio:16/9;max-width:100%;border-radius:8px;background:#05070e;border:2px solid #1b2440;position:relative;overflow:hidden;display:grid;place-items:end start;padding:8px}
+.monitor::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgb(255 255 255/.03) 0 1px,transparent 1px 3px)}
+.monitor .tela{position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 55%,transparent),transparent 70%);opacity:var(--on,0)}
+.monitor .cod{position:relative;font:600 10px/1.5 var(--f-mono);color:var(--c);opacity:.95;white-space:pre}
+.monitor .pct{position:absolute;top:6px;right:8px;font:700 11px var(--f-mono);color:var(--c)}
+.est h3{font-size:16px;font-weight:700;line-height:1.2}
+.est .meta{font:500 12px var(--f-mono);color:var(--fg2);display:flex;justify-content:space-between}
+.est .leds{display:flex;gap:3px;flex-wrap:wrap}
+.est .leds i{width:8px;height:8px;border-radius:2px;background:#1b2440}
+.est .leds i.on{background:var(--c);box-shadow:0 0 6px var(--c)}
+.est .leds i.half{background:color-mix(in srgb,var(--c) 45%,#1b2440)}
+.tag-aqui{position:absolute;top:-10px;left:12px;background:var(--c);color:#06101f;font:700 10px/1 var(--f-mono);letter-spacing:.1em;padding:5px 8px;border-radius:999px;text-transform:uppercase}
+
+/* estação (matéria) */
+.voltar{display:inline-flex;align-items:center;gap:8px;color:var(--fg2);text-decoration:none;font-size:14px;min-height:44px}
+.est-cab{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin:6px 0 20px}
+@media(max-width:640px){.est-cab{grid-template-columns:1fr}}
+.anel{width:96px;height:96px;position:relative}
+.anel svg{width:100%;height:100%;transform:rotate(-90deg)}
+.anel circle{fill:none;stroke-width:8}
+.anel .f{stroke:#1b2440}.anel .v{stroke:var(--c);stroke-linecap:round;filter:drop-shadow(0 0 6px var(--c))}
+.anel b{position:absolute;inset:0;display:grid;place-items:center;font:800 20px var(--f-tit)}
+.rack{display:grid;gap:10px}
+.bloco{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:14px;border-radius:14px;background:var(--bancada);border:1px solid var(--borda);text-align:left;width:100%}
+.bloco .num{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font:700 14px var(--f-mono);background:#0a0f1d;border:1px solid var(--borda);color:var(--fg2)}
+.bloco.feito .num{background:var(--verde);color:#06101f;border-color:var(--verde)}
+.bloco.atual{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.bloco.atual .num{background:var(--c);color:#06101f;border-color:var(--c)}
+.bloco.tranc{opacity:.5}
+.bloco h3{font-size:17px}
+.bloco small{display:block;color:var(--fg2);font-size:13px;margin-top:2px}
+.bloco .leds{display:flex;gap:3px;justify-self:end}
+.bloco .leds i{width:10px;height:5px;border-radius:2px;background:#1b2440}
+.bloco .leds i.on{background:var(--c);box-shadow:0 0 6px var(--c)}
+.bloco .virada{font:600 10px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ambar);margin-left:8px}
+.aberto{grid-column:1/-1;padding:4px 0 2px 66px;display:grid;gap:12px}
+@media(max-width:640px){.aberto{padding-left:0}}
+.conceitos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.conc{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:#0a0f1d;border:1px solid var(--borda);font:500 13px var(--f-mono);min-height:44px;text-align:left}
+.conc i{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font:700 10px var(--f-mono);font-style:normal;border:1px solid var(--borda);color:var(--fg2);flex:none}
+.conc.feito i{background:var(--verde);border-color:var(--verde);color:#06101f}
+.conc.atual{border-color:var(--c)}.conc.atual i{border-color:var(--c);color:var(--c)}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px;border-radius:12px;border:1px solid var(--borda-forte);background:transparent;font:700 14px var(--f-tit);text-decoration:none}
+.btn.p{background:var(--c,var(--neon));color:#06101f;border-color:transparent}
+
+/* aula */
+.aula-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);padding:10px 0 8px;border-bottom:1px solid var(--borda)}
+.aula-linha{display:flex;align-items:center;gap:12px}
+.aula-linha .x{width:40px;height:40px;border-radius:10px;border:1px solid var(--borda);display:grid;place-items:center;text-decoration:none;color:var(--fg2)}
+.aula-linha .onde{flex:1;min-width:0}
+.aula-linha .onde b{display:block;font:700 15px var(--f-tit);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aula-linha .onde small{color:var(--fg2);font-size:12px}
+.passos{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.passos button{border:0;background:none;padding:6px 0;display:grid;gap:6px;text-align:left;font:600 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.passos button i{display:block;height:4px;border-radius:2px;background:#1b2440}
+.passos button.on{color:var(--neon)}.passos button.on i{background:var(--neon);box-shadow:0 0 8px var(--neon)}
+.passos button.ok{color:var(--verde)}.passos button.ok i{background:var(--verde)}
+.aula{display:grid;gap:18px;padding-top:20px;max-width:720px}
+.aula p{margin:0;font-size:17px;line-height:1.55}
+.aula .lede{font-size:19px;color:var(--fg2)}
+.quadro{border-radius:16px;border:1px solid var(--borda);background:var(--bancada);overflow:hidden}
+.quadro .cab{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--borda);font:600 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg2)}
+.quadro .cab::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--rosa);box-shadow:18px 0 0 var(--ambar),36px 0 0 var(--verde);margin-right:30px}
+.codigo{margin:0;padding:14px 16px;font:14px/1.7 var(--f-mono);overflow-x:auto;counter-reset:l}
+.codigo .l{display:block;position:relative;padding:2px 8px 2px 34px;border-radius:6px;transition:background .2s;white-space:pre}
+.codigo .l::before{counter-increment:l;content:counter(l);color:var(--fg3);position:absolute;left:8px;width:14px;text-align:right}
+.codigo .l.on{background:rgb(76 201 255/.14);box-shadow:inset 3px 0 0 var(--neon)}
+.codigo .l.ok{color:var(--fg2)}
+.k{color:var(--roxo)}.s{color:var(--verde)}.n{color:var(--ambar)}.c{color:var(--fg3)}
+.saida{border-top:1px solid var(--borda);padding:12px 16px;font:13px var(--f-mono);display:grid;gap:4px}
+.saida small{color:var(--fg3);letter-spacing:.1em;text-transform:uppercase;font-size:10px}
+.ctrl{display:flex;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid var(--borda)}
+.ctrl button{min-height:40px;padding:0 14px;border-radius:9px;border:1px solid var(--borda-forte);background:transparent;font:700 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+.ctrl button.p{background:var(--neon);color:#06101f;border-color:transparent}
+.ctrl .pts{margin-left:auto;display:flex;gap:5px}.ctrl .pts i{width:7px;height:7px;border-radius:50%;background:#1b2440}.ctrl .pts i.on{background:var(--neon)}
+.nota{padding:12px 16px;border-top:1px solid var(--borda);color:var(--fg2);font-size:15px;min-height:52px}
+.nota b{color:var(--fg)}
+.dia{display:grid;grid-template-columns:48px 1fr;gap:14px;padding:16px;border-radius:14px;background:linear-gradient(135deg,rgb(255 181 71/.12),transparent);border:1px solid rgb(255 181 71/.35)}
+.dia .ic{width:48px;height:48px;border-radius:12px;background:rgb(255 181 71/.2);display:grid;place-items:center;color:var(--ambar)}
+.dia b{display:block;font:700 15px var(--f-tit);color:var(--ambar);margin-bottom:2px}
+.pergunta{display:grid;gap:10px}
+.pergunta h2{font-size:22px}
+.op{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid var(--borda);background:var(--bancada);text-align:left;width:100%;font:16px var(--f-txt);transition:border-color .15s}
+.op:hover{border-color:var(--borda-forte)}
+.op i{font:700 12px var(--f-mono);font-style:normal;width:26px;height:26px;border-radius:7px;border:1px solid var(--borda-forte);display:grid;place-items:center;flex:none;color:var(--fg2)}
+.op.certa{border-color:var(--verde);background:rgb(57 229 140/.08)}.op.certa i{background:var(--verde);color:#06101f;border-color:var(--verde)}
+.op.errada{border-color:var(--rosa);background:rgb(255 110 168/.08)}.op.errada i{background:var(--rosa);color:#06101f;border-color:var(--rosa)}
+.retorno{padding:14px 16px;border-radius:12px;border:1px solid var(--verde);background:rgb(57 229 140/.08);font-size:15px;line-height:1.5}
+.retorno.erro{border-color:var(--rosa);background:rgb(255 110 168/.08)}
+.retorno b{display:block;font-family:var(--f-tit)}
+.pe{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--borda);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.pe > div{max-width:720px;margin:0 auto;display:grid;grid-template-columns:48px 1fr;gap:10px}
+.pe button{min-height:52px;border-radius:12px;border:1px solid var(--borda-forte);background:transparent;font:800 14px var(--f-tit);letter-spacing:.02em}
+.pe .p{background:var(--neon);color:#06101f;border-color:transparent;box-shadow:0 10px 30px -12px var(--neon)}
+.pe .p:disabled{background:var(--bancada);color:var(--fg3);box-shadow:none;cursor:not-allowed}
+.selo{width:96px;height:96px;border-radius:50%;border:3px solid var(--verde);display:grid;place-items:center;font:800 28px var(--f-tit);color:var(--verde);margin:10px auto 0;box-shadow:0 0 30px -8px var(--verde)}
+.proximo{display:grid;gap:4px;padding:16px;border-radius:14px;background:var(--bancada);border:1px solid var(--borda)}
+.proximo span{font:600 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg2)}
+.proximo b{font:700 18px var(--f-tit)}
+
+/* diagnóstico */
+.diag{display:grid;gap:12px;max-width:820px}
+.d{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px;border-radius:14px;background:var(--bancada);border:1px solid var(--borda)}
+.d .n{width:44px;height:44px;border-radius:10px;background:#0a0f1d;border:1px solid var(--borda);display:grid;place-items:center;font:700 14px var(--f-mono);color:var(--rosa)}
+.d h3{font-size:16px;margin-bottom:6px}
+.d .par{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px}
+@media(max-width:560px){.d .par{grid-template-columns:1fr}}
+.d .par > div{padding:10px 12px;border-radius:10px;background:#0a0f1d;border:1px solid var(--borda)}
+.d .par span{display:block;font:600 10px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.d .antes span{color:var(--rosa)}.d .depois span{color:var(--verde)}
+.d .ref{margin-top:8px;font:500 12px var(--f-mono);color:var(--fg3)}
+.d .ref a{color:var(--neon2)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="topo">
+    <a class="logo" href="#sala"><i>&gt;_</i>Domínio</a>
+    <nav class="nav" aria-label="Protótipo">
+      <a href="#sala" data-nav="sala">Sala</a><a href="#estacao-LOG" data-nav="estacao">Estação</a><a href="#aula" data-nav="aula">Aula</a><a href="#diagnostico" data-nav="diagnostico">Diagnóstico</a>
+    </nav>
+  </header>
+  <main id="tela"></main>
+</div>
+<footer class="pe" id="pe" hidden><div><button type="button" id="pe-voltar" aria-label="Voltar">&#8592;</button><button type="button" class="p" id="pe-ir">Continuar</button></div></footer>
+
+<script>
+const MAT = [{"s":"LOG","n":"Lógica de programação","p":5,"e":"Pensar em passos","mods":[{"c":"LOG.01","n":"Algoritmo","k":["o que é algoritmo","entrada, processamento e saída","pseudocódigo","fluxograma","teste de mesa"],"v":false},{"c":"PY.01","n":"Primeiros passos","k":["interpretador e REPL","script","print e input","comentários","indentação como bloco","PEP 8"],"v":false},{"c":"LOG.02","n":"Variáveis e tipos","k":["variável como nome para um valor","atribuição","tipos primitivos","conversão de tipo","constantes"],"v":true},{"c":"LOG.03","n":"Operadores e expressões","k":["aritméticos","divisão inteira e resto","relacionais","lógicos (e, ou, não)","precedência","curto-circuito"],"v":false},{"c":"LOG.04","n":"Lógica booleana","k":["tabela-verdade","leis de De Morgan","simplificar condições","condição composta"],"v":false},{"c":"LOG.05","n":"Decisão","k":["se e senão","decisões encadeadas","escolha múltipla","casos de borda"],"v":false},{"c":"LOG.06","n":"Repetição","k":["laço com contador","laço com condição","acumulador","contador","sentinela","laços aninhados","parada e laço infinito"],"v":false},{"c":"LOG.09","n":"Depuração","k":["ler mensagem de erro","erro de sintaxe, de execução e de lógica","imprimir para investigar","isolar o erro"],"v":false},{"c":"LOG.07","n":"Funções","k":["definir e chamar","parâmetros e retorno","escopo","efeito colateral","função pura"],"v":false},{"c":"LOG.08","n":"Decomposição","k":["dividir o problema","resolver o caso pequeno primeiro","refinamento sucessivo"],"v":false}]},{"s":"PY","n":"Python","p":12,"e":"Automatizar","mods":[{"c":"PY.02","n":"Números e textos","k":["int, float, bool","str como sequência","fatiamento","métodos de string","f-strings","imutabilidade"],"v":false},{"c":"PY.03","n":"Listas e tuplas","k":["lista","índice negativo","fatias","métodos","mutabilidade","tupla","desempacotamento"],"v":false},{"c":"PY.04","n":"Dicionários e conjuntos","k":["dicionário","chave e valor","iterar items()","get com padrão","conjunto","operações de conjunto"],"v":false},{"c":"PY.05","n":"Referências e mutabilidade","k":["nome aponta para objeto","is e ==","apelidos (aliasing)","cópia rasa e profunda","argumento padrão mutável"],"v":true},{"c":"PY.06","n":"Funções a fundo","k":["argumentos posicionais e nomeados","*args e **kwargs","lambda","funções como valor","sorted com key","closures"],"v":false},{"c":"PY.08","n":"Erros e exceções","k":["try, except, else, finally","exceções comuns","lançar exceção","validar entrada"],"v":false},{"c":"PY.09","n":"Arquivos","k":["abrir com with","modos de abertura","ler linha a linha","escrever","codificação","pathlib"],"v":false},{"c":"PY.10","n":"Módulos e pacotes","k":["import","módulos da biblioteca padrão (math, random, datetime, collections, itertools, json, csv, re)","criar o seu módulo","if __name__ == \"__main__\""],"v":false},{"c":"PY.13","n":"Testes","k":["assert","pytest","caso normal, de borda e de erro","testar antes de corrigir"],"v":false},{"c":"PY.07","n":"Compreensões e iteração","k":["compreensão de lista, dicionário e conjunto","enumerate","zip","iteradores","geradores e yield"],"v":false},{"c":"PY.11","n":"Classes em Python","k":["classe e objeto","__init__","atributos e métodos","__repr__ e __str__","dataclass"],"v":false},{"c":"PY.14","n":"Expressões regulares","k":["classes de caracteres","quantificadores","grupos","findall, sub","validar e extrair"],"v":false},{"c":"PY.12","n":"Tipagem e qualidade","k":["anotações de tipo","mypy (conceito)","docstrings","nomes bons","funções pequenas"],"v":false}]},{"s":"BD","n":"Banco de dados e SQL","p":10,"e":"Guardar e consultar","mods":[{"c":"BD.01","n":"Por que bancos","k":["dado, informação e SGBD","problemas de planilhas e arquivos soltos","independência de dados","arquitetura de três esquemas"],"v":false},{"c":"BD.02","n":"Modelo relacional","k":["relação, tupla e atributo","domínio","esquema e instância","chave candidata, primária e estrangeira","integridade de entidade e referencial"],"v":false},{"c":"BD.03","n":"Primeira consulta","k":["SELECT e FROM","colunas e *","apelido com AS","expressões","DISTINCT"],"v":false},{"c":"BD.04","n":"Filtrar","k":["WHERE","comparação","AND, OR, NOT e precedência","IN","BETWEEN","LIKE","aspas simples para texto"],"v":false},{"c":"BD.05","n":"NULL","k":["o que é NULL","lógica de três valores","IS NULL","NULL em comparações e contas","COALESCE"],"v":false},{"c":"BD.06","n":"Ordenar e limitar","k":["ORDER BY com várias colunas","ASC e DESC","LIMIT e OFFSET","onde ficam os NULL"],"v":false},{"c":"BD.11","n":"Funções úteis","k":["texto (UPPER, SUBSTR, TRIM, concatenação)","datas","CASE WHEN","conversão de tipo"],"v":false},{"c":"BD.07","n":"Agregação","k":["COUNT, SUM, AVG, MIN, MAX","COUNT(*) e COUNT(coluna)","GROUP BY","HAVING","ordem lógica de execução"],"v":false},{"c":"BD.08","n":"Junções","k":["produto cartesiano","INNER JOIN","LEFT JOIN","RIGHT e FULL JOIN","junção com várias tabelas","linhas duplicadas por junção","autojunção"],"v":false},{"c":"BD.09","n":"Subconsultas","k":["subconsulta escalar","em WHERE com IN e EXISTS","em FROM","correlacionada"],"v":false},{"c":"BD.10","n":"Operações de conjunto","k":["UNION e UNION ALL","INTERSECT","EXCEPT","compatibilidade de colunas"],"v":false},{"c":"BD.18","n":"Álgebra relacional","k":["seleção, projeção, junção, união, diferença, renomeação","equivalência com SQL"],"v":false},{"c":"BD.12","n":"Modelagem conceitual","k":["entidade, atributo, relacionamento","cardinalidade (1:1, 1:N, N:M)","entidade fraca","diagrama ER","passar do ER para tabelas"],"v":false},{"c":"BD.13","n":"Normalização","k":["dependência funcional","anomalias de inserção, atualização e remoção","1FN, 2FN, 3FN e FNBC","quando desnormalizar"],"v":false},{"c":"BD.14","n":"Criar e alterar","k":["CREATE TABLE","tipos de dados","restrições (PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, CHECK)","INSERT, UPDATE, DELETE","ALTER TABLE"],"v":false},{"c":"BD.15","n":"SQL analítico","k":["CTE com WITH","CTE recursiva","funções de janela (ROW_NUMBER, RANK, LAG, LEAD, somas acumuladas, PARTITION BY)"],"v":false},{"c":"BD.16","n":"Transações","k":["ACID","BEGIN, COMMIT, ROLLBACK","concorrência","níveis de isolamento e anomalias (leitura suja, não repetível, fantasma)"],"v":false},{"c":"BD.17","n":"Desempenho","k":["índice e árvore B","quando o índice ajuda e quando atrapalha","plano de execução (EXPLAIN)","seletividade"],"v":false},{"c":"BD.19","n":"Visões, permissões e rotinas","k":["VIEW","GRANT e REVOKE","procedimentos e gatilhos (conceito)"],"v":false},{"c":"BD.20","n":"Analítico e transacional","k":["OLTP e OLAP","data warehouse","modelo estrela e floco de neve","fato e dimensão","ETL e ELT"],"v":false}]},{"s":"CMP","n":"Como o computador funciona","p":1,"e":"Entender a máquina","mods":[{"c":"CMP.01","n":"Representação numérica","k":["bit e byte","base 2, 10 e 16","conversão entre bases","inteiros com sinal (complemento de dois)","estouro (overflow)","ponto flutuante (IEEE 754) e arredondamento"],"v":false},{"c":"CMP.02","n":"Texto","k":["caractere e código","ASCII","Unicode","UTF-8 e Latin-1","\"mojibake\" (acento quebrado)","normalização de acentos"],"v":false},{"c":"CMP.03","n":"Lógica digital","k":["portas lógicas","tabela-verdade","circuitos combinacionais","somador"],"v":false},{"c":"CMP.04","n":"Arquitetura","k":["CPU, memória e armazenamento","hierarquia de memória e cache","ciclo de instrução","32 e 64 bits"],"v":false},{"c":"CMP.05","n":"Sistemas operacionais","k":["processo e thread","memória virtual","sistema de arquivos","caminhos absolutos e relativos","permissões"],"v":false},{"c":"CMP.06","n":"Redes e web","k":["IP, DNS e portas","cliente e servidor","HTTP (métodos, códigos de status, cabeçalhos)","HTTPS","o que é uma API"],"v":false},{"c":"CMP.07","n":"Como o código roda","k":["compilador, interpretador e bytecode","máquina virtual (JVM, CPython)"],"v":false}]},{"s":"MAT","n":"Matemática básica e lógica","p":5,"e":"Raciocinar","mods":[{"c":"MAT.01","n":"Conjuntos e funções","k":["conjunto, pertinência, operações","produto cartesiano","função, domínio e imagem","composição","inversa"],"v":false},{"c":"MAT.02","n":"Lógica proposicional","k":["proposição","conectivos","tabela-verdade","tautologia e contradição","equivalências","implicação e contrapositiva","quantificadores"],"v":false},{"c":"MAT.03","n":"Contagem","k":["princípio multiplicativo","permutação","arranjo","combinação","com e sem reposição"],"v":false}]},{"s":"EST","n":"Probabilidade e estatística","p":12,"e":"Medir a incerteza","mods":[{"c":"EST.01","n":"Tipos de dado e coleta","k":["variável qualitativa e quantitativa","nominal, ordinal, discreta, contínua","população e amostra","estudo observacional e experimento"],"v":false},{"c":"EST.02","n":"Estatística descritiva","k":["média, mediana e moda","amplitude","variância e desvio-padrão","quartis e intervalo interquartil","valores atípicos","assimetria"],"v":false},{"c":"EST.03","n":"Probabilidade","k":["espaço amostral","eventos","regras da soma e do produto","probabilidade condicional","independência","teorema de Bayes"],"v":false},{"c":"EST.04","n":"Variáveis aleatórias","k":["discreta e contínua","função de probabilidade e densidade","esperança","variância","acumulada"],"v":false},{"c":"EST.05","n":"Distribuições","k":["Bernoulli","binomial","Poisson","uniforme","normal","exponencial","quando cada uma aparece"],"v":false},{"c":"EST.06","n":"Amostragem","k":["lei dos grandes números","teorema central do limite","distribuição amostral","erro-padrão","amostragem aleatória, estratificada e por conglomerado","viés de seleção"],"v":false},{"c":"EST.09","n":"Reamostragem","k":["bootstrap","teste de permutação","quando usar"],"v":false},{"c":"EST.07","n":"Estimação","k":["estimador","viés e variância","intervalo de confiança","interpretação correta"],"v":false},{"c":"EST.08","n":"Testes de hipótese","k":["hipóteses nula e alternativa","estatística de teste","p-valor","nível de significância","erros tipo I e II","poder","teste t","qui-quadrado","múltiplos testes"],"v":false},{"c":"EST.10","n":"Correlação e causalidade","k":["covariância","correlação de Pearson e de Spearman","confusão","paradoxo de Simpson","experimento aleatorizado","teste A/B"],"v":false},{"c":"EST.11","n":"Regressão linear","k":["regressão simples e múltipla","interpretação de coeficientes","R²","resíduos","suposições","variáveis categóricas","interação"],"v":false},{"c":"EST.12","n":"Além do básico","k":["regressão logística (interpretação)","ANOVA","séries temporais (tendência, sazonalidade, autocorrelação)","inferência bayesiana (introdução)"],"v":false}]},{"s":"ED","n":"Estruturas de dados e algoritmos","p":4,"e":"Fazer rápido","mods":[{"c":"ALG.01","n":"Custo","k":["contar operações","melhor, pior e caso médio","notação O","classes comuns (1, log n, n, n log n, n², 2ⁿ)","custo de memória"],"v":false},{"c":"ED.01","n":"Tipos abstratos","k":["tipo abstrato de dados","interface e implementação","operações e custos"],"v":false},{"c":"ED.02","n":"Vetores","k":["vetor contíguo","acesso por índice em O(1)","inserção no meio em O(n)","vetor dinâmico e realocação"],"v":false},{"c":"ED.04","n":"Pilhas","k":["LIFO","empilhar e desempilhar","pilha de chamadas","parênteses balanceados","notação pós-fixa"],"v":false},{"c":"ED.05","n":"Filas","k":["FIFO","fila circular","deque","fila de prioridade (conceito)"],"v":false},{"c":"ED.03","n":"Listas ligadas","k":["nó e ponteiro","lista simples, dupla e circular","inserção e remoção","comparação com vetor"],"v":false},{"c":"ALG.04","n":"Recursão","k":["caso base e passo","pilha de chamadas","recursão e iteração","recursão de cauda (conceito)"],"v":true},{"c":"ALG.02","n":"Busca","k":["busca linear","busca binária","pré-condição de ordenação"],"v":false},{"c":"ED.06","n":"Tabelas hash","k":["função de espalhamento","colisão","encadeamento","endereçamento aberto","fator de carga","por que dict é O(1) em média"],"v":false},{"c":"ALG.03","n":"Ordenação simples","k":["seleção","inserção","bolha","estabilidade"],"v":false},{"c":"ALG.05","n":"Dividir e conquistar","k":["merge sort","quicksort e pivô","custo n log n"],"v":false},{"c":"ALG.06","n":"Ordenação por contagem","k":["counting sort","limite de n log n para comparação"],"v":false},{"c":"ED.07","n":"Árvores","k":["raiz, folha, altura, nível","árvore binária","percursos (pré, em e pós-ordem","por nível)"],"v":false},{"c":"ED.10","n":"Heaps","k":["heap mínimo e máximo","subir e descer","fila de prioridade","heapq"],"v":false},{"c":"ED.08","n":"Árvore binária de busca","k":["propriedade de ordem","busca, inserção e remoção","árvore degenerada"],"v":false},{"c":"ED.09","n":"Árvores balanceadas","k":["AVL e fator de balanceamento","rotações","árvore B e o índice de banco"],"v":false},{"c":"ED.11","n":"Grafos","k":["vértice e aresta","dirigido e ponderado","lista e matriz de adjacência"],"v":false},{"c":"ALG.09","n":"Grafos","k":["busca em largura","busca em profundidade","caminho mínimo (Dijkstra)","ordenação topológica"],"v":false},{"c":"ALG.07","n":"Gulosos","k":["escolha gulosa","troco","agendamento de intervalos","quando falha"],"v":false},{"c":"ALG.08","n":"Programação dinâmica","k":["subproblemas sobrepostos","memorização","tabela","mochila e maior subsequência comum (introdução)"],"v":false},{"c":"ED.12","n":"Matrizes","k":["matriz densa e esparsa","armazenamento por linha e por coluna","por que o pandas e o NumPy são colunares"],"v":false},{"c":"ALG.10","n":"Medir na prática","k":["timeit","crescimento empírico","vetorização como algoritmo melhor"],"v":false}]},{"s":"POO","n":"Orientação a objetos","p":2,"e":"Organizar o código","mods":[{"c":"POO.01","n":"Classe e objeto","k":["estado e comportamento","construtor","instância","referência","this e self"],"v":true},{"c":"POO.02","n":"Encapsulamento","k":["modificadores de acesso","getters e setters","invariantes"],"v":false},{"c":"POO.03","n":"Herança","k":["superclasse e subclasse","extends","super","sobrescrita"],"v":false},{"c":"POO.04","n":"Polimorfismo","k":["sobrescrita e sobrecarga","ligação dinâmica","tratar tipos diferentes pela mesma interface"],"v":true},{"c":"POO.05","n":"Abstração e interfaces","k":["classe abstrata","interface","contrato","composição e herança"],"v":false},{"c":"POO.06","n":"Java essencial","k":["JVM e bytecode","tipos primitivos e referência","== e equals","String","static","exceções verificadas"],"v":false},{"c":"POO.07","n":"Coleções","k":["ArrayList, HashMap, HashSet em Java","equivalentes em Python","genéricos"],"v":false},{"c":"POO.08","n":"Princípios de projeto","k":["coesão e acoplamento","responsabilidade única","padrões comuns (estratégia, fábrica) em nível de conceito"],"v":false}]},{"s":"ENG","n":"Ferramentas do ofício","p":5,"e":"Entregar e manter","mods":[{"c":"ENG.01","n":"Terminal","k":["diretório atual","ls, cd, mkdir, cp, mv, rm","caminhos","cat, head, grep, wc","redirecionamento e encadeamento"],"v":false},{"c":"ENG.04","n":"Ambientes","k":["ambiente virtual","dependências e versões","requirements e arquivo de projeto","por que \"na minha máquina funciona\""],"v":false},{"c":"ENG.05","n":"Jupyter e editor","k":["células","ordem de execução e estado oculto","quando sair do notebook para módulo"],"v":false},{"c":"ENG.02","n":"Git","k":["repositório","add e commit","histórico","diff","desfazer com segurança"],"v":false},{"c":"ENG.03","n":"Git em equipe","k":["ramos","merge","conflito","GitHub","pull request","revisão"],"v":false},{"c":"ENG.06","n":"Projeto de dados","k":["estrutura de pastas","dados brutos imutáveis","configuração separada do código","README"],"v":false},{"c":"ENG.07","n":"Qualidade","k":["testes","validação de dados","registro de execução (logging)","revisão de código"],"v":false},{"c":"ENG.08","n":"Pipelines","k":["ETL e ELT","tarefa e dependência","agendamento","idempotência","orquestrador (conceito: Airflow)","transformação em SQL versionado (conceito: dbt)"],"v":false},{"c":"ENG.09","n":"Contêineres e nuvem","k":["contêiner e imagem (Docker)","armazenamento de objetos","computação sob demanda","permissões","custo"],"v":false},{"c":"ENG.10","n":"Processo de software","k":["requisitos","ciclo de vida","métodos ágeis (Scrum, Kanban)","qualidade e testes","documentação"],"v":false}]},{"s":"FMT","n":"Formatos e coleta de dados","p":4,"e":"Coletar","mods":[{"c":"FMT.01","n":"CSV","k":["separador, aspas e escape","cabeçalho","ponto e vírgula e vírgula decimal (padrão brasileiro)","codificação","módulo csv e pandas.read_csv"],"v":false},{"c":"FMT.02","n":"JSON","k":["objeto, lista e tipos","aninhamento","JSON Lines","achatar estrutura aninhada"],"v":false},{"c":"FMT.06","n":"Datas e horas","k":["ISO 8601","fuso horário","data sem hora","datetime","conversão e aritmética de datas"],"v":false},{"c":"FMT.03","n":"Excel e planilhas","k":["abas","células mescladas","datas como número","armadilhas de planilha"],"v":false},{"c":"FMT.05","n":"Parquet e Arrow","k":["formato colunar","esquema e tipos","compressão","partição"],"v":false},{"c":"FMT.07","n":"APIs","k":["REST","requisição e resposta","parâmetros","paginação","autenticação por chave","limites de taxa"],"v":false},{"c":"FMT.09","n":"Dados públicos brasileiros","k":["portal dados.gov.br","API do IBGE","séries do Banco Central (SGS)","microdados do INEP","Portal da Transparência","dicionários de dados"],"v":false},{"c":"FMT.04","n":"XML e HTML","k":["árvore de elementos","atributos","seletores","extrair tabela de página"],"v":false},{"c":"FMT.08","n":"Raspagem","k":["quando é permitido (termos de uso, robots.txt)","requisição","leitura de HTML","respeitar o servidor"],"v":false},{"c":"FMT.10","n":"Texto como dado","k":["tokenização","contagem de palavras","n-gramas","stop words","TF-IDF"],"v":false},{"c":"FMT.11","n":"Imagem como dado","k":["pixel","canais","matriz e tensor","operações simples"],"v":false},{"c":"FMT.12","n":"Serialização","k":["pickle e seus riscos","JSON para troca","versões de esquema"],"v":false}]},{"s":"AD","n":"Análise de dados","p":10,"e":"Limpar e analisar","mods":[{"c":"AD.01","n":"NumPy","k":["ndarray","forma e tipo","criação","indexação e fatias","máscara booleana","vetorização","broadcasting","agregações por eixo"],"v":false},{"c":"AD.02","n":"pandas: estruturas","k":["Series e DataFrame","índice","tipos de coluna","ler e inspecionar (head, info, describe)"],"v":false},{"c":"AD.03","n":"Selecionar e filtrar","k":["loc e iloc","filtro booleano","query","criar e transformar colunas","aviso de cópia"],"v":false},{"c":"AD.04","n":"Agrupar","k":["groupby","agg com várias funções","transform","tabela dinâmica (pivot_table)","equivalência com SQL"],"v":false},{"c":"AD.05","n":"Juntar","k":["merge (tipos de junção)","concat","chaves duplicadas","validar a junção"],"v":false},{"c":"AD.06","n":"Arrumar dados","k":["dado arrumado (tidy data)","melt e pivot","colunas com mais de uma informação"],"v":false},{"c":"AD.07","n":"Limpeza","k":["dados ausentes (tipos e tratamentos)","duplicados","tipos errados","inconsistência de categorias","valores atípicos","validação de regras"],"v":false},{"c":"AD.08","n":"Datas e séries","k":["índice de tempo","reamostragem","janelas móveis","defasagem","variação percentual"],"v":false},{"c":"AD.10","n":"Desempenho e alternativas","k":["memória por tipo","category","leitura em partes","Polars e DuckDB a partir do Python"],"v":false}]},{"s":"VIS","n":"Visualização e comunicação","p":7,"e":"Comunicar","mods":[{"c":"VIS.01","n":"Percepção","k":["posição, comprimento, ângulo e cor","o que o olho compara bem e mal"],"v":false},{"c":"VIS.02","n":"Escolher o gráfico","k":["comparação","distribuição (histograma, boxplot)","relação (dispersão)","composição","tempo (linha)"],"v":false},{"c":"VIS.03","n":"Matplotlib","k":["figura e eixos","tipos de gráfico","rótulos e títulos","vários painéis"],"v":false},{"c":"VIS.04","n":"Gráficos que mentem","k":["eixo truncado","escala dupla","área enganosa","excesso de cor"],"v":false},{"c":"VIS.05","n":"Gráfico explicativo","k":["um recado por gráfico","título que diz a conclusão","destaque e contexto"],"v":false},{"c":"AD.09","n":"Análise exploratória","k":["perguntas antes dos gráficos","distribuições","relações","segmentação","hipóteses a testar"],"v":false},{"c":"VIS.06","n":"Relatório e notebook","k":["estrutura (pergunta, método, resultado, limite)","notebook reproduzível","Markdown"],"v":false},{"c":"VIS.07","n":"Painéis","k":["indicadores","filtros","quando um painel ajuda e quando atrapalha"],"v":false}]},{"s":"ALC","n":"Álgebra linear e cálculo para dados","p":5,"e":"Entender os modelos","mods":[{"c":"MAT.04","n":"Vetores","k":["vetor como seta e como lista","soma","múltiplo","norma","produto interno","ângulo","projeção"],"v":false},{"c":"MAT.05","n":"Matrizes","k":["operações","produto de matrizes","transposta","identidade","inversa","matriz como transformação"],"v":false},{"c":"MAT.06","n":"Sistemas lineares","k":["escalonamento","posto","solução única, infinitas ou nenhuma","determinante"],"v":false},{"c":"MAT.07","n":"Espaços vetoriais","k":["combinação linear","independência linear","base","dimensão","subespaço"],"v":false},{"c":"MAT.08","n":"Mínimos quadrados","k":["projeção em subespaço","equações normais","ligação com regressão linear"],"v":false},{"c":"MAT.09","n":"Autovalores e decomposições","k":["autovalor e autovetor","diagonalização","SVD","PCA como rotação para as direções de maior variância"],"v":false},{"c":"MAT.10","n":"Cálculo para otimização","k":["derivada como taxa","regras de derivação","regra da cadeia","derivada parcial","gradiente","descida do gradiente","integral como área (intuição)"],"v":false}]},{"s":"ML","n":"Aprendizado de máquina","p":13,"e":"Prever","mods":[{"c":"ML.01","n":"O problema","k":["supervisionado e não supervisionado","regressão e classificação","variável-alvo e atributos","o que um modelo aprende"],"v":false},{"c":"ML.02","n":"Avaliação honesta","k":["treino, validação e teste","sobreajuste e subajuste","viés e variância","vazamento de dados","validação cruzada"],"v":false},{"c":"ML.03","n":"Métricas","k":["MAE, RMSE e R²","matriz de confusão","acurácia","precisão","revocação","F1","curva ROC e AUC","escolha da métrica pelo custo do erro"],"v":false},{"c":"ML.04","n":"Modelos lineares","k":["regressão linear","regressão logística","regularização Ridge e Lasso"],"v":false},{"c":"ML.05","n":"Vizinhos e distância","k":["k vizinhos mais próximos","padronização das escalas","maldição da dimensionalidade"],"v":false},{"c":"ML.07","n":"Atributos","k":["codificação de categorias","padronização","criar atributos","seleção","pipelines do scikit-learn"],"v":false},{"c":"ML.06","n":"Árvores e conjuntos","k":["árvore de decisão","impureza","poda","bagging","random forest","boosting"],"v":false},{"c":"ML.08","n":"Não supervisionado","k":["k-means","agrupamento hierárquico","DBSCAN","escolher o número de grupos","PCA na prática"],"v":false},{"c":"ML.09","n":"Ajuste e escolha","k":["busca de hiperparâmetros","validação cruzada aninhada (conceito)","curva de aprendizado"],"v":false},{"c":"ML.10","n":"Problemas reais","k":["classes desbalanceadas","dados faltantes no modelo","deriva de dados","calibração"],"v":false},{"c":"ML.11","n":"Interpretação","k":["importância de atributos","dependência parcial","valores SHAP (conceito)","explicar para quem decide"],"v":false},{"c":"ML.13","n":"Texto e tempo","k":["classificação de texto com TF-IDF","previsão de séries (base ingênua, validação temporal)"],"v":false},{"c":"ML.12","n":"Redes neurais","k":["perceptron","camadas","ativação","retropropagação (intuição)","quando vale a pena"],"v":false}]},{"s":"NSQ","n":"Dados além do relacional","p":3,"e":"Escalar","mods":[{"c":"NSQ.01","n":"Por que NoSQL","k":["limites do relacional","esquema flexível","escala horizontal","teorema CAP","consistência eventual","BASE e ACID"],"v":false},{"c":"NSQ.02","n":"Documentos","k":["documento JSON","coleção","consulta e agregação no MongoDB","embutir ou referenciar"],"v":false},{"c":"NSQ.03","n":"Colunar e análise","k":["armazenamento por linha e por coluna","compressão","Parquet","DuckDB consultando arquivo direto"],"v":false},{"c":"NSQ.04","n":"Chave-valor e cache","k":["Redis","expiração","contadores","quando usar cache"],"v":false},{"c":"NSQ.05","n":"Coluna larga e grafo","k":["Cassandra (conceito)","Neo4j e consultas de caminho (conceito)"],"v":false},{"c":"NSQ.06","n":"Big data","k":["volume, velocidade e variedade","processamento distribuído","MapReduce","Spark e DataFrames distribuídos (conceito)","data lake e lakehouse"],"v":false},{"c":"NSQ.07","n":"Fluxos","k":["dado em lote e em fluxo","fila de mensagens (conceito: Kafka)","janela de tempo"],"v":false}]},{"s":"ETI","n":"Ética, privacidade e governança","p":2,"e":"Cuidar dos dados","mods":[{"c":"ETI.01","n":"LGPD","k":["dado pessoal e dado pessoal sensível","bases legais","direitos do titular","papéis (controlador, operador, encarregado)"],"v":false},{"c":"ETI.02","n":"Anonimização","k":["anonimização e pseudonimização","reidentificação por cruzamento","agregação mínima"],"v":false},{"c":"ETI.03","n":"Segurança de dados","k":["confidencialidade, integridade e disponibilidade","criptografia simétrica e assimétrica","hash","controle de acesso","segredos fora do código"],"v":false},{"c":"ETI.04","n":"Viés e justiça","k":["viés na coleta, no rótulo e no modelo","métricas de justiça (conceito)","impacto de decisões automáticas"],"v":false},{"c":"ETI.05","n":"Governança e qualidade","k":["dimensões de qualidade (completude, exatidão, consistência, atualidade)","metadados","dicionário de dados","linhagem","dono do dado","DAMA-DMBOK (conceito)"],"v":false},{"c":"ETI.06","n":"Reprodutibilidade","k":["semente aleatória","versão de dados e código","registro de decisões"],"v":false}]}];
+const ZONAS = [
+  ["Pensar como programador","LOG","PY"],["Onde os dados moram","BD","CMP"],["Números com sentido","MAT","EST"],
+  ["Programar de verdade","ED","POO","ENG"],["Da planilha ao gráfico","FMT","AD","VIS"],["Modelos e mundo real","ALC","ML","NSQ","ETI"]];
+const COR = {LOG:"#4cc9ff",PY:"#ffd166",BD:"#39e58c",CMP:"#9aa6c8",MAT:"#9d7bff",EST:"#ff6ea8",ED:"#4cc9ff",POO:"#ffb547",ENG:"#39e58c",FMT:"#8ee3ff",AD:"#ffd166",VIS:"#ff6ea8",ALC:"#9d7bff",ML:"#39e58c",NSQ:"#ffb547",ETI:"#9aa6c8"};
+const POR = Object.fromEntries(MAT.map(m=>[m.s,m]));
+// progresso de exemplo: LOG dominada em parte, PY começada (dados fictícios para o protótipo)
+let prog; try{prog=JSON.parse(localStorage.getItem("sala-proto:v1"))}catch(e){} 
+prog = prog || {feitos:{"LOG.01":5,"LOG.02":6,"LOG.03":5,"LOG.04":2}, atual:"LOG.04"};
+const salvar=()=>{try{localStorage.setItem("sala-proto:v1",JSON.stringify(prog))}catch(e){}};
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const feitosDe=c=>prog.feitos[c]||0;
+const modOk=m=>feitosDe(m.c)>=m.k.length;
+const pctMat=m=>{const t=m.mods.reduce((a,x)=>a+x.k.length,0),f=m.mods.reduce((a,x)=>a+Math.min(x.k.length,feitosDe(x.c)),0);return Math.round(100*f/t)};
+const formacao=()=>MAT.reduce((a,m)=>a+m.p*pctMat(m)/100,0);
+const tela=document.getElementById("tela"), pe=document.getElementById("pe");
+const matDoAtual=()=>MAT.find(m=>m.mods.some(x=>x.c===prog.atual));
+const modAtual=()=>matDoAtual().mods.find(x=>x.c===prog.atual);
+
+function vSala(){
+  pe.hidden=true;
+  const m=matDoAtual(), mod=modAtual(), f=formacao();
+  const nMods=MAT.reduce((a,x)=>a+x.mods.filter(modOk).length,0);
+  const zonas=ZONAS.map(([nome,...sg],zi)=>{
+    const ms=sg.map(s=>POR[s]);
+    const feitos=ms.reduce((a,x)=>a+x.mods.filter(modOk).length,0), tot=ms.reduce((a,x)=>a+x.mods.length,0);
+    const est=ms.map(x=>{
+      const p=pctMat(x), aqui=x===m, idx=MAT.indexOf(x), tranc=p===0&&!aqui;
+      const leds=x.mods.map(y=>`<i class="${modOk(y)?"on":feitosDe(y.c)?"half":""}"></i>`).join("");
+      const linha=x.mods.find(y=>!modOk(y))||x.mods[x.mods.length-1];
+      return `<button class="est ${aqui?"atual":""} ${tranc?"tranc":""}" style="--c:${COR[x.s]};--on:${Math.max(.15,p/100)}" data-ir="#estacao-${x.s}">
+        ${aqui?`<span class="tag-aqui">você está aqui</span>`:""}
+        <span class="monitor"><span class="tela"></span><span class="pct">${p}%</span><span class="cod">${esc(x.s.toLowerCase())}&gt; ${esc(linha.n.toLowerCase().slice(0,22))}\n${p?"_":"// aguardando"}</span></span>
+        <h3>${String(idx+1).padStart(2,"0")} · ${esc(x.n)}</h3>
+        <span class="leds" aria-hidden="true">${leds}</span>
+        <span class="meta"><span>${x.mods.filter(modOk).length}/${x.mods.length} módulos</span><span>vale ${x.p}%</span></span>
+      </button>`}).join("");
+    return `<section class="zona"><div class="zona-cab"><span class="eyebrow">Bancada ${zi+1}</span><h2>${nome}</h2><small>${feitos}/${tot} módulos</small></div><div class="estacoes">${est}</div></section>`;
+  }).join("");
+  tela.innerHTML=`
+  <section class="status">
+    <div class="card neon"><span class="eyebrow">Formação de cientista de dados</span>
+      <div class="prog-big"><b>${f.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</b><span>${nMods} de ${MAT.reduce((a,x)=>a+x.mods.length,0)} módulos ligados</span></div>
+      <div class="trilho"><i style="width:${f}%"></i></div>
+      <a class="continuar" href="#aula"><span class="play">&#9654;</span><span><b>${esc(mod.n)}</b><small>${esc(m.n)} · conceito ${Math.min(mod.k.length,feitosDe(mod.c)+1)} de ${mod.k.length}</small></span><span class="seta">&#8594;</span></a>
+    </div>
+    <div class="card"><span class="eyebrow" style="color:var(--fg3)">Hoje</span>
+      <div class="kpis" style="margin-top:10px"><div class="kpi verde"><b>7</b><span><span class="led"></span>dias seguidos</span></div><div class="kpi ambar"><b>3</b><span>revisões hoje</span></div><div class="kpi rosa"><b>12</b><span>min por conceito</span></div></div>
+      <p style="margin:14px 0 0;color:var(--fg2);font-size:14px">Cada estação acende com os módulos dominados. Toque numa para abrir a bancada.</p>
+    </div>
+  </section>
+  <div class="sala">${zonas}</div>`;
+}
+
+function vEstacao(sig){
+  pe.hidden=true;
+  const m=POR[sig]||POR.LOG, p=pctMat(m), c=COR[m.s], i=MAT.indexOf(m);
+  const prox=m.mods.find(x=>!modOk(x))||m.mods[0];
+  const r=42, volta=2*Math.PI*r;
+  const blocos=m.mods.map((x,k)=>{
+    const ok=modOk(x), atual=x===prox, fe=feitosDe(x.c), tranc=!ok&&!atual&&fe===0;
+    const leds=x.k.map((_,j)=>`<i class="${j<fe?"on":""}"></i>`).join("");
+    const conceitos=x.k.map((n,j)=>`<span class="conc ${j<fe?"feito":j===fe?"atual":""}"><i>${j<fe?"&#10003;":j+1}</i>${esc(cap(n))}</span>`).join("");
+    return `<button class="bloco ${ok?"feito":atual?"atual":tranc?"tranc":""}" data-abrir="${x.c}" aria-expanded="${atual}">
+      <span class="num">${ok?"&#10003;":String(k+1).padStart(2,"0")}</span>
+      <span><h3>${esc(x.n)}${x.v?`<span class="virada">virada</span>`:""}</h3><small>${x.k.length} conceitos${ok?" · dominado":fe?` · ${fe} feitos`:""}</small></span>
+      <span class="leds" aria-hidden="true">${leds}</span>
+      ${atual?`<span class="aberto"><span class="conceitos">${conceitos}</span><span><a class="btn p" href="#aula">Continuar a aula &#8594;</a></span></span>`:""}
+    </button>`}).join("");
+  tela.innerHTML=`<div style="--c:${c}">
+    <a class="voltar" href="#sala">&#8592; Sala de programação</a>
+    <div class="est-cab">
+      <div><span class="eyebrow">Estação ${String(i+1).padStart(2,"0")} · vale ${m.p}% da formação</span><h1 style="margin-top:6px">${esc(m.n)}</h1><p style="margin:8px 0 0;color:var(--fg2)">${m.mods.filter(modOk).length} de ${m.mods.length} módulos dominados. ${m.e?`No trabalho: ${esc(m.e.toLowerCase())}.`:""}</p></div>
+      <div class="anel"><svg viewBox="0 0 100 100"><circle class="f" cx="50" cy="50" r="${r}"/><circle class="v" cx="50" cy="50" r="${r}" stroke-dasharray="${volta.toFixed(1)}" stroke-dashoffset="${(volta*(1-p/100)).toFixed(1)}"/></svg><b>${p}%</b></div>
+    </div>
+    <div class="rack">${blocos}</div></div>`;
+  tela.querySelectorAll("[data-abrir]").forEach(b=>b.addEventListener("click",e=>{ if(e.target.closest("a"))return; const x=m.mods.find(y=>y.c===b.dataset.abrir); if(modOk(x)||feitosDe(x.c)||x===prox){prog.atual=x.c;salvar();vEstacao(sig)} }));
+}
+
+/* a aula: um conceito em 4 tempos, com o código que acende linha a linha */
+const PASSOS=["Veja","Exemplo","Pratique","Avance"];
+const LINHAS=[["<span class=k>def</span> pix(saldo, valor):",""],["    <span class=k>if</span> valor &gt; saldo:","1. Antes de mandar, o app confere: cabe no saldo?"],["        <span class=k>return</span> <span class=s>\"saldo insuficiente\"</span>","2. Se não cabe, para aqui e avisa. Nada é enviado."],["    saldo = saldo - valor","3. Se cabe, desconta. Cada passo é claro: ninguém faz 'mais ou menos'."],["    <span class=k>return</span> saldo","4. Devolve o saldo novo. Todo algoritmo termina com um resultado."],["<span class=k>print</span>(pix(<span class=n>120</span>, <span class=n>80</span>))","5. Rodando com 120 e 80: 80 cabe em 120, desconta, sobra 40."]];
+let aula={p:0,l:0,resp:null};
+function vAula(){
+  pe.hidden=false;
+  const m=matDoAtual(), mod=modAtual(), nconc=mod.k.length, kc=Math.min(nconc-1,feitosDe(mod.c));
+  const corpo = aula.p===0 ? `
+    <h1>O que é um algoritmo</h1>
+    <p class="lede">Uma sequência de passos claros, que qualquer pessoa segue do mesmo jeito e que sempre termina com um resultado.</p>
+    <div class="quadro"><div class="cab">pix.py · veja acontecer</div>
+      <pre class="codigo">${LINHAS.map((l,i)=>`<span class="l ${i===aula.l?"on":i<aula.l?"ok":""}">${l[0]}</span>`).join("\n")}</pre>
+      <div class="nota">${aula.l?LINHAS[aula.l][1]:"<b>Toque em Passo.</b> Cada linha acende na ordem em que o computador a executa."}</div>
+      ${aula.l===LINHAS.length-1?`<div class="saida"><small>saída</small><span>40</span></div>`:""}
+      <div class="ctrl"><button type="button" data-l="-1">&#8592;</button><button type="button" class="p" data-l="1">Passo &#8594;</button><span class="pts">${LINHAS.map((_,i)=>`<i class="${i<=aula.l?"on":""}"></i>`).join("")}</span></div>
+    </div>
+    <div class="dia"><span class="ic">&#9679;</span><div><b>No dia a dia</b>"Asse por 40 minutos a 180 graus" é um passo de algoritmo. "Asse até ficar bom" não é: depende de quem decide.</div></div>`
+  : aula.p===1 ? `
+    <span class="eyebrow">Exemplo resolvido</span><h2>Quanto sobra depois de dois Pix?</h2>
+    <p>Saldo 200. Você manda 150 e depois tenta mandar 80.</p>
+    <div class="quadro"><div class="cab">passo a passo</div>
+      <pre class="codigo"><span class="l ok">saldo = pix(<span class=n>200</span>, <span class=n>150</span>)   <span class=c># 150 cabe em 200 → sobra 50</span></span>
+<span class="l ok">saldo = pix(saldo, <span class=n>80</span>)   <span class=c># 80 não cabe em 50 → "saldo insuficiente"</span></span></pre>
+      <div class="nota"><b>Por que a segunda falha?</b> A conferência vem antes do desconto. É a ordem dos passos que protege o saldo.</div></div>
+    <div class="pergunta"><h2 style="font-size:18px">Autoexplicação: o que a linha 2 garante?</h2>
+      ${opcoes([["Que nunca se envia mais do que se tem",true,"É a regra do algoritmo: conferir antes de agir."],["Que o Pix é mais rápido",false,"Velocidade não entra aqui; a linha só compara dois números."],["Que o saldo nunca muda",false,"Ele muda na linha 4, quando o valor cabe."]])}</div>`
+  : aula.p===2 ? `
+    <span class="eyebrow">Pratique · 1 de 3</span><h2>Qual destes é um passo de algoritmo?</h2>
+    <div class="pergunta">${opcoes([["Some 10% ao valor da conta.",true,"Tem um único jeito de fazer: qualquer pessoa chega ao mesmo número."],["Dê uma gorjeta justa.",false,"\"Justa\" depende de quem decide. Um algoritmo não deixa escolha ambígua."],["Pague quando achar melhor.",false,"\"Quando achar melhor\" não diz quando. Um passo precisa ser preciso."]])}</div>`
+  : `
+    <div class="selo">3/3</div><h2 style="text-align:center">Conceito ligado</h2>
+    <div class="quadro"><div class="nota" style="border:0"><b>Leve daqui</b>Algoritmo: passos claros, sem ambiguidade, que sempre terminam com um resultado.</div></div>
+    <div class="proximo"><span>A seguir · conceito ${Math.min(nconc,kc+2)} de ${nconc}</span><b>${esc(cap(mod.k[Math.min(nconc-1,kc+1)]))}</b></div>
+    <p style="text-align:center;color:var(--fg2);font-size:14px">O que você errou volta na revisão de amanhã, misturado com outras matérias.</p>`;
+  tela.innerHTML=`
+    <div class="aula-top"><div class="aula-linha"><a class="x" href="#estacao-${m.s}" aria-label="Sair">&#10005;</a><div class="onde"><b>${esc(cap(mod.k[kc]))}</b><small>${esc(mod.n)} · conceito ${kc+1} de ${nconc}</small></div></div>
+      <div class="passos">${PASSOS.map((n,i)=>`<button type="button" data-p="${i}" class="${i===aula.p?"on":i<aula.p?"ok":""}"><i></i>${i+1} ${n}</button>`).join("")}</div></div>
+    <div class="aula">${corpo}</div>`;
+  tela.querySelectorAll("[data-l]").forEach(b=>b.addEventListener("click",()=>{aula.l=Math.max(0,Math.min(LINHAS.length-1,aula.l+Number(b.dataset.l)));vAula()}));
+  tela.querySelectorAll("[data-p]").forEach(b=>b.addEventListener("click",()=>{const k=Number(b.dataset.p); if(k<=aula.p){aula.p=k;aula.resp=null;vAula()}}));
+  tela.querySelectorAll("[data-op]").forEach(b=>b.addEventListener("click",()=>{aula.resp=Number(b.dataset.op);vAula()}));
+  const ir=document.getElementById("pe-ir");
+  const pronto = aula.p===0 ? aula.l===LINHAS.length-1 : aula.p===3 ? true : aula.resp!=null && JSON.parse(tela.querySelector("[data-op]").dataset.ops)[aula.resp][1];
+  ir.disabled=!pronto;
+  ir.textContent=["Ir para o exemplo","Ir para a prática","Concluir o conceito","Próximo conceito"][aula.p];
+  ir.onclick=()=>{ if(aula.p<3){aula.p++;aula.resp=null;vAula()} else { prog.feitos[mod.c]=Math.min(nconc,feitosDe(mod.c)+1); if(modOk(mod)){const i=m.mods.indexOf(mod); prog.atual=(m.mods[i+1]||mod).c} salvar(); aula={p:0,l:0,resp:null}; location.hash="#estacao-"+m.s } };
+  document.getElementById("pe-voltar").onclick=()=>{ if(aula.p>0){aula.p--;aula.resp=null;vAula()} };
+  window.scrollTo(0,0);
+}
+function opcoes(ops){
+  const r=aula.resp;
+  return ops.map((o,i)=>`<button type="button" class="op ${r===i?(o[1]?"certa":"errada"):""}" data-op="${i}" data-ops='${JSON.stringify(ops).replace(/'/g,"&#39;")}'><i>${"ABC"[i]}</i><span>${o[0]}</span></button>`).join("")
+   + (r!=null?`<div class="retorno ${ops[r][1]?"":"erro"}"><b>${ops[r][1]?"Certo.":"Ainda não."}</b>${ops[r][2]}${ops[r][1]?"":" Tente outra."}</div>`:"");
+}
+
+const DIAG=[
+ ["Caixa dentro de caixa","Bloco cinza, dentro de painel cinza, dentro de seção cinza. O olho não acha o que importa.","Um só nível de superfície por tela; destaque só no que recebe a ação (o quadro de código, o botão).","Mimo: lição = fundo liso + um cartão. Brilliant: um elemento interativo por tela."],
+ ["Tipografia sem escala","Títulos, rótulos e texto quase do mesmo tamanho; tudo grita igual.","Quatro tamanhos fixos: título 44/26, texto 17, rótulo mono 11. Rótulos em caixa alta espaçada, números tabulares.","Duolingo design system: 2 famílias, 5 tamanhos."],
+ ["Cor sem papel","Uma cor por matéria aparece em todo lugar e vira ruído.","A cor da matéria só na estação e no bloco atual; neon para ação, verde para feito, âmbar para dia a dia, rosa para erro.","Semântica de cor fixa como no VS Code: cada cor significa uma coisa."],
+ ["Três lugares para o mesmo conceito","Estudo em 5 passos, janela da ideia e aula ilustrada. O aluno não sabe onde está.","Um trajeto: Sala → Estação → Aula. A aula em 4 tempos: Veja, Exemplo, Pratique, Avance.","Ciência da aprendizagem: exemplo resolvido antes da prática; depois prática intercalada."],
+ ["Pouco visual explicativo","Texto explica o código; o código não se explica.","O código acende linha a linha com uma nota por linha; a saída aparece no fim. Toda ideia tem um quadro assim.","Python Tutor, Brilliant: a visualização é a explicação."],
+ ["Sem estímulo de progresso","Porcentagem num canto; nada muda quando você avança.","Cada módulo dominado liga uma estação da sala; LEDs por conceito; o mapa inteiro mostra o que já está vivo.","Mimo: trilha que acende. Jogos de gestão: o mundo cresce com você."]
+];
+function vDiag(){
+  pe.hidden=true;
+  tela.innerHTML=`<span class="eyebrow">Diagnóstico do visual atual</span><h1 style="margin:8px 0 18px">Seis causas do ar amador, e o que este protótipo faz</h1>
+  <div class="diag">${DIAG.map((d,i)=>`<div class="d"><span class="n">${String(i+1).padStart(2,"0")}</span><div><h3>${d[0]}</h3><div class="par"><div class="antes"><span>Hoje</span>${d[1]}</div><div class="depois"><span>Aqui</span>${d[2]}</div></div><div class="ref">Referência: ${d[3]}</div></div></div>`).join("")}</div>`;
+}
+
+function rota(){
+  const h=location.hash||"#sala";
+  document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("on",h.startsWith("#"+a.dataset.nav)));
+  if(h.startsWith("#estacao-")) vEstacao(h.slice(9));
+  else if(h==="#aula") vAula();
+  else if(h==="#diagnostico") vDiag();
+  else vSala();
+  if(h!=="#aula") window.scrollTo(0,0);
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-ir]"); if(b){location.hash=b.dataset.ir}});
+window.addEventListener("hashchange",rota); rota();
+</script>
