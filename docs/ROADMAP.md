@@ -116,6 +116,8 @@ Etapas e pesos (27/10/2026, pedido do Kaio): as etapas da cascata ganharam um ma
 
 Aula linear (03/11/2026, pedido do Kaio: "bagunçado demais", "siga uma linearidade, não confunda os espaços"; proposta aprovada): um caminho só. Mapa em 6 grupos suspensos (o diagrama num botão), matéria com os módulos em menus suspensos e um botão Continuar, e a aula de cada módulo, um conceito por vez em Entenda, Pratique (um exercício por vez) e Avance, com o menu dos conceitos no alto e uma ação embaixo, terminando na pergunta final que domina o módulo. Os módulos sem lição ilustrada ganharam a aula montada pelos dados (`licoes/AULA.html`): os de LOG e PY com desenho, código e teste; os das outras matérias, com o glossário e o aviso de aula em produção, até o conteúdo de cada uma ser escrito. Sai o estudo em 5 passos. axe sem violações em três temas, 390 e 1280 px.
 
+A Entenda em telas (15/11/2026, pedido do Kaio: "esses passos do tocar não são entendidos rapidamente; coloque em formato de próximo, próximo"): a etapa Entenda de cada conceito virou telas, uma por bloco (desafio, a ideia com o dia a dia, a animação, o comando ou a bancada, o exemplo resolvido), com "Parte N de T" no alto e "Próximo N de T" no botão de baixo; o Voltar desfaz uma tela por vez e a tela fica guardada. As animações e os desenhos de planta trocaram Voltar, Tocar e Passo por Anterior e Próximo, com a contagem no Próximo; nada anima sozinho e o último passo oferece "Ver de novo".
+
 Aceite: 10 casos de teste do corretor (incluindo o erro das aspas) passando.
 
 ---
@@ -131,6 +133,8 @@ Entregas:
 Didática (`docs/04_FUNDAMENTOS_DIDATICOS.md`, seção 6): retenção desejada de 0,90; pista usada vale Difícil e solução mostrada vale Errei; intercalação dirigida dos pares que se confundem (WHERE × HAVING, COUNT(*) × COUNT(coluna), INNER × LEFT JOIN).
 
 Aceite: testes que simulam 30 dias de revisão e checam que os intervalos crescem com acertos e encolhem com erros.
+
+Adiantado (15/11/2026), na apostila (pedido do Kaio: "ferramentas de aprendizado ainda melhores", com referências de mercado no doc 07): a revisão passou dos intervalos fixos para o FSRS (`ts-fsrs` 4.7.1 copiado em `apostila/vendor`, configurado em `licoes/fsrs.js`, retenção de 0,90, nada no mesmo dia). A nota sai do resultado: de primeira é Bom, na segunda tentativa ou no chute é Difícil, o resto é Errei. A página de revisão abre no painel "Sua memória" (lembranças frágeis, em formação e firmes, e a calibragem da confiança dos Certo ou Errado) e ganhou o treino de erros (os mais errados, vencidos ou não). O teste `tests/apostila-fsrs.test.ts` simula 30 dias e cumpre o aceite acima. Para o app Next.js, falta só o adaptador em `lib/fsrs/` e o modelo `carta`.
 
 ---
 

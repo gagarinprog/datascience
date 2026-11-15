@@ -13,6 +13,7 @@ Documentos de referência (leia antes de mexer na área correspondente):
 - `docs/04_FUNDAMENTOS_DIDATICOS.md` — base científica das decisões de ensino, catálogo de erros de SQL, diferenças SQLite × PostgreSQL
 - `docs/05_CURRICULO_CIENCIA_DE_DADOS.md` — currículo completo (16 trilhas, módulos, conceitos, exercícios, critérios de domínio, projetos); o curso da UFMS guia a ordem, o currículo vai além dele
 - `docs/06_SEQUENCIA_E_PRE_REQUISITOS.md` — ordem das 16 matérias e dos módulos, o que cada módulo exige antes, pontos de virada e a pesquisa que justifica a ordem; dados em `tutor/sequencia_dados.py`
+- `docs/07_REFERENCIAS_DE_MERCADO.md` — o que funciona nos produtos de estudo com resultado (FSRS, testes de recuperação, treino de erros, intercalação, calibragem, domínio por níveis), o que já está na apostila e a ordem das próximas ferramentas
 - `docs/DESIGN.md` — identidade visual, tokens, componentes, telas
 - `docs/ROADMAP.md` — fases, critérios de aceite e o status de cada uma
 
