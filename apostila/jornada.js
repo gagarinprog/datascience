@@ -411,9 +411,40 @@
     const terceiro = primeira
       ? atalho("licoes/INICIO.html", "sparkle-duotone", "Comece por aqui", "a lista de aprovados", "5 passos")
       : atalho(nRev ? "licoes/REVISAR.html?modo=hoje" : "licoes/REVISAR.html", "brain-duotone", nRev ? "Revisão de hoje" : "Sua memória", nRev ? "o que você errou" : "revisão e treino de erros", nRev ? plural(nRev, "item", "itens") : "nada vence hoje");
+    // trilha de fases: o módulo atual no meio do caminho da matéria (padrão das trilhas do freeCodeCamp e do Odin Project)
+    const kAt = aqui.modulos.indexOf(prox), nMod = aqui.modulos.length;
+    const ini0 = Math.max(0, Math.min(kAt - 1, nMod - 5));
+    const fases = aqui.modulos.slice(ini0, ini0 + 5).map((mod, j) => {
+      const k = ini0 + j, est = estadoDe(mod.codigo);
+      const tipo = est === "dominado" ? "feita" : k === kAt ? "agora" : "depois";
+      const dentro = `<span class="fase-no" aria-hidden="true">${tipo === "feita" ? ic("check-bold") : doisDig(k + 1)}</span><span class="fase-nome">${esc(mod.nome)}</span>`;
+      const rot = `${esc(mod.nome)}, módulo ${k + 1}${tipo === "feita" ? ", dominado" : tipo === "agora" ? ", atual" : ", a seguir"}`;
+      return `<li class="fase ${tipo}"${tipo === "agora" ? ' aria-current="step"' : ""}>${tipo === "depois" ? `<span class="fase-in" aria-label="${rot}">${dentro}</span>` : `<a class="fase-in" href="${urlAula(mod.codigo, null)}" aria-label="${rot}">${dentro}</a>`}</li>`;
+    }).join("");
+    const trilhaFases = primeira ? "" : `<section class="ini-fases" aria-label="Trilha de ${esc(aqui.nome)}">
+        <header><b>Trilha da matéria</b><small>${dominados(aqui)} de ${nMod} módulos</small></header>
+        <ol>${fases}</ol></section>`;
+    // sua semana: dias com estudo de segunda a domingo (ideia do quadro de contribuições do GitHub, feito à mão)
+    const diasEstudo = new Set();
+    // as datas gravadas são em UTC (hoje()); à noite, o "hoje" UTC já é amanhã aqui, então conta como hoje local
+    const juntar = (obj) => Object.values(obj || {}).forEach((x) => { if (x && x.em) { const s = String(x.em).slice(0, 10); diasEstudo.add(s === hoje() ? hojeLocal : s); } });
+    juntar(progresso.modulos); juntar(progresso.verificados); juntar(lerLocal(AULA_POS, {})); juntar(lerLocal("dominio:ce:v1", {}));
+    const isoLocal = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+    const seg = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+    const nomesDia = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"];
+    let nSemana = 0;
+    const celulas = nomesDia.map((nome, j) => {
+      const x = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + j), s = isoLocal(x);
+      const feito = diasEstudo.has(s), eHoje = s === hojeLocal, futuro = s > hojeLocal;
+      if (feito) nSemana++;
+      return `<li class="dia${feito ? " feito" : ""}${eHoje ? " hoje" : ""}${futuro ? " futuro" : ""}" title="${nome}${feito ? ": estudou" : eHoje ? ": hoje" : ""}"><i aria-hidden="true">${feito ? ic("check-bold") : ""}</i><small>${nome.charAt(0).toUpperCase()}</small></li>`;
+    }).join("");
+    const semana = primeira ? "" : `<section class="ini-semana" aria-label="Sua semana: ${nSemana} de 7 dias com estudo">
+        <header><b>Sua semana</b><small>${plural(nSemana, "dia", "dias")} com estudo${ofensiva() > 1 ? ` · ${ofensiva()} seguidos` : ""}</small></header>
+        <ol>${celulas}</ol></section>`;
     centro().innerHTML = `<div class="inicio${primeira ? " primeira" : ""}" style="${coresDe(aqui.sigla)}">
-      <div class="ini-guia">${mascote(primeira ? "explica" : "padrao", "ini-rosto", "chegar falar")}<p class="balao cor ini-fala"><small>${esc(g.nome)}</small>${esc(fala)}</p></div>
-      <div class="ini-lado">${acao}
+      <div class="ini-guia">${mascote(primeira ? "explica" : "padrao", "ini-rosto", "chegar falar")}<p class="balao cor ini-fala"><small>${esc(g.nome)}</small>${esc(fala)}</p>${semana}</div>
+      <div class="ini-lado">${acao}${trilhaFases}
         <nav class="ini-atalhos" aria-label="Atalhos">
           ${atalho("#mapa", "map-trifold-duotone", "Mapa de formação", "sua formação", pct(formacao()))}
           ${atalho("castelo/index.html", "database-duotone", "Centro de Dados", "laboratório", labFeitas ? `${labFeitas} de 17` : "17 módulos")}

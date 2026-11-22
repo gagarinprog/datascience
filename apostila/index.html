@@ -82,7 +82,8 @@
   // ícones do topo (Solar), montados aqui para não repetir o SVG no HTML
   (function () {
     const I = window.ICONE;
-    document.getElementById("logo-marca").innerHTML = I("map-trifold-duotone");
+    // o logo usa o grafo (a formação ligada) para não repetir o ícone do Mapa, que no celular fica ao lado dele
+    document.getElementById("logo-marca").innerHTML = I("graph-duotone");
     document.getElementById("nav-mapa").innerHTML = I("map-trifold-duotone") + "<span>Mapa</span>";
     document.getElementById("nav-materia").innerHTML = I("path-duotone") + "<span>Matéria atual</span>";
     document.getElementById("nav-fontes").innerHTML = I("books-duotone") + "<span>Fontes</span>";
