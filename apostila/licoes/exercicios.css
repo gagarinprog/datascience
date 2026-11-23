@@ -113,27 +113,27 @@
 .exercicio.ex-texto .linha { font: 500 15px/1.4 var(--f-ui); white-space: normal; text-align: left; }
 .explique-opcional { opacity: 0.95; }
 
-/* ---- acabamento sóbrio (21/10/2026): respostas planas, cartões de 12 px, verde só para acerto ---- */
-:root .exercicio { border-radius: 12px; border-width: 1px; box-shadow: none; }
+/* ---- acabamento sóbrio (21/10/2026) + Pulso de Circuito (22/11/2026): respostas planas e resposta tátil ---- */
+:root .exercicio { border-radius: var(--raio-lg, 14px); border-width: 1px; box-shadow: none; }
 :root .exercicio.desafio { border-left-width: 3px; background: var(--folha); }
 :root .exercicio :is(.opcoes .botao, .linha, .chip-l) {
-  border: 1px solid var(--linha-forte); border-radius: 8px; box-shadow: none; transform: none; text-shadow: none;
-  background: var(--folha); color: var(--texto); min-height: 44px; animation: none;
-  transition: border-color 150ms, background-color 150ms;
+  border: 1px solid var(--linha-forte); border-radius: var(--raio-md, 10px); box-shadow: none; text-shadow: none;
+  background: var(--folha); color: var(--texto); min-height: 44px;
+  transition: border-color 150ms, background-color 150ms, transform var(--dur-toque, 90ms) var(--ease-seco, ease-out);
 }
 :root .exercicio :is(.opcoes .botao, .linha, .chip-l):hover:not(:disabled) { transform: none; border-color: var(--tinta); }
 :root .exercicio :is(.opcoes .botao, .linha, .chip-l):focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
 :root .exercicio .opcoes .botao.certo, :root .exercicio .p-item.ok .linha { border-color: var(--certo); background: var(--certo-suave); box-shadow: none; color: var(--texto); }
 :root .exercicio .opcoes .botao.errado { border-color: var(--erro); background: var(--erro-suave); box-shadow: none; color: var(--texto-2); }
 :root .exercicio .opcoes .botao:disabled:not(.certo):not(.errado) { opacity: 0.6; }
-:root .exercicio .ache-linha { border-radius: 8px; }
+:root .exercicio .ache-linha { border-radius: var(--raio-md, 10px); }
 .lacuna.nao { background: transparent; }
 .lacuna.alvo { background: color-mix(in srgb, var(--tinta) 10%, var(--folha-2)); }
 /* o resumo é a ideia central: destaque neutro, não a cor de acerto */
-:root .resumo { background: color-mix(in srgb, var(--tinta) 7%, var(--folha)); border: 0; border-left: 3px solid var(--tinta); border-radius: 0 10px 10px 0; }
+:root .resumo { background: color-mix(in srgb, var(--tinta) 7%, var(--folha)); border: 0; border-left: 3px solid var(--tinta); border-radius: 0 var(--raio-md, 10px) var(--raio-md, 10px) 0; }
 :root .resumo b { color: var(--tinta); }
-:root :is(.simples, .cotidiano) { border-radius: 10px; }
-:root .explique { border-radius: 10px; }
+:root :is(.simples, .cotidiano) { border-radius: var(--raio-md, 10px); }
+:root .explique { border-radius: var(--raio-md, 10px); }
 /* dentro da cascata, quem fecha o conceito é o botão de seguir; o marcar fica só fora dela */
 .cx-corpo [data-marcar] { display: none; }
 
@@ -160,38 +160,40 @@ body.aula-modo { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); 
 .ex-conta { font: 700 12px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); margin: 0; }
 .ex-passo > h3 { margin: 0; font-size: 19px; }
 
-/* barra de cima: sair, o conceito (menu suspenso) e as três etapas */
+/* barra de cima: sair, o conceito (menu suspenso), HUD compacto e as três etapas */
 .aula-topo { position: sticky; top: 0; z-index: 20; margin: 0 -16px; padding: 12px 16px 10px; background: color-mix(in srgb, var(--fundo) 94%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); }
-.aula-linha { display: flex; gap: 10px; align-items: flex-start; }
-.aula-sair { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: 10px; color: var(--texto-2); }
+.aula-linha { display: flex; gap: 8px; align-items: center; }
+.aula-sair { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: var(--raio-md, 10px); color: var(--texto-2); }
 .aula-sair:hover { color: var(--texto); border-color: var(--linha-hover); }
 .aula-sair svg, .aula-menu > summary svg, .aula-voltar svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .aula-menu { position: relative; flex: 1; min-width: 0; }
-.aula-menu > summary { list-style: none; min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border: 1px solid var(--linha); border-radius: 10px; cursor: pointer; background: var(--folha); }
+.aula-hud { flex: none; }
+@media (max-width: 560px) { .aula-hud .hm-nv, .aula-hud .hm-xp em { display: none; } }
+.aula-menu > summary { list-style: none; min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border: 1px solid var(--linha); border-radius: var(--raio-md, 10px); cursor: pointer; background: var(--folha); }
 .aula-menu > summary::-webkit-details-marker { display: none; }
 .aula-menu[open] > summary { border-color: var(--tinta); }
 .aula-menu[open] > summary svg { transform: rotate(180deg); }
 .aula-nome { flex: 1; min-width: 0; display: grid; }
-.aula-nome b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.aula-nome small { font-size: 12.5px; color: var(--texto-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.aula-menu-corpo { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--folha); border: 1px solid var(--linha-forte, var(--linha)); border-radius: 12px; padding: 10px; box-shadow: var(--sombra); max-height: min(70vh, 520px); overflow: auto; display: grid; gap: 6px; }
-.aula-menu-rot { margin: 2px 6px 4px; font: 700 12px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
+.aula-nome b { font-size: var(--t-sm, 14px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aula-nome small { font-size: var(--t-xs, 12px); color: var(--texto-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aula-menu-corpo { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--folha); border: 1px solid var(--linha-forte, var(--linha)); border-radius: var(--raio-lg, 14px); padding: 10px; box-shadow: var(--sombra); max-height: min(70vh, 520px); overflow: auto; display: grid; gap: 6px; }
+.aula-menu-rot { margin: 2px 6px 4px; font: 700 var(--t-xs, 12px) var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
 .aula-conceitos { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.aula-conceitos button { width: 100%; min-height: 44px; display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; text-align: left; padding: 6px 8px; border: 0; border-radius: 8px; background: none; color: var(--texto); font: 15px var(--f-ui); cursor: pointer; }
+.aula-conceitos button { width: 100%; min-height: 44px; display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; text-align: left; padding: 6px 8px; border: 0; border-radius: var(--raio-sm, 6px); background: none; color: var(--texto); font: 15px var(--f-ui); cursor: pointer; }
 .aula-conceitos button:hover:not(:disabled) { background: var(--folha-2); }
 .aula-conceitos button:disabled { color: var(--texto-2); cursor: not-allowed; }
 .aula-conceitos i { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--linha); display: grid; place-items: center; font: 700 11px var(--f-codigo); font-style: normal; color: var(--texto-2); }
 .aula-conceitos .feito i { background: var(--certo); border-color: var(--certo); }
 .aula-conceitos .atual i { border-color: var(--tinta); color: var(--tinta); }
 .aula-conceitos .atual { background: var(--tinta-suave); }
-.aula-conceitos small { font-size: 12px; color: var(--texto-2); }
+.aula-conceitos small { font-size: var(--t-xs, 12px); color: var(--texto-2); }
 .aula-sobre { border-top: 1px solid var(--linha); padding-top: 6px; }
-.aula-sobre summary { min-height: 44px; display: flex; align-items: center; padding: 0 8px; cursor: pointer; font-size: 14px; color: var(--texto-2); }
-.aula-sobre > div { padding: 0 8px 8px; display: grid; gap: 10px; font-size: 14.5px; }
-.aula-etapas { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.aula-etapas button { width: 100%; min-height: 44px; display: grid; gap: 6px; align-content: center; padding: 4px 0; border: 0; background: none; color: var(--texto-2); font: 700 12px var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; text-align: left; cursor: pointer; }
+.aula-sobre summary { min-height: 44px; display: flex; align-items: center; padding: 0 8px; cursor: pointer; font-size: var(--t-sm, 14px); color: var(--texto-2); }
+.aula-sobre > div { padding: 0 8px 8px; display: grid; gap: 10px; font-size: var(--t-sm, 14px); }
+.aula-etapas { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.aula-etapas button { width: 100%; min-height: 44px; display: grid; gap: 6px; align-content: center; padding: 4px 0; border: 0; background: none; color: var(--texto-2); font: 700 var(--t-xs, 12px) var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; text-align: left; cursor: pointer; transition: color var(--dur-ui, 220ms) var(--ease-seco, ease-out); }
 .aula-etapas button:disabled { cursor: default; opacity: 0.75; }
-.aula-etapas i { display: block; height: 4px; border-radius: 2px; background: var(--linha); }
+.aula-etapas i { display: block; height: 4px; border-radius: 2px; background: var(--linha); transition: background-color 280ms var(--ease-entrada, ease-out); }
 .aula-etapas .atual { color: var(--tinta); }
 .aula-etapas .atual i { background: var(--tinta); }
 .aula-etapas .feita { color: var(--certo); }
@@ -200,25 +202,38 @@ body.aula-modo { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); 
 /* barra de baixo: voltar e uma ação só */
 .aula-pe { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--fundo) 96%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--linha); }
 .aula-pe > div { max-width: 760px; margin: 0 auto; display: grid; grid-template-columns: 52px 1fr; gap: 10px; align-items: center; }
-.aula-voltar { width: 52px; height: 52px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: 12px; background: none; color: var(--texto); cursor: pointer; }
+.aula-voltar { width: 52px; height: 52px; display: grid; place-items: center; border: 1px solid var(--linha); border-radius: var(--raio-md, 10px); background: none; color: var(--texto); cursor: pointer; transition: border-color 150ms, transform var(--dur-toque, 90ms); }
+.aula-voltar:active:not(:disabled) { transform: scale(0.96); }
 .aula-voltar:disabled { opacity: 0.4; cursor: default; }
-.aula-ir { --p: 0; position: relative; overflow: hidden; min-height: 52px; border: 0; border-radius: 12px; background: var(--tinta); color: var(--sobre-tinta); font: 700 14px var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
-.aula-ir::after { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; width: calc(var(--p) * 100%); background: color-mix(in srgb, var(--sobre-tinta) 45%, transparent); }
+.aula-ir { --p: 0; position: relative; overflow: hidden; min-height: 52px; border: 0; border-radius: var(--raio-md, 10px); background: var(--tinta); color: var(--sobre-tinta); font: 700 15px var(--f-ui); letter-spacing: 0; text-transform: none; cursor: pointer; transition: background-color 160ms, transform var(--dur-toque, 90ms); }
+.aula-ir::after { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; width: calc(var(--p) * 100%); background: color-mix(in srgb, var(--sobre-tinta) 45%, transparent); transition: width 380ms var(--ease-entrada, ease-out); }
 .aula-ir:hover:not(:disabled) { background: var(--tinta-hover); }
+.aula-ir:active:not(:disabled) { transform: translateY(1.5px) scale(0.99); }
 .aula-ir:disabled { background: var(--folha-2); color: var(--texto-2); cursor: not-allowed; }
-.aula-aviso { grid-column: 1 / -1; font-size: 13px; color: var(--texto-2); text-align: center; min-height: 0; }
+.aula-aviso { grid-column: 1 / -1; font-size: var(--t-xs, 12px); color: var(--texto-2); text-align: center; min-height: 0; }
 .aula-aviso:empty { display: none; }
 .aula-sair:focus-visible, .aula-menu > summary:focus-visible, .aula-etapas button:focus-visible, .aula-conceitos button:focus-visible, .aula-voltar:focus-visible, .aula-ir:focus-visible { outline: 3px solid var(--destaque, var(--tinta)); outline-offset: 2px; }
 
-/* Avance: o selo, o resumo e o que vem a seguir */
+/* Avance: o circuito acendendo, o selo, o resumo e o que vem a seguir */
 .etapa-avance { text-align: center; }
-.avance-selo { width: 84px; height: 84px; margin: 10px auto 0; border-radius: 50%; border: 2px solid var(--certo); display: grid; place-items: center; color: var(--certo); font: 700 26px var(--f-titulo); }
-.avance-tit { margin: 0; font-size: 22px; }
+.avance-palco { position: relative; width: 164px; height: 112px; margin: 4px auto 0; display: grid; place-items: center; }
+.pc-circuito { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.pc-anel-base { fill: none; stroke: var(--linha); stroke-width: 3; }
+.pc-anel-ativo { fill: none; stroke: var(--certo); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 251.3; stroke-dashoffset: var(--fim, 0); }
+.pc-trilha { fill: none; stroke: var(--tinta); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; }
+.pc-pad { fill: var(--certo); transform-box: fill-box; transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .avance-palco.aceso .pc-anel-ativo { animation: pc-anel-desenha 540ms var(--ease-entrada, ease-out) both; }
+  .avance-palco.aceso .pc-trilha { animation: pc-trilha-desenha 420ms var(--ease-entrada, ease-out) var(--d, 120ms) both; }
+  .avance-palco.aceso .pc-pad { animation: pc-pad-acende 280ms var(--ease-impulso, ease-out) var(--d, 300ms) both; }
+}
+.avance-selo { position: relative; z-index: 1; width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; color: var(--certo); font: 700 24px var(--f-titulo); font-variant-numeric: tabular-nums; }
+.avance-tit { margin: 0; font-size: var(--t-lg, 20px); }
 .etapa-avance > .resumo, .etapa-avance > .explique, .a-seguir { text-align: left; }
-.a-seguir { display: grid; gap: 4px; padding: 16px; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); }
-.a-seguir span { font: 700 12px var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
-.a-seguir b { font-size: 17px; }
-.avance-rev { font-size: 14px; color: var(--texto-2); }
+.a-seguir { display: grid; gap: 4px; padding: 16px; border: 1px solid var(--linha); border-radius: var(--raio-md, 10px); background: var(--folha); }
+.a-seguir span { font: 700 var(--t-xs, 12px) var(--f-codigo); letter-spacing: 0.08em; text-transform: uppercase; color: var(--texto-2); }
+.a-seguir b { font-size: var(--t-md, 16px); }
+.avance-rev { font-size: var(--t-sm, 14px); color: var(--texto-2); }
 /* grade de uma coluna que nunca cresce além da tela (linhas de código longas rolam dentro do próprio quadro) */
 .etapa-painel, .ex-passo { grid-template-columns: minmax(0, 1fr); }
 .etapa-painel > *, .ex-passo > * { min-width: 0; }

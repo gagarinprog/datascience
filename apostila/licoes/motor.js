@@ -35,6 +35,76 @@
   const reduz = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const flip = (els, mudar) => (window.Clip && window.Clip.flip ? window.Clip.flip(els, mudar) : mudar());
 
+  // ---------- HUD compacto e Acendimento de Circuito ("Pulso de Circuito") ----------
+  const CHAVE_PROG = "dominio:progresso:v1";
+  const CHAVE_HUD = "hud-dominio:v1";
+  const SVG_CHAMA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2.2c.2 2.4-.7 4.1-2 5.4-1 1-1.9 2.1-1.7 3.7.2 1.1.9 2 1.8 2.4-.2-1.1.2-2.2 1-3 .7-.7 1.3-1.5 1.4-2.6 1.8 1.3 3.3 3.4 3.3 6 0 3.2-2.5 5.7-5.7 5.7-3.4 0-6-2.7-6-6.2 0-3.3 2.1-6 4.7-8.4 1.2-1.1 2.4-2 3.2-3z"/></svg>';
+  const SVG_RAIO = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.2 2L4.8 13.2h6l-1 8.8 9.4-11.6h-6L13.2 2z"/></svg>';
+
+  function hudResumo() {
+    const prog = ls.ler(CHAVE_PROG, {});
+    const mods = prog && prog.modulos ? prog.modulos : {};
+    const vals = Object.values(mods);
+    const dom = vals.filter((x) => x && x.estado === "dominado").length;
+    const dias = new Set(vals.map((x) => x && x.em).filter(Boolean));
+    const d = new Date();
+    const iso = () => d.toISOString().slice(0, 10);
+    if (!dias.has(iso())) d.setUTCDate(d.getUTCDate() - 1);
+    let ofensiva = 0;
+    while (dias.has(iso())) { ofensiva++; d.setUTCDate(d.getUTCDate() - 1); }
+    const cache = ls.ler(CHAVE_HUD, null);
+    const xp = cache && cache.dom === dom && typeof cache.xp === "number" ? cache.xp : dom * 20;
+    const nivel = Math.floor(xp / 100) + 1;
+    return { xp, nivel, resto: xp % 100, ofensiva, dom };
+  }
+
+  function montarHudMini(alvo) {
+    if (!alvo) return { el: null, combo() {}, pulsar() {} };
+    const s = hudResumo();
+    alvo.innerHTML = `<div class="hud-mini" aria-label="Seu resumo">
+      <span class="pc-combo" data-hm="combo" hidden aria-live="polite"></span>
+      <span class="hm-item hm-of${s.ofensiva === 0 ? " apagada" : ""}" title="${s.ofensiva ? `${s.ofensiva} ${s.ofensiva === 1 ? "dia seguido" : "dias seguidos"}` : "Domine um módulo hoje para acender a ofensiva"}">${SVG_CHAMA}<b data-hm="of">${s.ofensiva}</b></span>
+      <span class="hm-item hm-xp" title="${s.xp} pontos de experiência">${SVG_RAIO}<b data-hm="xp">${s.xp}</b><em>XP</em></span>
+      <span class="hm-item hm-nv" title="Nível ${s.nivel}: ${s.resto} de 100 XP para o próximo"><span class="hm-nivel" data-hm="nv" style="--p:${s.resto}%"><span>${s.nivel}</span></span></span>
+    </div>`;
+    const root = alvo.firstElementChild;
+    const cEl = root.querySelector('[data-hm="combo"]');
+    return {
+      el: root,
+      combo(n) {
+        if (!cEl) return;
+        if (!n || n < 2) { cEl.hidden = true; cEl.classList.remove("pc-pulso", "alta"); return; }
+        cEl.hidden = false;
+        cEl.textContent = `${n} seguidas`;
+        cEl.classList.toggle("alta", n >= 4);
+        if (!reduz()) { cEl.classList.remove("pc-pulso"); void cEl.offsetWidth; cEl.classList.add("pc-pulso"); }
+      },
+      pulsar() {
+        if (reduz() || !root) return;
+        root.classList.remove("pc-pulso");
+        void root.offsetWidth;
+        root.classList.add("pc-pulso");
+      },
+    };
+  }
+
+  function svgCircuito(taxa) {
+    const t = Math.max(0, Math.min(1, taxa == null ? 1 : taxa));
+    const fim = (251.3 * (1 - t)).toFixed(1);
+    return `<svg class="pc-circuito" viewBox="0 0 164 112" aria-hidden="true">
+      <circle class="pc-anel-base" cx="82" cy="56" r="40"/>
+      <circle class="pc-anel-ativo" cx="82" cy="56" r="40" style="--fim:${fim}" transform="rotate(-90 82 56)"/>
+      <path class="pc-trilha" pathLength="100" style="--d:120ms" d="M44 40 H22 L14 32"/>
+      <path class="pc-trilha" pathLength="100" style="--d:200ms" d="M44 72 H22 L14 80"/>
+      <path class="pc-trilha" pathLength="100" style="--d:160ms" d="M120 40 H142 L150 32"/>
+      <path class="pc-trilha" pathLength="100" style="--d:240ms" d="M120 72 H142 L150 80"/>
+      <circle class="pc-pad" cx="14" cy="32" r="3.5" style="--d:320ms"/>
+      <circle class="pc-pad" cx="14" cy="80" r="3.5" style="--d:400ms"/>
+      <circle class="pc-pad" cx="150" cy="32" r="3.5" style="--d:360ms"/>
+      <circle class="pc-pad" cx="150" cy="80" r="3.5" style="--d:440ms"/>
+    </svg>`;
+  }
+
   const TIPOS = ["escolha", "classificar", "preencher", "ordenar", "ache", "lacunas", "codigo"];
   const tipoDe = (ex) => TIPOS.find((t) => ex.hasAttribute("data-" + t));
   function idDe(ex) {
@@ -757,7 +827,7 @@
       e.fecho.forEach((el) => pA.appendChild(el));
       const mk = pA.querySelector("[data-marcar]"); if (mk) mk.hidden = true;
       const i = secoes.indexOf(sec);
-      pA.insertAdjacentHTML("afterbegin", `<div class="avance-selo" aria-hidden="true"></div><h3 class="avance-tit">Conceito feito</h3>`);
+      pA.insertAdjacentHTML("afterbegin", `<div class="avance-palco">${svgCircuito(1)}<div class="avance-selo" aria-hidden="true"></div></div><h3 class="avance-tit">Conceito feito</h3>`);
       pA.insertAdjacentHTML("beforeend", i < secoes.length - 1
         ? `<div class="a-seguir"><span>A seguir · conceito ${i + 2} de ${secoes.length}</span><b>${esc(nomes[i + 1] || "")}</b></div>`
         : `<div class="a-seguir"><span>${modulo ? "Falta uma pergunta" : "Fim da lição"}</span><b>${modulo ? "A pergunta final do módulo" : "Volte ao mapa para seguir"}</b></div>`);
@@ -765,7 +835,7 @@
       (e.h2 || sec.firstChild).after(pE, pP, pA);
       return { sec, pE, pP, pA, passos, telas, exE: [...pE.querySelectorAll(".exercicio")] };
     });
-    // barra de cima: sair, o menu dos conceitos e as três etapas
+    // barra de cima: sair, o menu dos conceitos, HUD compacto e as três etapas
     const sigla = cfg.trilha || "LOG";
     const topo = document.createElement("header");
     topo.className = "aula-topo";
@@ -774,8 +844,11 @@
         <details class="aula-menu"><summary><span class="aula-nome"><b></b><small></small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
           <div class="aula-menu-corpo"><p class="aula-menu-rot">${esc(modNome)}</p><ol class="aula-conceitos"></ol>${cab ? `<details class="aula-sobre"><summary>Sobre este módulo</summary><div></div></details>` : ""}</div>
         </details>
+        <div class="aula-hud" id="aula-hud"></div>
       </div>
       <ol class="aula-etapas" aria-label="Etapas do conceito">${ETAPAS.map((n, k) => `<li><button type="button" data-etapa="${k}"><i></i><span>${k + 1} ${n}</span></button></li>`).join("")}</ol>`;
+    const hud = montarHudMini(topo.querySelector("#aula-hud"));
+    let seguidas = 0;
     const col = document.querySelector(".coluna") || document.body;
     col.prepend(topo);
     if (cab) { const alvo = topo.querySelector(".aula-sobre div"); [...cab.children].forEach((el) => { if (!el.matches("h1, .campo.marcar")) alvo.appendChild(el); }); cab.hidden = true; }
@@ -853,15 +926,21 @@
       } else {
         texto = pos.c < secoes.length - 1 ? "Próximo conceito" : modulo ? "Ir para a pergunta final" : "Voltar ao mapa";
       }
+      const estavaTravado = ir.disabled;
       ir.textContent = texto;
       if (conta) ir.insertAdjacentHTML("beforeend", ` <small class="aula-ir-conta">${conta}</small>`);
       ir.disabled = !pode;
+      if (estavaTravado && !ir.disabled && !reduz()) {
+        ir.classList.remove("pc-pronto");
+        void ir.offsetWidth;
+        ir.classList.add("pc-pronto");
+      } else if (ir.disabled) ir.classList.remove("pc-pronto");
       aviso.textContent = msg;
       // a barra do botão mostra o quanto da aula já foi
       const total = secoes.length * 3, feito = pos.c * 3 + pos.e + (pos.e === 1 && E.passos.length ? pos.x / E.passos.length : 0) + (pos.e === 0 && E.telas.length ? pos.t / E.telas.length : 0);
       ir.style.setProperty("--p", Math.min(1, (feito + 1) / total));
     }
-    function mostrar(novo, rolar = true) {
+    function mostrar(novo, rolar = true, dir = "") {
       Object.assign(pos, novo);
       pos.max = Math.max(pos.max, pos.c);
       const E = est[pos.c];
@@ -873,11 +952,28 @@
       E.pE.hidden = pos.e !== 0; E.pP.hidden = pos.e !== 1; E.pA.hidden = pos.e !== 2;
       E.passos.forEach((d, x) => { d.hidden = x !== pos.x; });
       if (pos.e === 2) {
-        // chegar ao Avance marca o conceito como estudado
+        // chegar ao Avance marca o conceito como estudado e acende o circuito de fechamento
         marcarFeito(E.sec.id);
         const exs = [...E.sec.querySelectorAll(".exercicio")];
         const certos = exs.filter((x) => x.dataset.resultado === "primeira" || x.dataset.resultado === "segunda").length;
         E.pA.querySelector(".avance-selo").textContent = exs.length ? `${certos}/${exs.length}` : "ok";
+        const palco = E.pA.querySelector(".avance-palco");
+        if (palco) {
+          const anel = palco.querySelector(".pc-anel-ativo");
+          if (anel) anel.style.setProperty("--fim", (251.3 * (1 - (exs.length ? certos / exs.length : 1))).toFixed(1));
+          palco.classList.remove("aceso");
+          if (!reduz()) void palco.offsetWidth;
+          palco.classList.add("aceso");
+        }
+        hud.pulsar();
+      }
+      if (dir && !reduz()) {
+        const alvoAnim = pos.e === 0 ? E.telas[pos.t] : pos.e === 1 ? E.passos[pos.x] : E.pA;
+        if (alvoAnim) {
+          alvoAnim.classList.remove("pc-entra-frente", "pc-entra-tras");
+          void alvoAnim.offsetWidth;
+          alvoAnim.classList.add(dir === "tras" ? "pc-entra-tras" : "pc-entra-frente");
+        }
       }
       guardar();
       pintarMenu();
@@ -888,29 +984,36 @@
       const E = est[pos.c];
       const cl = clipDaTela();
       if (cl && !cl.travado() && cl.passo < cl.n - 1) { cl.avancar(); return; }
-      if (pos.e === 0 && pos.t < E.telas.length - 1) mostrar({ t: pos.t + 1 });
-      else if (pos.e === 0) mostrar({ e: E.passos.length ? 1 : 2, x: 0 });
-      else if (pos.e === 1) { if (pos.x < E.passos.length - 1) mostrar({ x: pos.x + 1 }); else mostrar({ e: 2 }); }
-      else if (pos.c < secoes.length - 1) mostrar({ c: pos.c + 1, e: 0, x: 0, t: 0 });
+      if (pos.e === 0 && pos.t < E.telas.length - 1) mostrar({ t: pos.t + 1 }, true, "frente");
+      else if (pos.e === 0) mostrar({ e: E.passos.length ? 1 : 2, x: 0 }, true, "frente");
+      else if (pos.e === 1) { if (pos.x < E.passos.length - 1) mostrar({ x: pos.x + 1 }, true, "frente"); else mostrar({ e: 2 }, true, "frente"); }
+      else if (pos.c < secoes.length - 1) mostrar({ c: pos.c + 1, e: 0, x: 0, t: 0 }, true, "frente");
       else location.href = modulo ? `${raiz}#fechar-${licaoId}` : `${raiz}#mapa`;
     });
     voltar.addEventListener("click", () => {
       const E = est[pos.c];
-      if (pos.e === 2) mostrar(E.passos.length ? { e: 1, x: E.passos.length - 1 } : { e: 0 });
-      else if (pos.e === 1) mostrar(pos.x > 0 ? { x: pos.x - 1 } : { e: 0, t: E.telas.length - 1 });
+      if (pos.e === 2) mostrar(E.passos.length ? { e: 1, x: E.passos.length - 1 } : { e: 0 }, true, "tras");
+      else if (pos.e === 1) mostrar(pos.x > 0 ? { x: pos.x - 1 } : { e: 0, t: E.telas.length - 1 }, true, "tras");
       else if (clipDaTela() && clipDaTela().passo > 0) clipDaTela().voltar();
-      else if (pos.t > 0) mostrar({ t: pos.t - 1 });
-      else if (pos.c > 0) mostrar({ c: pos.c - 1, e: 2, x: 0 });
+      else if (pos.t > 0) mostrar({ t: pos.t - 1 }, true, "tras");
+      else if (pos.c > 0) mostrar({ c: pos.c - 1, e: 2, x: 0 }, true, "tras");
     });
-    topo.querySelectorAll("[data-etapa]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.etapa); mostrar({ e: k, x: k === 1 ? 0 : pos.x, t: k === 0 ? 0 : pos.t }); }));
+    topo.querySelectorAll("[data-etapa]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.etapa); mostrar({ e: k, x: k === 1 ? 0 : pos.x, t: k === 0 ? 0 : pos.t }, true, k >= pos.e ? "frente" : "tras"); }));
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.open) { menu.open = false; menu.querySelector("summary").focus(); } });
     document.addEventListener("click", (e) => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
     window.addEventListener("hashchange", () => { const k = secoes.findIndex((s) => "#" + s.id === location.hash); if (k >= 0) mostrar({ c: k, e: 0, x: 0, t: 0 }); });
-    // cada exercício resolvido reavalia o botão de baixo (e guarda o resultado para o selo do Avance)
+    // cada exercício resolvido reavalia o botão de baixo (e guarda o resultado para o selo do Avance e combo)
     document.addEventListener("clip-passo", () => { pintarPe(); });
-    aula.depois = (ex, r) => { ex.dataset.resultado = ex.dataset.resultado || r; setTimeout(() => { pintarPe(); pintarMenu(); }, 0); };
+    aula.depois = (ex, r) => {
+      ex.dataset.resultado = ex.dataset.resultado || r;
+      if (!ex.classList.contains("desafio")) {
+        seguidas = r === "primeira" ? seguidas + 1 : 0;
+        hud.combo(seguidas);
+      }
+      setTimeout(() => { pintarPe(); pintarMenu(); }, 0);
+    };
     mostrar(pos, false);
   }
 
-  window.Motor = { licao, montarExercicio, criar, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao };
+  window.Motor = { licao, montarExercicio, criar, Revisao, idDe, resumoDe, ls, esc, hoje, somaDias, mostrarCerto, mostrarTentativa, mostrarRevelado, mostrarAviso, dicaNoEditor, cascataSecao, hudResumo, montarHudMini, svgCircuito };
 })();

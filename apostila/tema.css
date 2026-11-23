@@ -154,3 +154,165 @@
 .tema-amostra { width: 40px; height: 40px; border-radius: 8px; flex: none; border: 1px solid var(--linha-forte); }
 .tema-amostra-grafite { background: linear-gradient(135deg, #0d1017 0 55%, #2457d4 55% 100%); }
 .tema-amostra-impresso { background: linear-gradient(135deg, #eceef2 0 55%, #2f4fa8 55% 78%, #ff7a3d 78% 100%); border-color: #1b2131; }
+
+/* =====================================================================
+   Escala de design e sistema de movimento "Pulso de Circuito" (22/11/2026)
+   6 tamanhos de fonte, 3 raios e movimento de pulso eletrico: so responde
+   a acoes reais, sem confete nem quique gratuito. Desliga com reduzir movimento.
+   ===================================================================== */
+:root {
+  --t-xs: 12px;
+  --t-sm: 14px;
+  --t-md: 16px;
+  --t-lg: 20px;
+  --t-xl: clamp(24px, 5vw, 30px);
+  --t-2xl: clamp(28px, 6vw, 40px);
+  --raio-sm: 6px;
+  --raio-md: 10px;
+  --raio-lg: 14px;
+  --ease-seco: cubic-bezier(0.2, 0, 0, 1);
+  --ease-entrada: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-impulso: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-toque: 90ms;
+  --dur-ui: 220ms;
+  --dur-fluxo: 380ms;
+  --dur-marco: 680ms;
+}
+
+/* ---------- barra superior unificada e HUD compacto (aula, revisao, laboratorio) ---------- */
+.sub-topo {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  min-height: 52px; padding: 8px 0; border-bottom: 1px solid var(--linha);
+}
+.sub-voltar {
+  min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 10px 0 6px;
+  border-radius: var(--raio-md); color: var(--texto-2); text-decoration: none;
+  font: 600 var(--t-sm)/1 var(--f-ui); transition: color var(--dur-ui) var(--ease-seco), background-color var(--dur-ui) var(--ease-seco);
+}
+.sub-voltar:hover { color: var(--texto); background: var(--folha-2); }
+.sub-voltar svg { width: 18px; height: 18px; flex: none; }
+
+.hud-mini { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.hm-item {
+  min-height: 36px; padding: 0 9px; border-radius: var(--raio-md);
+  background: var(--folha); border: 1px solid var(--linha);
+  display: inline-flex; align-items: center; gap: 5px;
+  font: 700 13px/1 var(--f-titulo); color: var(--texto); font-variant-numeric: tabular-nums;
+}
+.hm-item svg { width: 16px; height: 16px; flex: none; }
+.hm-of svg { color: var(--chama); }
+.hm-of.apagada svg { color: var(--linha-hover); }
+.hm-xp svg { color: var(--ouro); }
+.hm-xp em { font-style: normal; font: 600 11px/1 var(--f-ui); color: var(--texto-2); }
+.hm-nivel {
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  font: 700 12px/1 var(--f-titulo); position: relative;
+  background: conic-gradient(var(--tinta) var(--p, 0%), var(--linha) 0);
+}
+.hm-nivel::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--folha); }
+.hm-nivel span { position: relative; }
+
+.pc-combo {
+  min-height: 32px; padding: 0 10px; border-radius: 99px;
+  border: 1px solid var(--certo); background: var(--certo-suave); color: var(--certo);
+  font: 700 var(--t-xs)/1 var(--f-codigo); display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.pc-combo.alta { border-color: var(--ouro); background: var(--aviso-suave); color: var(--ouro-texto, var(--aviso)); }
+
+:root[data-tema="impresso"] .hm-item,
+:root[data-tema="impresso"] .pc-combo { border: 1.5px solid var(--tinta-preta); border-radius: 4px; }
+
+/* ---------- keyframes originais "Pulso de Circuito" ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .pc-entra-frente { animation: pc-entra-frente 260ms var(--ease-entrada) both; }
+  .pc-entra-tras { animation: pc-entra-tras 260ms var(--ease-entrada) both; }
+  .pc-pronto { animation: pc-pulso-cta 520ms var(--ease-entrada) both; }
+  .pc-pulso { animation: pc-pulso-badge 320ms var(--ease-impulso) both; }
+}
+@keyframes pc-entra-frente { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
+@keyframes pc-entra-tras { from { opacity: 0; transform: translateX(-22px); } to { opacity: 1; transform: none; } }
+@keyframes pc-sobe { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pc-acende {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--certo) 55%, transparent); }
+  45% { transform: scale(1.02); box-shadow: 0 0 0 5px color-mix(in srgb, var(--certo) 24%, transparent); }
+  100% { transform: scale(1); box-shadow: 0 0 0 8px transparent; }
+}
+@keyframes pc-feixe {
+  0% { transform: translateX(-100%); opacity: 0.9; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+@keyframes pc-oscila {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  45% { transform: translateX(4px); }
+  70% { transform: translateX(-2px); }
+  85% { transform: translateX(1px); }
+}
+@keyframes pc-pulso-cta {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tinta) 55%, transparent); }
+  100% { box-shadow: 0 0 0 9px transparent; }
+}
+@keyframes pc-pulso-badge {
+  0% { opacity: 0; transform: scale(0.86) translateY(4px); }
+  60% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes pc-trilha-desenha {
+  from { stroke-dashoffset: var(--len, 120); opacity: 0.2; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes pc-pad-acende {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes pc-anel-desenha {
+  from { stroke-dashoffset: 251.3; }
+  to { stroke-dashoffset: var(--fim, 0); }
+}
+@keyframes pc-cabo-cresce {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes pc-dia-acende {
+  from { opacity: 0.35; transform: scale(0.88); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-entra-frente, .pc-entra-tras, .pc-pronto, .pc-pulso { animation: none !important; }
+}
+
+/* ---------- overrides finais nas lições e feedback (vence o <style> inline das lições) ---------- */
+:root .exercicio { border-radius: var(--raio-lg); }
+:root .retorno:not([hidden]) {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--linha); border-left: 3px solid var(--linha-forte); border-radius: var(--raio-md);
+  padding: 12px 14px; background: var(--folha-2);
+}
+:root .retorno.ok { border-left-color: var(--certo); background: color-mix(in srgb, var(--certo-suave) 55%, var(--folha)); }
+:root .retorno.nao { border-left-color: var(--erro); background: color-mix(in srgb, var(--erro-suave) 45%, var(--folha)); }
+:root .retorno.revelado { border-left-color: var(--aviso); background: color-mix(in srgb, var(--aviso-suave) 45%, var(--folha)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  :root .retorno:not([hidden]) { animation: pc-sobe 240ms var(--ease-entrada) both; }
+  :root .retorno.ok::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--certo), transparent);
+    animation: pc-feixe 520ms var(--ease-entrada) both;
+  }
+  :root .exercicio :is(.opcoes .botao, .linha, .chip-l):active:not(:disabled) { transform: translateY(1.5px) scale(0.985); }
+  :root .exercicio .opcoes .botao.certo,
+  :root .exercicio .p-item.ok .linha { animation: pc-acende 420ms var(--ease-entrada) both; }
+  :root .exercicio .opcoes .botao.errado,
+  :root .exercicio .ache-codigo li.nao .ache-linha { animation: pc-oscila 320ms var(--ease-seco) both; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root .retorno:not([hidden]),
+  :root .retorno.ok::after,
+  :root .exercicio .opcoes .botao.certo,
+  :root .exercicio .p-item.ok .linha,
+  :root .exercicio .opcoes .botao.errado,
+  :root .exercicio .ache-codigo li.nao .ache-linha { animation: none !important; }
+}
