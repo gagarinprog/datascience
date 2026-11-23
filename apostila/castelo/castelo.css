@@ -8,17 +8,20 @@ body { min-height: 100vh; }
 .lab-pular-conteudo:focus { top: 12px; }
 
 .lab-topo, .lab-palco { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
-.lab-topo { padding-top: 14px; display: grid; gap: 14px; }
-.lab-trilha { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.lab-topo { padding-top: 8px; display: grid; gap: 14px; }
+.lab-trilha { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-height: 52px; padding: 8px 0; border-bottom: 1px solid var(--linha); font-size: var(--t-sm, 14px); }
 .lab-trilha a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--texto-2); text-decoration: none; padding: 0 4px; }
 .lab-trilha a + a::before { content: "/"; color: var(--linha-hover); margin-right: 6px; }
 .lab-trilha a:hover { color: var(--texto); }
 .lab-trilha svg { width: 16px; height: 16px; }
+.cd-hud { margin-left: auto; }
+@media (max-width: 560px) { .cd-hud .hm-nv, .cd-hud .hm-xp em { display: none; } }
 
-.lab-cab { display: grid; gap: 16px; border: 1px solid var(--linha); border-radius: 12px; background: var(--folha); padding: 18px 16px; }
+.lab-cab { display: grid; gap: 16px; border: 1px solid var(--linha); border-radius: var(--raio-lg, 14px); background: var(--folha); padding: 18px 16px; }
 .lab-cab-txt { display: grid; gap: 8px; }
+.lab-cab .sobretitulo { margin: 0; font: 700 var(--t-xs, 12px)/1.2 var(--f-codigo); letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta); }
 .lab-titulo { font-size: clamp(30px, 7vw, 44px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
-.lab-sub { font-family: var(--f-leitura); font-size: 16px; line-height: 1.55; color: var(--texto-2); max-width: 60ch; }
+.lab-sub { font-family: var(--f-leitura); font-size: var(--t-md, 16px); line-height: 1.55; color: var(--texto-2); max-width: 60ch; }
 
 /* ---------- centro de dados: mapa e painel ---------- */
 .cd-centro { display: grid; gap: 14px; }
@@ -74,7 +77,7 @@ body { min-height: 100vh; }
 .cd-zonas { display: grid; gap: 10px; }
 .cd-zona { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 14px; }
 .cd-zona .barra { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--folha-2); overflow: hidden; border: 1px solid var(--linha); }
-.cd-zona .barra i { display: block; height: 100%; width: 0; background: var(--tinta); border-radius: 3px; }
+.cd-zona .barra i { display: block; height: 100%; width: 0; background: var(--tinta); border-radius: 3px; transition: width 500ms var(--ease-entrada, ease-out); }
 .cd-zona.cheia .barra i { background: var(--certo); }
 .mono { font-family: var(--f-codigo); font-variant-numeric: tabular-nums; }
 .cd-numeros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--linha); border: 1px solid var(--linha); border-radius: 8px; overflow: hidden; }
@@ -93,7 +96,7 @@ body { min-height: 100vh; }
 .lab-tarefa-corpo { display: grid; gap: 12px; min-width: 0; }
 .lab-passo-real summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-size: 14.5px; color: var(--texto-2); }
 .lab-conceito { font-size: 17px; color: var(--texto-2); }
-@media (prefers-reduced-motion: reduce) { .cd-continuar svg { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .cd-continuar svg, .cd-zona .barra i { transition: none; } }
 
 /* ---------- palco ---------- */
 .lab-palco { padding-top: 18px; padding-bottom: 64px; display: grid; gap: 18px; }

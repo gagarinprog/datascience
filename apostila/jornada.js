@@ -193,6 +193,8 @@
     anel.style.setProperty("--p", `${nv.resto}%`);
     anel.querySelector("span").textContent = nv.n;
     anel.parentElement.title = `Nível ${nv.n}: ${nv.resto} de 100 XP para o próximo`;
+    const dom = MATERIAS.reduce((a, m) => a + dominados(m), 0);
+    try { localStorage.setItem("hud-dominio:v1", JSON.stringify({ xp, nivel: nv.n, resto: nv.resto, ofensiva: of, dom })); } catch (e) { /* sem armazenamento */ }
   }
 
   // ---------- MAPA: diagrama de linhas, como um mapa de metrô ----------
@@ -532,7 +534,7 @@
       <summary><span class="mod-marca" aria-hidden="true">${est === "dominado" ? ic("check-bold") : doisDig(k + 1)}</span><span class="mod-nome"><b>${esc(mod.nome)}</b><small>${sub}</small></span>${ic("caret-down-bold", "ic mod-caret")}</summary>
       <div class="mod-sus-corpo">
         <ol class="mod-conceitos">${conceitos}</ol>
-        <a class="btn btn-3d mod-ir" href="${urlAula(cod, est === "dominado" ? null : atual)}">${ic("play-bold")}${rotulo}</a>
+        <a class="btn mod-ir" href="${urlAula(cod, est === "dominado" ? null : atual)}">${ic("play-bold")}${rotulo}</a>
         <p class="mod-vale">vale ${pct(pesoDe(cod), 2)} da formação · +${xpDe(cod)} XP${mod.virada ? " · ponto de virada" : ""}</p>
       </div>
     </details>`;
@@ -879,12 +881,13 @@
     teclas = (e) => { if (e.key === "Escape") location.href = urlAula(cod); };
   }
   function vitoria(cod, seguinte) {
-    const antes = nivelDe(xpTotal()).n;
+    const antes = nivelDe(xpTotal());
     const jaEra = estadoDe(cod) === "dominado";
     marcar(cod, "dominado");
     const depois = nivelDe(xpTotal());
     const { materia: m } = MODULO[cod];
     const fimMateria = MODULO[cod].indice === m.modulos.length - 1;
+    const subiu = depois.n > antes.n;
     const el = document.createElement("div");
     el.className = "vitoria";
     el.setAttribute("role", "dialog");
@@ -893,20 +896,48 @@
     el.style.cssText = coresExp();
     el.classList.add("tema-exp");
     el.innerHTML = `<div class="vitoria-cartao">
-      ${mascote(fimMateria ? "uau" : "feliz", "", "concluir")}
+      <div class="vitoria-palco">
+        <svg class="pc-circuito-vitoria" viewBox="0 0 280 148" aria-hidden="true">
+          <path class="pc-v-trilha" pathLength="100" style="--d:80ms" d="M84 44 H42 L26 28"/>
+          <path class="pc-v-trilha" pathLength="100" style="--d:140ms" d="M84 74 H32"/>
+          <path class="pc-v-trilha" pathLength="100" style="--d:200ms" d="M84 104 H42 L26 120"/>
+          <path class="pc-v-trilha" pathLength="100" style="--d:110ms" d="M196 44 H238 L254 28"/>
+          <path class="pc-v-trilha" pathLength="100" style="--d:170ms" d="M196 74 H248"/>
+          <path class="pc-v-trilha" pathLength="100" style="--d:230ms" d="M196 104 H238 L254 120"/>
+          <circle class="pc-v-pad" cx="26" cy="28" r="4" style="--d:320ms"/>
+          <circle class="pc-v-pad" cx="32" cy="74" r="4" style="--d:380ms"/>
+          <circle class="pc-v-pad" cx="26" cy="120" r="4" style="--d:440ms"/>
+          <circle class="pc-v-pad" cx="254" cy="28" r="4" style="--d:350ms"/>
+          <circle class="pc-v-pad" cx="248" cy="74" r="4" style="--d:410ms"/>
+          <circle class="pc-v-pad" cx="254" cy="120" r="4" style="--d:470ms"/>
+        </svg>
+        ${mascote(fimMateria ? "uau" : "feliz", "", "concluir")}
+      </div>
       <h2>${fimMateria ? "Matéria concluída!" : "Módulo dominado!"}</h2>
       <span class="ganho-xp">${ic("lightning-duotone")}<span>+<span data-xp>0</span> XP</span></span>
+      ${subiu ? `<span class="pc-subiu-nivel">${ic("crown-duotone")}Subiu para o nível ${depois.n}</span>` : ""}
+      <div class="vitoria-nivel" aria-label="Nível ${depois.n}: ${depois.resto} de 100 XP">
+        <div class="vitoria-nivel-cab"><b>Nível ${depois.n}</b><span>${depois.resto} / 100 XP</span></div>
+        <div class="vitoria-nivel-barra" aria-hidden="true"><i style="width:${subiu ? 0 : antes.resto}%"></i></div>
+      </div>
       <p>${jaEra ? "Revisão feita. " : `+${pct(pesoDe(cod), 2)} na formação. `}Você está em <b>${pct(formacao(), 1)}</b> da formação de cientista de dados.</p>
-      <p>Nível ${depois.n} · ${depois.resto} de 100 XP${depois.n > antes ? ". Você subiu de nível!" : ""}</p>
       ${seguinte ? `<p>Próximo: <b>${esc(MODULO[seguinte].mod.nome)}</b></p>` : "<p>Você terminou a jornada inteira.</p>"}
       <div class="vitoria-acoes">${seguinte ? `<button type="button" class="btn btn-3d" data-seguir>${ic("arrow-right-bold")}Seguir agora</button><button type="button" class="btn" data-ficar>Ver os módulos</button>` : `<a class="btn btn-3d" href="#mapa">${ic("map-trifold-duotone")}Ver o mapa</a>`}</div>
     </div>`;
     document.body.appendChild(el);
     const ganho = xpDe(cod);
     const alvoXp = el.querySelector("[data-xp]");
-    if (semMovimento()) alvoXp.textContent = ganho;
-    else { const t0 = performance.now(); const passo = (t) => { const f = Math.min(1, (t - t0) / 700); alvoXp.textContent = Math.round(ganho * (1 - Math.pow(1 - f, 3))); if (f < 1) requestAnimationFrame(passo); }; requestAnimationFrame(passo); }
-    if (depois.n > antes) setTimeout(() => toast(`Nível ${depois.n}!`, "crown-duotone"), 600);
+    const barraNv = el.querySelector(".vitoria-nivel-barra i");
+    if (semMovimento()) {
+      alvoXp.textContent = ganho;
+      if (barraNv) barraNv.style.width = `${depois.resto}%`;
+    } else {
+      const t0 = performance.now();
+      const passo = (t) => { const f = Math.min(1, (t - t0) / 700); alvoXp.textContent = Math.round(ganho * (1 - Math.pow(1 - f, 3))); if (f < 1) requestAnimationFrame(passo); };
+      requestAnimationFrame(passo);
+      if (barraNv) requestAnimationFrame(() => setTimeout(() => { barraNv.style.width = `${depois.resto}%`; }, 180));
+    }
+    if (subiu) setTimeout(() => toast(`Nível ${depois.n}!`, "crown-duotone"), 600);
     const fechar = () => { el.remove(); };
     const seguir = () => { fechar(); location.href = urlAula(seguinte); };
     if (seguinte) {

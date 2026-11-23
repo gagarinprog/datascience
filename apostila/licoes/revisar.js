@@ -5,11 +5,13 @@
 (function () {
   "use strict";
   const M = window.Motor, R = M.Revisao, esc = M.esc;
-  const palco = document.getElementById("r-palco"), contagem = document.getElementById("r-contagem"), barra = document.getElementById("r-barra");
+  const palco = document.getElementById("r-palco"), contagem = document.getElementById("r-contagem"), barra = document.getElementById("r-barra"), barraWrap = document.getElementById("r-barra-wrap");
+  const hud = M.montarHudMini ? M.montarHudMini(document.getElementById("r-hud")) : null;
   const paginas = {};
   const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
   const dataBR = (iso) => iso.split("-").reverse().join("/");
-  let fila = [], modo = "hoje", i = 0, primeira = 0, resultados = [];
+  const reduz = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  let fila = [], modo = "hoje", i = 0, primeira = 0, seguidas = 0, resultados = [];
 
   async function buscar(url) {
     if (!paginas[url]) paginas[url] = fetch(url).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.text(); }).then((t) => new DOMParser().parseFromString(t, "text/html"));
@@ -39,18 +41,19 @@
       ? `<button type="button" class="botao primario b-prog" data-iniciar="hoje" data-passo="${plural(vencem.length, "item", "itens")}" style="--p:0">Começar a revisão de hoje</button>`
       : erros.length
         ? `<button type="button" class="botao primario b-prog" data-iniciar="erros" data-passo="${plural(erros.length, "item", "itens")}" style="--p:0">Treinar meus erros</button>`
-        : `<a class="botao primario" href="../index.html#mapa">Voltar ao mapa</a>`;
+        : `<a class="botao primario" href="../index.html#inicio">Continuar estudando</a>`;
     const secundaria = vencem.length && erros.length ? `<button type="button" class="botao" data-iniciar="erros">Treinar meus erros (${erros.length})</button>` : "";
-    palco.innerHTML = `<div class="r-painel">
+    if (barraWrap) barraWrap.hidden = true;
+    if (hud) hud.combo(0);
+    palco.innerHTML = `<div class="r-agora">
+        <p class="r-origem">${vencem.length ? `Hoje vencem ${plural(vencem.length, "item", "itens")}, intercalando as matérias.` : erros.length ? `Nada vence hoje${proxima ? ` (a próxima revisão é em ${dataBR(proxima.proxima)})` : ""}. Dá para treinar os exercícios que você mais errou.` : "Nada para revisar ainda. Quando você errar um exercício numa lição, ele aparece aqui no dia seguinte."}</p>
+        <div class="r-acoes">${acao}${secundaria}</div>
+      </div>
+      <div class="r-painel">
         <h2>Sua memória</h2>
-        <p class="r-origem">Cada exercício que voltou para a revisão é uma lembrança. A força dela cresce a cada acerto espaçado e cai quando você erra: é o que decide a data do próximo encontro.</p>
         ${barraForca}
         <h3>Sua confiança</h3>
         <p>${esc(calibragem())}</p>
-      </div>
-      <div class="r-agora">
-        <p class="r-origem">${vencem.length ? `Hoje vencem ${plural(vencem.length, "item", "itens")}, intercalando as matérias.` : erros.length ? `Nada vence hoje${proxima ? ` (a próxima revisão é em ${dataBR(proxima.proxima)})` : ""}. Dá para treinar os exercícios que você mais errou.` : "Nada para revisar ainda. Quando você errar um exercício numa lição, ele aparece aqui no dia seguinte."}</p>
-        <div class="r-acoes">${acao}${secundaria}</div>
       </div>`;
     contagem.textContent = "";
     barra.style.width = "0%";
@@ -60,20 +63,28 @@
   function iniciar(qual) {
     modo = qual;
     fila = qual === "erros" ? R.erros(10) : R.vencidos(12);
-    i = 0; primeira = 0; resultados = [];
+    i = 0; primeira = 0; seguidas = 0; resultados = [];
+    if (hud) hud.combo(0);
     mostrar();
   }
 
   function fim() {
+    if (barraWrap) barraWrap.hidden = false;
     barra.style.width = "100%";
-    palco.innerHTML = `<div class="r-fim"><h2>${modo === "erros" ? "Treino de erros concluído." : "Revisão concluída."}</h2><p>Você acertou de primeira ${primeira} de ${resultados.length}.</p><ul>${resultados.map((r) => `<li>${esc(r.conceito)}: ${r.ok ? `volta em ${plural(r.dias, "dia", "dias")}` : "volta amanhã"}</li>`).join("")}</ul><div class="r-acoes"><button type="button" class="botao primario" data-painel>Ver sua memória</button><a class="botao" href="../index.html#mapa">Voltar ao mapa</a></div></div>`;
+    const taxa = resultados.length ? primeira / resultados.length : 1;
+    const selo = M.svgCircuito
+      ? `<div class="avance-palco aceso">${M.svgCircuito(taxa)}<div class="avance-selo" aria-hidden="true">${primeira}/${resultados.length}</div></div>`
+      : "";
+    palco.innerHTML = `<div class="r-fim">${selo}<h2>${modo === "erros" ? "Treino de erros concluído." : "Revisão concluída."}</h2><p>Você acertou de primeira ${primeira} de ${resultados.length}.</p><ul>${resultados.map((r) => `<li>${esc(r.conceito)}: ${r.ok ? `volta em ${plural(r.dias, "dia", "dias")}` : "volta amanhã"}</li>`).join("")}</ul><div class="r-acoes"><button type="button" class="botao primario" data-painel>Ver sua memória</button><a class="botao" href="../index.html#mapa">Mapa de formação</a></div></div>`;
     palco.querySelector("[data-painel]").addEventListener("click", painel);
+    if (hud) hud.pulsar();
     contagem.textContent = "";
   }
 
   async function mostrar() {
     if (i >= fila.length) { fim(); return; }
     const c = fila[i];
+    if (barraWrap) barraWrap.hidden = false;
     barra.style.width = `${(i / fila.length) * 100}%`;
     contagem.textContent = `${modo === "erros" ? "Treino de erros" : "Revisão de hoje"} · item ${i + 1} de ${fila.length}`;
     palco.innerHTML = `<p class="r-origem">Carregando o exercício...</p>`;
@@ -91,6 +102,7 @@
     if (rot) rot.textContent = "Revisão: responda sem abrir a lição";
     const chance = R.lembranca(c);
     palco.innerHTML = `<p class="r-origem">${esc(c.titulo || c.licao)} · ${esc(c.conceito || "")}${modo === "erros" ? ` · ${plural(c.erros || 0, "erro", "erros")} até aqui` : chance != null ? ` · chance estimada de lembrar hoje: ${Math.round(chance * 100)}%` : ""} · <a href="${esc(c.url)}#${esc(c.sec)}">abrir a lição</a></p>`;
+    if (!reduz()) ex.classList.add("pc-entra-frente");
     palco.appendChild(ex);
     palco.insertAdjacentHTML("beforeend", `<div class="r-acoes"><button type="button" class="botao primario b-prog" id="r-proximo" disabled data-passo="${i + 1} de ${fila.length}" style="--p:${(i + 1) / fila.length}">Próximo</button><span class="r-origem" id="r-estado" aria-live="polite"></span></div>`);
     const ctx = { licao: c.licao, titulo: c.titulo, url: c.url, sec: c.sec, conceito: c.conceito, resumo: M.resumoDe(sec),
@@ -98,11 +110,15 @@
         const novo = R.daRevisao(c.id, r);
         const ok = r === "primeira";
         if (ok) primeira++;
+        seguidas = ok ? seguidas + 1 : 0;
+        if (hud) hud.combo(seguidas);
         const dias = novo ? novo.intervalo || 1 : 1;
         resultados.push({ conceito: c.conceito || c.licao, ok, dias });
         document.getElementById("r-estado").textContent = ok ? `Volta em ${plural(dias, "dia", "dias")}.` : "Volta amanhã.";
         const b = document.getElementById("r-proximo");
-        b.disabled = false; b.focus();
+        b.disabled = false;
+        if (!reduz()) { b.classList.remove("pc-pronto"); void b.offsetWidth; b.classList.add("pc-pronto"); }
+        b.focus();
       } };
     M.montarExercicio(ex, ctx);
     if (window.Reacao) window.Reacao.observar(ex);
