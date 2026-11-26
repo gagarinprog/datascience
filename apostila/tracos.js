@@ -7,18 +7,34 @@
 (function () {
   "use strict";
   const CHAVE = "dominio:traco:v1";
+  const srcEstudio = (() => {
+    const cs = typeof document !== "undefined" ? document.currentScript : null;
+    if (cs && cs.src && !cs.src.startsWith("file:")) {
+      try { return new URL("imagens/guia-rin-estudio.webp", cs.src).pathname; } catch (e) { /* segue */ }
+    }
+    const sub = typeof location !== "undefined" && /\/(licoes|castelo|passo)\//.test(location.pathname || "");
+    return (sub ? "../" : "") + "imagens/guia-rin-estudio.webp";
+  })();
+  const imgEstudio = `<img class="guia-foto-estudio" src="${srcEstudio}" alt="" loading="eager" decoding="async" />`;
+  const EXPR_RIN_ESTUDIO = { padrao: imgEstudio, explica: imgEstudio, feliz: imgEstudio, uau: imgEstudio, pensa: imgEstudio };
   const LISTA = [
+    { id: "estudio", nome: "Estúdio (Rin)", desc: "retrato editorial em placa azul", credito: "Ilustração autoral Domínio" },
     { id: "manga", nome: "Mangá", desc: "linha preta e cor chapada", credito: "Lorelei · Lisa Wischofsky · CC0" },
     { id: "anime", nome: "Anime próprio", desc: "desenho do projeto, com corpo", credito: "desenho do projeto" },
     { id: "aventura", nome: "Aventura", desc: "rosto redondo, cores fortes", credito: "Adventurer · Lisa Wischofsky · CC BY 4.0" },
   ];
-  const PADRAO = "aventura";
+  const PADRAO = "estudio";
   const G = window.GUIAS || {};
-  // guarda os três conjuntos de cada guia antes de escolher (avatares.js já pôs o Adventurer em expr)
+  // guarda os conjuntos de cada guia antes de escolher (avatares.js já pôs o Adventurer em expr)
   Object.keys(G).forEach((id) => {
     const g = G[id];
     if (id === "panda" || g.tracos) return;
-    g.tracos = { aventura: g.expr, anime: g.exprAnime || g.expr, manga: g.exprManga || g.expr };
+    g.tracos = {
+      estudio: id === "rin" ? EXPR_RIN_ESTUDIO : (g.exprAnime || g.expr),
+      aventura: g.expr,
+      anime: g.exprAnime || g.expr,
+      manga: g.exprManga || g.expr,
+    };
   });
   function ler() { try { const v = localStorage.getItem(CHAVE); return LISTA.some((t) => t.id === v) ? v : PADRAO; } catch (e) { return PADRAO; } }
   let atual = ler();

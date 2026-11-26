@@ -301,10 +301,15 @@
     const cartao = (href, icone, titulo, sub) => `<a class="cartao-link cartao-inicio" href="${href}" style="--cor:var(--azul-cor);--cv:var(--azul-cv)"><span class="ic-a">${ic(icone)}</span><span><b>${titulo}</b><small>${sub}</small></span>${ic("arrow-right-bold")}</a>`;
     const pa = posAula(prox.codigo);
     centro().innerHTML = `
-      <section class="mapa-cab mapa-limpo">
-        <p class="eyebrow">Mapa de formação · Ciência de Dados</p>
-        <h1>Do raciocínio lógico ao aprendizado de máquina</h1>
-        <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="${urlAula(prox.codigo, pa && estadoDe(prox.codigo) !== "dominado" ? pa.c : null)}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
+      <section class="mapa-cab mapa-limpo com-arte">
+        <div class="mapa-cab-principal">
+          <p class="eyebrow">Mapa de formação · Ciência de Dados</p>
+          <h1>Do raciocínio lógico ao aprendizado de máquina</h1>
+          <div class="mapa-acoes"><a class="btn btn-3d btn-grande" href="${urlAula(prox.codigo, pa && estadoDe(prox.codigo) !== "dominado" ? pa.c : null)}" style="${coresDe(aqui.sigla)}" data-principal>${ic("play-bold")}<span>Continuar: ${esc(prox.nome)}<small>${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length}</small></span></a></div>
+        </div>
+        <figure class="dom-art dom-art-mapa">
+          <img src="imagens/hero-formacao.webp" alt="Placa de circuito isométrica representando a trilha da formação em ciência de dados" decoding="async">
+        </figure>
         <div class="mapa-formacao"><div><b>${pct(formacao())}</b><span>da formação de cientista de dados · ${total} de ${TOTAL} módulos</span></div><span class="barra-fina" aria-hidden="true"><i style="width:${formacao()}%"></i></span><button type="button" class="link-pesos" data-pesos>Como os pesos são contados</button></div>
         ${nRevisao ? cartao("licoes/REVISAR.html?modo=hoje", "brain-duotone", `Revisão de hoje: ${nRevisao} ${nRevisao === 1 ? "item" : "itens"}`, "o que você errou volta quando estiver perto de ser esquecido") : ""}
       </section>
@@ -407,8 +412,8 @@
           <ol class="ini-pilares"><li>O mapa com as ${MATERIAS.length} matérias, na ordem em que uma prepara a outra</li><li>Lições de 5 minutos, com exercício corrigido na hora</li><li>O laboratório: um banco de dados que você constrói e apresenta</li></ol>
           <button type="button" class="btn btn-3d b-prog ini-botao" data-ini-tutorial style="--p:0" data-passo="7 paradas">Começar o tutorial</button>
           <a class="ini-pular" href="licoes/INICIO.html" data-pular-tutorial>Pular e ir direto para a primeira lição</a></div>`
-      : `<div class="ini-acao"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length} · vale ${pct(pesoDe(prox.codigo), 2)} da formação</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
-          <a class="btn btn-3d b-prog ini-botao" href="${urlAula(prox.codigo, pa ? cAt : null)}" style="--p:${cAt / nConc}" data-passo="conceito ${cAt + 1} de ${nConc}">${pa ? "Continuar" : "Começar"}</a></div>`;
+      : `<div class="ini-acao"><div class="ini-cartao-grid"><div class="ini-cartao-corpo"><p class="ini-meta">${esc(aqui.nome)} · módulo ${MODULO[prox.codigo].indice + 1} de ${aqui.modulos.length} · vale ${pct(pesoDe(prox.codigo), 2)} da formação</p><h1 class="ini-titulo">${esc(prox.nome)}</h1>
+          <a class="btn btn-3d b-prog ini-botao" href="${urlAula(prox.codigo, pa ? cAt : null)}" style="--p:${cAt / nConc}" data-passo="conceito ${cAt + 1} de ${nConc}">${pa ? "Continuar" : "Começar"}</a></div><figure class="dom-art ini-cartao-arte"><img src="imagens/hero-formacao.webp" alt="Placa de circuito isométrica que acende conforme você avança" decoding="async"></figure></div></div>`;
     const atalho = (href, icone, titulo, sub, num) => `<a class="ini-atalho" href="${href}"><span class="ini-ic">${ic(icone)}</span><b>${titulo}</b><small>${sub}</small><span class="ini-num">${num}</span></a>`;
     const terceiro = primeira
       ? atalho("licoes/INICIO.html", "sparkle-duotone", "Comece por aqui", "a lista de aprovados", "5 passos")
@@ -911,7 +916,9 @@
           <circle class="pc-v-pad" cx="248" cy="74" r="4" style="--d:410ms"/>
           <circle class="pc-v-pad" cx="254" cy="120" r="4" style="--d:470ms"/>
         </svg>
-        ${mascote(fimMateria ? "uau" : "feliz", "", "concluir")}
+        <figure class="vitoria-medalhao">
+          <img src="imagens/emblema-vitoria.webp" alt="${fimMateria ? "Emblema luminoso de matéria concluída" : "Emblema luminoso de módulo dominado"}" decoding="async">
+        </figure>
       </div>
       <h2>${fimMateria ? "Matéria concluída!" : "Módulo dominado!"}</h2>
       <span class="ganho-xp">${ic("lightning-duotone")}<span>+<span data-xp>0</span> XP</span></span>

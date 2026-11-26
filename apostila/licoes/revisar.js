@@ -45,9 +45,14 @@
     const secundaria = vencem.length && erros.length ? `<button type="button" class="botao" data-iniciar="erros">Treinar meus erros (${erros.length})</button>` : "";
     if (barraWrap) barraWrap.hidden = true;
     if (hud) hud.combo(0);
-    palco.innerHTML = `<div class="r-agora">
-        <p class="r-origem">${vencem.length ? `Hoje vencem ${plural(vencem.length, "item", "itens")}, intercalando as matérias.` : erros.length ? `Nada vence hoje${proxima ? ` (a próxima revisão é em ${dataBR(proxima.proxima)})` : ""}. Dá para treinar os exercícios que você mais errou.` : "Nada para revisar ainda. Quando você errar um exercício numa lição, ele aparece aqui no dia seguinte."}</p>
-        <div class="r-acoes">${acao}${secundaria}</div>
+    palco.innerHTML = `<div class="r-agora r-agora-palco">
+        <div class="r-agora-txt">
+          <p class="r-origem">${vencem.length ? `Hoje vencem ${plural(vencem.length, "item", "itens")}, intercalando as matérias.` : erros.length ? `Nada vence hoje${proxima ? ` (a próxima revisão é em ${dataBR(proxima.proxima)})` : ""}. Dá para treinar os exercícios que você mais errou.` : "Nada para revisar ainda. Quando você errar um exercício numa lição, ele aparece aqui no dia seguinte."}</p>
+          <div class="r-acoes">${acao}${secundaria}</div>
+        </div>
+        <figure class="dom-art dom-art-revisar">
+          <img src="../imagens/revisao-memoria.webp" alt="Radar técnico de revisão espaçada com curva de retenção iluminada" decoding="async">
+        </figure>
       </div>
       <div class="r-painel">
         <h2>Sua memória</h2>
